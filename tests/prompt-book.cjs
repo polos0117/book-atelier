@@ -52,6 +52,20 @@ assert(!/Pok[eé]mon|포켓몬/.test(JSON.stringify(S)), '표에 포켓몬 말�
 for (const r of S.CATS) if (r[0] !== 'auto_random' && r[0] !== '__custom__') assert((S.EXAMPLE_MAP[r[0]] || []).length, r[0] + ' 예시가 없다');
 assert(!S.ACTION_CONTROLS.some(c => c.key === 'equipment'), '책은 빈손 — 무장 고르기가 없다');
 
-/* 5. 화풍 문장이 없으면 만들지 않는다 */
+/* 5. 화풍 블록은 책 줄 바로 뒤, 판의 점검 줄은 맨 끝, 참고 그림이 있으면 "그리는 방식만" (2026-10-15 시범 세 묶음) */
+const cur = lf.versions.find(v => v.v === lf.current);
+const full = { book: b, stage: '발단', styleText: cur.text, styleCheck: cur.check, styleRef: !!(cur.reference || {}).path, params: [] };
+for (const [name, t] of [['새 인물', P.buildPrompt({ ...full, outputMode: 'form' })], ['이어가기', P.buildPrompt({ ...full, outputMode: 'form', identityMode: 'reference', baseStage: '발단' })],
+  ['개방', P.buildPrompt({ ...full, outputMode: 'open' })], ['일상', P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })]]) {
+  const parts = t.split('\n\n');
+  assert(parts.findIndex(x => x.startsWith('STYLE: ')) <= 2, name + ' — 화풍 블록이 앞쪽(입력·책 다음)');
+  assert(parts[parts.length - 1].startsWith('FINAL CHECK: '), name + ' — 맨 끝에 화풍 점검');
+  if (full.styleRef) assert(t.includes('STYLE REFERENCE:') && /style reference image/.test(parts[0]), name + ' — 참고 그림을 첨부하고 그리는 방식만');
+}
+if (full.styleRef) assert(P.buildPrompt({ ...full, outputMode: 'form' }).startsWith('INPUT: attach only the style reference image'), '새 인물은 참고 그림만 첨부');
+assert(!P.buildPrompt({ ...full, outputMode: 'form', styleRef: false, styleCheck: '' }).includes('FINAL CHECK'), '점검이 없는 판은 그 줄도 없다');
+assert(!/game character art/.test(cur.text), '지금 판 첫 줄이 게임 키아트로 끌지 않는다');
+
+/* 6. 화풍 문장이 없으면 만들지 않는다 */
 assert.throws(() => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: '' }), /Style text/);
-console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손`);
+console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만`);

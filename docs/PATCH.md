@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-15 · claude · 화풍 v2 — 참고 그림·화풍 블록 앞으로·점검 줄
+- data/style.json — literary_fantasy v2(지금 판). 매체를 "손으로 그린 삽화, 게임 CG 아님" 으로, 무광 바닥·표면, 배경은 인물보다 덜, 얼굴은 잉크 윤곽. 맨 끝 점검 줄(check), 참고 그림 pilot/style-ref-literary_fantasy-v2-alice.webp. v1 은 남긴다.
+- lib/prompt-book.js · lib/prompt-spec.js — 화풍 블록을 책 줄 바로 뒤로(설계 줄 뒤에 묻혀 장르마다 화풍이 갈라졌다), 판의 check 를 맨 끝에 한 번 더, 참고 그림이 있으면 INPUT 에 첨부 안내 + "STYLE REFERENCE — 그리는 방식만, 얼굴·차림·노출은 따르지 않는다".
+- lib/prompt-ui.js — 판을 일부러 고르지 않았으면 지금 판을 따라간다(versionPinned). 참고 그림·점검 줄을 조립부로 넘긴다.
+- tests/prompt-book.cjs · tests/prompt-screen.cjs — 화풍 블록 자리·점검 줄·참고 그림 줄·지금 판.
+- docs/ART_STYLE.md · IMAGE_RULES.md — 시범 세 묶음에서 배운 것, 참고 그림을 매번 같이 붙인다.
+
 ## 2026-10-15 · claude · 화면 옮기기 — 서재·서가·생성기·그림 등록
 - index.html · lib/workspace-*.js · lib/workspace.css · lib/fresh.js · lib/words.js — pkm 의 껍데기(머리·항해·테마 여덟·밀도·새 판 알림·패치 기록)를 책 말로. 문양은 책 모양 여덟, 서재 진열대는 myth 신전 홀을 책장·마루로 바꿨다.
 - dex.html · lib/dex-filter.js — 서가. pkm 도감 기능(거르기·나란히 보기 폼 셋/개방 셋·넘기기·책 넘기기·뒤로 가기·목록 자리) + myth(화풍 비교 띠·크게 보기·바로가기·진열) + 건담(그림 없음·빈 자리 있음·진척·생성기로 가는 길). 책의 인격·질문과 답·고유 규칙·세 폼·설계를 보인다. 시범 자리에 표.

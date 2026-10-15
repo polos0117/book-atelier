@@ -52,7 +52,9 @@ pkm-atelier 의 `IMAGE_RULES.md` 를 책의 꼴(한 책 = 폼 셋 + 개방 셋 +
 (자리 = `middle`, `middle_open`, `casual3` …). 어느 화풍·판·설정으로 만들었는지가 여기 남는다.
 `storage` 는 pkm 의 `casualN-ui.json` 과 같은 꼴이라 일상컷 장부를 옮겨 오면 그대로 읽힌다.
 
-화풍 참고 그림은 그림 저장소 `pilot/` 에 두고 `data/style.json` 의 그 판 `reference.path` 에 적는다.
+화풍 참고 그림은 그림 저장소 `pilot/` 에 두고 `data/style.json` 의 그 판 `reference.path` 에 적는다. 그 판에 참고 그림이 있으면
+생성기의 INPUT 줄이 같이 첨부하라고 말한다 — 매번 같이 붙인다(첫 그림은 참고 그림만, 나머지는 인물 그림 + 참고 그림).
+참고 그림은 그리는 방식만 옮긴다. 얼굴·차림이 참고 그림을 닮아 가면 다시 만든다.
 
 ## 4. 등록 — 올리면 자동이다
 

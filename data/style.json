@@ -4,7 +4,7 @@
  "styles": {
   "literary_fantasy": {
    "name": "회화적 컨셉아트 — 섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍",
-   "current": "v1",
+   "current": "v2",
    "versions": [
     {
      "v": "v1",
@@ -12,12 +12,12 @@
      "by": "사용자 채택 (claude·gpt 검토)",
      "text": "Shared art direction (literary_fantasy v1): premium illustrated fantasy game character art.\n\nThe book brief governs facial structure, hair, silhouette, costume, palette, materials, ornament, pose, and motifs. Facial variety comes from distinctive proportions and features. The palette governs clothing, lighting, and background. Skin stays softly painted and clearly illustrated, never photoreal. Ornament density follows the brief; plain and rough materials remain appealing through texture, construction, and shading.\n\nCombine refined, expressive linework and varied line weight with layered gouache-like color, softly blended painterly transitions, selective brushwork, and subtle paper grain. Maintain clear shapes, stylized anatomy, and tactile depth. Give paper, cloth, leather, wood, glass, and metal distinct surfaces.\n\nFocus the sharpest detail on the face, hands, and defining costume elements. Simplify secondary detail. In form images, scenery supports her; in opened scene images, the environment may fill the frame while she remains the focal point.\n\nTransfer only rendering language from style references; follow the book brief for identity and composition.\n\nAvoid photographic rendering, glossy 3D, plastic skin, chibi proportions, flat cel shading, heavy impasto, and uniform texture filters.",
      "reference": {
-      "status": "pending",
+      "status": "superseded",
       "candidates": [
        "돈키호테 화풍 시험컷",
        "이상한 나라의 앨리스 화풍 시험컷"
       ],
-      "note": "그리는 방식만 옮기는 참고 그림. book-atelier-img 의 pilot/ 에 올리면 경로를 적는다"
+      "note": "v1 은 참고 그림 없이 썼다. 참고 그림은 v2 부터"
      },
      "why": [
       "얼굴 구조는 화풍이 아니라 책 설계가 정한다 — 화풍 시험 네 장의 얼굴이 닮았다",
@@ -26,6 +26,28 @@
       "피부는 칠한 느낌, 사진처럼 아님 — 프랑켄슈타인 시험컷이 반실사로 미끄러졌다",
       "개방(명장면) 컷은 장면이 화면을 채워도 된다 — 폼 컷과 구분",
       "머리글에 매체 문장(premium illustrated fantasy game character art)과 판 번호를 둔다"
+     ]
+    },
+    {
+     "v": "v2",
+     "adopted": "2026-10-15",
+     "by": "사용자 채택 (claude 검토 — 시범 세 묶음 비교)",
+     "text": "Shared art direction (literary_fantasy v2): hand-painted storybook fantasy illustration — a painting, not game CG.\n\nMedium: refined ink or pencil linework with varied weight, matte gouache and watercolor washes, softly blended painterly transitions, and subtle paper grain over the whole image. Colors stay warm and harmonious and follow the book's palette; no neon glow, no sparkle effects.\n\nFaces: her own structure from the book brief, drawn with ink contour and soft painted shading; adult proportions and natural-sized eyes. Skin stays softly painted — never photographic, never glossy anime or doll-like.\n\nLight and surfaces: soft painterly light with gentle contrast. Skin, fabric, metal and floors stay matte — no specular shine, no reflective or wet floors.\n\nDetail: the face, hands and defining costume carry the finest detail; the background is simplified into looser painted shapes with breathing room. Paper, cloth, leather, wood, glass and metal read through painted texture, not micro-detail noise. Ornament density, costume and exposure follow the book brief. In opened scene images the environment may fill the frame while she remains the focal point.\n\nTransfer only rendering language from style references; follow the book brief for identity, costume and composition.",
+     "check": "rendering is visible linework, matte gouache color and paper grain; floors and surfaces are matte; the background is simpler than the figure; not glossy CG, not anime cel, not photographic. Face, costume and exposure follow this book, not the style reference.",
+     "reference": {
+      "status": "set",
+      "path": "pilot/style-ref-literary_fantasy-v2-alice.webp",
+      "from": "시범 셋째 묶음의 앨리스 그림(보라 머리·녹는 시계·찻잔) — 이 그림을 붙였을 때 다섯 권이 한 화풍으로 모였고 광택이 빠졌다",
+      "note": "그리는 방식만 옮긴다. 이 그림 자체가 앨리스풍 인물이라 얼굴·차림·노출이 따라오기 쉽다 — 생성기가 STYLE REFERENCE 줄로 막는다"
+     },
+     "why": [
+      "첫 줄 'premium illustrated fantasy game character art' 가 게임 키아트(광택·애니 얼굴)로 끌었다 — 매체를 '손으로 그린 삽화, 게임 CG 아님' 으로 바꿨다",
+      "참고 그림이 없으면 장르마다 기본 화풍으로 갈라졌다(게임 키아트·유화·애니·고풍 미인화) — 앨리스 참고 그림을 붙이니 한 화풍으로 모였다",
+      "광택 참고 그림(파란 코스모스)은 셋 다 광택 CG 로 끌었다 — 참고 그림은 무광·붓결·종이결이 보이는 것으로만",
+      "참고 그림의 얼굴·차림·노출이 따라왔다(얼굴 닮음, 앨리스 허벅지 스타킹) — 참고는 그리는 방식만, 얼굴은 FACE 줄",
+      "남은 광택은 반사 바닥 — 바닥·표면 무광을 적었다",
+      "배경이 인물만큼 빽빽했다 — 배경은 덜 그리고 여백을 둔다",
+      "화풍 블록이 설계 줄 뒤에 묻혔다 — 생성기가 책 줄 바로 뒤에 싣고, 맨 끝에 check 를 한 번 더 싣는다"
      ]
     }
    ]

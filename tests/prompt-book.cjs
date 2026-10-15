@@ -68,13 +68,21 @@ assert(!/game character art/.test(cur.text), '지금 판 첫 줄이 게임 키�
 
 /* 6. 폼 초상의 노출 — 고른 수준만 싣는다(자동이면 줄 없음). 지금 판 문장에 "노출은 책 설계를 따른다" 가 없다. 목·어깨 줄 */
 const exp = k => P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', exposure: k });
-assert(exp('bold').includes(S.FORM_EXPOSURE.bold) && exp('bold').includes('deep open neckline'), '과감 줄');
+assert(exp('bold').includes('deep open neckline') && exp('bold').includes('Nothing is slipped off'), '과감 줄');
+for (const bk of design.books) {   /* 과감은 의상 구조에 맞는 갈래 — 겉옷 폼은 양 어깨에 제대로, 한복은 깃·동정 */
+  const layer = S.GARMENT_LAYER[bk.silhouette.garment] || 'open';
+  const t = P.buildPrompt({ outputMode: 'form', book: bk, stage: '발단', styleText: text, exposure: 'bold' });
+  assert(t.includes(S.FORM_EXPOSURE.bold[layer]), bk.key + ' 과감 갈래 ' + layer);
+}
+assert(Object.keys(S.GARMENT_LAYER).sort().join() === V.garment.slice().sort().join(), '복식 구조 정한 말마다 과감 갈래가 있다');
+assert(P.buildPrompt({ outputMode: 'form', book: design.books.find(x => x.key === 'kosmos'), stage: '결말', styleText: text, exposure: 'bold' }).includes('both shoulders'), '코스모스(코트) — 겉옷은 양 어깨에');
+assert(P.buildPrompt({ outputMode: 'form', book: design.books.find(x => x.key === 'chunhyang'), stage: '발단', styleText: text, exposure: 'bold' }).includes('dongjeong'), '춘향전(한복) — 깃·동정');
 assert(!exp('').includes('EXPOSURE'), '자동이면 노출 줄이 없다');
 assert(exp('low').includes('EXPOSURE (low)') && !exp('low').includes('EXPOSURE (bold)'));
 assert(!P.buildPrompt({ ...full, outputMode: 'open', exposure: 'bold' }).includes('EXPOSURE'), '개방은 첨부 그림의 차림 그대로');
 assert.equal(S.FORM_EXPOSURE_DEFAULT, 'bold');
 assert(!/exposure follow the book brief/.test(cur.text) && /chosen exposure setting/.test(cur.text), '지금 판은 노출을 생성기 칸에 맡긴다');
-assert(exp('bold').includes('never neck length'), '목·어깨 줄');
+assert(exp('bold').includes('never neck length') && exp('bold').includes('7.5 heads'), '목·어깨·등신 줄');
 assert(!S.PARAM_GUIDES['torso / chest build']['full bust'][1].includes('without widening'), '큰 가슴 설명이 어깨를 좁히지 않는다');
 
 /* 7. 화풍 문장이 없으면 만들지 않는다 */

@@ -1,0 +1,228 @@
+{
+ "version": 1,
+ "note": "책 설계표 — 책 한 권 = 한 칸. 외형과 전투를 같은 칸에서 함께 뽑는다(docs/GAME_CONCEPT.md 5절). python3 tools/book-design.py check 가 본다: 칸이 다 찼나, 정한 말만 썼나, 어느 두 책도 실루엣 축 6 중 셋 이상·얼굴 5 묶음 중 둘 이상 다른가, 폼·개방이 셋씩인가, 개방이 한 명으로 표현되나, 고유 규칙에 상대의 대응이 있나, 저작권 기준(한국 기준 만료)을 지키나.",
+ "vocab": {
+  "genre": ["비극", "희극·풍자", "추리", "모험", "로맨스", "공포", "SF", "동화·판타지", "사상", "과학"],
+  "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
+  "hair": ["short_crop", "bob", "ponytail", "long_straight", "long_wavy", "updo_bun", "braids", "voluminous"],
+  "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped"],
+  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments"],
+  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe"],
+  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white"],
+  "face_shape": ["oval", "round", "heart", "long", "square_soft", "diamond"],
+  "eyes": ["almond_wide", "round_large", "narrow_upturned", "droopy_soft", "deep_set", "monolid_long"],
+  "brows": ["straight_thick", "arched_thin", "soft_round", "angled_sharp", "low_heavy"],
+  "nose": ["small_button", "straight_narrow", "aquiline", "broad_soft", "upturned"],
+  "lips": ["full_wide", "thin_long", "small_bow", "heart_full", "wide_smile"],
+  "role": ["공격", "돌파", "버티기", "지원", "정찰", "교란"],
+  "quote_source": ["원문", "직접 옮김"]
+ },
+ "books": [
+  {
+   "key": "kosmos",
+   "title": "코스모스",
+   "author": "알렉산더 폰 훔볼트",
+   "author_death": 1859,
+   "abroad_protected": false,
+   "source_scope": "『코스모스』(Kosmos, 1845–1862) 다섯 권 전체. 칼 세이건의 『코스모스』가 아니다(1996년 사망 — 2066년까지 보호).",
+   "quote_source": "직접 옮김",
+   "persona": "별과 이끼를 같은 눈으로 보는, 지칠 줄 모르는 탐험가",
+   "desire": "흩어진 세계 전체를 하나의 그림으로 이해하기",
+   "conflict": "끝없이 다른 자연 대 그것을 묶는 하나의 질서",
+   "symbols": ["침보라소 산", "식물 표본", "별 지도"],
+   "arc": {"question": "흩어진 자연은 하나로 이어져 있는가", "conflict": "기후·식물·별, 끝없이 다른 것들", "answer": "모든 것은 서로 이어진 하나의 코스모스"},
+   "genre": "과학",
+   "era": "19세기",
+   "region": "독일·남미 탐험",
+   "form_material": "양장 책장을 겹친 깃과 자락, 관측 기구(기압계·천구의)",
+   "silhouette": {"body": "slender", "hair": "short_crop", "garment": "coat_trousers", "material": "paper_pages", "pose": "striding", "palette": "navy_gold"},
+   "face": {"face_shape": "oval", "eyes": "almond_wide", "brows": "soft_round", "nose": "straight_narrow", "lips": "wide_smile"},
+   "rule": {
+    "principle": "흩어진 것을 이어 하나의 질서로 만든다 — 서로 다른 장르의 아군을 \"연결\" 한다",
+    "forms": {
+     "발단": "다른 장르 아군 하나와 연결한다 — 둘 다 조금 강해진다",
+     "전개": "연결된 아군 수만큼 받는 피해가 준다",
+     "결말": "연결된 아군 모두에게 한 번에 힘을 몰아준다"
+    },
+    "counter": "한 장르로만 덱을 짜면 연결할 상대가 없다. 연결된 카드를 먼저 쓰러뜨리면 사슬이 끊긴다"
+   },
+   "forms": {
+    "발단": {"look": "안데스로 떠나는 탐험복 — 책장 깃의 짧은 코트, 표본 상자와 기압계를 허리에", "role": "정찰"},
+    "전개": {"look": "침보라소 등반 — 고도별 식물대가 층층이 그려진 책장 망토", "role": "버티기"},
+    "결말": {"look": "코스모스를 강의하는 학자 — 은하가 인쇄된 책장 자락의 긴 코트, 천구의", "role": "지원"}
+   },
+   "opens": {
+    "발단": {"scene": "오리노코 밀림의 밤 — 반딧불이와 별이 한 강물처럼 흐르는 하늘", "one_figure": true},
+    "전개": {"scene": "침보라소 산의 고도별 식물대가 그녀 둘레로 층층이 펼쳐진다", "one_figure": true},
+    "결말": {"scene": "은하와 나뭇잎이 같은 궤도로 도는 우주", "one_figure": true}
+   },
+   "scene_cards": [],
+   "pilot": {"form": "결말", "open": "결말"}
+  },
+  {
+   "key": "don_quixote",
+   "title": "돈키호테",
+   "author": "미겔 데 세르반테스",
+   "author_death": 1616,
+   "abroad_protected": false,
+   "source_scope": "『돈키호테』 1부(1605)·2부(1615) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "무모한 이상과 냉소적인 현실이 공존하는 기사",
+   "desire": "사라진 기사도의 영광",
+   "conflict": "환상 대 현실",
+   "symbols": ["풍차", "놋대야 투구", "여윈 말"],
+   "arc": {"question": "이 시대에도 기사가 될 수 있는가", "conflict": "세상은 풍차와 양 떼일 뿐이라는 조롱", "answer": "꿈을 내려놓으면서도 끝까지 남긴 선량함"},
+   "genre": "희극·풍자",
+   "era": "17세기 초",
+   "region": "스페인 라만차",
+   "form_material": "기사도 소설 책장을 덧댄 낡은 갑옷, 놋대야 투구",
+   "silhouette": {"body": "lanky", "hair": "ponytail", "garment": "armor_layered", "material": "paper_armor", "pose": "charging", "palette": "rust_parchment"},
+   "face": {"face_shape": "long", "eyes": "deep_set", "brows": "angled_sharp", "nose": "aquiline", "lips": "thin_long"},
+   "rule": {
+    "principle": "위협을 \"망상\" 이라는 힘으로 바꾼다",
+    "forms": {
+     "발단": "강한 적을 상대하면 망상을 얻어 자신을 강화한다",
+     "전개": "모은 망상을 돌격 한 번에 몰아 쓴다",
+     "결말": "남은 망상을 아군에게 격려로 넘긴다"
+    },
+    "counter": "약한 카드만 맞세우면 망상이 쌓이지 않는다. 돌격 전에 묶어 두면 모은 망상이 헛돈다"
+   },
+   "forms": {
+    "발단": {"look": "첫 출정 — 집안 갑옷에 기사도 책장을 덧대고 놋대야 투구를 쓴 모습", "role": "공격"},
+    "전개": {"look": "풍차 돌격 — 찢겨 펄럭이는 책장 갑옷, 풍차 날개 같은 망토", "role": "돌파"},
+    "결말": {"look": "꿈에서 깨어난 알론소 키하노 — 단정한 검은 외출복, 접은 책장 갑옷 조각을 띠처럼 두름", "role": "지원"}
+   },
+   "opens": {
+    "발단": {"scene": "여관 마당이 횃불 켜진 성으로 보이는 밤", "one_figure": true},
+    "전개": {"scene": "거인처럼 팔을 휘두르는 풍차 앞으로 돌진하는 순간", "one_figure": true},
+    "결말": {"scene": "새벽 라만차 평원, 바람에 흩어지는 기사도 책장 사이로 멈춘 풍차", "one_figure": true}
+   },
+   "scene_cards": ["사자와의 대치", "놋대야를 맘브리노 투구로 믿다", "몬테시노스 동굴"],
+   "pilot": {"form": "전개", "open": "전개"}
+  },
+  {
+   "key": "alice",
+   "title": "이상한 나라의 앨리스",
+   "author": "루이스 캐럴",
+   "author_death": 1898,
+   "abroad_protected": false,
+   "source_scope": "『이상한 나라의 앨리스』(1865) 단권. 『거울 나라의 앨리스』는 따로 센다. 테니얼 삽화는 만료됐지만 따라 그리지 않는다",
+   "quote_source": "직접 옮김",
+   "persona": "규칙이 뒤집힐수록 더 또렷해지는, 끝까지 \"왜?\" 라고 묻는 사람",
+   "desire": "이 이상한 세계를 끝까지 이해하기",
+   "conflict": "매번 바뀌는 엉뚱한 규칙 대 자기만의 상식",
+   "symbols": ["회중시계와 토끼굴", "트럼프 카드", "마시면 작아지는 병"],
+   "arc": {"question": "나는 누구인가 — 커졌다 작아졌다 하는 나", "conflict": "규칙이 매번 바뀌는 다과회와 재판", "answer": "너희는 카드 한 벌일 뿐 — 내 크기는 내가 정한다"},
+   "genre": "동화·판타지",
+   "era": "19세기 후반",
+   "region": "빅토리아 시대 영국",
+   "form_material": "무늬만 있는 트럼프 카드 뒷면을 엮은 장식, 앞치마",
+   "silhouette": {"body": "petite", "hair": "bob", "garment": "one_piece_dress", "material": "card_stock", "pose": "tilted_curious", "palette": "cream_blue"},
+   "face": {"face_shape": "round", "eyes": "round_large", "brows": "arched_thin", "nose": "small_button", "lips": "small_bow"},
+   "rule": {
+    "principle": "\"크기\"(카드의 힘 수치)를 바꾼다 — 한 번에 한 줄 안에서만",
+    "forms": {
+     "발단": "자신을 작게 만들어 다음 공격 하나를 피한다",
+     "전개": "같은 줄의 카드 하나를 한 턴 동안 크게 하거나 작게 한다",
+     "결말": "같은 줄의 가장 큰 카드와 가장 작은 카드의 힘을 맞바꾼다"
+    },
+    "counter": "힘이 고정된 카드는 크기가 바뀌지 않는다. 한 줄에 카드를 하나만 두면 맞바꿀 짝이 없다"
+   },
+   "forms": {
+    "발단": {"look": "토끼굴로 떨어지는 순간 — 부푼 원피스와 앞치마, 회중시계 줄", "role": "교란"},
+    "전개": {"look": "커졌다 작아진 뒤 — 한쪽 소매만 길게 늘어난 비대칭 원피스, 체크무늬", "role": "교란"},
+    "결말": {"look": "재판정에 맞선 모습 — 트럼프 카드 뒷면을 엮은 망토, 당당히 선 자세", "role": "돌파"}
+   },
+   "opens": {
+    "발단": {"scene": "끝없이 떨어지는 토끼굴 — 둥둥 떠다니는 시계와 찻잔", "one_figure": true},
+    "전개": {"scene": "커다래진 그녀에 비해 작아진 집과 정원", "one_figure": true},
+    "결말": {"scene": "무늬만 있는 트럼프 카드가 폭풍처럼 흩날린다", "one_figure": true}
+   },
+   "scene_cards": ["미친 다과회", "체셔 고양이의 미소만 남은 나무"],
+   "pilot": {"form": "결말", "open": "결말"}
+  },
+  {
+   "key": "frankenstein",
+   "title": "프랑켄슈타인",
+   "author": "메리 셸리",
+   "author_death": 1851,
+   "abroad_protected": false,
+   "source_scope": "『프랑켄슈타인, 또는 현대의 프로메테우스』 1818년 초판",
+   "quote_source": "직접 옮김",
+   "persona": "버려진 상처를 기워 스스로를 다시 만든 생명",
+   "desire": "이해받고 사랑받기",
+   "conflict": "창조자에게 버림받음 대 스스로 찾아야 하는 존재 이유",
+   "symbols": ["번개", "봉합선", "북극의 얼음"],
+   "arc": {"question": "나는 왜 만들어졌는가", "conflict": "버림받은 마음이 복수로 기워진다", "answer": "얼음 위로 홀로 떠나며 남긴 질문 — 열린 결말"},
+   "genre": "공포",
+   "era": "19세기 초",
+   "region": "스위스·북극 고딕",
+   "form_material": "서로 다른 가죽 제본을 봉합선으로 기워 붙인 코트",
+   "silhouette": {"body": "broad_strong", "hair": "voluminous", "garment": "cloak_wrapped", "material": "stitched_patchwork", "pose": "crouch_rise", "palette": "oxblood_gray"},
+   "face": {"face_shape": "square_soft", "eyes": "droopy_soft", "brows": "low_heavy", "nose": "broad_soft", "lips": "full_wide"},
+   "rule": {
+    "principle": "버려진 것을 기워 자기 것으로 만든다 — 한 번에 하나, 최대 둘까지 지닌다",
+    "forms": {
+     "발단": "쓰러진 아군 하나의 힘 수치를 이어받는다",
+     "전개": "쓰러진 상대 카드의 고유 규칙 하나를 한 번 빌려 쓴다",
+     "결말": "지닌 것을 모두 아군 하나에게 넘기고 떠난다"
+    },
+    "counter": "버린 패를 지우거나 봉인하면 이어받을 것이 없다. 쓰러뜨리지 않고 묶어 두면 기울 재료가 생기지 않는다"
+   },
+   "forms": {
+    "발단": {"look": "실험실에서 깨어난 순간 — 붕대와 덧댄 책장, 봉합선이 드러난 팔", "role": "버티기"},
+    "전개": {"look": "창조자를 쫓는 눈보라 속 — 기워 붙인 가죽 제본 코트, 등불", "role": "공격"},
+    "결말": {"look": "북극 유빙 위 — 헐거운 망토 하나만 두르고 떠나는 모습", "role": "지원"}
+   },
+   "opens": {
+    "발단": {"scene": "번개가 내리꽂히는 실험실 — 쇠사슬과 유리 기구", "one_figure": true},
+    "전개": {"scene": "몽블랑 빙하 위의 눈폭풍", "one_figure": true},
+    "결말": {"scene": "북극 유빙 위 타오르는 장작더미의 빛", "one_figure": true}
+   },
+   "scene_cards": ["오두막 틈으로 배운 말", "제네바의 번개"],
+   "pilot": {"form": "전개", "open": "전개"}
+  },
+  {
+   "key": "chunhyang",
+   "title": "춘향전",
+   "author": "작자 미상",
+   "author_death": null,
+   "anonymous": true,
+   "abroad_protected": false,
+   "source_scope": "완판본 『열녀춘향수절가』(84장본)",
+   "quote_source": "원문",
+   "persona": "꺾이지 않는 마음을 그네처럼 높이 띄우는 사람",
+   "desire": "지켜 낸 사랑",
+   "conflict": "신분과 권력 대 꺾이지 않는 마음",
+   "symbols": ["그네", "형틀(칼)", "옥가락지"],
+   "arc": {"question": "신분이 다른 사랑은 지켜질 수 있는가", "conflict": "수청을 거부하고 옥에 갇힌다", "answer": "지킨 마음이 세상을 뒤집는다 — 어사출두"},
+   "genre": "로맨스",
+   "era": "조선 후기",
+   "region": "남원",
+   "form_material": "방각본 한지를 겹친 치맛단과 노리개",
+   "silhouette": {"body": "curvy", "hair": "braids", "garment": "hanbok", "material": "hanji", "pose": "rising_swing", "palette": "rose_jade"},
+   "face": {"face_shape": "heart", "eyes": "monolid_long", "brows": "straight_thick", "nose": "straight_narrow", "lips": "heart_full"},
+   "rule": {
+    "principle": "버틸수록 마음이 굳어 \"절개\" 가 된다",
+    "forms": {
+     "발단": "받은 첫 공격 하나를 무효로 한다",
+     "전개": "공격받아도 한 번은 힘 1 로 버티고 절개를 쌓는다",
+     "결말": "쌓인 절개만큼 같은 줄 전체에 반격한다"
+    },
+    "counter": "피해가 아니라 묶기·교체로 상대하면 절개가 쌓이지 않는다. 결말 줄을 비워 두게 압박하면 반격할 자리가 없다"
+   },
+   "forms": {
+    "발단": {"look": "단옷날 광한루 — 그네 끈을 장식으로 두른 고운 한복", "role": "버티기"},
+    "전개": {"look": "옥중 — 흰 소복 위에 한지로 엮은 형틀 장식, 흐트러진 땋은 머리", "role": "버티기"},
+    "결말": {"look": "어사출두 날 — 다시 단장한 혼례풍 한복과 옥가락지", "role": "공격"}
+   },
+   "opens": {
+    "발단": {"scene": "단옷날 하늘 높이 솟는 그네와 흩날리는 오색 천", "one_figure": true},
+    "전개": {"scene": "달빛 비치는 옥 창살 사이로 내리는 비", "one_figure": true},
+    "결말": {"scene": "무너지는 잔칫상 위로 흩날리는 한지 꽃잎과 붉은 노을(글자 있는 마패는 그리지 않는다)", "one_figure": true}
+   },
+   "scene_cards": ["오리정 이별", "옥중 꿈"],
+   "pilot": {"form": "발단", "open": "발단"}
+  }
+ ]
+}

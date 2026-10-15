@@ -15,7 +15,8 @@
   "nose": ["small_button", "straight_narrow", "aquiline", "broad_soft", "upturned"],
   "lips": ["full_wide", "thin_long", "small_bow", "heart_full", "wide_smile"],
   "role": ["공격", "돌파", "버티기", "지원", "정찰", "교란"],
-  "quote_source": ["원문", "직접 옮김"]
+  "quote_source": ["원문", "직접 옮김"],
+  "form_key": {"발단": "begin", "전개": "middle", "결말": "end"}
  },
  "books": [
   {

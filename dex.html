@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf9f3">
+<title>책의 공방</title>
+<!--
+  서가(도감). pkm-atelier 의 dex.html 을 바탕으로, myth-atelier 의 화풍 비교 띠·크게 보기·진열(신전),
+  atelier(건담) 도감의 작업 현황(그림 없음·빈 자리 있음)·생성기로 가는 길을 더했다.
+
+  한 책은 여러 장으로 쪼개지지 않고 이야기의 단계(발단·전개·결말)를 갈아 입는다.
+  위쪽은 폼 초상 셋, 아래쪽은 같은 폼의 개방(명장면)을 나란히 견준다.
+
+  화면은 data/img.json 에 적힌 것만 그린다. 그림 저장소에 파일이 있어도
+  tools/register-images.py 를 거치기 전에는 없는 것으로 본다.
+  책의 글(인격·질문과 답·고유 규칙·폼·명장면)은 data/book-design.json 에서 온다.
+-->
+<link rel="stylesheet" href="lib/workspace.css?v=1">
+<style>
+/* 색·밀도 토막은 lib/workspace.css 한 곳에 있다. 여기는 뼈대만 — pkm 도감과 같다 */
+:root {--cc:var(--line)}
+* {box-sizing:border-box}
+html,body {margin:0;padding:0}
+body {color:var(--text);font-size:15px}
+/* 목록은 껍데기가 정한 자리(.collection-scroll)에서만 구른다. #app 도 같이 늘어나야 한다 —
+   안 그러면 .collection-scroll 이 높이 0 이 되어 굴러가기는 하는데 보이는 것이 없다 */
+.dex-page > #app {display:flex;flex-direction:column;min-height:0;height:100%}
+.dex-page > #app > main {flex:1 1 auto;min-height:0}
+.collection-scroll {display:block}
+.dex-page .collection-scroll {padding-bottom:calc(44px + env(safe-area-inset-bottom))}
+.grid {display:grid;gap:var(--gap)}
+.dex-page .grid {grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+.cell {display:block;width:100%;padding:0;text-align:left;color:inherit;font:inherit;
+  background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.cell.hall-on {border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.face {display:block;position:relative;width:100%;aspect-ratio:2/3;background:var(--card2);overflow:hidden}
+.face img {display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
+.ph {display:flex;align-items:center;justify-content:center;height:100%;padding:6px;
+  color:var(--muted);font:10px/1.4 ui-monospace,monospace;letter-spacing:.06em;text-align:center}
+.cap {display:block;font-weight:700;overflow-wrap:anywhere}
+.cap i {display:block;margin-top:3px;font:400 11px ui-monospace,monospace;font-style:normal;color:var(--muted)}
+.search-row {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.search-row input {width:100%;background:var(--card);border:1px solid var(--line);
+  color:var(--text);font:inherit;border-radius:8px;padding:9px 11px;min-width:0}
+.search-row input::placeholder {color:var(--muted)}
+.dex-reset {background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:12px;min-height:40px}
+.dex-view-row {display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
+.dex-view-row .sec {margin:0;flex-wrap:wrap;min-width:0}
+.dex-view-row .tools {display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.dex-view-row button {flex-shrink:0;min-height:44px}
+.dex-view-row button[aria-pressed="true"] {border-color:var(--accent);color:var(--accent)}
+.dex-filters {margin:12px 0;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px}
+.dex-filters summary {cursor:pointer;min-height:30px;font-weight:700;font-size:13px}
+.dex-filter-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.dex-filter-grid label {display:grid;gap:5px;min-width:0;color:var(--muted);font-size:12px}
+.dex-filter-grid select {width:100%;min-width:0;min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--card2);color:var(--text);padding:6px;font:inherit}
+.dex-filter-grid select:disabled {opacity:.5}
+.dex-page .grid .cell .face img {object-fit:contain}
+@media(min-width:720px){.dex-filter-grid {grid-template-columns:repeat(5,minmax(0,1fr))}}
+.sw {display:flex;flex-wrap:wrap;gap:4px;border:1px solid var(--line);border-radius:8px;padding:4px}
+.sw button {flex:1 1 auto;background:var(--card);border:0;border-radius:6px;color:var(--muted);
+  font:inherit;font-weight:700;font-size:12px;min-height:40px;padding:6px 10px}
+.sw button.on {background:var(--accent-soft);color:var(--text);box-shadow:inset 0 -2px var(--accent)}
+.sec {margin:18px 0 8px;font:700 11px/1.6 ui-monospace,monospace;letter-spacing:.1em;color:var(--accent)}
+.sec span {color:var(--muted);font-weight:400;letter-spacing:0;margin-left:8px}
+.note {margin:8px 0 0;color:var(--muted);font-size:12px;line-height:1.6;word-break:keep-all}
+.bar {display:flex;align-items:center;gap:10px;padding:12px 0 8px}
+.bar h2 {flex:1 1 auto;margin:0;font-size:19px;letter-spacing:-.02em;overflow-wrap:anywhere}
+.bar h2 small {display:block;margin-top:2px;font:400 12px ui-monospace,monospace;color:var(--muted);letter-spacing:0}
+.bar .n {flex:none;font:700 11px ui-monospace,monospace;color:var(--accent);white-space:nowrap}
+.back {flex:none;min-height:40px;padding:8px 12px;background:var(--card2);color:var(--text);
+  border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12px;font-weight:700}
+.bar-links {display:flex;gap:6px;flex-wrap:wrap;padding:0 0 8px}
+.bar-links a,.bar-links button {display:inline-flex;align-items:center;min-height:40px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;
+  background:var(--card);color:var(--accent);font:inherit;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer}
+.bar-links button[aria-pressed="true"] {border-color:var(--gold);color:var(--text);box-shadow:inset 0 -2px var(--gold)}
+.bar-links button:disabled {opacity:.45;cursor:default}
+.bar-links .hall-n {align-self:center;color:var(--muted);font:11px ui-monospace,monospace}
+/* 화풍 비교 띠 — myth 도감에서 왔다. 화풍마다 대표 한 장(같은 폼)을 옆으로 늘어놓는다 */
+.style-strip {display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:2px 2px 10px;scrollbar-width:thin;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.style-cell {flex:0 0 108px;width:108px;padding:0;overflow:hidden;text-align:center;background:var(--card2);color:var(--muted);border:1px solid var(--line);border-radius:10px;font:inherit;scroll-snap-align:start}
+.style-cell .face {max-height:150px}
+.style-cell.on {border-color:var(--accent);color:var(--text);box-shadow:inset 0 -3px var(--accent)}
+.style-cell b {display:block;padding:6px 4px 7px;font-size:11px;line-height:1.3;overflow-wrap:anywhere}
+/* 같은 열은 같은 폼이다 — 위 줄이 폼 초상, 아래 줄이 그 폼의 개방 */
+.fstrip {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:2px 1px 10px}
+.fcell {position:relative;min-width:0;padding:0;overflow:hidden;text-align:center;
+  background:var(--card2);color:var(--muted);border:1px solid var(--line);border-radius:10px;font:inherit}
+.fcell .face {max-height:180px}
+.fcell .face img {object-fit:contain;object-position:center}
+.fcell.on {border-color:var(--accent);color:var(--text);box-shadow:inset 0 -3px var(--accent)}
+.fcell.gap {opacity:.6;border-style:dashed}
+.fcell b {display:block;padding:7px 4px 2px;font-size:12px;line-height:1.3;overflow-wrap:anywhere}
+.fcell u {display:block;padding:0 4px 7px;text-decoration:none;font:10px ui-monospace,monospace;letter-spacing:.06em;opacity:.8}
+.fcell .pilot {position:absolute;left:5px;top:5px;padding:1px 6px;border-radius:99px;background:var(--gold);color:#1b1608;font:700 9px ui-monospace,monospace;letter-spacing:.04em}
+/* 2:3 을 그대로 두면 한 장이 화면을 다 먹는다 — 화면 높이의 절반 아래로 묶고 contain 으로 담는다 */
+.big {position:relative;width:100%;aspect-ratio:2/3;max-height:46dvh;overflow:hidden;
+  background:var(--card2);border:1px solid var(--line);border-radius:12px}
+.big img {display:block;width:100%;height:100%;object-fit:contain}
+.big button.zoom {display:block;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+.big {touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.big img {-webkit-user-drag:none}
+.big-nav {position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 4px;pointer-events:none}
+.big-nav button {pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0;border:1px solid #ffffff40;border-radius:999px;background:#0009;color:#fff;font:400 22px/1 inherit;cursor:pointer}
+.big-nav button:disabled {opacity:.2;cursor:default}
+.big-nav button.to-card {border-color:var(--gold);color:var(--gold)}
+.big-count {position:absolute;right:8px;bottom:8px;padding:2px 8px;border-radius:999px;background:#000a;color:#fff;font:700 11px ui-monospace,monospace;pointer-events:none}
+.card-nav {display:flex;align-items:center;gap:8px;margin-top:8px}
+.card-nav button {flex:1 1 0;min-width:0;min-height:44px;display:flex;align-items:center;gap:6px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--card2);color:var(--text);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.card-nav button span {min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis} .card-nav button b {flex:none;font-size:18px;font-weight:400}
+.card-nav #dex-card-next {justify-content:flex-end}
+.card-nav button:disabled {opacity:.35;cursor:default}
+.card-nav .card-count {flex:none;font:700 11px ui-monospace,monospace;color:var(--muted);white-space:nowrap}
+/* 크게 보기 — myth 도감에서 왔다 */
+.zoom-layer {position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;background:#0b0d12f2;color:#fff}
+.zoom-layer .zoom-bar {display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 8px;font:12px ui-monospace,monospace;letter-spacing:.06em}
+.zoom-layer .zoom-bar b {flex:1 1 auto;font-weight:600;overflow-wrap:anywhere}
+.zoom-layer .zoom-bar button,.zoom-layer .zoom-bar .zoom-open,.zoom-layer .zoom-nav button {display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 12px;border:1px solid #ffffff40;border-radius:10px;background:#ffffff14;color:#fff;font:inherit;font-size:13px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.zoom-layer .zoom-body {flex:1 1 auto;min-height:0;position:relative;display:grid;place-items:center;padding:0 8px 8px;touch-action:pan-y}
+.zoom-layer .zoom-body img {max-width:100%;max-height:100%;object-fit:contain;display:block;cursor:zoom-out}
+.zoom-layer .zoom-nav {position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 6px;pointer-events:none}
+.zoom-layer .zoom-nav button {pointer-events:auto;opacity:.85}
+.zoom-layer .zoom-nav button:disabled {opacity:.2}
+body.zoomed {overflow:hidden}
+/* 책의 글 — 제목과 값을 두 칸으로 */
+.facts {display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 12px;
+  margin:0;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.facts dt {margin:0;color:var(--muted);font-size:11px;white-space:nowrap;align-self:start;padding-top:2px}
+.facts dd {margin:0;font-size:13px;line-height:1.6;overflow-wrap:anywhere;word-break:keep-all}
+.facts dd b {font-weight:700}
+.persona {margin:0 0 4px;font-size:16px;font-weight:700;line-height:1.55;letter-spacing:-.02em;word-break:keep-all}
+.arc {display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.arc li {display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;padding:9px 11px;background:var(--card);border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.6;word-break:keep-all}
+.arc li b {font:700 10px ui-monospace,monospace;letter-spacing:.06em;color:var(--accent);padding-top:3px;white-space:nowrap}
+.stages {display:grid;gap:8px}
+.stage {padding:11px 12px;background:var(--card);border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.6;word-break:keep-all}
+.stage.on {border-color:var(--accent);box-shadow:inset 3px 0 var(--accent)}
+.stage h4 {display:flex;align-items:center;gap:8px;margin:0 0 5px;font-size:13px}
+.stage p {margin:3px 0 0}
+.stage p i {font-style:normal;color:var(--muted);font-size:11px;margin-right:6px}
+.tag {display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);font:700 10px ui-monospace,monospace;vertical-align:middle}
+.tag.warn {background:transparent;border:1px solid var(--warn);color:var(--warn)}
+.chips {display:flex;flex-wrap:wrap;gap:5px}
+.chips span {padding:3px 9px;border:1px solid var(--line);border-radius:99px;background:var(--card2);font-size:12px}
+.design {margin:12px 0;color:var(--muted);font-size:12px}
+.design summary {cursor:pointer;min-height:40px;display:flex;align-items:center;font-weight:700}
+.design .facts dd {font-family:ui-monospace,monospace;font-size:12px}
+.gal {display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.gal img {display:block;width:100%;border:1px solid var(--line);border-radius:8px}
+.empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
+</style>
+<script src="lib/workspace-theme.js?v=1"></script>
+<script src="lib/words.js?v=1"></script>
+<script src="lib/fresh.js?v=1"></script>
+<script src="lib/img.js?v=1"></script>
+<script src="lib/dex-filter.js?v=1"></script>
+</head>
+<body class="dex-page">
+<div id="app"></div>
+<script type="module">
+/* Fragment 는 h 에 안 붙어 있다 — 따로 들여온다(pkm 도감에서 격자가 세로로 겹친 일이 있었다) */
+import { h, render, Fragment } from 'https://esm.sh/preact@10.24.3';
+import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'https://esm.sh/preact@10.24.3/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=1';
+const html = htm.bind(h);
+const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter;
+const FILTER_STORE = 'book_dex_filters_v1', COMPACT_STORE = 'book_dex_compact_v1';
+
+/* 지금 만드는 것은 여성체뿐이다. 파일 이름에는 _f 를 적어 두므로 나중에 m 을 더해도 옛 파일의 뜻이 안 바뀐다 */
+const V = 'f';
+
+/* 썸네일을 먼저 걸고 없으면 원본으로 되돌아간다 */
+function Pic({ file, full, alt }) {
+  return html`<img loading=${full ? 'eager' : 'lazy'} alt=${alt || ''}
+    src=${full ? IMG.imgURL(file) : IMG.thumbURL(file)}
+    onError=${e => {
+      const t = e.currentTarget;
+      if (full || t.dataset.fallback) return;
+      t.dataset.fallback = '1';
+      t.src = IMG.imgURL(file);
+    }} />`;
+}
+
+/* 껍데기 — .collection-scroll 한 곳만 구른다. 굴리면 main 에 dex-scrolled 가 붙어 검색 도구만 간결해진다 */
+function Shell({ head, children }) {
+  const [scrolled, setScrolled] = useState(false);
+  return html`<main class=${scrolled ? 'dex-scrolled' : ''}>
+    <${WorkspaceHeader} page="dex" />
+    <header>${head}</header>
+    <div class="collection-scroll" tabindex="0"
+      onScroll=${e => { const on = e.currentTarget.scrollTop > 8; setScrolled(v => v === on ? v : on); }}>
+      ${children}
+    </div>
+  </main>`;
+}
+
+function useDex() {
+  const [state, set] = useState({ loading: true });
+  useEffect(() => {
+    Promise.all([
+      fetch('data/book-design.json', { cache: 'no-cache' }).then(r => r.json()),
+      fetch('data/style.json', { cache: 'no-cache' }).then(r => r.json()),
+      IMG.load(),
+    ]).then(([design, style, img]) => {
+      const fk = (design.vocab || {}).form_key || {};
+      /* 폼 열쇠(begin·middle·end) → 단계 이름(발단·전개·결말). 차례는 설계표의 차례 */
+      const defs = {};
+      for (const stage of Object.keys(fk)) defs[fk[stage]] = { stage };
+      const cards = (design.books || []).map(b => Object.assign({ name: b.title }, b));
+      const styleName = {};
+      /* 화풍 이름은 "짧은 이름 — 설명" 꼴이다. 단추·칸에는 앞쪽만 */
+      for (const k of Object.keys(style.styles || {})) styleName[k] = String(style.styles[k].name || k).split(' — ')[0];
+      set({ cards, defs, styleName, img, genres: (design.vocab || {}).genre || [] });
+    }).catch(e => set({ error: String((e && e.message) || e) }));
+  }, []);
+  return state;
+}
+
+const wanted = defs => FILTER.forms(defs);
+const stageOf = (defs, form) => (defs[FILTER.baseForm(form)] || {}).stage || form;
+function formName(defs, form) {
+  const name = stageOf(defs, form);
+  return FILTER.isOpen(form) ? W('form.openOf', { form: name }) : name;
+}
+/* 시범 자리 — 설계표의 pilot(폼 하나 + 개방 하나). 서가에서 먼저 채울 칸이 보이게 */
+function isPilot(card, defs, form) {
+  const p = card.pilot; if (!p) return false;
+  const stage = stageOf(defs, form);
+  return FILTER.isOpen(form) ? p.open === stage : p.form === stage;
+}
+
+/* 책이 들고 있는 글. 없는 값은 줄 자체를 안 만든다 */
+function Facts({ card }) {
+  const rows = [
+    [W('book.author'), html`<b>${card.author}</b>${' '}${card.anonymous ? W('book.anonymous') : W('book.death', { n: card.author_death })}
+      ${card.abroad_protected && html`<span class="tag warn">${W('book.abroad')}</span>`}`],
+    [W('book.genre'), [card.genre, card.era, card.region].filter(Boolean).join(' · ')],
+    [W('book.scope'), card.source_scope],
+    card.form_material && [W('book.material'), card.form_material],
+    [W('book.desire'), card.desire],
+    [W('book.conflict'), card.conflict],
+    (card.symbols || []).length > 0 && [W('book.symbols'), html`<div class="chips">${card.symbols.map(s => html`<span key=${s}>${s}</span>`)}</div>`],
+    (card.scene_cards || []).length > 0 && [W('book.scenes'), html`<div class="chips">${card.scene_cards.map(s => html`<span key=${s}>${s}</span>`)}</div>`],
+    card.quote_source && [W('book.quote'), card.quote_source],
+  ].filter(Boolean);
+  return html`<dl class="facts">
+    ${rows.map(([k, v]) => html`<${Fragment} key=${k}><dt>${k}</dt><dd>${v}</dd><//>`)}
+  </dl>`;
+}
+
+/* 질문 → 갈등 → 답. 화면 이름은 발단·전개·결말이지만 설계 기준은 이 셋이다 */
+function Arc({ arc }) {
+  if (!arc) return null;
+  return html`<ol class="arc">${['question', 'conflict', 'answer'].map(k => arc[k] && html`<li key=${k}><b>${W('book.arc.' + k)}</b><span>${arc[k]}</span></li>`)}</ol>`;
+}
+
+/* 세 폼 — 모습·역할·고유 규칙의 그 폼 쓰임·개방 명장면을 한 칸에. 지금 보는 폼이 표시된다 */
+function Stages({ card, defs, form }) {
+  const rule = card.rule || {};
+  return html`<div class="stages">${Object.keys(defs).map(k => {
+    const stage = defs[k].stage, f = (card.forms || {})[stage] || {}, o = (card.opens || {})[stage] || {};
+    return html`<div key=${k} class=${'stage' + (FILTER.baseForm(form) === k ? ' on' : '')} data-stage=${k}>
+      <h4>${stage}${f.role && html`<span class="tag">${f.role}</span>`}</h4>
+      ${f.look && html`<p><i>${W('book.look')}</i>${f.look}</p>`}
+      ${(rule.forms || {})[stage] && html`<p><i>${W('book.rule.use')}</i>${rule.forms[stage]}</p>`}
+      ${o.scene && html`<p><i>${W('book.open')}</i>${o.scene}</p>`}
+    </div>`;
+  })}</div>`;
+}
+
+/* 설계 — 실루엣 축 6·얼굴 5 묶음. 생성기가 이 값을 문장에 싣는다. 접어 둔다 */
+function Design({ card }) {
+  const sil = card.silhouette || {}, face = card.face || {};
+  return html`<details class="design">
+    <summary>${W('book.design')}</summary>
+    <dl class="facts">
+      ${Object.keys(sil).map(k => html`<${Fragment} key=${'s' + k}><dt>${W('book.sil.' + k)}</dt><dd>${sil[k]}</dd><//>`)}
+      ${Object.keys(face).map(k => html`<${Fragment} key=${'f' + k}><dt>${W('book.face.' + k)}</dt><dd>${face[k]}</dd><//>`)}
+    </dl>
+    <p class="note">${W('book.design.note')}</p>
+  </details>`;
+}
+
+function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose }) {
+  const want = wanted(defs);
+  const keys = IMG.styleKeys(entry || {});
+  const [wantStyle, setStyle] = useState(selection?.style || '');
+  const [focus, setFocus] = useState(selection?.file && selection.cut !== 'portrait' && selection.cut !== 'open' ? selection : null);
+  const [wantForm, setForm] = useState(selection?.form || '');
+  const [zoom, setZoom] = useState(false);
+  const [hall, setHall] = useState(() => IMG.hallPicks());
+  const style = keys.indexOf(wantStyle) >= 0 ? wantStyle : (FILTER.best(entry, defs).style || keys[0] || '');
+  const bucket = (style ? IMG.styleMap(entry)[style] : null) || {};
+  const prog = IMG.formsDone(bucket, want, V);
+  /* 고르개에는 그림이 있는 폼만 올린다. 빈 폼을 고를 수 있게 두면 눌러도 아무 일이 없는 단추가 된다 */
+  const have = want.filter(k => { const b = IMG.formOf(bucket, k); return !!(b && b[V]); });
+  const form = have.indexOf(wantForm) >= 0 ? wantForm : (have[0] || '');
+  const acts = form ? IMG.formActs(bucket, form, V) : [];
+  const casual = IMG.cuts(bucket, 'casual', V), extra = IMG.cuts(bucket, 'extra', V);
+  /* 넘기는 차례 — 이 화풍의 폼 초상·개방(발단 → 결말, 그 뒤 개방 셋) → 폼마다 연출컷 → 일상컷 → 특별컷 */
+  const portraitCut = k => FILTER.isOpen(k) ? 'open' : 'portrait';
+  const shots = have.map(k => ({ file: IMG.formOf(bucket, k)[V], cut: portraitCut(k), form: k }))
+    .concat(have.flatMap(k => IMG.formActs(bucket, k, V).map((f, i) => ({ file: f, cut: 'action', form: k, index: i + 1 }))))
+    .concat(casual.map((f, i) => ({ file: f, cut: 'casual', index: i + 1 })))
+    .concat(extra.map((f, i) => ({ file: f, cut: 'extra', index: i + 1 })));
+  const showFocus = !!focus && !((focus.cut === 'portrait' || focus.cut === 'open') && have.includes(focus.form));
+  const shownFile = showFocus ? focus.file : form ? IMG.formOf(bucket, form)[V] : null;
+  const shown = shownFile ? (showFocus ? focus : { file: shownFile, cut: portraitCut(form), form }) : null;
+  const at = shots.findIndex(x => x.file === shownFile);
+  const apply = n => { if (n.cut === 'portrait' || n.cut === 'open') { setForm(n.form); setFocus(null); } else { if (n.form) setForm(n.form); setFocus(n); } };
+  const prevCard = nav && nav.prev, nextCard = nav && nav.next;
+  const prevShot = at < 0 ? shots.length > 0 : at > 0, nextShot = at < 0 ? shots.length > 0 : at < shots.length - 1;
+  const canPrev = prevShot || !!prevCard, canNext = nextShot || !!nextCard;
+  /* 한 칸 — 그림 차례 안이면 그림, 끝을 넘으면 앞 책(그 마지막 그림)·다음 책(첫 그림)으로. 크게 보기는 열린 채 */
+  const move = d => { const i = at < 0 ? (d > 0 ? -1 : shots.length) : at, n = shots[i + d];
+    if (n) return apply(n);
+    if (d < 0 && prevCard) onGo(prevCard, 'last', '.big', zoom); if (d > 0 && nextCard) onGo(nextCard, 'first', '.big', zoom); };
+  useLayoutEffect(() => {
+    if (selection?.at === 'last' && shots.length) apply(shots[shots.length - 1]);
+    if (selection?.zoom && shots.length) setZoom(true);
+    const k = selection?.keep, sc = document.querySelector('.collection-scroll'), el = k && document.querySelector(k.sel);
+    if (sc && el) sc.scrollTop += el.getBoundingClientRect().top - k.y;
+  }, []);
+  useEffect(() => { document.body.classList.toggle('zoomed', zoom); return () => document.body.classList.remove('zoomed'); }, [zoom]);
+  /* 방향키 — 크게 보기가 열려 있으면 그쪽 몫이고, 셀렉트 같은 입력칸에 있을 땐 그 칸 몫 */
+  const liveMove = useRef(); liveMove.current = { move, zoom };
+  useEffect(() => {
+    const key = e => { const f = liveMove.current; if (f.zoom || e.altKey || e.ctrlKey || e.metaKey || (e.target.closest && e.target.closest('input, select, textarea'))) return;
+      if (e.key === 'ArrowLeft') f.move(-1); if (e.key === 'ArrowRight') f.move(1); };
+    addEventListener('keydown', key);
+    return () => removeEventListener('keydown', key);
+  }, []);
+  const swipe = useSwipe(d => liveMove.current.move(d));
+  const bigNav = (shots.length > 1 || prevCard || nextCard) && html`<div class="big-nav">
+      <button type="button" class=${'big-prev' + (!prevShot && prevCard ? ' to-card' : '')} disabled=${!canPrev} onClick=${() => move(-1)}
+        aria-label=${!prevShot && prevCard ? W('dex.card.prev') + ' · ' + prevCard.name : W('dex.shot.prev')}>‹</button>
+      <button type="button" class=${'big-next' + (!nextShot && nextCard ? ' to-card' : '')} disabled=${!canNext} onClick=${() => move(1)}
+        aria-label=${!nextShot && nextCard ? W('dex.card.next') + ' · ' + nextCard.name : W('dex.shot.next')}>›</button>
+    </div>`;
+  const bigCount = shots.length > 1 && at >= 0 && html`<span class="big-count" aria-live="polite">${at + 1} / ${shots.length}</span>`;
+  const inHall = hall.includes(card.key), hallFull = !inHall && hall.length >= IMG.HALL_MAX, shelf = W('theme.' + IMG.hallTheme());
+  const enshrine = () => { IMG.toggleHall(card.key); setHall(IMG.hallPicks()); };
+  /* 지금 보는 그림의 글 — 폼이면 그 폼의 모습, 개방이면 그 명장면 */
+  const stage = shown && shown.form ? stageOf(defs, shown.form) : '';
+  const caption = shown && (shown.cut === 'open' ? ((card.opens || {})[stage] || {}).scene : shown.cut === 'portrait' ? ((card.forms || {})[stage] || {}).look : '');
+
+  const head = html`
+    <div class="bar">
+      <button class="back" onClick=${onClose}>${W('ui.back')}</button>
+      <h2>${card.name}<small>${card.author}</small></h2>
+      <span class="n">${W('art.form.done', prog)}</span>
+    </div>`;
+
+  return html`<${Shell} head=${head}>
+    <div class="bar-links">
+      <a href=${'prompt.html?book=' + encodeURIComponent(card.key)} id="dex-to-prompt">${W('dex.toPrompt')}</a>
+      <button type="button" id="dex-hall" aria-pressed=${inHall} disabled=${hallFull} title=${W('dex.hall.note')}
+        onClick=${enshrine}>${inHall ? W('dex.hall.remove', { shelf }) : hallFull ? W('dex.hall.full', { shelf, max: IMG.HALL_MAX }) : W('dex.hall.add', { shelf })}</button>
+      <span class="hall-n">${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span>
+    </div>
+    ${keys.length > 1 && html`
+      <p class="sec">${W('dex.style.compare')}<span>${W('art.count', { n: keys.length })}</span></p>
+      <div class="style-strip" role="group" aria-label=${W('dex.style.compare')}>
+        ${keys.map(k => { const b = IMG.styleMap(entry)[k] || {}, one = IMG.formOf(b, form) || IMG.formOf(b, IMG.formKeys(b)[0]) || {}, f = one[V];
+          return html`<button key=${k} class=${'style-cell' + (k === style ? ' on' : '')} data-style=${k}
+          disabled=${!f} onClick=${() => { setStyle(k); setFocus(null); }}>
+          <span class="face">${f ? html`<${Pic} file=${f} alt=${styleName[k] || k} />` : html`<span class="ph">${W('art.none')}</span>`}</span>
+          <b>${styleName[k] || k}</b></button>`; })}
+      </div>`}
+    <p class="sec">${W('dex.compare')}<span>${prog.ok ? '' : W('art.form.left', { n: prog.left.length })}</span></p>
+    <div class="fstrip" role="group" aria-label=${W('dex.compare')}>
+      ${want.map(k => {
+        const box = IMG.formOf(bucket, k), file = box && box[V], role = ((card.forms || {})[stageOf(defs, k)] || {}).role;
+        return html`<button key=${k} data-form=${k} disabled=${!file}
+          class=${'fcell' + (file ? (k === form ? ' on' : '') : ' gap')}
+          aria-pressed=${file ? String(k === form) : undefined}
+          onClick=${() => { setForm(k); setFocus(null); }}>
+          ${isPilot(card, defs, k) && html`<span class="pilot">${W('dex.pilot')}</span>`}
+          <span class="face">${file
+            ? html`<${Pic} file=${file} />`
+            : html`<span class="ph">${W('art.missing')}</span>`}</span>
+          <b>${formName(defs, k)}</b>
+          <u>${FILTER.isOpen(k) ? W('dex.cut.open') : role || '—'}</u>
+        </button>`;
+      })}
+    </div>
+
+    ${shown ? html`
+      <p class="sec">${shotLabel(shown, defs)}<span>${showFocus ? W('dex.selected') : (styleName[style] || '')}</span></p>
+      <div class="big" ...${swipe}><button type="button" class="zoom" aria-label=${W('dex.zoom')} onClick=${() => setZoom(true)}><${Pic} full file=${shown.file} alt=${card.name} /></button>${bigNav}${bigCount}</div>
+      ${caption && html`<p class="note">${caption}</p>`}
+    ` : html`<p class="empty">${W('art.none')}</p>`}
+    ${nav && html`<div class="card-nav" role="group" aria-label=${W('dex.card.count', { n: nav.index + 1, total: nav.total })}>
+      <button type="button" id="dex-card-prev" disabled=${!prevCard} title=${prevCard ? prevCard.name : ''} aria-label=${W('dex.card.prev') + (prevCard ? ' · ' + prevCard.name : '')}
+        onClick=${() => onGo(prevCard, 'first', '.card-nav')}><b>‹</b><span>${prevCard ? prevCard.name : W('dex.card.prev')}</span></button>
+      <span class="card-count">${W('dex.card.count', { n: nav.index + 1, total: nav.total })}</span>
+      <button type="button" id="dex-card-next" disabled=${!nextCard} title=${nextCard ? nextCard.name : ''} aria-label=${W('dex.card.next') + (nextCard ? ' · ' + nextCard.name : '')}
+        onClick=${() => onGo(nextCard, 'first', '.card-nav')}><span>${nextCard ? nextCard.name : W('dex.card.next')}</span><b>›</b></button>
+    </div>`}
+    ${zoom && shown && at >= 0 && html`<${Zoom} card=${card} defs=${defs} shots=${shots} at=${at} canPrev=${canPrev} canNext=${canNext} onMove=${move} onClose=${() => setZoom(false)} />`}
+
+    <p class="sec">${W('book.persona')}</p>
+    <p class="persona">${card.persona}</p>
+    <${Arc} arc=${card.arc} />
+
+    <p class="sec">${W('book.rule')}</p>
+    <dl class="facts">
+      <dt>${W('book.rule.principle')}</dt><dd><b>${(card.rule || {}).principle}</b></dd>
+      <dt>${W('book.rule.counter')}</dt><dd>${(card.rule || {}).counter}</dd>
+    </dl>
+
+    <p class="sec">${W('book.forms')}</p>
+    <${Stages} card=${card} defs=${defs} form=${form} />
+
+    ${acts.length > 0 && html`
+      <p class="sec">${W('dex.action')}<span>${W('art.count', { n: acts.length })}</span></p>
+      <div class="gal form-actions">${acts.map((f, i) => html`<button key=${f} class="cell" data-cut="action" onClick=${() => setFocus({ file: f, cut: 'action', form, index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.action')} /></button>`)}</div>`}
+    ${casual.length > 0 && html`
+      <p class="sec">${W('dex.casual')}<span>${W('art.count', { n: casual.length })}</span></p>
+      <div class="gal">${casual.map((f, i) => html`<button key=${f} class="cell" data-cut="casual" onClick=${() => setFocus({ file: f, cut: 'casual', index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.casual')} /></button>`)}</div>`}
+    ${extra.length > 0 && html`
+      <p class="sec">${W('dex.extra')}<span>${W('art.count', { n: extra.length })}</span></p>
+      <div class="gal">${extra.map((f, i) => html`<button key=${f} class="cell" data-cut="extra" onClick=${() => setFocus({ file: f, cut: 'extra', index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.extra')} /></button>`)}</div>`}
+
+    <p class="sec">${W('book.about')}</p>
+    <${Facts} card=${card} />
+    <${Design} card=${card} />
+  <//>`;
+}
+
+/* 밀어 넘기기 — 가로로 40px 넘게, 세로보다 확실히 많이 끌면 한 칸(손가락이 왼쪽으로 가면 다음).
+   10px 넘게 끈 손가락 뒤에 따라오는 click 은 삼킨다 — 크게 보기를 열거나 닫지 않게. 화살표 단추에서 시작한 건 단추 몫 */
+function useSwipe(onMove) {
+  const live = useRef(); live.current = onMove;
+  const ate = useRef(0);
+  return {
+    onPointerDown: e => {
+      ate.current = 0;
+      if ((e.pointerType === 'mouse' && e.button !== 0) || e.target.closest('.big-nav button, .zoom-nav button')) return;
+      const x = e.clientX, y = e.clientY, id = e.pointerId;
+      const up = u => { if (u.pointerId !== id) return; removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+        if (u.type !== 'pointerup') return;
+        const dx = u.clientX - x, dy = u.clientY - y;
+        if (Math.hypot(dx, dy) > 10) ate.current = Date.now();
+        if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.5) live.current(dx < 0 ? 1 : -1); };
+      addEventListener('pointerup', up); addEventListener('pointercancel', up);
+    },
+    onClickCapture: e => { if (Date.now() - ate.current < 500) { ate.current = 0; e.preventDefault(); e.stopPropagation(); } },
+    onDragStart: e => e.preventDefault(),
+  };
+}
+
+/* 크게 보기 — 키 핸들러는 한 번만 걸고 최신 함수를 참조로 읽는다(myth 도감에서 빠르게 누르면 옛 자리를 잡은 일이 있었다) */
+function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose }) {
+  const live = useRef(); live.current = { onMove, onClose };
+  useEffect(() => {
+    const key = e => { const f = live.current; if (e.key === 'Escape') f.onClose(); if (e.key === 'ArrowLeft') f.onMove(-1); if (e.key === 'ArrowRight') f.onMove(1); };
+    addEventListener('keydown', key);
+    return () => removeEventListener('keydown', key);
+  }, []);
+  const swipe = useSwipe(d => live.current.onMove(d));
+  const shot = shots[at];
+  return html`<div class="zoom-layer" role="dialog" aria-modal="true" aria-label=${W('dex.zoom')}>
+    <div class="zoom-bar"><b>${card.name} · ${shotLabel(shot, defs)}</b><span>${at + 1} / ${shots.length}</span>
+      <a href=${IMG.imgURL(shot.file)} target="_blank" rel="noopener" class="zoom-open">${W('dex.zoom.original')}</a>
+      <button type="button" class="zoom-close" onClick=${onClose} aria-label=${W('dex.zoom.close')}>✕</button></div>
+    <div class="zoom-body" ...${swipe} onClick=${e => { if (e.target === e.currentTarget) onClose(); }}>
+      <img src=${IMG.imgURL(shot.file)} alt=${card.name} onClick=${onClose} />
+      <div class="zoom-nav">
+        <button type="button" class="zoom-prev" disabled=${!canPrev} onClick=${() => onMove(-1)} aria-label=${W('dex.shot.prev')}>‹</button>
+        <button type="button" class="zoom-next" disabled=${!canNext} onClick=${() => onMove(1)} aria-label=${W('dex.shot.next')}>›</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function shotLabel(shot, defs) {
+  const form = shot.form ? formName(defs, shot.form) : '';
+  const cut = W('dex.cut.' + shot.cut);
+  return [form, shot.index ? W('dex.cut.number', { cut, n: shot.index }) : (shot.cut === 'portrait' || shot.cut === 'open') ? '' : cut].filter(Boolean).join(' · ') || cut;
+}
+
+function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
+  const f = FILTER.normalize(filters, st);
+  const hall = IMG.hallPicks();
+  /* 상세에서 돌아오면 열기 전에 굴려 둔 자리로. 상세에서 다른 책으로 넘어갔으면 그 책 칸이 보이게 한 번 더 민다 */
+  useLayoutEffect(() => {
+    const r = restore && restore.current, sc = document.querySelector('.collection-scroll');
+    if (!r || !sc) return;
+    restore.current = null;
+    sc.scrollTop = r.top;
+    if (!r.card || r.card === r.from) return;
+    const el = [...sc.querySelectorAll('.grid > .cell')].find(x => x.dataset.card === r.card);
+    if (!el) return;
+    const a = el.getBoundingClientRect(), b = sc.getBoundingClientRect();
+    if (a.top < b.top || a.bottom > b.bottom) sc.scrollTop += a.top - b.top - Math.max(0, (b.height - a.height) / 2);
+  }, []);
+  const shown = useMemo(() => FILTER.select(st, filters), [st, filters]);
+  const update = (key, value) => onFilter(FILTER.normalize({ ...f, [key]: value }, st));
+  const reset = () => onFilter(FILTER.defaults());
+  const genres = st.genres.filter(g => st.cards.some(c => c.genre === g));
+  const all = ['', W('dex.filter.all')];
+  const pick = (key, options, disabled = false) => html`<label for=${'dex-' + key}>${W('dex.filter.' + key)}
+    <select id=${'dex-' + key} value=${f[key]} disabled=${disabled} onChange=${e => update(key, e.currentTarget.value)}>
+      ${options.map(([v, label]) => html`<option key=${v} value=${v}>${label}</option>`)}
+    </select></label>`;
+  const active = ['style', 'genre', 'form', 'art'].filter(k => f[k]).length + (f.cut !== 'auto' ? 1 : 0);
+  const head = html`<div class="search-row">
+    <input type="search" value=${f.q} placeholder=${W('dex.filter.search')} aria-label=${W('dex.filter.search')}
+      onInput=${e => update('q', e.currentTarget.value)} />
+    <button class="dex-reset" id="dex-reset" onClick=${reset}>${active ? W('dex.filter.reset.n', { n: active }) : W('dex.filter.reset')}</button>
+  </div>`;
+  const books = new Set(shown.map(r => r.card.key));
+  const slots = st.cards.length * wanted(st.defs).length;
+  const done = st.cards.reduce((n, c) => n + FILTER.best(st.img[c.key], st.defs).prog.done, 0);
+  return html`<${Shell} head=${head}>
+    <details class="dex-filters" open>
+      <summary>${W('dex.filter.title')}</summary>
+      <div class="dex-filter-grid">
+        ${pick('style', [all, ...Object.entries(st.styleName)])}
+        ${pick('genre', [all, ...genres.map(g => [g, g])])}
+        ${pick('cut', FILTER.CUTS.map(k => [k, W('dex.cut.' + k)]))}
+        ${pick('form', [all, ...FILTER.forms(st.defs).map(k => [k, formName(st.defs, k)])], ['casual', 'extra'].includes(f.cut))}
+        ${pick('art', FILTER.ARTS.map(k => [k, W('dex.art.' + (k || 'all'))]))}
+      </div>
+      <p class="note">${W('dex.filter.note')}</p>
+    </details>
+    <div class="dex-view-row"><p class="sec" role="status">${W('kind.book')}<span>${W('dex.filter.count', {
+      cards: books.size, images: shown.filter(r => r.file).length })}</span><span id="dex-progress">${W('dex.progress', { done, all: slots })}</span></p>
+      <div class="tools"><button class="dex-reset" id="dex-size" aria-pressed=${compact} onClick=${onCompact}>${W(compact ? 'dex.view.normal' : 'dex.view.small')}</button></div>
+    </div>
+    ${shown.length === 0
+      ? html`<p class="empty">${W('dex.filter.empty')}</p>`
+      : html`<div class="grid">${shown.map((shot, i) => {
+          const c = shot.card, prog = FILTER.best(st.img[c.key], st.defs, shot.style).prog;
+          return html`<button key=${c.key + '-' + shot.style + '-' + shot.file + '-' + i} class=${'cell' + (hall.includes(c.key) ? ' hall-on' : '')}
+            data-card=${c.key} data-style=${shot.style} data-form=${shot.form} data-cut=${shot.cut}
+            onClick=${() => onOpen(shot)}>
+            <span class="face">${shot.file
+              ? html`<${Pic} file=${shot.file} alt=${c.name + ' · ' + shotLabel(shot, st.defs)} />`
+              : html`<span class="ph">${W('art.none')}</span>`}</span>
+            <span class="cap">${c.name}
+              <i>${c.genre}</i>
+              ${shot.file && html`<i>${st.styleName[shot.style] || shot.style}</i><i>${shotLabel(shot, st.defs)}</i>`}
+              <i>${W('art.form.done', prog)}</i>
+            </span>
+          </button>`;
+        })}</div>`}
+  <//>`;
+}
+
+function App() {
+  const st = useDex();
+  const [open, setOpen] = useState(null);
+  const [compact, setCompact] = useState(() => {
+    try { return localStorage.getItem(COMPACT_STORE) === 'true'; } catch { return false; }
+  });
+  useEffect(() => {
+    document.body.classList.toggle('dex-compact', compact);
+    try { localStorage.setItem(COMPACT_STORE, String(compact)); } catch {}
+    return () => document.body.classList.remove('dex-compact');
+  }, [compact]);
+  const [filters, setFilters] = useState(() => {
+    try { return FILTER.normalize(JSON.parse(localStorage.getItem(FILTER_STORE))); }
+    catch { return FILTER.defaults(); }
+  });
+  useEffect(() => { try { localStorage.setItem(FILTER_STORE, JSON.stringify(filters)); } catch {} }, [filters]);
+  /* 진열은 지금 테마의 서고 몫이다 — 테마가 바뀌면 목록의 금테를 다시 그린다 */
+  const [, setTheme] = useState(0);
+  useEffect(() => { const on = () => setTheme(n => n + 1); addEventListener('atelier-appearance', on); return () => removeEventListener('atelier-appearance', on); }, []);
+  const listTop = useRef(0), from = useRef(null), restore = useRef(null), openNow = useRef(null);
+  openNow.current = open;
+  /* 휴대폰 뒤로 가기 — 상세를 열 때 기록을 한 칸 쌓고, 뒤로 가기(popstate)면 그 칸을 내리며 목록으로.
+     "목록으로" 단추도 같은 칸을 내린다(history.back). 책을 넘겨도 칸은 하나 그대로 */
+  const pushed = useRef(false), skipPop = useRef(false);
+  const shut = () => { restore.current = { top: listTop.current, card: openNow.current?.card?.key, from: from.current }; setOpen(null); };
+  const openShot = shot => {
+    const sc = document.querySelector('.collection-scroll');
+    listTop.current = sc ? sc.scrollTop : 0; from.current = shot.card.key;
+    setOpen(shot);
+    if (!pushed.current) { try { history.pushState({ dex: 'card' }, ''); pushed.current = true; skipPop.current = false; } catch {} }
+  };
+  const close = () => {
+    shut();
+    if (pushed.current) { pushed.current = false; skipPop.current = true; try { history.back(); } catch { skipPop.current = false; } }
+  };
+  const liveShut = useRef(); liveShut.current = shut;
+  useEffect(() => {
+    const pop = () => { if (skipPop.current) { skipPop.current = false; return; } if (pushed.current) { pushed.current = false; liveShut.current(); } };
+    addEventListener('popstate', pop);
+    return () => removeEventListener('popstate', pop);
+  }, []);
+  /* dex.html?book=<열쇠> — 서재 진열대·생성기가 그 책의 상세로 바로 연다 */
+  const [asked] = useState(() => { try { return new URLSearchParams(location.search).get('book'); } catch { return null; } });
+  useEffect(() => { if (asked && st.cards) { const c = st.cards.find(x => x.key === asked); if (c) openShot({ card: c }); } }, [st.cards]);
+
+  if (st.error) return html`<${Shell} head=${null}>
+    <p class="empty">${W('ui.error', { message: st.error })}</p><//>`;
+  if (!st.cards) return html`<${Shell} head=${null}>
+    <p class="empty">${W('ui.loading')}</p><//>`;
+
+  const card = st.cards.find(c => c.key === open?.card?.key);
+  if (card) {
+    /* 책 넘기기의 차례 — 지금 거른 목록의 차례. 거른 목록에 없는 책(바로가기로 온 것)이면 설계표 차례 전체 */
+    const seen = new Set();
+    let ring = FILTER.select(st, filters).map(r => r.card).filter(c => !seen.has(c.key) && seen.add(c.key));
+    if (!ring.some(c => c.key === card.key)) ring = st.cards;
+    const index = ring.findIndex(c => c.key === card.key);
+    const nav = index < 0 ? null : { index, total: ring.length, prev: ring[index - 1] || null, next: ring[index + 1] || null };
+    const go = (c, at, sel, zoom) => { const el = sel && document.querySelector(sel);
+      setOpen({ card: c, style: open.style, at, zoom, keep: el ? { sel, y: el.getBoundingClientRect().top } : null }); };
+    return html`<${Detail} key=${card.key} card=${card} entry=${st.img[card.key] || null}
+      selection=${open} nav=${nav} onGo=${go} defs=${st.defs} styleName=${st.styleName}
+      onClose=${close} />`;
+  }
+  return html`<${List} st=${st} filters=${filters} onFilter=${setFilters} onOpen=${openShot} restore=${restore}
+    compact=${compact} onCompact=${() => setCompact(v => !v)} />`;
+}
+
+render(html`<${App} />`, document.getElementById('app'));
+window.AtelierFresh.watch();
+</script>
+</body>
+</html>

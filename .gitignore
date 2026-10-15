@@ -1,2 +1,5 @@
 __pycache__/
 /node_modules
+# 그림은 그림 저장소(book-atelier-img)에 둔다. 브라우저 검사 때만 쓰는 임시 자리
+/img
+/img-repo

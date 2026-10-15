@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf9f3">
+<title>책의 공방</title>
+<!-- 생성기. pkm-atelier 의 prompt.html 과 같은 짜임 — 표(prompt-spec) · 조립(prompt-book) · 장면 무작위(prompt-random) · 화면(prompt-ui).
+     책마다 다른 글은 data/book-design.json, 화풍 문장은 data/style.json 의 판에서 온다. -->
+<link rel="stylesheet" href="lib/workspace.css?v=1">
+<link rel="stylesheet" href="lib/prompt.css?v=1">
+<style>
+.studio-history {display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.studio-history button,.studio-link {min-height:40px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center}
+.studio-link {color:var(--accent)}
+.studio-facts {display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;margin:0 0 12px;font-size:13px;line-height:1.6;word-break:keep-all}
+.studio-facts dt {color:var(--muted);font-size:11px;padding-top:2px;white-space:nowrap}
+.studio-facts dd {margin:0}
+#file-name code {font:12px ui-monospace,monospace;overflow-wrap:anywhere;color:var(--text)}
+.studio-record summary {cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:12px;font-weight:700}
+#record-output {min-height:160px}
+#silhouette-list li.overridden,#face-design-list li.overridden {opacity:.6}
+</style>
+<script src="lib/workspace-theme.js?v=1"></script>
+<script src="lib/words.js?v=1"></script>
+<script src="lib/img.js?v=1"></script>
+<script src="lib/dex-filter.js?v=1"></script>
+<script src="lib/prompt-spec.js?v=1"></script>
+<script src="lib/figures.js?v=1"></script>
+<script src="lib/prompt-book.js?v=1"></script>
+<script src="lib/prompt-random.js?v=1"></script>
+<script src="lib/fresh.js?v=1"></script>
+</head>
+<body class="prompt-page">
+<div class="wrap"><div id="app"></div></div>
+<script type="module" src="lib/prompt-ui.js?v=1"></script>
+</body>
+</html>

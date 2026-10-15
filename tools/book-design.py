@@ -12,7 +12,7 @@
   - 고유 규칙: 공통 원리 하나 + 폼별 사용법 셋 + 상대의 대응
   - 저작권: 저자가 1962년 이전에 죽었거나 작자 미상(한국 기준 만료). 해외 보호 중이면 abroad_protected 로 표시
   - 시범(pilot)은 폼 하나·개방 하나, 시범 책끼리 장르·시대가 겹치지 않는다"""
-import json, os, sys
+import json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data", "book-design.json")
@@ -28,6 +28,11 @@ def check(doc):
     errs = []
     V = doc.get("vocab") or {}
     books = doc.get("books") or []
+    # 그림 파일 이름·화면이 쓰는 폼 열쇠 — 셋이 다 있고 겹치지 않는 영문 소문자
+    fk = V.get("form_key") or {}
+    if sorted(fk) != sorted(STAGES) or len(set(fk.values())) != 3 or \
+            not all(isinstance(v, str) and v.isascii() and v.isalpha() and v.islower() for v in fk.values()):
+        errs.append("vocab.form_key 는 발단·전개·결말 셋을 겹치지 않는 영문 소문자 열쇠로")
     keys = [b.get("key") for b in books]
     if len(set(keys)) != len(keys):
         errs.append("key 가 겹친다")
@@ -37,6 +42,9 @@ def check(doc):
         for k in TEXT:
             if not str(b.get(k) or "").strip():
                 bad("%s 이(가) 비었다" % k)
+        # 열쇠는 그림 파일 이름 맨 앞에 들어간다(<key>_<폼>_<화풍>_f.webp) — 영문 소문자·숫자·밑줄만
+        if b.get("key") and not re.fullmatch(r"[a-z][a-z0-9_]*", b["key"]):
+            bad("key 는 영문 소문자·숫자·밑줄만 — 그림 파일 이름에 그대로 들어간다")
         if len(b.get("symbols") or []) != 3:
             bad("상징은 셋")
         arc = b.get("arc") or {}

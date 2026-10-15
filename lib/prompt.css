@@ -1,0 +1,74 @@
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);color:var(--text)}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit}
+.prompt-page .wrap{width:100%}
+.studio-grid{display:grid;grid-template-columns:290px minmax(0,1fr);gap:22px;align-items:start}
+.studio-source,.studio-card{padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
+.studio-card{margin-bottom:14px}
+.studio-source{position:sticky;top:16px;border-top:3px solid var(--signal)}
+.studio-main,.studio-source,.studio-field{min-width:0}
+.studio-field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
+.studio-field-help{font-size:12px;line-height:1.6;color:var(--muted);font-weight:400;overflow-wrap:anywhere;white-space:pre-line}
+.studio-field>span,.studio-label{font-size:12px;font-weight:650;color:var(--muted)}
+.studio-field input,.studio-field select,.studio-field textarea{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--text);background:var(--bg);min-height:44px}
+.studio-field textarea{min-height:80px;resize:vertical}
+.scene-choice{min-width:0;margin-bottom:13px}
+.scene-choice .studio-field{margin-bottom:6px}
+.scene-choice-actions{display:flex;gap:6px;flex-wrap:wrap}
+.scene-choice-actions button{min-height:36px;padding:6px 12px;font-size:12px}
+#random-scene{max-width:100%;white-space:normal}
+.studio-note{font-size:12px;line-height:1.7;color:var(--muted);margin:8px 0 12px}
+.studio-tabs{display:flex;gap:5px;margin:0 0 16px;flex-wrap:wrap;padding:5px;background:var(--card);border:1px solid var(--line);border-radius:17px}
+.studio-tabs button{flex:1;white-space:nowrap;border-radius:11px;border-color:transparent;background:transparent}
+.prompt-page button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+.studio-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.studio-row .studio-field{flex:1;min-width:130px}
+.studio-grid-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.studio-param{position:relative;min-width:0;border:1px solid var(--line);border-radius:9px;padding:10px}
+.studio-param-visual{grid-column:1/-1}
+.studio-param .studio-field{margin:0}
+.studio-param .studio-field>span{padding-right:42px;min-height:32px;display:flex;align-items:center}
+.studio-param .param-lock{position:absolute;right:8px;top:5px;min-height:32px;padding:5px 8px}
+.figure-picker-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 6px}
+.figure-picker-head>span{font-size:11px;color:var(--muted)}
+.figure-picker-head button{padding:5px 10px;min-height:36px;font-size:11px}
+.figure-row{position:relative;display:flex;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;padding:4px 2px 10px;scrollbar-width:thin}
+.prompt-page .figure-choice{flex:0 0 84px;width:84px;height:158px;min-height:0;padding:5px;display:flex;flex-direction:column;align-items:center;gap:6px;border-radius:9px;background:var(--card2)}
+.figure-image{display:flex;align-items:flex-end;justify-content:center;width:72px;height:112px;flex:none;overflow:hidden}
+.figure-image canvas,.figure-image .figure-png{display:block;width:auto;height:auto;max-width:72px;max-height:112px;object-fit:contain;pointer-events:none}
+.figure-choice b{display:-webkit-box;width:72px;height:26px;flex:none;overflow:hidden;font-size:10px;font-weight:600;line-height:13px;text-align:center;white-space:normal;overflow-wrap:anywhere;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.color-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px;margin-top:10px}
+.prompt-page .color-choice{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;min-height:76px;padding:7px 3px;border-radius:8px;background:var(--card2)}
+.color-choice i{display:block;flex:none;width:28px;height:28px;border-radius:50%;box-shadow:inset 0 0 0 1px #0004}
+.color-choice span{font-size:10px;line-height:14px;overflow-wrap:anywhere;white-space:normal;text-align:center}
+.color-auto i{background:repeating-linear-gradient(45deg,var(--card2) 0 4px,var(--line) 4px 8px)}
+.color-custom i{background:conic-gradient(#e08aa8,#e3c574,#7fd8c0,#2f6fd0,#7e5aa8,#e08aa8)}
+.studio-param .custom-value{margin-top:7px}
+.studio-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.studio-actions strong{font-size:14px}
+.prompt-page .studio-copy{background:var(--accent);color:var(--on-accent)}
+.studio-output{display:block;width:100%;height:340px;resize:vertical;margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:14px;background:var(--bg);color:var(--text);font:12px/1.65 ui-monospace,monospace}
+.studio-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.studio-preview a{display:block}
+.studio-preview img{width:100%;height:auto;border-radius:8px;background:var(--card2)}
+.studio-preview a:first-child{grid-column:1/-1}
+.studio-preview img.failed{display:none}
+.studio-empty{padding:18px;text-align:center;background:var(--card2);border-radius:8px}
+.studio-status{font-size:12px;color:var(--accent);line-height:1.6}
+.studio-style-sample{margin:14px 0 20px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
+.studio-style-sample summary{cursor:pointer;min-height:36px;display:flex;align-items:center;}
+.studio-style-sample figcaption{font-size:13px;font-weight:650;margin-bottom:12px}
+.studio-style-sample a{display:block;max-width:420px;margin-inline:auto;border-radius:8px}
+.studio-style-sample img{display:block;width:100%;height:auto;object-fit:contain;border-radius:8px}
+.studio-style-sample img[hidden]{display:none}
+.studio-style-sample .studio-note:last-child{margin-bottom:0}
+.studio-title{margin:0 0 12px;font-size:15px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:900px){.studio-grid{grid-template-columns:1fr}.studio-source{position:static}.studio-source .source-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.studio-preview{grid-template-columns:repeat(4,minmax(0,1fr))}.studio-preview a:first-child{grid-column:auto}}
+@media(max-width:480px){.studio-grid-fields,.studio-source .source-fields{grid-template-columns:1fr}.studio-card,.studio-source{padding:13px}.studio-tabs{gap:4px}.studio-tabs button{padding:8px 5px}.studio-output{height:280px}.studio-preview{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* 종별 얼굴 설계 — 끄기 칸과 고른 값 목록. 직접 고른 항목은 흐리게 */
+.studio-check{display:flex;align-items:center;gap:8px;min-height:44px;font-size:13px}
+.studio-check input{width:20px;height:20px}
+#face-design-list li.overridden{opacity:.55;text-decoration:line-through}

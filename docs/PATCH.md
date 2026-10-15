@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-15 · claude · 화풍 v6 — 그림으로 붙잡기 · 프롬프트 줄이기
+- data/style.json — literary_fantasy v6(지금 판). v5 가 실사 쪽으로 갔다(반실사 얼굴·사진 노을). 사진 조명 말(cinematic·bloom·golden-hour·luminous skin)을 빼고 2.5D 삽화의 얼굴 그리는 법(보이는 윤곽선·또렷한 눈매와 속눈썹·단순한 코와 입·2~3단 피부 명암·선으로 그린 머리)을 적었다. 나이·노출 문장은 AGE·EXPOSURE 줄에 맡기고 뺐다.
+- lib/prompt-spec.js — 과감 노출 세 갈래·ANATOMY 를 같은 뜻으로 줄였다(845 → 760 낱말 안쪽).
+- tests/prompt-book.cjs · tests/prompt-screen.cjs — 길이 검사를 실제 폼 초상(과감 노출·점검 줄 포함) 기준 760 으로, 지금 판이 사진 조명 말을 쓰지 않고 윤곽선을 적는지, v6.
+- docs/ART_STYLE.md — v6.
+
 ## 2026-10-15 · claude · 화풍 v5 — 진한 채색·노을 역광·꽉 찬 배경
 - data/style.json — literary_fantasy v5(지금 판). 사용자가 고른 돈키호테(진한 채색·강한 명암·역광·공기 원근)를 기준으로. v2~v4 의 storybook·watercolor·muted·gentle contrast·no specular shine·simplified background 를 뺐다 — 옅은 수채 동화가 나왔다. 형광·반짝이·젖은 거울 바닥만 막는다. 보기용 기준 그림 pilot/style-ref-literary_fantasy-v5-don_quixote.webp(첨부 안 함).
 - lib/prompt-spec.js — 새 인물 출력의 "quiet, readable backdrop" 를 "그녀의 책에서 온 풍성한 공기의 장소, 그녀와 다투지 않게" 로.

@@ -18,7 +18,7 @@ for (const stage of Object.keys(V.form_key)) assert(S.STAGE_EN[stage], stage + '
 /* 2. 다섯 권 × 세 폼 × 갈래 — 다 조립되고, 설계표 글이 제자리에 들어간다 */
 let n = 0, longest = 0;
 for (const b of design.books) for (const stage of Object.keys(V.form_key)) {
-  const create = P.buildPrompt({ outputMode: 'form', book: b, stage, styleText: text, identityMode: 'create', params: [] });
+  const create = P.buildPrompt({ outputMode: 'form', book: b, stage, styleText: text, styleCheck: lf.versions.find(v => v.v === lf.current).check, identityMode: 'create', params: [], exposure: 'bold' });
   assert(create.includes(q(b.persona)) && create.includes(q(b.forms[stage].look)) && create.includes(q(b.form_material)), b.key + ' ' + stage + ' 새 인물에 설계표 글');
   assert(create.includes('FACE (') && create.includes('SILHOUETTE:') && create.startsWith('INPUT: text only'), b.key + ' 새 인물에 얼굴·실루엣');
   assert(create.includes(text), '화풍 판 전문이 그대로');
@@ -35,7 +35,7 @@ for (const b of design.books) for (const stage of Object.keys(V.form_key)) {
     longest = Math.max(longest, P.words(t)); n++;
   }
 }
-assert(longest <= 700, '가장 긴 프롬프트가 700 낱말을 넘는다: ' + longest);
+assert(longest <= 760, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 760 낱말을 넘는다: ' + longest);
 
 /* 3. 직접 고른 얼굴·체형은 설계표 묶음을 이긴다(그 묶음이 FACE·SILHOUETTE 줄에서 빠진다) */
 const b = design.books[0];
@@ -68,7 +68,7 @@ assert(!/game character art/.test(cur.text), '지금 판 첫 줄이 게임 키�
 
 /* 6. 폼 초상의 노출 — 고른 수준만 싣는다(자동이면 줄 없음). 지금 판 문장에 "노출은 책 설계를 따른다" 가 없다. 목·어깨 줄 */
 const exp = k => P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', exposure: k });
-assert(exp('bold').includes('deep open neckline') && exp('bold').includes('Nothing is slipped off'), '과감 줄');
+assert(exp('bold').includes('deep open neckline') && exp('bold').includes('Nothing slipped off'), '과감 줄');
 for (const bk of design.books) {   /* 과감은 의상 구조에 맞는 갈래 — 겉옷 폼은 양 어깨에 제대로, 한복은 깃·동정 */
   const layer = S.GARMENT_LAYER[bk.silhouette.garment] || 'open';
   const t = P.buildPrompt({ outputMode: 'form', book: bk, stage: '발단', styleText: text, exposure: 'bold' });
@@ -81,8 +81,8 @@ assert(!exp('').includes('EXPOSURE'), '자동이면 노출 줄이 없다');
 assert(exp('low').includes('EXPOSURE (low)') && !exp('low').includes('EXPOSURE (bold)'));
 assert(!P.buildPrompt({ ...full, outputMode: 'open', exposure: 'bold' }).includes('EXPOSURE'), '개방은 첨부 그림의 차림 그대로');
 assert.equal(S.FORM_EXPOSURE_DEFAULT, 'bold');
-assert(!/exposure follow the book brief/.test(cur.text) && /chosen exposure setting/.test(cur.text), '지금 판은 노출을 생성기 칸에 맡긴다');
-assert(exp('bold').includes('never neck length') && exp('bold').includes('7.5 heads'), '목·어깨·등신 줄');
+assert(!/exposure follow the book brief/.test(cur.text), '지금 판은 노출을 책 설계에 미루지 않는다 — 노출은 생성기 칸(EXPOSURE 줄)');
+assert(exp('bold').includes('never a smaller head or a longer neck') && exp('bold').includes('7.5 heads'), '목·어깨·등신 줄');
 assert(!S.PARAM_GUIDES['torso / chest build']['full bust'][1].includes('without widening'), '큰 가슴 설명이 어깨를 좁히지 않는다');
 
 /* 7. 나이 — 자동이면 20대, SUBJECT 바로 뒤. 고른 나이는 그 줄로, 외형 목록에는 다시 안 싣는다. 첨부 그림이 정하는 갈래는 나이를 지킨다 */
@@ -93,7 +93,7 @@ assert(age([['apparent age', '40s']]).includes(S.AGE_LINES['40s']) && !age([['ap
 assert(!/apparent age:/.test(age([['apparent age', '20s'], ['hair color', 'black']])), '나이는 외형 목록에 다시 안 싣는다');
 for (const t of [P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMode: 'reference', baseStage: '발단' }), P.buildPrompt({ ...full, outputMode: 'open' }), P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })])
   assert(t.includes(S.AGE_KEEP) && !t.includes(S.AGE_LINES['20s']), '첨부 그림이 정하는 갈래는 나이를 지키고 주름을 더하지 않는다');
-assert(/sparse lines/.test(cur.text) && /older age is chosen/.test(cur.text), '지금 판 — 얼굴은 적은 선, 주름은 나이를 골랐을 때만');
+assert(/visible outlines|outlines around the face/.test(cur.text) && !/cinematic|bloom|golden-hour/.test(cur.text), '지금 판 — 그림으로 붙잡고(윤곽선), 사진 조명 말은 없다(v5 의 실수)');
 assert(!/storybook|watercolor washes|muted, |gentle contrast|simplified into/.test(cur.text), '지금 판이 옅은 수채 동화를 주문하지 않는다(v2~v4 의 실수)');
 
 /* 8. 화풍 문장이 없으면 만들지 않는다 */

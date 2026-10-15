@@ -4,7 +4,7 @@
  "styles": {
   "literary_fantasy": {
    "name": "회화적 컨셉아트 — 섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍",
-   "current": "v2",
+   "current": "v3",
    "versions": [
     {
      "v": "v1",
@@ -38,7 +38,7 @@
       "status": "set",
       "path": "pilot/style-ref-literary_fantasy-v2-alice.webp",
       "from": "시범 셋째 묶음의 앨리스 그림(보라 머리·녹는 시계·찻잔) — 이 그림을 붙였을 때 다섯 권이 한 화풍으로 모였고 광택이 빠졌다",
-      "note": "그리는 방식만 옮긴다. 이 그림 자체가 앨리스풍 인물이라 얼굴·차림·노출이 따라오기 쉽다 — 생성기가 STYLE REFERENCE 줄로 막는다"
+      "note": "v3 부터는 보기용 기준 그림 — 첨부하면 얼굴·구도까지 따라와서 기본은 첨부하지 않는다"
      },
      "why": [
       "첫 줄 'premium illustrated fantasy game character art' 가 게임 키아트(광택·애니 얼굴)로 끌었다 — 매체를 '손으로 그린 삽화, 게임 CG 아님' 으로 바꿨다",
@@ -48,6 +48,24 @@
       "남은 광택은 반사 바닥 — 바닥·표면 무광을 적었다",
       "배경이 인물만큼 빽빽했다 — 배경은 덜 그리고 여백을 둔다",
       "화풍 블록이 설계 줄 뒤에 묻혔다 — 생성기가 책 줄 바로 뒤에 싣고, 맨 끝에 check 를 한 번 더 싣는다"
+     ]
+    },
+    {
+     "v": "v3",
+     "adopted": "2026-10-15",
+     "by": "사용자 채택 (claude 검토 — v2 텍스트만 코스모스 시범)",
+     "text": "Shared art direction (literary_fantasy v3): hand-painted storybook fantasy illustration — a painting, not game CG.\n\nMedium: refined ink or pencil linework with varied weight, matte gouache and watercolor washes, softly blended painterly transitions, and subtle paper grain over the whole image. Colors stay warm and harmonious and follow the book's palette; no neon glow, no sparkle effects.\n\nFaces: her own structure from the book brief, drawn with ink contour and soft painted shading; adult proportions and natural-sized eyes. Skin stays softly painted — never photographic, never glossy anime or doll-like.\n\nLight and surfaces: soft painterly light with gentle contrast. Skin, fabric, metal and floors stay matte — no specular shine, no reflective or wet floors.\n\nDetail: the face, hands and defining costume carry the finest detail; the background is simplified into looser painted shapes with breathing room. Paper, cloth, leather, wood, glass and metal read through painted texture, not micro-detail noise. Ornament density and costume follow the book brief; how much skin shows follows the chosen exposure setting. In opened scene images the environment may fill the frame while she remains the focal point.\n\nTransfer only rendering language from style references; follow the book brief for identity, costume and composition.",
+     "check": "rendering is visible linework, matte gouache color and paper grain; floors and surfaces are matte; the background is simpler than the figure; not glossy CG, not anime cel, not photographic. Face and costume follow this book; exposure follows the chosen setting.",
+     "reference": {
+      "status": "look",
+      "attach": false,
+      "path": "pilot/style-ref-literary_fantasy-v2-alice.webp",
+      "note": "보기용 기준 그림. 첨부하면 그리는 방식뿐 아니라 얼굴·구도까지 따라왔다 — 생성기의 '참고 그림 같이 첨부' 를 켤 때만 붙인다"
+     },
+     "why": [
+      "v2 텍스트만으로 뽑은 코스모스가 의도에 가장 가까웠다(선화·무광 구아슈·종이결·덜 그린 배경·안 닮은 얼굴)",
+      "참고 그림을 첨부하면 얼굴·구도가 계속 비슷해졌다 — 기본은 텍스트만, 첨부는 고를 때만",
+      "'costume and exposure follow the book brief' — 설계표에 노출 칸이 없어 보수적인 복장으로 갔다. 노출은 생성기의 노출 칸이 정한다(폼 초상 기본 과감)"
      ]
     }
    ]

@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-15 · claude · 화풍 v3 · 폼 초상 노출 칸(기본 과감) · 참고 그림 첨부 기본 끔 · 목·어깨
+- data/style.json — literary_fantasy v3(지금 판). v2 에서 "costume and exposure follow the book brief" 를 빼고 노출은 생성기 칸에 맡긴다. 참고 그림은 보기용(attach false).
+- lib/prompt-spec.js · lib/prompt-book.js — FORM_EXPOSURE(적게·보통·과감, 기본 과감)를 폼 초상의 FORM 줄 뒤에 싣는다. 개방은 첨부 그림의 차림 그대로라 안 싣는다. ANATOMY 에 목·어깨(머리는 어깨 가까이, 큰 키는 다리로). 큰 가슴 설명에서 "어깨를 넓히지 않고" 를 "흉곽·어깨는 자연스러운 비율" 로.
+- lib/prompt-ui.js · lib/words.js — 폼 초상에 노출 칸, "참고 그림 같이 첨부" 칸(기본 끔 — 붙이면 얼굴·구도까지 따라왔다).
+- tests/prompt-book.cjs · tests/prompt-screen.cjs — 노출 줄·자동이면 없음·개방엔 없음·기본 과감·텍스트만 기본·켜면 참고 그림 줄·목 줄.
+- docs/ART_STYLE.md · IMAGE_RULES.md — v3 와 참고 그림 첨부 기본 끔.
+
 ## 2026-10-15 · claude · 화풍 v2 — 참고 그림·화풍 블록 앞으로·점검 줄
 - data/style.json — literary_fantasy v2(지금 판). 매체를 "손으로 그린 삽화, 게임 CG 아님" 으로, 무광 바닥·표면, 배경은 인물보다 덜, 얼굴은 잉크 윤곽. 맨 끝 점검 줄(check), 참고 그림 pilot/style-ref-literary_fantasy-v2-alice.webp. v1 은 남긴다.
 - lib/prompt-book.js · lib/prompt-spec.js — 화풍 블록을 책 줄 바로 뒤로(설계 줄 뒤에 묻혀 장르마다 화풍이 갈라졌다), 판의 check 를 맨 끝에 한 번 더, 참고 그림이 있으면 INPUT 에 첨부 안내 + "STYLE REFERENCE — 그리는 방식만, 얼굴·차림·노출은 따르지 않는다".

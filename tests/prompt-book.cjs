@@ -54,7 +54,7 @@ assert(!S.ACTION_CONTROLS.some(c => c.key === 'equipment'), '책은 빈손 — �
 
 /* 5. 화풍 블록은 책 줄 바로 뒤, 판의 점검 줄은 맨 끝, 참고 그림이 있으면 "그리는 방식만" (2026-10-15 시범 세 묶음) */
 const cur = lf.versions.find(v => v.v === lf.current);
-const full = { book: b, stage: '발단', styleText: cur.text, styleCheck: cur.check, styleRef: !!(cur.reference || {}).path, params: [] };
+const full = { book: b, stage: '발단', styleText: cur.text, styleCheck: cur.check, styleRef: true, params: [] };   // 참고 그림을 켰을 때
 for (const [name, t] of [['새 인물', P.buildPrompt({ ...full, outputMode: 'form' })], ['이어가기', P.buildPrompt({ ...full, outputMode: 'form', identityMode: 'reference', baseStage: '발단' })],
   ['개방', P.buildPrompt({ ...full, outputMode: 'open' })], ['일상', P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })]]) {
   const parts = t.split('\n\n');
@@ -66,6 +66,17 @@ if (full.styleRef) assert(P.buildPrompt({ ...full, outputMode: 'form' }).startsW
 assert(!P.buildPrompt({ ...full, outputMode: 'form', styleRef: false, styleCheck: '' }).includes('FINAL CHECK'), '점검이 없는 판은 그 줄도 없다');
 assert(!/game character art/.test(cur.text), '지금 판 첫 줄이 게임 키아트로 끌지 않는다');
 
-/* 6. 화풍 문장이 없으면 만들지 않는다 */
+/* 6. 폼 초상의 노출 — 고른 수준만 싣는다(자동이면 줄 없음). 지금 판 문장에 "노출은 책 설계를 따른다" 가 없다. 목·어깨 줄 */
+const exp = k => P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', exposure: k });
+assert(exp('bold').includes(S.FORM_EXPOSURE.bold) && exp('bold').includes('deep open neckline'), '과감 줄');
+assert(!exp('').includes('EXPOSURE'), '자동이면 노출 줄이 없다');
+assert(exp('low').includes('EXPOSURE (low)') && !exp('low').includes('EXPOSURE (bold)'));
+assert(!P.buildPrompt({ ...full, outputMode: 'open', exposure: 'bold' }).includes('EXPOSURE'), '개방은 첨부 그림의 차림 그대로');
+assert.equal(S.FORM_EXPOSURE_DEFAULT, 'bold');
+assert(!/exposure follow the book brief/.test(cur.text) && /chosen exposure setting/.test(cur.text), '지금 판은 노출을 생성기 칸에 맡긴다');
+assert(exp('bold').includes('never neck length'), '목·어깨 줄');
+assert(!S.PARAM_GUIDES['torso / chest build']['full bust'][1].includes('without widening'), '큰 가슴 설명이 어깨를 좁히지 않는다');
+
+/* 7. 화풍 문장이 없으면 만들지 않는다 */
 assert.throws(() => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: '' }), /Style text/);
-console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만`);
+console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목`);

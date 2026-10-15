@@ -36,7 +36,7 @@
    "era": "19세기",
    "region": "독일·남미 탐험",
    "form_material": "양장 책장을 겹친 깃과 자락, 관측 기구(기압계·천구의)",
-   "silhouette": {"body": "slender", "hair": "short_crop", "garment": "coat_trousers", "material": "paper_pages", "pose": "striding", "palette": "navy_gold"},
+   "silhouette": {"body": "slender", "hair": "long_wavy", "garment": "coat_trousers", "material": "paper_pages", "pose": "striding", "palette": "navy_gold"},
    "face": {"face_shape": "oval", "eyes": "almond_wide", "brows": "soft_round", "nose": "straight_narrow", "lips": "wide_smile"},
    "rule": {
     "principle": "흩어진 것을 이어 하나의 질서로 만든다 — 서로 다른 장르의 아군을 \"연결\" 한다",

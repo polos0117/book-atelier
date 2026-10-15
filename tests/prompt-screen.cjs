@@ -22,7 +22,7 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     /* 기본은 텍스트만 — 참고 그림을 붙이면 얼굴·구도까지 따라왔다. 노출 기본은 과감 */
     assert(t.startsWith('INPUT: text only') && !t.includes('STYLE REFERENCE:') && t.includes('FORM — DEVELOPMENT (전개)') && t.includes('SILHOUETTE:') && t.includes('FACE ('));
     assert(t.trim().split('\n\n').pop().startsWith('FINAL CHECK: '), '지금 판의 점검 줄이 맨 끝');
-    assert.equal(await p.$eval('#style-version', e => e.value), 'v4', '지금 판을 따라간다');
+    assert.equal(await p.$eval('#style-version', e => e.value), 'v5', '지금 판을 따라간다');
     assert(t.includes('AGE: in her twenties'), '나이 자동이면 20대');
     assert.equal(await p.$eval('#exposure', e => e.value), 'bold', '노출 기본은 과감');
     assert(t.includes('EXPOSURE (bold)'));
@@ -79,7 +79,7 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert.equal(rec.record, 'records/don_quixote/casual3-ui.json');
     assert.equal(rec.file, 'don_quixote_literary_fantasy_f_casual3.webp');
     assert.equal(rec.storage.cards.don_quixote.scenes.casual.ex, 'lib_binding');
-    assert.equal(rec.styleVersion, 'v4');
+    assert.equal(rec.styleVersion, 'v5');
     /* 8. 저장 — 새로고침해도 이어지고, 다른 책은 직전 책 외형을 가져올 수 있다 */
     await p.reload(); await p.waitForSelector('#prompt-output');
     assert.equal(await p.$eval('#mode-casual', e => e.getAttribute('aria-pressed')), 'true', '새로고침해도 일상컷');

@@ -4,7 +4,7 @@
  "styles": {
   "literary_fantasy": {
    "name": "회화적 컨셉아트 — 섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍",
-   "current": "v4",
+   "current": "v5",
    "versions": [
     {
      "v": "v1",
@@ -84,6 +84,25 @@
       "20대로 골랐는데 30~40대로 보였다 — '잉크 윤곽으로 그린 얼굴' 이 팔자 주름·웃음 주름·광대 그림자까지 선으로 그었다",
       "얼굴은 깨끗하고 적은 선, 둥근 명암. 주름·처짐은 나이를 따로 골랐을 때만",
       "나이는 생성기가 SUBJECT 바로 뒤 AGE 줄로 싣는다(기본 20대) — 맨 아래 외형 목록의 한 줄은 약했다"
+     ]
+    },
+    {
+     "v": "v5",
+     "adopted": "2026-10-15",
+     "by": "사용자 지정 (돈키호테 두 장 비교 — 첫째가 원하는 화풍)",
+     "text": "Shared art direction (literary_fantasy v5): richly painted fantasy character illustration — premium hand-painted key art, not 3D CGI and not a photograph.\n\nRendering: crisp, refined linework under dense painterly color, layered brushwork with fine texture in fabric, paper, leather and metal, and a subtle paper grain. Color is rich and saturated within the book's palette — warm and luminous, never washed-out or muted.\n\nLight: cinematic directional light — warm golden-hour sun or the scene's own light source — with strong value contrast, glowing rim light on hair and costume edges, and soft bloom in the brightest highlights. Metal and gems may catch bright highlights; no neon glow, no sparkle overlays, no wet mirror floors.\n\nFaces: her own structure from the book brief, drawn with sparse lines and soft rounded shading; natural-sized eyes; skin softly painted and luminous, never plastic, anime cel or doll-like. Wrinkles appear only when an older age is chosen.\n\nDepth: a detailed painted environment from her book with atmospheric perspective — the sharpest detail on her face, hands and defining costume; the background softer, warmer and slightly hazier so she stands clear of it.\n\nOrnament density and costume follow the book brief; how much skin shows follows the chosen exposure setting. In opened scene images the environment may fill the frame while she remains the focal point.",
+     "check": "rich painted color, crisp linework and fine brush texture; warm directional light with strong contrast and rim light; a detailed atmospheric background softer than the figure; not muted watercolor, not 3D CGI, not anime cel, not photographic.",
+     "reference": {
+      "status": "look",
+      "attach": false,
+      "path": "pilot/style-ref-literary_fantasy-v5-don_quixote.webp",
+      "from": "사용자가 원하는 화풍이라고 고른 돈키호테 시범 그림(노을 역광·진한 채색·꽉 찬 풍차 들판)",
+      "note": "보기용 기준 그림 — 첨부하면 얼굴·구도까지 따라와서 기본은 첨부하지 않는다. 결과를 이 그림과 견준다"
+     },
+     "why": [
+      "v2~v4 문장(storybook·watercolor washes·muted·gentle contrast·no specular shine·background simplified·quiet backdrop)이 옅은 수채 동화를 주문했다 — 사용자가 원한 것은 진한 채색·노을 역광·강한 명암·꽉 찬 배경의 판타지 삽화",
+      "파란 광택 실패(형광·반짝이·젖은 바닥)만 콕 집어 막고, 빛·하이라이트·진한 색은 되살렸다",
+      "얼굴(적은 선·젊은 피부)·노출 칸·나이 줄은 v4 그대로"
      ]
     }
    ]

@@ -93,7 +93,8 @@ assert(age([['apparent age', '40s']]).includes(S.AGE_LINES['40s']) && !age([['ap
 assert(!/apparent age:/.test(age([['apparent age', '20s'], ['hair color', 'black']])), '나이는 외형 목록에 다시 안 싣는다');
 for (const t of [P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMode: 'reference', baseStage: '발단' }), P.buildPrompt({ ...full, outputMode: 'open' }), P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })])
   assert(t.includes(S.AGE_KEEP) && !t.includes(S.AGE_LINES['20s']), '첨부 그림이 정하는 갈래는 나이를 지키고 주름을 더하지 않는다');
-assert(/sparse ink lines/.test(cur.text) && /older age is chosen/.test(cur.text), '지금 판 — 얼굴은 적은 선, 주름은 나이를 골랐을 때만');
+assert(/sparse lines/.test(cur.text) && /older age is chosen/.test(cur.text), '지금 판 — 얼굴은 적은 선, 주름은 나이를 골랐을 때만');
+assert(!/storybook|watercolor washes|muted, |gentle contrast|simplified into/.test(cur.text), '지금 판이 옅은 수채 동화를 주문하지 않는다(v2~v4 의 실수)');
 
 /* 8. 화풍 문장이 없으면 만들지 않는다 */
 assert.throws(() => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: '' }), /Style text/);

@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-15 · claude · 화풍 v5 — 진한 채색·노을 역광·꽉 찬 배경
+- data/style.json — literary_fantasy v5(지금 판). 사용자가 고른 돈키호테(진한 채색·강한 명암·역광·공기 원근)를 기준으로. v2~v4 의 storybook·watercolor·muted·gentle contrast·no specular shine·simplified background 를 뺐다 — 옅은 수채 동화가 나왔다. 형광·반짝이·젖은 거울 바닥만 막는다. 보기용 기준 그림 pilot/style-ref-literary_fantasy-v5-don_quixote.webp(첨부 안 함).
+- lib/prompt-spec.js — 새 인물 출력의 "quiet, readable backdrop" 를 "그녀의 책에서 온 풍성한 공기의 장소, 그녀와 다투지 않게" 로.
+- tests/prompt-book.cjs · tests/prompt-screen.cjs — v5, 지금 판이 수채 동화 말을 쓰지 않는지.
+- docs/ART_STYLE.md — v5 와 v2~v4 에서 배운 것.
+
 ## 2026-10-15 · claude · 코스모스 머리 — 긴 웨이브
 - data/book-design.json — 코스모스 실루엣 머리 short_crop → long_wavy. 사용자가 시범에서 바꾼 머리(긴 갈색 웨이브)를 설계표에 맞췄다. 다섯 권 중 long_wavy 는 코스모스뿐, 실루엣·얼굴 검사 통과.
 

@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-15 · claude · 체형 lanky·tall_statuesque 풀이 — 목 늘림 막기
+- lib/prompt-spec.js — VOCAB_EN.body 의 lanky("lanky, long-limbed and lean")·tall_statuesque 가 목까지 늘였다(돈키호테 v6 시범). "lean and long-legged, with a natural neck length" 꼴로.
+
 ## 2026-10-15 · claude · 화풍 v6 — 그림으로 붙잡기 · 프롬프트 줄이기
 - data/style.json — literary_fantasy v6(지금 판). v5 가 실사 쪽으로 갔다(반실사 얼굴·사진 노을). 사진 조명 말(cinematic·bloom·golden-hour·luminous skin)을 빼고 2.5D 삽화의 얼굴 그리는 법(보이는 윤곽선·또렷한 눈매와 속눈썹·단순한 코와 입·2~3단 피부 명암·선으로 그린 머리)을 적었다. 나이·노출 문장은 AGE·EXPOSURE 줄에 맡기고 뺐다.
 - lib/prompt-spec.js — 과감 노출 세 갈래·ANATOMY 를 같은 뜻으로 줄였다(845 → 760 낱말 안쪽).

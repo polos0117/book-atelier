@@ -85,6 +85,16 @@ assert(!/exposure follow the book brief/.test(cur.text) && /chosen exposure sett
 assert(exp('bold').includes('never neck length') && exp('bold').includes('7.5 heads'), '목·어깨·등신 줄');
 assert(!S.PARAM_GUIDES['torso / chest build']['full bust'][1].includes('without widening'), '큰 가슴 설명이 어깨를 좁히지 않는다');
 
-/* 7. 화풍 문장이 없으면 만들지 않는다 */
+/* 7. 나이 — 자동이면 20대, SUBJECT 바로 뒤. 고른 나이는 그 줄로, 외형 목록에는 다시 안 싣는다. 첨부 그림이 정하는 갈래는 나이를 지킨다 */
+const age = params => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, params });
+const parts0 = age([]).split('\n\n'), si = parts0.findIndex(x => x.startsWith('SUBJECT:'));
+assert(parts0[si + 1] === S.AGE_LINES['20s'], '자동이면 20대 줄이 SUBJECT 바로 뒤');
+assert(age([['apparent age', '40s']]).includes(S.AGE_LINES['40s']) && !age([['apparent age', '40s']]).includes(S.AGE_LINES['20s']));
+assert(!/apparent age:/.test(age([['apparent age', '20s'], ['hair color', 'black']])), '나이는 외형 목록에 다시 안 싣는다');
+for (const t of [P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMode: 'reference', baseStage: '발단' }), P.buildPrompt({ ...full, outputMode: 'open' }), P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })])
+  assert(t.includes(S.AGE_KEEP) && !t.includes(S.AGE_LINES['20s']), '첨부 그림이 정하는 갈래는 나이를 지키고 주름을 더하지 않는다');
+assert(/sparse ink lines/.test(cur.text) && /older age is chosen/.test(cur.text), '지금 판 — 얼굴은 적은 선, 주름은 나이를 골랐을 때만');
+
+/* 8. 화풍 문장이 없으면 만들지 않는다 */
 assert.throws(() => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: '' }), /Style text/);
-console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목`);
+console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대)`);

@@ -99,5 +99,14 @@ if (!cur.check) assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발
 assert(!/storybook|watercolor washes|muted, |gentle contrast|simplified into/.test(cur.text), '지금 판이 옅은 수채 동화를 주문하지 않는다(v2~v4 의 실수)');
 
 /* 8. 화풍 문장이 없으면 만들지 않는다 */
+// 연출 — 화려함·장식·역광·서 있는 카드 자세는 화풍 줄이 아니라 이 두 줄이 쥔다(돈키호테 v7 시범). 폼 초상에만, 자세·연출을 고르면 STANCE 는 빠진다
+const pf = P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, exposure: 'bold' }).split('\n\n');
+const pi = pf.indexOf(S.BOOK_LINES.presentation);
+assert(pi > 0 && pf[pi - 1].startsWith('EXPOSURE') && pf[pi + 1] === S.BOOK_LINES.stance && pf[pi + 2].startsWith('OUTPUT:'), '노출 → 연출 → 자세 → 출력');
+assert(P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMode: 'reference', baseStage: '발단', stage: '전개' }).includes(S.BOOK_LINES.presentation), '이어가기에도 연출 줄');
+assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, pose: 'standing' }).includes('STANCE:'), '자세를 고르면 기본 자세 줄이 빠진다');
+assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, action: { category: S.ACTION_CATEGORIES[0].key } }).includes('STANCE:'), '연출을 고르면 기본 자세 줄이 빠진다');
+for (const m of ['open', 'casual']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes('PRESENTATION:'), m + ' 은 첨부 그림 그대로 — 연출 줄 없음');
+assert(!/Default stance follows the SILHOUETTE/.test(S.BOOK_LINES.createOutput) && pf.join('\n').includes('attitude: '), '실루엣 자세는 태도로만');
 assert.throws(() => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: '' }), /Style text/);
-console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대)`);
+console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세`);

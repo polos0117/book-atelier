@@ -77,8 +77,8 @@
    "era": "17세기 초",
    "region": "스페인 라만차",
    "form_material": "기사도 소설 책장을 덧댄 낡은 갑옷, 놋대야 투구",
-   "silhouette": {"body": "lanky", "hair": "ponytail", "garment": "armor_layered", "material": "paper_armor", "pose": "charging", "palette": "rust_parchment"},
-   "face": {"face_shape": "long", "eyes": "deep_set", "brows": "angled_sharp", "nose": "aquiline", "lips": "thin_long"},
+   "silhouette": {"body": "athletic", "hair": "ponytail", "garment": "armor_layered", "material": "paper_armor", "pose": "commanding_stand", "palette": "rust_parchment"},
+   "face": {"face_shape": "diamond", "eyes": "narrow_upturned", "brows": "angled_sharp", "nose": "straight_narrow", "lips": "full_wide"},
    "rule": {
     "principle": "위협을 \"망상\" 이라는 힘으로 바꾼다",
     "forms": {
@@ -118,8 +118,8 @@
    "era": "19세기 후반",
    "region": "빅토리아 시대 영국",
    "form_material": "무늬만 있는 트럼프 카드 뒷면을 엮은 장식, 앞치마",
-   "silhouette": {"body": "petite", "hair": "bob", "garment": "one_piece_dress", "material": "card_stock", "pose": "tilted_curious", "palette": "cream_blue"},
-   "face": {"face_shape": "round", "eyes": "round_large", "brows": "arched_thin", "nose": "small_button", "lips": "small_bow"},
+   "silhouette": {"body": "slender", "hair": "bob", "garment": "one_piece_dress", "material": "card_stock", "pose": "tilted_curious", "palette": "cream_blue"},
+   "face": {"face_shape": "heart", "eyes": "round_large", "brows": "arched_thin", "nose": "small_button", "lips": "small_bow"},
    "rule": {
     "principle": "\"크기\"(카드의 힘 수치)를 바꾼다 — 한 번에 한 줄 안에서만",
     "forms": {
@@ -160,7 +160,7 @@
    "region": "스위스·북극 고딕",
    "form_material": "서로 다른 가죽 제본을 봉합선으로 기워 붙인 코트",
    "silhouette": {"body": "broad_strong", "hair": "voluminous", "garment": "cloak_wrapped", "material": "stitched_patchwork", "pose": "crouch_rise", "palette": "oxblood_gray"},
-   "face": {"face_shape": "square_soft", "eyes": "droopy_soft", "brows": "low_heavy", "nose": "broad_soft", "lips": "full_wide"},
+   "face": {"face_shape": "square_soft", "eyes": "droopy_soft", "brows": "straight_thick", "nose": "straight_narrow", "lips": "full_wide"},
    "rule": {
     "principle": "버려진 것을 기워 자기 것으로 만든다 — 한 번에 하나, 최대 둘까지 지닌다",
     "forms": {

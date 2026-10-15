@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-15 · claude · 폼 초상 연출·카드 자세 줄 · 설계표 얼굴·체형 손질
+- lib/prompt-spec.js · lib/prompt-book.js — 폼 초상(새 인물·이어가기)에 PRESENTATION 줄(세련되고 화려한 성인 판타지 카드 삽화, 그 얼굴 구조 안의 미형, 책 재료를 살리는 금속·금 장식, 따뜻한 역광·강한 명암)과 STANCE 줄(낮은 카메라의 서 있는 영웅 카드 자세, 달리기·돌진·도약 아님)을 노출 줄 뒤에. 자세·연출을 고르면 STANCE 는 빠진다. 실루엣의 "default pose" 는 "attitude" 로, 새 인물 출력의 "자세는 실루엣 자세를 따른다" 는 뺐다. v7 돈키호테 시범이 화풍은 맞았는데 설계표대로 돌격·칙칙한 종이 갑옷으로 나와 기준 그림의 화려함이 없었다.
+- data/book-design.json — 돈키호테 체형 lanky → athletic, 자세 charging → commanding_stand, 얼굴 long·deep_set·aquiline·thin_long → diamond·narrow_upturned·straight_narrow·full_wide(늙고 여윈 원작 얼굴로 갔다). 앨리스 petite·round → slender·heart(과감 노출과 어린 인상이 겹치지 않게). 프랑켄슈타인 눈썹·코 low_heavy·broad_soft → straight_thick·straight_narrow. 설계표 검사 통과.
+- tests/prompt-book.cjs — 연출·자세 줄의 자리, 이어가기에도 싣기, 자세·연출을 고르면 자세 줄 없음, 개방·일상은 없음.
+- docs/ART_STYLE.md — 화려함·자세는 화풍이 아니라 연출·자세 줄이 쥔다.
+
 ## 2026-10-15 · claude · 화풍 v7 — 한 줄로 되돌리기
 - data/style.json — literary_fantasy v7(지금 판) = "섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍" 한 줄, 점검 줄 없음. 사용자가 원한 돈키호테가 이 한 줄로 나왔다. v2~v6 의 긴 문단이 모델의 해석을 덮어써 흔들렸다.
 - tests/prompt-book.cjs · tests/prompt-screen.cjs — 지금 판 화풍은 40 낱말 이하, 점검 줄이 없는 판은 FINAL CHECK 도 없다, 화풍 줄은 한국어여도 된다, v7.

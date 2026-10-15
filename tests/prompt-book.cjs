@@ -30,8 +30,8 @@ for (const b of design.books) for (const stage of Object.keys(V.form_key)) {
   assert(!open.includes(q(b.persona)), '개방은 첨부 그림이 인물을 정한다');
   for (const t of [create, ref, open]) {
     assert(t.includes('ONE FIGURE ONLY') && t.includes('HANDS'), '한 명·손 줄');
-    assert(!/[가-힣]/.test(t.replace(/"[^"]*"/g, '').replace(/«[^»]*»/g, '').replace(/BOOK:[^\n]*/, '').replace(/\([발전결][단개말]\)/g, '')),
-      '설계표 글(따옴표 안)·책 줄 말고는 영어: ' + b.key + ' ' + stage);
+    assert(!/[가-힣]/.test(t.replace(/"[^"]*"/g, '').replace(/«[^»]*»/g, '').replace(/BOOK:[^\n]*/, '').replace(/STYLE: [^\n]*/, '').replace(/\([발전결][단개말]\)/g, '')),
+      '설계표 글(따옴표 안)·책 줄·화풍 줄 말고는 영어: ' + b.key + ' ' + stage);
     longest = Math.max(longest, P.words(t)); n++;
   }
 }
@@ -54,7 +54,8 @@ assert(!S.ACTION_CONTROLS.some(c => c.key === 'equipment'), '책은 빈손 — �
 
 /* 5. 화풍 블록은 책 줄 바로 뒤, 판의 점검 줄은 맨 끝, 참고 그림이 있으면 "그리는 방식만" (2026-10-15 시범 세 묶음) */
 const cur = lf.versions.find(v => v.v === lf.current);
-const full = { book: b, stage: '발단', styleText: cur.text, styleCheck: cur.check, styleRef: true, params: [] };   // 참고 그림을 켰을 때
+/* 자리 검사는 점검 줄이 있는 판으로 본다(지금 판 v7 은 점검 줄이 없다) */
+const full = { book: b, stage: '발단', styleText: cur.text, styleCheck: cur.check || 'rendering check.', styleRef: true, params: [] };   // 참고 그림을 켰을 때
 for (const [name, t] of [['새 인물', P.buildPrompt({ ...full, outputMode: 'form' })], ['이어가기', P.buildPrompt({ ...full, outputMode: 'form', identityMode: 'reference', baseStage: '발단' })],
   ['개방', P.buildPrompt({ ...full, outputMode: 'open' })], ['일상', P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })]]) {
   const parts = t.split('\n\n');
@@ -93,7 +94,8 @@ assert(age([['apparent age', '40s']]).includes(S.AGE_LINES['40s']) && !age([['ap
 assert(!/apparent age:/.test(age([['apparent age', '20s'], ['hair color', 'black']])), '나이는 외형 목록에 다시 안 싣는다');
 for (const t of [P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMode: 'reference', baseStage: '발단' }), P.buildPrompt({ ...full, outputMode: 'open' }), P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })])
   assert(t.includes(S.AGE_KEEP) && !t.includes(S.AGE_LINES['20s']), '첨부 그림이 정하는 갈래는 나이를 지키고 주름을 더하지 않는다');
-assert(/visible outlines|outlines around the face/.test(cur.text) && !/cinematic|bloom|golden-hour/.test(cur.text), '지금 판 — 그림으로 붙잡고(윤곽선), 사진 조명 말은 없다(v5 의 실수)');
+assert(cur.text.split(/\s+/).length <= 40, '지금 판 화풍은 짧다 — 긴 문단이 모델의 해석을 덮어써 판마다 흔들렸다(v2~v6)');
+if (!cur.check) assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: cur.text, styleCheck: cur.check }).includes('FINAL CHECK'), '점검 줄이 없는 판은 점검 줄도 없다');
 assert(!/storybook|watercolor washes|muted, |gentle contrast|simplified into/.test(cur.text), '지금 판이 옅은 수채 동화를 주문하지 않는다(v2~v4 의 실수)');
 
 /* 8. 화풍 문장이 없으면 만들지 않는다 */

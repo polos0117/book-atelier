@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-15 · claude · 화풍 v7 — 한 줄로 되돌리기
+- data/style.json — literary_fantasy v7(지금 판) = "섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍" 한 줄, 점검 줄 없음. 사용자가 원한 돈키호테가 이 한 줄로 나왔다. v2~v6 의 긴 문단이 모델의 해석을 덮어써 흔들렸다.
+- tests/prompt-book.cjs · tests/prompt-screen.cjs — 지금 판 화풍은 40 낱말 이하, 점검 줄이 없는 판은 FINAL CHECK 도 없다, 화풍 줄은 한국어여도 된다, v7.
+- docs/ART_STYLE.md — 화풍은 짧게, 문제는 그 문제를 맡은 줄에서 고친다.
+
 ## 2026-10-15 · claude · 체형 lanky·tall_statuesque 풀이 — 목 늘림 막기
 - lib/prompt-spec.js — VOCAB_EN.body 의 lanky("lanky, long-limbed and lean")·tall_statuesque 가 목까지 늘였다(돈키호테 v6 시범). "lean and long-legged, with a natural neck length" 꼴로.
 

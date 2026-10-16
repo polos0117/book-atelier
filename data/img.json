@@ -1,4 +1,4 @@
 {
- "img": {},
- "count": 0
+ "img": {"alice": {"byStyle": {"literary_fantasy": {"byForm": {"end": {"f": "alice_end_literary_fantasy_f.webp"}, "end_open": {"f": "alice_end_open_literary_fantasy_f.webp"}}}}}},
+ "count": 1
 }

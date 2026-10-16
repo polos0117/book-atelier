@@ -7,6 +7,14 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-16 · claude · 서가 책 틀 — 양장·한지 선장
+- lib/book-frame.js · lib/book-frame.css — 그림은 틀 없이 뽑고 서가가 그 책의 장정을 두른다. 양장은 가죽 표지(빛은 책 팔레트)·금박 두 줄·네 모서리 꽃장식, 한지는 닥나무 섬유 결 책장·사주쌍변·오른쪽 치자빛 책등에 다섯 구멍 실. 틀과 안쪽 그림 칸이 늘 2:3 이 되게 두께를 cqw 로 맞췄다. 돈키호테 시험에서 타로·양장 틀을 그림에 그려 보니 좋았지만, 개방·일상컷과 틀이 어긋나고 썸네일에서 인물이 작아졌다.
+- dex.html — 큰 그림·크게 보기에 틀. "양장 틀/한지 틀" 단추로 켜고 끈다(이 브라우저에만, 기본 켬). 큰 그림 칸은 너비를 줄여 늘 2:3.
+- data/book-design.json · tools/book-design.py — 책마다 binding(hardcover·hanji). 춘향전은 한지, 나머지는 양장. 정한 말인지 검사.
+- lib/words.js — 틀 단추 말.
+- tests/dex-screen.cjs — 양장 틀·틀과 그림 칸 2:3·끄고 켜기·남기기·한지 판별·크게 보기 틀.
+- IMAGE_RULES.md — 틀은 그림에 그리지 않는다.
+
 ## 2026-10-15 · claude · 폼 초상 연출·카드 자세 줄 · 설계표 얼굴·체형 손질
 - lib/prompt-spec.js · lib/prompt-book.js — 폼 초상(새 인물·이어가기)에 PRESENTATION 줄(세련되고 화려한 성인 판타지 카드 삽화, 그 얼굴 구조 안의 미형, 책 재료를 살리는 금속·금 장식, 따뜻한 역광·강한 명암)과 STANCE 줄(낮은 카메라의 서 있는 영웅 카드 자세, 달리기·돌진·도약 아님)을 노출 줄 뒤에. 자세·연출을 고르면 STANCE 는 빠진다. 실루엣의 "default pose" 는 "attitude" 로, 새 인물 출력의 "자세는 실루엣 자세를 따른다" 는 뺐다. v7 돈키호테 시범이 화풍은 맞았는데 설계표대로 돌격·칙칙한 종이 갑옷으로 나와 기준 그림의 화려함이 없었다.
 - data/book-design.json — 돈키호테 체형 lanky → athletic, 자세 charging → commanding_stand, 얼굴 long·deep_set·aquiline·thin_long → diamond·narrow_upturned·straight_narrow·full_wide(늙고 여윈 원작 얼굴로 갔다). 앨리스 petite·round → slender·heart(과감 노출과 어린 인상이 겹치지 않게). 프랑켄슈타인 눈썹·코 low_heavy·broad_soft → straight_thick·straight_narrow. 설계표 검사 통과.

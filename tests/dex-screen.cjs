@@ -63,9 +63,19 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     await p.keyboard.press('ArrowLeft');
     await p.waitForFunction(() => document.querySelector('.bar h2').firstChild.textContent.trim() === '돈키호테');
     assert.equal(await count(p), total + ' / ' + total, '앞 책으로 돌아가면 마지막 그림');
+    /* 책 틀 — 그림은 틀 없이, 서가가 그 책의 장정을 두른다. 틀도 안쪽 그림 칸도 2:3 */
+    assert.equal(await p.$eval('.big .bframe', e => e.dataset.binding), 'hardcover', '돈키호테는 양장 틀');
+    for (const sel of ['.big .bframe', '.big .bframe-page']) assert(Math.abs(await p.$eval(sel, e => { const r = e.getBoundingClientRect(); return r.width / r.height; }) - 2 / 3) < 0.02, sel + ' 는 2:3');
+    await p.click('#dex-frame');
+    assert.equal(await p.$('.big .bframe'), null, '틀 끄기');
+    assert.equal(await p.evaluate(() => localStorage.getItem('book_frame_v1')), '0', '끈 것이 남는다');
+    await p.click('#dex-frame');
+    assert(await p.$('.big .bframe'), '틀 다시 켜기');
+    assert.equal(await p.evaluate(() => window.AtelierFrame.of({ binding: 'hanji', silhouette: { palette: 'rose_jade' } }).kind), 'hanji');
     /* 크게 보기 — 열고 넘기고 Esc */
     await p.click('.big button.zoom');
     await p.waitForSelector('.zoom-layer');
+    assert(Math.abs(await p.$eval('.zoom-layer .bframe', e => { const r = e.getBoundingClientRect(); return r.width / r.height; }) - 2 / 3) < 0.02, '크게 보기에도 2:3 틀');
     await p.keyboard.press('ArrowLeft');
     assert.match(await p.$eval('.zoom-bar span', e => e.textContent), new RegExp('^' + (total - 1) + ' / '));
     await p.keyboard.press('Escape');
@@ -96,6 +106,6 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     assert(await b.page.evaluate(() => document.body.scrollWidth <= innerWidth), '펼친 화면에서 가로로 넘치지 않는다');
     assert.deepEqual(b.errors, []);
     await b.close();
-    console.log('PASS 서가: 목록 5권 · 그림 없음·빈 자리·개방·저자 거르기 · 여섯 칸·시범·화풍 비교 · 넘기기·책 넘기기·크게 보기 · 뒤로 가기 · 진열·서재 진열대 · 바로가기');
+    console.log('PASS 서가: 목록 5권 · 그림 없음·빈 자리·개방·저자 거르기 · 여섯 칸·시범·화풍 비교 · 넘기기·책 넘기기·크게 보기 · 책 틀(양장·한지) · 뒤로 가기 · 진열·서재 진열대 · 바로가기');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

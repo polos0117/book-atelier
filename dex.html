@@ -18,6 +18,7 @@
   책의 글(인격·질문과 답·고유 규칙·폼·명장면)은 data/book-design.json 에서 온다.
 -->
 <link rel="stylesheet" href="lib/workspace.css?v=1">
+<link rel="stylesheet" href="lib/book-frame.css?v=1">
 <style>
 /* 색·밀도 토막은 lib/workspace.css 한 곳에 있다. 여기는 뼈대만 — pkm 도감과 같다 */
 :root {--cc:var(--line)}
@@ -95,8 +96,8 @@ body {color:var(--text);font-size:15px}
 .fcell b {display:block;padding:7px 4px 2px;font-size:12px;line-height:1.3;overflow-wrap:anywhere}
 .fcell u {display:block;padding:0 4px 7px;text-decoration:none;font:10px ui-monospace,monospace;letter-spacing:.06em;opacity:.8}
 .fcell .pilot {position:absolute;left:5px;top:5px;padding:1px 6px;border-radius:99px;background:var(--gold);color:#1b1608;font:700 9px ui-monospace,monospace;letter-spacing:.04em}
-/* 2:3 을 그대로 두면 한 장이 화면을 다 먹는다 — 화면 높이의 절반 아래로 묶고 contain 으로 담는다 */
-.big {position:relative;width:100%;aspect-ratio:2/3;max-height:46dvh;overflow:hidden;
+/* 2:3 을 그대로 두면 한 장이 화면을 다 먹는다 — 화면 높이의 절반 아래로 묶는다. 너비를 줄여 늘 2:3 — 책 틀이 그 칸에 꼭 맞는다 */
+.big {position:relative;width:min(100%,calc(46dvh * 2 / 3));margin-inline:auto;aspect-ratio:2/3;overflow:hidden;
   background:var(--card2);border:1px solid var(--line);border-radius:12px}
 .big img {display:block;width:100%;height:100%;object-fit:contain}
 .big button.zoom {display:block;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
@@ -120,6 +121,9 @@ body {color:var(--text);font-size:15px}
 .zoom-layer .zoom-bar button,.zoom-layer .zoom-bar .zoom-open,.zoom-layer .zoom-nav button {display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 12px;border:1px solid #ffffff40;border-radius:10px;background:#ffffff14;color:#fff;font:inherit;font-size:13px;text-decoration:none;cursor:pointer;white-space:nowrap}
 .zoom-layer .zoom-body {flex:1 1 auto;min-height:0;position:relative;display:grid;place-items:center;padding:0 8px 8px;touch-action:pan-y}
 .zoom-layer .zoom-body img {max-width:100%;max-height:100%;object-fit:contain;display:block;cursor:zoom-out}
+.zoom-layer .zoom-body {container-type:size}
+.zoom-layer .zoom-body > .bframe {width:min(100cqw,100cqh * 2 / 3)}
+.zoom-layer .zoom-body > .bframe img {width:100%;height:100%;max-width:none;max-height:none}
 .zoom-layer .zoom-nav {position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 6px;pointer-events:none}
 .zoom-layer .zoom-nav button {pointer-events:auto;opacity:.85}
 .zoom-layer .zoom-nav button:disabled {opacity:.2}
@@ -157,6 +161,7 @@ body.zoomed {overflow:hidden}
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
+<script src="lib/book-frame.js?v=1"></script>
 </head>
 <body class="dex-page">
 <div id="app"></div>
@@ -167,7 +172,7 @@ import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'https://e
 import htm from 'https://esm.sh/htm@3.1.1';
 import { WorkspaceHeader } from './lib/workspace-ui.js?v=1';
 const html = htm.bind(h);
-const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter;
+const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame;
 const FILTER_STORE = 'book_dex_filters_v1', COMPACT_STORE = 'book_dex_compact_v1';
 
 /* 지금 만드는 것은 여성체뿐이다. 파일 이름에는 _f 를 적어 두므로 나중에 m 을 더해도 옛 파일의 뜻이 안 바뀐다 */
@@ -183,6 +188,14 @@ function Pic({ file, full, alt }) {
       t.dataset.fallback = '1';
       t.src = IMG.imgURL(file);
     }} />`;
+}
+
+/* 책 틀 — 그림은 틀 없이 올리고 여기서 그 책의 장정(양장·한지 선장)을 두른다(lib/book-frame.js) */
+function Frame({ book, on, children }) {
+  if (!on) return children;
+  const f = FRAME.of(book);
+  return html`<span class=${f.className} style=${f.style} data-binding=${f.kind}><span class="bframe-in"><span class="bframe-page">${children}</span>
+    <i class="bf-c tl"></i><i class="bf-c tr"></i><i class="bf-c bl"></i><i class="bf-c br"></i><i class="bf-stitch"></i></span></span>`;
 }
 
 /* 껍데기 — .collection-scroll 한 곳만 구른다. 굴리면 main 에 dex-scrolled 가 붙어 검색 도구만 간결해진다 */
@@ -293,6 +306,8 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
   const [wantForm, setForm] = useState(selection?.form || '');
   const [zoom, setZoom] = useState(false);
   const [hall, setHall] = useState(() => IMG.hallPicks());
+  const [framed, setFramed] = useState(() => FRAME.on());
+  const flipFrame = () => setFramed(v => { FRAME.setOn(!v); return !v; });
   const style = keys.indexOf(wantStyle) >= 0 ? wantStyle : (FILTER.best(entry, defs).style || keys[0] || '');
   const bucket = (style ? IMG.styleMap(entry)[style] : null) || {};
   const prog = IMG.formsDone(bucket, want, V);
@@ -361,6 +376,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
       <button type="button" id="dex-hall" aria-pressed=${inHall} disabled=${hallFull} title=${W('dex.hall.note')}
         onClick=${enshrine}>${inHall ? W('dex.hall.remove', { shelf }) : hallFull ? W('dex.hall.full', { shelf, max: IMG.HALL_MAX }) : W('dex.hall.add', { shelf })}</button>
       <span class="hall-n">${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span>
+      <button type="button" id="dex-frame" aria-pressed=${framed} title=${W('dex.frame.note')} onClick=${flipFrame}>${W('dex.frame.' + FRAME.kind(card))}</button>
     </div>
     ${keys.length > 1 && html`
       <p class="sec">${W('dex.style.compare')}<span>${W('art.count', { n: keys.length })}</span></p>
@@ -391,7 +407,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
 
     ${shown ? html`
       <p class="sec">${shotLabel(shown, defs)}<span>${showFocus ? W('dex.selected') : (styleName[style] || '')}</span></p>
-      <div class="big" ...${swipe}><button type="button" class="zoom" aria-label=${W('dex.zoom')} onClick=${() => setZoom(true)}><${Pic} full file=${shown.file} alt=${card.name} /></button>${bigNav}${bigCount}</div>
+      <div class="big" ...${swipe}><button type="button" class="zoom" aria-label=${W('dex.zoom')} onClick=${() => setZoom(true)}><${Frame} book=${card} on=${framed}><${Pic} full file=${shown.file} alt=${card.name} /></${Frame}></button>${bigNav}${bigCount}</div>
       ${caption && html`<p class="note">${caption}</p>`}
     ` : html`<p class="empty">${W('art.none')}</p>`}
     ${nav && html`<div class="card-nav" role="group" aria-label=${W('dex.card.count', { n: nav.index + 1, total: nav.total })}>
@@ -401,7 +417,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
       <button type="button" id="dex-card-next" disabled=${!nextCard} title=${nextCard ? nextCard.name : ''} aria-label=${W('dex.card.next') + (nextCard ? ' · ' + nextCard.name : '')}
         onClick=${() => onGo(nextCard, 'first', '.card-nav')}><span>${nextCard ? nextCard.name : W('dex.card.next')}</span><b>›</b></button>
     </div>`}
-    ${zoom && shown && at >= 0 && html`<${Zoom} card=${card} defs=${defs} shots=${shots} at=${at} canPrev=${canPrev} canNext=${canNext} onMove=${move} onClose=${() => setZoom(false)} />`}
+    ${zoom && shown && at >= 0 && html`<${Zoom} card=${card} defs=${defs} shots=${shots} at=${at} canPrev=${canPrev} canNext=${canNext} onMove=${move} onClose=${() => setZoom(false)} framed=${framed} />`}
 
     <p class="sec">${W('book.persona')}</p>
     <p class="persona">${card.persona}</p>
@@ -455,7 +471,7 @@ function useSwipe(onMove) {
 }
 
 /* 크게 보기 — 키 핸들러는 한 번만 걸고 최신 함수를 참조로 읽는다(myth 도감에서 빠르게 누르면 옛 자리를 잡은 일이 있었다) */
-function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose }) {
+function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose, framed }) {
   const live = useRef(); live.current = { onMove, onClose };
   useEffect(() => {
     const key = e => { const f = live.current; if (e.key === 'Escape') f.onClose(); if (e.key === 'ArrowLeft') f.onMove(-1); if (e.key === 'ArrowRight') f.onMove(1); };
@@ -469,7 +485,7 @@ function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose }) {
       <a href=${IMG.imgURL(shot.file)} target="_blank" rel="noopener" class="zoom-open">${W('dex.zoom.original')}</a>
       <button type="button" class="zoom-close" onClick=${onClose} aria-label=${W('dex.zoom.close')}>✕</button></div>
     <div class="zoom-body" ...${swipe} onClick=${e => { if (e.target === e.currentTarget) onClose(); }}>
-      <img src=${IMG.imgURL(shot.file)} alt=${card.name} onClick=${onClose} />
+      <${Frame} book=${card} on=${framed}><img src=${IMG.imgURL(shot.file)} alt=${card.name} onClick=${onClose} /></${Frame}>
       <div class="zoom-nav">
         <button type="button" class="zoom-prev" disabled=${!canPrev} onClick=${() => onMove(-1)} aria-label=${W('dex.shot.prev')}>‹</button>
         <button type="button" class="zoom-next" disabled=${!canNext} onClick=${() => onMove(1)} aria-label=${W('dex.shot.next')}>›</button>

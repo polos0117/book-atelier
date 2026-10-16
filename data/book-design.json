@@ -1,6 +1,6 @@
 {
  "version": 1,
- "note": "책 설계표 — 책 한 권 = 한 칸. 외형과 전투를 같은 칸에서 함께 뽑는다(docs/GAME_CONCEPT.md 5절). python3 tools/book-design.py check 가 본다: 칸이 다 찼나, 정한 말만 썼나, 어느 두 책도 실루엣 축 6 중 셋 이상·얼굴 5 묶음 중 둘 이상 다른가, 폼·개방이 셋씩인가, 개방이 한 명으로 표현되나, 고유 규칙에 상대의 대응이 있나, 저작권 기준(한국 기준 만료)을 지키나.",
+ "note": "책 설계표 — 책 한 권 = 한 칸. 외형과 전투를 같은 칸에서 함께 뽑는다(docs/GAME_CONCEPT.md 5절). python3 tools/book-design.py check 가 본다: 칸이 다 찼나, 정한 말만 썼나(장정 binding 포함 — 서가가 두르는 틀), 어느 두 책도 실루엣 축 6 중 셋 이상·얼굴 5 묶음 중 둘 이상 다른가, 폼·개방이 셋씩인가, 개방이 한 명으로 표현되나, 고유 규칙에 상대의 대응이 있나, 저작권 기준(한국 기준 만료)을 지키나.",
  "vocab": {
   "genre": ["비극", "희극·풍자", "추리", "모험", "로맨스", "공포", "SF", "동화·판타지", "사상", "과학"],
   "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
@@ -16,6 +16,7 @@
   "lips": ["full_wide", "thin_long", "small_bow", "heart_full", "wide_smile"],
   "role": ["공격", "돌파", "버티기", "지원", "정찰", "교란"],
   "quote_source": ["원문", "직접 옮김"],
+  "binding": ["hardcover", "hanji"],
   "form_key": {"발단": "begin", "전개": "middle", "결말": "end"}
  },
  "books": [
@@ -36,6 +37,7 @@
    "era": "19세기",
    "region": "독일·남미 탐험",
    "form_material": "양장 책장을 겹친 깃과 자락, 관측 기구(기압계·천구의)",
+   "binding": "hardcover",
    "silhouette": {"body": "slender", "hair": "long_wavy", "garment": "coat_trousers", "material": "paper_pages", "pose": "striding", "palette": "navy_gold"},
    "face": {"face_shape": "oval", "eyes": "almond_wide", "brows": "soft_round", "nose": "straight_narrow", "lips": "wide_smile"},
    "rule": {
@@ -77,6 +79,7 @@
    "era": "17세기 초",
    "region": "스페인 라만차",
    "form_material": "기사도 소설 책장을 덧댄 낡은 갑옷, 놋대야 투구",
+   "binding": "hardcover",
    "silhouette": {"body": "athletic", "hair": "ponytail", "garment": "armor_layered", "material": "paper_armor", "pose": "commanding_stand", "palette": "rust_parchment"},
    "face": {"face_shape": "diamond", "eyes": "narrow_upturned", "brows": "angled_sharp", "nose": "straight_narrow", "lips": "full_wide"},
    "rule": {
@@ -118,6 +121,7 @@
    "era": "19세기 후반",
    "region": "빅토리아 시대 영국",
    "form_material": "무늬만 있는 트럼프 카드 뒷면을 엮은 장식, 앞치마",
+   "binding": "hardcover",
    "silhouette": {"body": "slender", "hair": "bob", "garment": "one_piece_dress", "material": "card_stock", "pose": "tilted_curious", "palette": "cream_blue"},
    "face": {"face_shape": "heart", "eyes": "round_large", "brows": "arched_thin", "nose": "small_button", "lips": "small_bow"},
    "rule": {
@@ -159,6 +163,7 @@
    "era": "19세기 초",
    "region": "스위스·북극 고딕",
    "form_material": "서로 다른 가죽 제본을 봉합선으로 기워 붙인 코트",
+   "binding": "hardcover",
    "silhouette": {"body": "broad_strong", "hair": "voluminous", "garment": "cloak_wrapped", "material": "stitched_patchwork", "pose": "crouch_rise", "palette": "oxblood_gray"},
    "face": {"face_shape": "square_soft", "eyes": "droopy_soft", "brows": "straight_thick", "nose": "straight_narrow", "lips": "full_wide"},
    "rule": {
@@ -201,6 +206,7 @@
    "era": "조선 후기",
    "region": "남원",
    "form_material": "방각본 한지를 겹친 치맛단과 노리개",
+   "binding": "hanji",
    "silhouette": {"body": "curvy", "hair": "braids", "garment": "hanbok", "material": "hanji", "pose": "rising_swing", "palette": "rose_jade"},
    "face": {"face_shape": "heart", "eyes": "monolid_long", "brows": "straight_thick", "nose": "straight_narrow", "lips": "heart_full"},
    "rule": {

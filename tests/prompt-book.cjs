@@ -108,5 +108,11 @@ assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText:
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, action: { category: S.ACTION_CATEGORIES[0].key } }).includes('STANCE:'), '연출을 고르면 기본 자세 줄이 빠진다');
 for (const m of ['open', 'casual']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes('PRESENTATION:'), m + ' 은 첨부 그림 그대로 — 연출 줄 없음');
 assert(!/Default stance follows the SILHOUETTE/.test(S.BOOK_LINES.createOutput) && pf.join('\n').includes('attitude: '), '실루엣 자세는 태도로만');
+// 한복 — 한 낱말로는 한푸로 갔다(춘향전). 새 인물은 실루엣에, 이어가기는 GARMENT 줄에 구조를 싣는다
+const ch = design.books.find(x => x.key === 'chunhyang');
+assert(P.buildPrompt({ outputMode: 'form', book: ch, stage: '발단', styleText: text }).includes('jeogori') , '새 인물 — 한복 풀이');
+const chRef = P.buildPrompt({ outputMode: 'form', book: ch, stage: '결말', baseStage: '발단', identityMode: 'reference', styleText: text });
+assert(chRef.includes('GARMENT: ') && chRef.includes('not Chinese hanfu') && chRef.includes('jokduri'), '이어가기 — 한복 구조를 지킨다');
+assert(!P.buildPrompt({ outputMode: 'open', book: ch, stage: '결말', styleText: text }).includes('GARMENT: '), '개방은 첨부 그림의 차림 그대로');
 assert.throws(() => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: '' }), /Style text/);
-console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세`);
+console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세 · 한복 구조`);

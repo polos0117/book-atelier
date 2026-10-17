@@ -279,6 +279,7 @@ function Stages({ card, defs, form }) {
     return html`<div key=${k} class=${'stage' + (FILTER.baseForm(form) === k ? ' on' : '')} data-stage=${k}>
       <h4>${stage}${f.role && html`<span class="tag">${f.role}</span>`}</h4>
       ${f.look && html`<p><i>${W('book.look')}</i>${f.look}</p>`}
+      ${f.pose && html`<p><i>${W('book.pose')}</i>${f.pose}</p>`}
       ${(rule.forms || {})[stage] && html`<p><i>${W('book.rule.use')}</i>${rule.forms[stage]}</p>`}
       ${o.scene && html`<p><i>${W('book.open')}</i>${o.scene}</p>`}
     </div>`;

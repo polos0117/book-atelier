@@ -8,7 +8,7 @@
   - 칸이 다 찼나(원전 범위·인용 출처·한 줄 인격·욕망·갈등·상징 셋·질문→갈등→답·장르·시대·지역·형태와 재료)
   - 정한 말(vocab)만 썼나 — 장르·실루엣 축 6·얼굴 5 묶음·역할·인용 출처·장정
   - 어느 두 책도 실루엣 축 6 중 셋 이상, 얼굴 5 묶음 중 둘 이상 다르다 — 화풍의 기본 얼굴·흔한 차림으로 수렴하지 않게
-  - 폼·개방이 발단·전개·결말 셋씩, 개방은 한 명으로 표현된다고 확인했다(one_figure)
+  - 폼·개방이 발단·전개·결말 셋씩, 폼마다 다른 자세(pose), 개방은 한 명으로 표현된다고 확인했다(one_figure)
   - 고유 규칙: 공통 원리 하나 + 폼별 사용법 셋 + 상대의 대응
   - 저작권: 저자가 1962년 이전에 죽었거나 작자 미상(한국 기준 만료). 해외 보호 중이면 abroad_protected 로 표시
   - 시범(pilot)은 폼 하나·개방 하나, 시범 책끼리 장르·시대가 겹치지 않는다"""
@@ -84,11 +84,16 @@ def check(doc):
                 bad("%s 폼의 모습이 비었다" % s)
             if f.get("role") not in V.get("role", []):
                 bad("%s 폼의 역할 %r 는 정한 말이 아니다" % (s, f.get("role")))
+            # 자세 — 폼마다 다르게. 생성기의 기본 자세가 된다(STANCE 줄)
+            if not str(f.get("pose") or "").strip():
+                bad("%s 폼의 자세(pose)가 비었다" % s)
             o = opens.get(s) or {}
             if not str(o.get("scene") or "").strip():
                 bad("%s 개방의 장면이 비었다" % s)
             if o.get("one_figure") is not True:
                 bad("%s 개방을 한 명(그녀 + 사물·환경·괴물)으로 표현할 수 있는지 확인하지 않았다" % s)
+        if len({(forms.get(s) or {}).get("pose") for s in STAGES}) < 3:
+            bad("세 폼의 자세가 겹친다 — 넘겨 볼 때 같은 그림처럼 보인다")
         if len({(forms.get(s) or {}).get("role") for s in STAGES}) < 2:
             bad("세 폼의 역할이 다 같다 — 위아래가 아니라 쓰임이 달라야 한다")
         # 고유 규칙

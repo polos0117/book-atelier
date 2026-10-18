@@ -121,6 +121,13 @@ assert(!P.buildPrompt({ outputMode: 'open', book: b, stage: '발단', styleText:
 assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, params: [['hair color', '#1b2a6b'], ['eye color', '#d4a017']] })
   .match(/hair color: #1B2A6B \(dark blue\)[\s\S]*both eyes are #D4A017 \(vivid medium golden amber\)/), '머리·눈 RGB');
 assert.equal(P.hexName('#ffffff'), 'white');
+// 손 — 엄지가 반대쪽에 붙은 손이 나왔다(햄릿 일상컷, 탁자 짚은 오른손). 손 줄은 엄지 자리와 손가락 차례까지
+assert(S.BOOK_LINES.hands.includes('thumb on its inner side') && S.BOOK_LINES.handsKeep.includes('mirrored'), '손 줄에 엄지 방향');
+// 경찰·간호사 — 금지어만 있어 부품이 없었다. 옷 부품 + 동작, 극장 말 없이(햄릿이 무대 의상으로 끌려갔다)
+for (const ex of ['adult_police', 'adult_nurse']) {
+  const t = P.buildCasual({ book: design.books.find(x => x.key === 'hamlet'), styleText: text, cat: 'adult_roleplay', ex });
+  assert(/cap/.test(t) && !/theatrical/.test(t) && t.includes('never restyle the chosen outfit'), ex);
+}
 // 전통 의상 — 고른 전통이 책의 지역을 이긴다(돈키호테 아오자이). 장면 문장이 없던 예시는 짜임을 적는다
 const ao = P.buildCasual({ book: design.books.find(x => x.key === 'don_quixote'), styleText: text, cat: 'traditional', ex: 'aodai_daily' });
 assert(ao.includes('wins over her book') && ao.includes('mandarin collar') && ao.includes('wide-leg silk trousers'), '아오자이');

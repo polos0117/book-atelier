@@ -37,6 +37,16 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     /* 3. 외형 — 고르면 IDENTITY 에, 얼굴 설계 끄기, 되돌리기·다시 하기 */
     await p.selectOption('#param-apparent-age', '20s');
     assert((await out(p)).includes('AGE: in her twenties') && !(await out(p)).includes('apparent age:'), '고른 나이는 AGE 줄로');
+    /* 머리색 RGB — HEX 칸에 적으면 고르개에 RGB 줄이 생기고, 프롬프트에는 코드와 색 이름이 같이 들어간다(myth 생성기와 같다) */
+    await p.$eval('#param-hair-color-hex', e => { for (let d = e.closest('details'); d; d = d.parentElement.closest('details')) d.open = true; });
+    await p.fill('#param-hair-color-hex', '#1b2a6b');
+    assert.equal(await p.$eval('#param-hair-color', e => e.value), '#1b2a6b', 'RGB 값이 고르개에 남는다');
+    assert((await out(p)).includes('hair color: #1B2A6B (dark blue)'), 'HEX → 코드와 색 이름');
+    await p.$eval('#param-hair-color-r', e => { e.value = '200'; e.dispatchEvent(new Event('input', { bubbles: true })); });
+    assert((await out(p)).includes('hair color: #C82A6B'), 'R 막대');
+    assert.equal(await p.$eval('#param-hair-color-hex', e => e.value), '#c82a6b', '막대를 움직이면 HEX 칸도 따라온다');
+    await p.selectOption('#param-hair-color', '');
+    assert(!(await out(p)).includes('hair color:'), '자동으로 되돌리기');
     await p.click('#face-design-on');
     assert(!(await out(p)).includes('FACE ('), '얼굴 설계를 끄면 FACE 줄이 빠진다');
     await p.click('#undo');
@@ -94,6 +104,6 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.setViewportSize(FOLD.cover);
     assert(await p.evaluate(() => document.body.scrollWidth <= innerWidth + 1), '덮개 화면에서 가로로 넘친다');
     await a.close();
-    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·갈래·잠금 · 복사·기록 · 저장·직전 책 외형');
+    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·갈래·잠금 · 복사·기록 · 저장·직전 책 외형');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

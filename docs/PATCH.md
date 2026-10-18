@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-18 · claude · 색 RGB 로 고르기(myth 생성기에서)
+- lib/prompt-ui.js · lib/prompt.css — 머리색·눈색·다른 쪽 눈색 칸에 RGB 고르개: 색 상자·HEX 칸·R/G/B 막대와 숫자. 값은 "#rrggbb" 로 남고 고르개에 "RGB #…" 줄로 보인다. 팔레트 동그라미는 빠른 시작점으로 그대로.
+- lib/prompt-book.js — RGB 값은 프롬프트에 코드와 색 이름으로("#1B2A6B (dark blue)"). 색 이름 풀이는 myth-atelier 의 lib/prompt-myth.js 와 같다. 오드아이 줄에도.
+- lib/words.js — 색 상자·프롬프트에·RGB 안내·RGB 줄 말.
+- tests/prompt-book.cjs · tests/prompt-screen.cjs — 머리·눈 RGB 의 프롬프트 글, HEX 칸·R 막대·자동 되돌리기.
+
 ## 2026-10-17 · claude · 일상컷 옷 갈아입히기
 - lib/prompt-spec.js · lib/prompt-book.js — 일상컷에 WARDROBE 줄: 옷을 통째로 바꾸고, 첨부 그림에서는 얼굴·머리·몸만(옷·겹·허리띠·술·장신구·머리 장식·배경은 아니다), 장면 설정의 옷이 한눈에 읽히게. 춘향전에서 간호사 코스튬을 골랐는데 첨부한 한복이 그대로 나왔다 — "평상복은 장면이 정한다" 만으로는 화려한 폼 의상을 못 이겼다.
 - tests/prompt-book.cjs — 일상컷에 WARDROBE 줄.

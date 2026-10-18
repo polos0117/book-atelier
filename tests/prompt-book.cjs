@@ -117,6 +117,10 @@ for (const bk of design.books) for (const stage of Object.keys(V.form_key)) {
 const noPose = { ...b, forms: { ...b.forms, '발단': { ...b.forms['발단'], pose: '' } } };
 assert(P.buildPrompt({ outputMode: 'form', book: noPose, stage: '발단', styleText: text }).includes(S.BOOK_LINES.stance), '자세가 빈 폼은 공통 카드 자세');
 assert(!P.buildPrompt({ outputMode: 'open', book: b, stage: '발단', styleText: text }).includes('STANCE'), '개방은 첨부 그림의 자세 그대로');
+// 색 RGB — 코드와 색 이름(myth 와 같다). 색 칸이 아닌 항목의 # 값은 그대로
+assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, params: [['hair color', '#1b2a6b'], ['eye color', '#d4a017']] })
+  .match(/hair color: #1B2A6B \(dark blue\)[\s\S]*both eyes are #D4A017 \(vivid medium golden amber\)/), '머리·눈 RGB');
+assert.equal(P.hexName('#ffffff'), 'white');
 // 한복 — 한 낱말로는 한푸로 갔다(춘향전). 새 인물은 실루엣에, 이어가기는 GARMENT 줄에 구조를 싣는다
 const ch = design.books.find(x => x.key === 'chunhyang');
 assert(P.buildPrompt({ outputMode: 'form', book: ch, stage: '발단', styleText: text }).includes('jeogori') , '새 인물 — 한복 풀이');

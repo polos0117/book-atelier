@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-18 · claude · 전통 의상 일상컷 — 고른 전통이 이긴다
+- lib/prompt-spec.js — 전통 의상 갈래 풀이가 "그녀의 계통에서 온 전통복" 이라 책의 지역(라만차)이 이겼다 — 돈키호테에서 아오자이를 골랐는데 스페인 농가 옷이 나왔다. "예시에 적힌 전통이 책의 지역·겉보기 계통·첨부 그림의 옷을 이긴다, 자동만 책의 지역 옷" 으로. EXAMPLE_DETAIL: 장면 문장이 없어 이름("Áo Dài")만 실리던 전통 의상 스물넷에 짜임·여밈·실루엣을 적었다.
+- lib/prompt-book.js — 예시에 장면 문장이 없으면 EXAMPLE_DETAIL 을 싣는다.
+- tests/prompt-book.cjs — 아오자이 프롬프트, 전통 의상 예시마다 풀이가 있는지.
+
 ## 2026-10-18 · claude · 색 RGB 로 고르기(myth 생성기에서)
 - lib/prompt-ui.js · lib/prompt.css — 머리색·눈색·다른 쪽 눈색 칸에 RGB 고르개: 색 상자·HEX 칸·R/G/B 막대와 숫자. 값은 "#rrggbb" 로 남고 고르개에 "RGB #…" 줄로 보인다. 팔레트 동그라미는 빠른 시작점으로 그대로.
 - lib/prompt-book.js — RGB 값은 프롬프트에 코드와 색 이름으로("#1B2A6B (dark blue)"). 색 이름 풀이는 myth-atelier 의 lib/prompt-myth.js 와 같다. 오드아이 줄에도.

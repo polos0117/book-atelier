@@ -121,6 +121,10 @@ assert(!P.buildPrompt({ outputMode: 'open', book: b, stage: '발단', styleText:
 assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, params: [['hair color', '#1b2a6b'], ['eye color', '#d4a017']] })
   .match(/hair color: #1B2A6B \(dark blue\)[\s\S]*both eyes are #D4A017 \(vivid medium golden amber\)/), '머리·눈 RGB');
 assert.equal(P.hexName('#ffffff'), 'white');
+// 전통 의상 — 고른 전통이 책의 지역을 이긴다(돈키호테 아오자이). 장면 문장이 없던 예시는 짜임을 적는다
+const ao = P.buildCasual({ book: design.books.find(x => x.key === 'don_quixote'), styleText: text, cat: 'traditional', ex: 'aodai_daily' });
+assert(ao.includes('wins over her book') && ao.includes('mandarin collar') && ao.includes('wide-leg silk trousers'), '아오자이');
+for (const r of S.EXAMPLE_MAP.traditional) if (r[0] && r[0] !== '__custom__') assert(r[5] || S.EXAMPLE_DETAIL[r[0]], r[0] + ' 전통 의상 풀이가 없다');
 // 한복 — 한 낱말로는 한푸로 갔다(춘향전). 새 인물은 실루엣에, 이어가기는 GARMENT 줄에 구조를 싣는다
 const ch = design.books.find(x => x.key === 'chunhyang');
 assert(P.buildPrompt({ outputMode: 'form', book: ch, stage: '발단', styleText: text }).includes('jeogori') , '새 인물 — 한복 풀이');

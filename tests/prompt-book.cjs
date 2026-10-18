@@ -124,7 +124,12 @@ assert.equal(P.hexName('#ffffff'), 'white');
 // 전통 의상 — 고른 전통이 책의 지역을 이긴다(돈키호테 아오자이). 장면 문장이 없던 예시는 짜임을 적는다
 const ao = P.buildCasual({ book: design.books.find(x => x.key === 'don_quixote'), styleText: text, cat: 'traditional', ex: 'aodai_daily' });
 assert(ao.includes('wins over her book') && ao.includes('mandarin collar') && ao.includes('wide-leg silk trousers'), '아오자이');
-for (const r of S.EXAMPLE_MAP.traditional) if (r[0] && r[0] !== '__custom__') assert(r[5] || S.EXAMPLE_DETAIL[r[0]], r[0] + ' 전통 의상 풀이가 없다');
+for (const [cat, rows] of Object.entries(S.EXAMPLE_MAP)) for (const r of rows) if (r[0] && r[0] !== '__custom__') {
+  assert(r[5] || S.EXAMPLE_DETAIL[r[0]], cat + ' · ' + r[0] + ' 장면 문장이 없다 — 이름만 실린다(lib/prompt-spec.js EXAMPLE_DETAIL)');
+  const t = P.buildCasual({ book: b, styleText: text, cat, ex: r[0] });
+  assert(P.words(t) <= 760, cat + ' · ' + r[0] + ' 일상컷이 760 낱말을 넘는다');
+}
+assert(!/thruster|cockpit|Gundam|Pok[eé]mon/i.test(Object.values(S.EXAMPLE_DETAIL).join(' ')), '예시 풀이에 건담·포켓몬 말이 없다');
 // 한복 — 한 낱말로는 한푸로 갔다(춘향전). 새 인물은 실루엣에, 이어가기는 GARMENT 줄에 구조를 싣는다
 const ch = design.books.find(x => x.key === 'chunhyang');
 assert(P.buildPrompt({ outputMode: 'form', book: ch, stage: '발단', styleText: text }).includes('jeogori') , '새 인물 — 한복 풀이');

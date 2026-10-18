@@ -16,14 +16,16 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
   try {
     const a = await h.open('dex.html', opt()), p = a.page;
     await p.waitForSelector('.grid > .cell');
-    /* 1. 목록 — 다섯 권 다, 그림 없는 책(춘향전)도 이름표로 */
+    /* 1. 목록 — 설계표의 책 다, 그림 없는 책(춘향전·새 책)도 이름표로. 가짜 그림이 있는 책은 make-art.py 가 정한다 */
+    const ART = ['don_quixote', 'alice', 'frankenstein', 'kosmos'], keys = design.books.map(b => b.key);
+    const none = keys.filter(k => !ART.includes(k)).sort();
     assert.deepEqual((await cells(p)).sort(), design.books.map(b => b.key).sort(), '설계표의 책이 다 선다');
     assert.equal(await p.$$eval('.grid > .cell[data-card="chunhyang"] img', x => x.length), 0, '그림 없는 책은 이름표');
     /* 작업 현황 — 그림 없음 · 빈 자리 있음 */
     await p.selectOption('#dex-art', 'none');
-    assert.deepEqual(await cells(p), ['chunhyang'], '그림 없음');
+    assert.deepEqual((await cells(p)).sort(), none, '그림 없음');
     await p.selectOption('#dex-art', 'left');
-    assert.deepEqual((await cells(p)).sort(), ['chunhyang', 'frankenstein', 'kosmos'], '빈 자리 있음 — 여섯 칸이 덜 찬 책');
+    assert.deepEqual((await cells(p)).sort(), [...none, 'frankenstein', 'kosmos'].sort(), '빈 자리 있음 — 여섯 칸이 덜 찬 책');
     assert.match(await p.$eval('#dex-reset', e => e.textContent), /1/, '초기화 단추가 켠 조건 수를 보인다');
     await p.click('#dex-reset');
     /* 컷 거르기 — 개방만 */
@@ -72,6 +74,9 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     await p.click('#dex-frame');
     assert(await p.$('.big .bframe'), '틀 다시 켜기');
     assert.equal(await p.evaluate(() => window.AtelierFrame.of({ binding: 'hanji', silhouette: { palette: 'rose_jade' } }).kind), 'hanji');
+    assert.equal(await p.evaluate(() => window.AtelierFrame.of({ binding: 'bamboo' }).kind), 'bamboo');
+    for (const k of await p.evaluate(() => window.AtelierFrame.KINDS)) assert(await p.evaluate(k => window.W('dex.frame.' + k) !== 'dex.frame.' + k, k), k + ' 틀 단추 말');
+    assert.deepEqual(await p.evaluate(() => window.AtelierFrame.KINDS), design.vocab.binding, '틀 종류 = 설계표 장정');
     /* 크게 보기 — 열고 넘기고 Esc */
     await p.click('.big button.zoom');
     await p.waitForSelector('.zoom-layer');
@@ -106,6 +111,6 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     assert(await b.page.evaluate(() => document.body.scrollWidth <= innerWidth), '펼친 화면에서 가로로 넘치지 않는다');
     assert.deepEqual(b.errors, []);
     await b.close();
-    console.log('PASS 서가: 목록 5권 · 그림 없음·빈 자리·개방·저자 거르기 · 여섯 칸·시범·화풍 비교 · 넘기기·책 넘기기·크게 보기 · 책 틀(양장·한지) · 뒤로 가기 · 진열·서재 진열대 · 바로가기');
+    console.log(`PASS 서가: 목록 ${design.books.length}권 · 그림 없음·빈 자리·개방·저자 거르기 · 여섯 칸·시범·화풍 비교 · 넘기기·책 넘기기·크게 보기 · 책 틀(양장·한지·죽간) · 뒤로 가기 · 진열·서재 진열대 · 바로가기`);
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

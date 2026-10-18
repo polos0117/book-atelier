@@ -6,6 +6,7 @@ const { start, FOLD } = require('./browser-harness.cjs');
 const art = fs.mkdtempSync(path.join(os.tmpdir(), 'book-art-'));
 const imgjson = execFileSync('python3', [path.join(__dirname, 'fixtures', 'make-art.py'), art]).toString();
 const opt = extra => ({ viewport: FOLD.inner, mobile: true, imgRoot: art, files: { 'data/img.json': imgjson }, ...extra });
+const design = JSON.parse(require('node:fs').readFileSync('data/book-design.json', 'utf8'));
 const out = p => p.$eval('#prompt-output', e => e.value);
 (async () => {
   const h = await start();
@@ -15,7 +16,9 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.context().grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
     /* 1. 책 고르개 — ✓ 여섯 자리 다 · ◐ 일부 · · 아직 */
     const marks = await p.$$eval('#source option', os => Object.fromEntries(os.map(o => [o.value, o.textContent.trim()[0]])));
-    assert.deepEqual(marks, { kosmos: '◐', don_quixote: '✓', alice: '✓', frankenstein: '◐', chunhyang: '·' }, JSON.stringify(marks));
+    const want = { kosmos: '◐', don_quixote: '✓', alice: '✓', frankenstein: '◐' };
+    for (const b of design.books) if (!want[b.key]) want[b.key] = '·';   // 가짜 그림이 없는 책
+    assert.deepEqual(marks, want, JSON.stringify(marks));
     /* 2. 처음 연 책은 시범 폼(돈키호테 = 전개)에서, 새 인물 */
     assert.equal(await p.$eval('#form', e => e.value), 'middle');
     let t = await out(p);

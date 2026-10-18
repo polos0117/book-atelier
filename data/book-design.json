@@ -8,7 +8,7 @@
   "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped"],
   "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments"],
   "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe"],
-  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white"],
+  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal"],
   "face_shape": ["oval", "round", "heart", "long", "square_soft", "diamond"],
   "eyes": ["almond_wide", "round_large", "narrow_upturned", "droopy_soft", "deep_set", "monolid_long"],
   "brows": ["straight_thick", "arched_thin", "soft_round", "angled_sharp", "low_heavy"],
@@ -16,7 +16,7 @@
   "lips": ["full_wide", "thin_long", "small_bow", "heart_full", "wide_smile"],
   "role": ["공격", "돌파", "버티기", "지원", "정찰", "교란"],
   "quote_source": ["원문", "직접 옮김"],
-  "binding": ["hardcover", "hanji"],
+  "binding": ["hardcover", "hanji", "bamboo"],
   "form_key": {"발단": "begin", "전개": "middle", "결말": "end"}
  },
  "books": [
@@ -230,6 +230,461 @@
    },
    "scene_cards": ["오리정 이별", "옥중 꿈"],
    "pilot": {"form": "발단", "open": "발단"}
+  },
+  {
+   "key": "hamlet",
+   "title": "햄릿",
+   "author": "윌리엄 셰익스피어",
+   "author_death": 1616,
+   "abroad_protected": false,
+   "source_scope": "『햄릿』(1623 제1이절판) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "모든 것을 의심하느라 한 걸음씩 늦는, 그래서 가장 깊이 보는 사색가",
+   "desire": "아버지의 죽음에 대한 진실",
+   "conflict": "생각 대 행동",
+   "symbols": [
+    "해골",
+    "독 묻은 칼끝",
+    "오필리아의 꽃"
+   ],
+   "arc": {
+    "question": "복수할 것인가, 견딜 것인가",
+    "conflict": "꾸민 광기와 진짜 광기 사이에서 흔들리는 마음",
+    "answer": "준비가 전부다 — 끝내 칼을 들고 침묵으로 걸어간다"
+   },
+   "genre": "비극",
+   "era": "17세기 초(중세 덴마크)",
+   "region": "덴마크 엘시노어 성",
+   "form_material": "검은 상복에 겹친 희곡 대본 책장, 가죽 제본의 깃과 은빛 단검 장식",
+   "binding": "hardcover",
+   "silhouette": {
+    "body": "tall_statuesque",
+    "hair": "long_straight",
+    "garment": "tailored_suit",
+    "material": "leather_binding",
+    "pose": "seated_study",
+    "palette": "black_white"
+   },
+   "face": {
+    "face_shape": "long",
+    "eyes": "droopy_soft",
+    "brows": "arched_thin",
+    "nose": "straight_narrow",
+    "lips": "small_bow"
+   },
+   "rule": {
+    "principle": "망설임을 \"의심\" 으로 쌓았다가 한 번에 터뜨린다",
+    "forms": {
+     "발단": "턴을 넘길 때마다 의심을 하나 쌓고, 상대 카드 하나의 숨은 효과를 미리 본다",
+     "전개": "의심을 써서 상대 카드 하나의 효과를 한 턴 뒤틀어 놓는다",
+     "결말": "쌓인 의심을 모두 공격력으로 바꿔 한 번에 친다 — 친 뒤에는 자신도 쓰러진다"
+    },
+    "counter": "빠르게 몰아붙여 의심이 쌓일 틈을 주지 않는다. 결말이 나오기 전에 묶으면 모은 의심을 터뜨리지 못한다"
+   },
+   "forms": {
+    "발단": {
+     "look": "유령을 만난 밤 — 검은 상복에 흐트러진 흰 깃, 성벽 안개 같은 은회색 망토",
+     "role": "정찰",
+     "pose": "성벽 난간에 한 손을 얹고 몸을 반쯤 돌려, 어깨 너머 어둠을 응시하다 카메라 쪽으로 시선을 돌린 자세"
+    },
+    "전개": {
+     "look": "광기를 꾸민 날 — 풀어헤친 더블릿, 대본 책장이 찢겨 흩날리는 겉옷",
+     "role": "교란",
+     "pose": "한 손을 관자놀이에 대고 고개를 기울인 채 비스듬히 웃는, 미친 척하는 연극적인 자세"
+    },
+    "결말": {
+     "look": "결투의 날 — 펜싱 더블릿과 은빛 검대, 접은 책장으로 세운 깃",
+     "role": "공격",
+     "pose": "가는 검을 아래로 비스듬히 내린 채 곧게 서서 정면을 보는, 마지막 결심의 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "자정의 엘시노어 성벽, 짙은 안개 속에 번지는 차갑고 푸른 유령의 빛(얼굴 없는 빛의 형체)",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "극중극의 무대 — 촛불이 흔들리는 연회장, 비어 있는 왕좌와 쓰러진 술잔",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "독이 번진 결투장 — 떨어진 왕관과 엎질러진 독배 위로 내려앉는 고요",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "무덤 파는 사람과 요릭의 해골",
+    "오필리아의 꽃",
+    "사느냐 죽느냐"
+   ],
+   "pilot": {
+    "form": "전개",
+    "open": "전개"
+   }
+  },
+{
+   "key": "baskervilles",
+   "title": "바스커빌가의 개",
+   "author": "아서 코넌 도일",
+   "author_death": 1930,
+   "abroad_protected": false,
+   "source_scope": "『바스커빌가의 개』(1902) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "안개 낀 황야에서 발자국 하나로 전설을 해부하는 차가운 탐정",
+   "desire": "전설 뒤에 숨은 진실",
+   "conflict": "이성 대 미신",
+   "symbols": [
+    "돋보기",
+    "인광으로 빛나는 사냥개",
+    "그림펜 늪"
+   ],
+   "arc": {
+    "question": "바스커빌가의 저주는 실재하는가",
+    "conflict": "황야의 안개와 짐승의 울음이 이성을 흔든다",
+    "answer": "괴물은 사람이 꾸민 것 — 진실은 늘 발자국을 남긴다"
+   },
+   "genre": "추리",
+   "era": "19세기 말 빅토리아 시대",
+   "region": "영국 다트무어 황야",
+   "form_material": "트위드 천 제본의 책장 케이프, 사건 수첩을 엮은 코르셋과 돋보기 장식",
+   "binding": "hardcover",
+   "silhouette": {
+    "body": "lanky",
+    "hair": "short_crop",
+    "garment": "coat_trousers",
+    "material": "cloth_binding",
+    "pose": "kneeling_observe",
+    "palette": "moss_tweed"
+   },
+   "face": {
+    "face_shape": "diamond",
+    "eyes": "almond_wide",
+    "brows": "angled_sharp",
+    "nose": "upturned",
+    "lips": "small_bow"
+   },
+   "rule": {
+    "principle": "상대의 흔적을 \"단서\" 로 모아 정체를 밝힌다",
+    "forms": {
+     "발단": "상대가 낸 카드마다 단서를 하나 얻는다",
+     "전개": "단서 셋으로 상대 손패 한 장을 공개시킨다",
+     "결말": "공개된 카드의 특수 효과를 지우고 그 카드를 친다"
+    },
+    "counter": "효과 없는 기본 카드만 내면 단서가 쌓이지 않는다. 손패를 비워 두면 공개할 것이 없다"
+   },
+   "forms": {
+    "발단": {
+     "look": "베이커 거리의 의뢰 — 트위드 케이프와 짧은 조끼, 사건 수첩 책장을 겹친 깃",
+     "role": "정찰",
+     "pose": "한 손에 돋보기를 들어 눈높이에 대고, 다른 손은 허리에 얹은 채 비스듬히 선 관찰 자세"
+    },
+    "전개": {
+     "look": "황야의 잠복 — 이끼빛 망토 자락, 진흙 묻은 장화, 지도 책장을 엮은 띠",
+     "role": "교란",
+     "pose": "바위 곁에 한쪽 무릎을 꿇고 땅의 발자국을 손끝으로 짚으며 고개를 들어 카메라를 보는 자세"
+    },
+    "결말": {
+     "look": "정체가 밝혀진 밤 — 단정히 여민 코트와 등불, 해결된 사건 책장을 접어 단 단추",
+     "role": "공격",
+     "pose": "등불을 앞으로 들어 올려 어둠을 비추며 곧게 서서 정면을 보는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "가스등 켜진 베이커 거리의 서재, 벽난로 불빛과 흩어진 신문·편지",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "짙은 안개가 깔린 다트무어 황야와 그림펜 늪, 멀리 바위 언덕 위의 불빛",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "안개를 찢고 뛰어드는 인광으로 빛나는 거대한 사냥개",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "바스커빌 저택의 초상화",
+    "황야의 탈옥수",
+    "잃어버린 장화 한 짝"
+   ],
+   "pilot": {
+    "form": "전개",
+    "open": "전개"
+   }
+  },
+{
+   "key": "treasure_island",
+   "title": "보물섬",
+   "author": "로버트 루이스 스티븐슨",
+   "author_death": 1894,
+   "abroad_protected": false,
+   "source_scope": "『보물섬』(1883) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "낡은 지도 한 장에 목숨을 거는, 웃음이 큰 모험가",
+   "desire": "지도 끝의 보물",
+   "conflict": "충성 대 탐욕",
+   "symbols": [
+    "보물 지도",
+    "앵무새",
+    "검은 딱지"
+   ],
+   "arc": {
+    "question": "보물을 찾으면 무엇이 남는가",
+    "conflict": "믿었던 요리사가 해적 두목이었다는 배신",
+    "answer": "보물보다 무거운 것은 살아 돌아온 이야기"
+   },
+   "genre": "모험",
+   "era": "18세기 중엽",
+   "region": "브리스틀 항구와 카리브해의 섬",
+   "form_material": "양피지 보물 지도를 겹친 치맛단, 밧줄로 묶은 항해 일지 책장",
+   "binding": "hardcover",
+   "silhouette": {
+    "body": "athletic",
+    "hair": "long_wavy",
+    "garment": "layered_skirt",
+    "material": "parchment",
+    "pose": "charging",
+    "palette": "tricolor_warm"
+   },
+   "face": {
+    "face_shape": "round",
+    "eyes": "narrow_upturned",
+    "brows": "soft_round",
+    "nose": "small_button",
+    "lips": "wide_smile"
+   },
+   "rule": {
+    "principle": "위험을 \"항해\" 거리로 바꿔 보물에 다가간다",
+    "forms": {
+     "발단": "이긴 판마다 항해 거리를 하나 얻는다",
+     "전개": "항해 거리를 써서 줄을 하나 건너뛰어 상대 뒷줄을 친다",
+     "결말": "항해 거리가 넷이면 보물을 열어 아군 전체를 한 번 강화한다"
+    },
+    "counter": "초반을 막아 항해 거리를 못 쌓게 한다. 뒷줄을 비워 두면 건너뛴 공격이 허공을 친다"
+   },
+   "forms": {
+    "발단": {
+     "look": "벤보 여관의 밤 — 소매를 걷은 셔츠와 겹친 앞치마 치마, 바다 지도가 그려진 허리띠",
+     "role": "정찰",
+     "pose": "한 손으로 접힌 지도 끝을 허리춤에서 꺼내 보이며, 다른 손은 문틀을 짚고 몸을 기울인 자세"
+    },
+    "전개": {
+     "look": "히스파니올라 호의 항해 — 선원 코트와 바람에 부푼 겹치마, 밧줄과 나침반 장식",
+     "role": "돌파",
+     "pose": "뱃머리 난간에 한 발을 올리고 앞으로 몸을 기울여 한 팔로 수평선을 가리키는 자세"
+    },
+    "결말": {
+     "look": "보물 동굴 — 금화 장식이 달린 해적 코트, 찢긴 지도 책장을 엮은 망토",
+     "role": "지원",
+     "pose": "두 손을 허리에 얹고 고개를 젖혀 크게 웃는, 당당한 선 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "눈 내리는 해변 여관, 바다 쪽에서 들려오는 지팡이 소리와 버려진 선원 궤짝",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "폭풍을 뚫고 섬을 향해 기울어진 범선의 갑판과 찢어질 듯 부푼 돛",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "횃불에 비친 동굴 가득 쏟아진 금화와 보석",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "사과 통 속에서 엿들은 반란",
+    "통나무 요새",
+    "벤 건의 섬"
+   ],
+   "pilot": {
+    "form": "전개",
+    "open": "전개"
+   }
+  },
+{
+   "key": "time_machine",
+   "title": "타임머신",
+   "author": "허버트 조지 웰스",
+   "author_death": 1946,
+   "abroad_protected": false,
+   "source_scope": "『타임머신』(1895) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "미래를 보고 돌아와도 끝내 낙관을 버리지 못하는 발명가",
+   "desire": "인류의 끝을 보는 것",
+   "conflict": "진보 대 퇴화",
+   "symbols": [
+    "황동 시간 기계",
+    "흰 꽃 두 송이",
+    "끝없는 모래 해변"
+   ],
+   "arc": {
+    "question": "인류의 미래는 진보인가",
+    "conflict": "엘로이와 몰록 — 둘로 갈라진 인류",
+    "answer": "끝이 와도 다정함은 남는다 — 주머니 속 흰 꽃처럼"
+   },
+   "genre": "SF",
+   "era": "19세기 말 → 802701년",
+   "region": "영국 리치먼드 실험실과 먼 미래의 템스강",
+   "form_material": "황동 톱니와 계기판을 단 책장 드레스, 시곗바늘을 엮은 코르셋",
+   "binding": "hardcover",
+   "silhouette": {
+    "body": "curvy",
+    "hair": "bob",
+    "garment": "one_piece_dress",
+    "material": "metal_instruments",
+    "pose": "striding",
+    "palette": "brass_teal"
+   },
+   "face": {
+    "face_shape": "oval",
+    "eyes": "round_large",
+    "brows": "straight_thick",
+    "nose": "upturned",
+    "lips": "heart_full"
+   },
+   "rule": {
+    "principle": "턴을 \"시간\" 으로 바꿔 앞당기거나 되돌린다",
+    "forms": {
+     "발단": "한 턴에 한 번, 내 카드 하나의 대기 시간을 한 턴 앞당긴다",
+     "전개": "상대 카드 하나를 한 턴 뒤로 보낸다(그 턴엔 싸우지 않는다)",
+     "결말": "방금 쓰러진 아군 하나를 직전 턴의 상태로 되돌린다"
+    },
+    "counter": "한 번에 여러 장을 내면 하나만 되돌릴 수 있다. 시간을 쓴 턴에는 자신이 무방비다"
+   },
+   "forms": {
+    "발단": {
+     "look": "리치먼드 실험실의 저녁 — 황동 단추의 드레스와 작업용 앞치마, 설계도 책장을 겹친 소매",
+     "role": "지원",
+     "pose": "곁의 황동 레버에 한 손을 얹고, 다른 손은 가슴께에서 작은 회중시계를 열어 보는 자세"
+    },
+    "전개": {
+     "look": "802701년의 정원 — 계기판이 빛나는 드레스 자락, 흰 꽃을 꽂은 시곗바늘 머리 장식",
+     "role": "교란",
+     "pose": "한 걸음 내딛으며 몸을 돌려 어깨 너머로 카메라를 돌아보고, 한 팔은 옆으로 펼친 자세"
+    },
+    "결말": {
+     "look": "세계의 끝 해변 — 바람에 해진 드레스와 녹슨 황동, 주머니에 꽂힌 흰 꽃 두 송이",
+     "role": "버티기",
+     "pose": "두 손을 가슴 앞에 포개 흰 꽃을 감싸 쥐고, 먼 곳을 보다 정면으로 고개를 돌린 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "레버를 당긴 순간 — 실험실의 해와 달이 번개처럼 지나가며 흐려지는 창밖",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "거대한 스핑크스 석상과 무너진 궁전, 땅 밑 우물에서 올라오는 차가운 기계 소리",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "붉게 부푼 태양 아래 끝없는 모래 해변과 고요한 바다",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "엘로이의 축제",
+    "몰록의 우물",
+    "녹색 도자기 궁전"
+   ],
+   "pilot": {
+    "form": "결말",
+    "open": "결말"
+   }
+  },
+{
+   "key": "sunzi",
+   "title": "손자병법",
+   "author": "손무(전승)",
+   "anonymous": true,
+   "abroad_protected": false,
+   "source_scope": "『손자』 13편 전체",
+   "quote_source": "직접 옮김",
+   "persona": "칼을 뽑기 전에 이미 이겨 두는 냉정한 전략가",
+   "desire": "싸우지 않고 이기는 것",
+   "conflict": "승리 대 희생",
+   "symbols": [
+    "죽간",
+    "모래판의 진형",
+    "물"
+   ],
+   "arc": {
+    "question": "이기는 싸움은 어떻게 만드는가",
+    "conflict": "이기려면 속이고 희생시켜야 한다는 사실",
+    "answer": "백 번 싸워 백 번 이기는 것보다 싸우지 않고 굴복시키는 것"
+   },
+   "genre": "사상",
+   "era": "춘추 시대 말(기원전 5세기)",
+   "region": "중국 오나라",
+   "form_material": "죽간을 엮은 찰갑과 팔 보호대, 먹으로 쓴 진형이 비치는 비단 띠",
+   "binding": "bamboo",
+   "silhouette": {
+    "body": "slender",
+    "hair": "updo_bun",
+    "garment": "armor_layered",
+    "material": "bamboo_slips",
+    "pose": "commanding_stand",
+    "palette": "ink_jade"
+   },
+   "face": {
+    "face_shape": "long",
+    "eyes": "monolid_long",
+    "brows": "angled_sharp",
+    "nose": "straight_narrow",
+    "lips": "small_bow"
+   },
+   "rule": {
+    "principle": "싸우기 전에 \"형세\" 를 만들어 이긴다",
+    "forms": {
+     "발단": "줄을 하나 고를 때마다 형세를 하나 쌓는다(그 줄의 아군이 단단해진다)",
+     "전개": "형세 둘을 써서 상대 카드 하나를 다른 줄로 옮긴다",
+     "결말": "형세가 셋이면 그 판의 첫 충돌을 싸우지 않고 이긴다"
+    },
+    "counter": "한 줄에 몰아 넣으면 옮길 자리가 없다. 형세를 쌓기 전에 먼저 치면 단단해지지 않는다"
+   },
+   "forms": {
+    "발단": {
+     "look": "계(計) — 짧고 각진 겹옷 위의 죽간 어깨받이, 먹색 비단 띠, 단정히 올린 머리",
+     "role": "정찰",
+     "pose": "곧게 서서 한 손을 등 뒤로 돌리고, 다른 손끝으로 허리의 죽간 띠를 짚은 채 냉정하게 정면을 보는 자세"
+    },
+    "전개": {
+     "look": "허실(虛實) — 물결무늬 비단을 겹친 죽간 찰갑, 바람에 날리는 청록 띠",
+     "role": "교란",
+     "pose": "한 팔을 옆으로 낮게 뻗어 손끝으로 진형을 가리키고, 몸은 반쯤 돌린 채 카메라를 보는 지휘 자세"
+    },
+    "결말": {
+     "look": "모공(謨攻) — 갑옷을 벗고 입은 긴 먹빛 도포, 죽간을 꿰어 늘인 허리 장식",
+     "role": "지원",
+     "pose": "두 손을 소매 속에 모아 가슴 앞에 두고, 고요히 선 채 정면을 보는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "먹으로 진형을 그린 거대한 모래판이 그녀 발밑까지 펼쳐진 막사",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "강을 따라 흐르는 물이 진형 선을 따라 빛나며 갈라지는 전장",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "칼을 거둔 채 고요해진 성문 앞, 바람에 눕는 깃발과 내려놓인 창",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "궁녀를 조련한 손무",
+    "배수진",
+    "풍림화산"
+   ],
+   "pilot": {
+    "form": "발단",
+    "open": "발단"
+   }
   }
  ]
 }

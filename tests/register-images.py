@@ -54,7 +54,7 @@ with tempfile.TemporaryDirectory() as d:
 
     # 틀린 이름은 하나라도 있으면 아무것도 저장하지 않는다
     for bad, why in [(f'don_quixote_prologue_{S}_f.webp', '열쇠'),        # 없는 폼
-                     (f'hamlet_begin_{S}_f.webp', '열쇠'),                # 없는 책
+                     (f'no_such_book_begin_{S}_f.webp', '열쇠'),          # 없는 책
                      (f'alice_begin_watercolor_f.webp', '화풍 열쇠'),      # 없는 화풍 → 책 이름으로 읽혀 실패
                      (f'alice_begin_{S}.webp', '이름 꼴'),               # 성별 표시 없음
                      (f'alice_begin_{S}_f_casual1.webp', '폼에는')]:     # 일상컷은 폼을 안 탄다

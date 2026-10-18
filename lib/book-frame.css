@@ -53,3 +53,21 @@
 .bframe-hanji i.bf-stitch {display:block;z-index:1;top:0;bottom:0;right:0;width:4.5cqw;background:var(--cover);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 300' preserveAspectRatio='none'%3E%3Cpath d='M6 0V300M6 24H20M6 87H20M6 150H20M6 213H20M6 276H20' fill='none' stroke='%23000' stroke-width='3.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat;
           mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 300' preserveAspectRatio='none'%3E%3Cpath d='M6 0V300M6 24H20M6 87H20M6 150H20M6 213H20M6 276H20' fill='none' stroke='%23000' stroke-width='3.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+
+/* ── 죽간: 세로로 늘어선 대나무 쪽(마디 결·쪽 사이 그늘) · 위아래로 엮은 두 줄 끈(--cover 빛) ──
+   두께: 위아래 9 · 좌우 6 (좌우 합 12 × 1.5 = 18). 쪽 하나는 6cqw — 그림 둘레에 쪽이 고르게 선다 */
+.bframe-bamboo > .bframe-in {padding:9cqw 6cqw;border-radius:.8cqw;
+  background-color:#d9c48c;
+  background-image:
+    repeating-linear-gradient(90deg,#00000008 0 1cqw,#0000 1cqw 4.6cqw,#5a45222e 4.6cqw 5.3cqw,#4a3818a6 5.3cqw 5.6cqw,#fff5 5.6cqw 6cqw),
+    linear-gradient(90deg,#ffffff1f,#0000 40%,#00000014),
+    repeating-linear-gradient(0deg,#0000 0 31cqw,#8a6d3a40 31cqw 31.6cqw,#0000 31.6cqw 33cqw),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .02' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .12 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E");
+  box-shadow:inset 0 0 0 1px #5a45224d,inset 0 0 4cqw #5a452240,0 2px 10px #0005}
+/* 엮은 끈 — 위아래 두 줄. 쪽마다 끈이 감긴 매듭 */
+.bframe-bamboo > .bframe-in::before,.bframe-bamboo > .bframe-in::after {content:'';position:absolute;left:0;right:0;height:1.6cqw;pointer-events:none;
+  background:repeating-linear-gradient(90deg,var(--cover) 0 4.6cqw,color-mix(in srgb,var(--cover) 70%,#fff) 4.6cqw 6cqw);
+  box-shadow:0 .3cqw .5cqw #0005}
+.bframe-bamboo > .bframe-in::before {top:3.6cqw}
+.bframe-bamboo > .bframe-in::after {bottom:3.6cqw}
+.bframe-bamboo .bframe-page {background:#efe3c0;box-shadow:0 0 0 max(1px,.35cqw) #3b2f1c,0 .4cqw 2cqw #0007}

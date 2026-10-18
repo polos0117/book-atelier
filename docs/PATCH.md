@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-18 · claude · 책 다섯 권 더 — 열 장르에 한 권씩
+- data/book-design.json — 햄릿(비극)·바스커빌가의 개(추리)·보물섬(모험)·타임머신(SF)·손자병법(사상). 아직 없던 장르 다섯. 원리·폼 셋(모습·역할·자세)·개방 셋·고유 규칙과 대응·장면 카드까지. 정한 말에 팔레트 moss_tweed·brass_teal, 장정 bamboo(죽간). 설계표 검사 통과 — 열 권 어느 둘도 실루엣 3+·얼굴 2+ 다르고, 시범 장르가 겹치지 않는다.
+- lib/prompt-spec.js — 새 팔레트 둘의 영어 풀이.
+- lib/book-frame.js · lib/book-frame.css · lib/words.js — 죽간 틀: 세로로 늘어선 대나무 쪽, 위아래로 엮은 두 줄 끈. 손자병법에. 새 팔레트의 표지 빛.
+- tests/dex-screen.cjs · tests/prompt-screen.cjs · tests/register-images.py — 책 수·그림 없는 책을 설계표에서 읽는다(다섯 권을 박아 두지 않는다). 죽간 틀·틀 종류마다 단추 말·틀 종류 = 설계표 장정. 없는 책 예시를 hamlet 에서 no_such_book 으로.
+- docs/GAME_CONCEPT.md · IMAGE_RULES.md — 두 번째 다섯 권, 죽간 틀.
+
 ## 2026-10-18 · claude · 일상컷 예시 장면 문장 모두 채우기
 - lib/prompt-spec.js — EXAMPLE_DETAIL 에 나머지 갈래(자동·운동·책 에디토리얼·홈웨어·이브닝·일상·와일드카드) 예시 115개의 장면 문장: 옷차림 + 한 가지 동작. 장면 문장이 없던 예시는 프롬프트에 영어 이름만 실려 옷이 흐렸다. 건담·포켓몬에서 온 에디토리얼 예시(분사 밑단·조종석 하네스·발광 회로 …)는 책 말(펼친 책장·책 테두리 …)로 옮겼다.
 - tests/prompt-book.cjs — 모든 갈래의 예시가 장면 문장을 갖는지, 일상컷 760 낱말 안, 풀이에 건담·포켓몬 말이 없는지.

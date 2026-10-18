@@ -135,6 +135,8 @@ for (const ex of ['adult_police', 'adult_nurse']) {
     assert(t.includes('HOLD BACK:') && Object.values(bk.opens).every(o => t.includes(q(o.scene))), id + ' 폼 — 개방 명장면을 미리 넣지 않는다');
   }
   assert(!P.buildPrompt({ outputMode: 'open', book: bk, stage: '결말', styleText: text }).includes('HOLD BACK'), '개방엔 없다'); }
+// 이어가기는 첨부 그림의 겉옷을 다시 입지 않는다(바스커빌 발단·결말 같은 코트)
+assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '결말', baseStage: '발단', identityMode: 'reference', styleText: text }).includes("Do not reuse the attached image's outer garment"), '이어가기 — 겉옷 바꾸기');
 // 원작 시대 — 고르면 시대·지역 줄, 기본(현대)은 없다
 { const hm = design.books.find(x => x.key === 'hamlet'), base = { book: hm, styleText: text, cat: 'adult_roleplay', ex: 'adult_police' };
   const now = P.buildCasual(base), then = P.buildCasual({ ...base, era: 'book' });

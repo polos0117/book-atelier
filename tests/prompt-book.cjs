@@ -128,6 +128,13 @@ for (const ex of ['adult_police', 'adult_nurse']) {
   const t = P.buildCasual({ book: design.books.find(x => x.key === 'hamlet'), styleText: text, cat: 'adult_roleplay', ex });
   assert(/cap/.test(t) && !/theatrical/.test(t) && t.includes('never restyle the chosen outfit'), ex);
 }
+// 개방 명장면은 폼 배경에서 뺀다(바스커빌 사냥개) — 새 인물·이어가기 모두, 개방·일상컷엔 없음
+{ const bk = design.books.find(x => x.key === 'baskervilles');
+  for (const id of ['create', 'reference']) {
+    const t = P.buildPrompt({ outputMode: 'form', book: bk, stage: '발단', baseStage: '발단', identityMode: id, styleText: text });
+    assert(t.includes('HOLD BACK:') && Object.values(bk.opens).every(o => t.includes(q(o.scene))), id + ' 폼 — 개방 명장면을 미리 넣지 않는다');
+  }
+  assert(!P.buildPrompt({ outputMode: 'open', book: bk, stage: '결말', styleText: text }).includes('HOLD BACK'), '개방엔 없다'); }
 // 원작 시대 — 고르면 시대·지역 줄, 기본(현대)은 없다
 { const hm = design.books.find(x => x.key === 'hamlet'), base = { book: hm, styleText: text, cat: 'adult_roleplay', ex: 'adult_police' };
   const now = P.buildCasual(base), then = P.buildCasual({ ...base, era: 'book' });

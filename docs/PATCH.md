@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-18 · claude · 설계표 얼굴 계통
+- data/book-design.json · tools/book-design.py — 책마다 ethnicity(생성기 외형 선택지 facial ethnicity 와 같은 열쇠). 코스모스·앨리스·프랑켄슈타인·바스커빌 European, 돈키호테 Mediterranean, 햄릿 Nordic, 춘향전 Korean, 손자병법 Chinese, 보물섬 Latin American(카리브해), 타임머신 mixed East Asian and European(먼 미래). 비워 두면 모델이 서구권 얼굴로 쏠렸다 — 그린 여섯 권 중 다섯이 유럽계. 정한 말인지 검사.
+- lib/prompt-spec.js · lib/prompt-book.js — 새 인물 FACE 줄에 "broad … ancestry with individual variation, no stereotyped features". 외형에서 계통을 고르면 그쪽이 이기고, 이어가기는 첨부 그림이 정한다. 이미 그린 책은 바뀌지 않는다.
+- lib/prompt-ui.js · lib/words.js — 얼굴 설계 목록에 얼굴 계통.
+- tests/prompt-book.cjs — 설계표 계통·고른 계통이 이김·이어가기엔 없음.
+
 ## 2026-10-18 · claude · 이어가기 폼은 겉옷을 새로
 - lib/prompt-spec.js — 이어가기 출력 줄에 "첨부 그림의 겉옷·코트·망토·안감 그림을 다시 쓰지 말고 FORM 이 말한 옷을 짓는다, 재료·팔레트만 남긴다". 바스커빌가의 개 발단·결말이 사냥개 그림 안감의 같은 긴 코트를 입어 폼 차이가 자세·배경에만 났다.
 - tests/prompt-book.cjs — 이어가기에 겉옷 바꾸기 줄.

@@ -6,7 +6,7 @@
 
 보는 것:
   - 칸이 다 찼나(원전 범위·인용 출처·한 줄 인격·욕망·갈등·상징 셋·질문→갈등→답·장르·시대·지역·형태와 재료)
-  - 정한 말(vocab)만 썼나 — 장르·실루엣 축 6·얼굴 5 묶음·역할·인용 출처·장정
+  - 정한 말(vocab)만 썼나 — 장르·실루엣 축 6·얼굴 5 묶음·역할·인용 출처·장정·얼굴 계통
   - 어느 두 책도 실루엣 축 6 중 셋 이상, 얼굴 5 묶음 중 둘 이상 다르다 — 화풍의 기본 얼굴·흔한 차림으로 수렴하지 않게
   - 폼·개방이 발단·전개·결말 셋씩, 폼마다 다른 자세(pose), 개방은 한 명으로 표현된다고 확인했다(one_figure)
   - 고유 규칙: 공통 원리 하나 + 폼별 사용법 셋 + 상대의 대응
@@ -58,6 +58,9 @@ def check(doc):
         # 장정 — 서가가 그림 둘레에 두르는 틀(lib/book-frame.js). 서양 양장 · 한지 선장
         if b.get("binding") not in V.get("binding", []):
             bad("장정 binding=%r 는 정한 말이 아니다(%s)" % (b.get("binding"), "·".join(V.get("binding", []))))
+        # 얼굴 계통 — 새 인물(첫 그림)의 FACE 줄에 실린다. 비워 두면 모델이 서구권 얼굴로 쏠렸다(2026-10-18 여섯 권 중 다섯)
+        if b.get("ethnicity") not in V.get("ethnicity", []):
+            bad("얼굴 계통 ethnicity=%r 는 정한 말이 아니다(생성기 외형 선택지 facial ethnicity 와 같은 열쇠)" % b.get("ethnicity"))
         for k in SIL:
             if (b.get("silhouette") or {}).get(k) not in V.get(k, []):
                 bad("실루엣 %s=%r 는 정한 말이 아니다" % (k, (b.get("silhouette") or {}).get(k)))

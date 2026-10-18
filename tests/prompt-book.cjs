@@ -137,6 +137,13 @@ for (const ex of ['adult_police', 'adult_nurse']) {
   assert(!P.buildPrompt({ outputMode: 'open', book: bk, stage: '결말', styleText: text }).includes('HOLD BACK'), '개방엔 없다'); }
 // 이어가기는 첨부 그림의 겉옷을 다시 입지 않는다(바스커빌 발단·결말 같은 코트)
 assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '결말', baseStage: '발단', identityMode: 'reference', styleText: text }).includes("Do not reuse the attached image's outer garment"), '이어가기 — 겉옷 바꾸기');
+// 얼굴 계통 — 설계표 값이 새 인물 FACE 줄에, 사람이 고르면 그쪽, 이어가기엔 없다
+{ const ti = design.books.find(x => x.key === 'treasure_island');
+  const t = P.buildPrompt({ outputMode: 'form', book: ti, stage: '발단', styleText: text });
+  assert(/FACE \([^\n]*broad Latin American ancestry/.test(t), '설계표 계통');
+  const mine2 = P.buildPrompt({ outputMode: 'form', book: ti, stage: '발단', styleText: text, params: [['facial ethnicity', 'Korean']] });
+  assert(!mine2.includes('Latin American ancestry') && mine2.includes('facial ethnicity: Korean'), '고른 계통이 이긴다');
+  assert(!P.buildPrompt({ outputMode: 'form', book: ti, stage: '전개', baseStage: '발단', identityMode: 'reference', styleText: text }).includes('ancestry'), '이어가기는 첨부 그림'); }
 // 원작 시대 — 고르면 시대·지역 줄, 기본(현대)은 없다
 { const hm = design.books.find(x => x.key === 'hamlet'), base = { book: hm, styleText: text, cat: 'adult_roleplay', ex: 'adult_police' };
   const now = P.buildCasual(base), then = P.buildCasual({ ...base, era: 'book' });

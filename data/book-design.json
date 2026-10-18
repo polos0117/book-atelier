@@ -17,6 +17,7 @@
   "role": ["공격", "돌파", "버티기", "지원", "정찰", "교란"],
   "quote_source": ["원문", "직접 옮김"],
   "binding": ["hardcover", "hanji", "bamboo"],
+  "ethnicity": ["East Asian", "Korean", "Japanese", "Chinese", "Southeast Asian", "Central Asian", "South Asian", "Middle Eastern", "European", "Nordic", "Mediterranean", "Slavic", "Latin American", "African", "mixed East Asian and European"],
   "form_key": {"발단": "begin", "전개": "middle", "결말": "end"}
  },
  "books": [
@@ -38,6 +39,7 @@
    "region": "독일·남미 탐험",
    "form_material": "양장 책장을 겹친 깃과 자락, 관측 기구(기압계·천구의)",
    "binding": "hardcover",
+   "ethnicity": "European",
    "silhouette": {"body": "slender", "hair": "long_wavy", "garment": "coat_trousers", "material": "paper_pages", "pose": "striding", "palette": "navy_gold"},
    "face": {"face_shape": "oval", "eyes": "almond_wide", "brows": "soft_round", "nose": "straight_narrow", "lips": "wide_smile"},
    "rule": {
@@ -80,6 +82,7 @@
    "region": "스페인 라만차",
    "form_material": "기사도 소설 책장을 덧댄 낡은 갑옷, 놋대야 투구",
    "binding": "hardcover",
+   "ethnicity": "Mediterranean",
    "silhouette": {"body": "athletic", "hair": "ponytail", "garment": "armor_layered", "material": "paper_armor", "pose": "commanding_stand", "palette": "rust_parchment"},
    "face": {"face_shape": "diamond", "eyes": "narrow_upturned", "brows": "angled_sharp", "nose": "straight_narrow", "lips": "full_wide"},
    "rule": {
@@ -122,6 +125,7 @@
    "region": "빅토리아 시대 영국",
    "form_material": "무늬만 있는 트럼프 카드 뒷면을 엮은 장식, 앞치마",
    "binding": "hardcover",
+   "ethnicity": "European",
    "silhouette": {"body": "slender", "hair": "bob", "garment": "one_piece_dress", "material": "card_stock", "pose": "tilted_curious", "palette": "cream_blue"},
    "face": {"face_shape": "heart", "eyes": "round_large", "brows": "arched_thin", "nose": "small_button", "lips": "small_bow"},
    "rule": {
@@ -164,6 +168,7 @@
    "region": "스위스·북극 고딕",
    "form_material": "서로 다른 가죽 제본을 봉합선으로 기워 붙인 코트",
    "binding": "hardcover",
+   "ethnicity": "European",
    "silhouette": {"body": "broad_strong", "hair": "voluminous", "garment": "cloak_wrapped", "material": "stitched_patchwork", "pose": "crouch_rise", "palette": "oxblood_gray"},
    "face": {"face_shape": "square_soft", "eyes": "droopy_soft", "brows": "straight_thick", "nose": "straight_narrow", "lips": "full_wide"},
    "rule": {
@@ -207,6 +212,7 @@
    "region": "남원",
    "form_material": "방각본 한지를 겹친 치맛단과 노리개",
    "binding": "hanji",
+   "ethnicity": "Korean",
    "silhouette": {"body": "curvy", "hair": "braids", "garment": "hanbok", "material": "hanji", "pose": "rising_swing", "palette": "rose_jade"},
    "face": {"face_shape": "heart", "eyes": "monolid_long", "brows": "straight_thick", "nose": "straight_narrow", "lips": "heart_full"},
    "rule": {
@@ -257,6 +263,7 @@
    "region": "덴마크 엘시노어 성",
    "form_material": "검은 상복에 겹친 희곡 대본 책장, 가죽 제본의 깃과 은빛 단검 장식",
    "binding": "hardcover",
+   "ethnicity": "Nordic",
    "silhouette": {
     "body": "tall_statuesque",
     "hair": "long_straight",
@@ -348,6 +355,7 @@
    "region": "영국 다트무어 황야",
    "form_material": "트위드 천 제본의 책장 케이프, 사건 수첩을 엮은 코르셋과 돋보기 장식",
    "binding": "hardcover",
+   "ethnicity": "European",
    "silhouette": {
     "body": "lanky",
     "hair": "short_crop",
@@ -439,6 +447,7 @@
    "region": "브리스틀 항구와 카리브해의 섬",
    "form_material": "양피지 보물 지도를 겹친 치맛단, 밧줄로 묶은 항해 일지 책장",
    "binding": "hardcover",
+   "ethnicity": "Latin American",
    "silhouette": {
     "body": "athletic",
     "hair": "long_wavy",
@@ -530,6 +539,7 @@
    "region": "영국 리치먼드 실험실과 먼 미래의 템스강",
    "form_material": "황동 톱니와 계기판을 단 책장 드레스, 시곗바늘을 엮은 코르셋",
    "binding": "hardcover",
+   "ethnicity": "mixed East Asian and European",
    "silhouette": {
     "body": "curvy",
     "hair": "bob",
@@ -621,6 +631,7 @@
    "region": "중국 오나라",
    "form_material": "죽간을 엮은 찰갑과 팔 보호대, 먹으로 쓴 진형이 비치는 비단 띠",
    "binding": "bamboo",
+   "ethnicity": "Chinese",
    "silhouette": {
     "body": "slender",
     "hair": "updo_bun",

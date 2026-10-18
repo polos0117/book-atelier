@@ -80,6 +80,11 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.selectOption('#category', 'library_life');
     await p.selectOption('#example', 'lib_binding');
     assert((await out(p)).includes('Stitching a book block'));
+    /* 원작 시대 — 같은 갈래·예시를 그 책의 시대·지역 판으로 */
+    assert(!(await out(p)).includes('ERA:'), '기본은 현대');
+    await p.selectOption('#era', 'book');
+    assert((await out(p)).includes("ERA: set this scene in her book's own time and place") && (await out(p)).includes('17세기 초'), '원작 시대 줄');
+    await p.click('#lock-era');
     await p.click('#lock-example');
     await p.click('#random-scene');
     assert.equal(await p.$eval('#example', e => e.value), 'lib_binding', '잠근 예시는 그대로');
@@ -92,6 +97,7 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert.equal(rec.record, 'records/don_quixote/casual3-ui.json');
     assert.equal(rec.file, 'don_quixote_literary_fantasy_f_casual3.webp');
     assert.equal(rec.storage.cards.don_quixote.scenes.casual.ex, 'lib_binding');
+    assert.equal(rec.storage.cards.don_quixote.scenes.casual.era, 'book', '잠근 시대는 무작위에도 그대로, 기록에 남는다');
     assert.equal(rec.styleVersion, 'v7');
     /* 8. 저장 — 새로고침해도 이어지고, 다른 책은 직전 책 외형을 가져올 수 있다 */
     await p.reload(); await p.waitForSelector('#prompt-output');
@@ -107,6 +113,6 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.setViewportSize(FOLD.cover);
     assert(await p.evaluate(() => document.body.scrollWidth <= innerWidth + 1), '덮개 화면에서 가로로 넘친다');
     await a.close();
-    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·갈래·잠금 · 복사·기록 · 저장·직전 책 외형');
+    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·갈래·원작 시대·잠금 · 복사·기록 · 저장·직전 책 외형');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

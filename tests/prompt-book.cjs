@@ -128,6 +128,12 @@ for (const ex of ['adult_police', 'adult_nurse']) {
   const t = P.buildCasual({ book: design.books.find(x => x.key === 'hamlet'), styleText: text, cat: 'adult_roleplay', ex });
   assert(/cap/.test(t) && !/theatrical/.test(t) && t.includes('never restyle the chosen outfit'), ex);
 }
+// 원작 시대 — 고르면 시대·지역 줄, 기본(현대)은 없다
+{ const hm = design.books.find(x => x.key === 'hamlet'), base = { book: hm, styleText: text, cat: 'adult_roleplay', ex: 'adult_police' };
+  const now = P.buildCasual(base), then = P.buildCasual({ ...base, era: 'book' });
+  assert(!now.includes('ERA:') && then.includes('ERA: set this scene') && then.includes(q(hm.era)) && then.includes(q(hm.region)) && then.includes('city watch'), '원작 시대');
+  assert(then.indexOf('ERA:') > then.indexOf('WARDROBE:') && then.indexOf('ERA:') < then.indexOf('SCENE (chosen)'), '시대 줄은 옷 줄 뒤, 장면 앞');
+  assert(!P.buildPrompt({ outputMode: 'form', book: hm, stage: '발단', styleText: text, era: 'book' }).includes('ERA:'), '폼 초상에는 없다'); }
 // 전통 의상 — 고른 전통이 책의 지역을 이긴다(돈키호테 아오자이). 장면 문장이 없던 예시는 짜임을 적는다
 const ao = P.buildCasual({ book: design.books.find(x => x.key === 'don_quixote'), styleText: text, cat: 'traditional', ex: 'aodai_daily' });
 assert(ao.includes('wins over her book') && ao.includes('mandarin collar') && ao.includes('wide-leg silk trousers'), '아오자이');

@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-19 · claude · 책 다섯 권 더 — 장르 두 바퀴째
+- data/book-design.json — 오만과 편견(로맨스)·드라큘라(공포)·삼총사(모험)·천일야화(동화·판타지)·걸리버 여행기(희극·풍자). 원리·폼 셋(모습·역할·자세)·개방 셋·고유 규칙과 대응·장면 카드·얼굴 계통까지. 정한 말에 재료 letter_paper, 자세 dance_turn·en_garde·reclining_tale·towering_lean, 팔레트 blush_ivory·crimson_black·lapis_saffron·sea_sand. 새 책은 시범을 두지 않는다(시범끼리 장르가 겹치면 안 된다). 설계표 검사 통과 — 열다섯 권 어느 둘도 실루엣 3+·얼굴 2+ 다르다.
+- lib/prompt-spec.js — 새 말의 영어 풀이.
+- lib/book-frame.js — 새 팔레트 넷의 표지 빛.
+- docs/GAME_CONCEPT.md — 세 번째 다섯 권, 후보 목록에 천일야화.
+
 ## 2026-10-19 · claude · 테마 빛깔·배경을 책 재료로
 - lib/workspace.css — 테마 여덟의 빛깔과 배경이 pkm·myth 와 거의 같았다. 열쇠는 그대로 두고(같은 주소의 테마 선택이 이어진다) 책 재료로: 열람실 = 줄 쳐진 종이결·창빛, 한밤의 서고 = 금빛 별자리 지도, 꽃잎 책갈피 = 눌러 말린 꽃잎, 이끼 낀 서가 = 녹색 가죽에 금박 격자, 자줏빛 장정 = 천 장정 결, 양피지 = 얼룩진 양피지, 심해 문고 = 청록 마블지, 등잔불 = 마호가니 나뭇결과 등잔빛. 그림 조각은 다 인라인 SVG. 글자 대비(AA)는 여덟 다 지킨다.
 - lib/workspace-theme.js · index.html · dex.html · prompt.html — 주소창 빛(theme-color)을 새 판 빛깔로.

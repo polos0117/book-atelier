@@ -6,9 +6,9 @@
   "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
   "hair": ["short_crop", "bob", "ponytail", "long_straight", "long_wavy", "updo_bun", "braids", "voluminous"],
   "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped"],
-  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments"],
-  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe"],
-  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal"],
+  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper"],
+  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "en_garde", "reclining_tale", "towering_lean"],
+  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "lapis_saffron", "sea_sand"],
   "face_shape": ["oval", "round", "heart", "long", "square_soft", "diamond"],
   "eyes": ["almond_wide", "round_large", "narrow_upturned", "droopy_soft", "deep_set", "monolid_long"],
   "brows": ["straight_thick", "arched_thin", "soft_round", "angled_sharp", "low_heavy"],
@@ -696,6 +696,446 @@
     "form": "발단",
     "open": "발단"
    }
+  },
+  {
+   "key": "pride_prejudice",
+   "title": "오만과 편견",
+   "author": "제인 오스틴",
+   "author_death": 1817,
+   "abroad_protected": false,
+   "source_scope": "『오만과 편견』(1813) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "첫인상을 단번에 판정하고, 틀렸음을 안 순간 누구보다 먼저 고쳐 쓰는 재치꾼",
+   "desire": "사랑과 존중이 함께인 선택",
+   "conflict": "자존심 대 편견",
+   "symbols": [
+    "봉랍 찍힌 편지",
+    "무도회의 춤 카드",
+    "펨벌리의 호수"
+   ],
+   "arc": {
+    "question": "첫인상은 믿을 만한가",
+    "conflict": "오만과 편견이 서로를 잘못 읽게 만든다",
+    "answer": "편지 한 통으로 자신을 다시 읽고, 고쳐 쓴 마음으로 고른다"
+   },
+   "genre": "로맨스",
+   "era": "19세기 초 섭정 시대",
+   "region": "잉글랜드 하트퍼드셔·더비셔",
+   "form_material": "편지지 책장을 겹친 하이웨이스트 드레스, 봉랍 단추와 리본, 깃펜 장식",
+   "binding": "hardcover",
+   "ethnicity": "European",
+   "silhouette": {
+    "body": "petite",
+    "hair": "updo_bun",
+    "garment": "one_piece_dress",
+    "material": "letter_paper",
+    "pose": "dance_turn",
+    "palette": "blush_ivory"
+   },
+   "face": {
+    "face_shape": "oval",
+    "eyes": "almond_wide",
+    "brows": "arched_thin",
+    "nose": "small_button",
+    "lips": "wide_smile"
+   },
+   "rule": {
+    "principle": "첫인상을 \"판정\" 해 두고, 틀렸으면 뒤집어 더 큰 힘으로 쓴다",
+    "forms": {
+     "발단": "상대 카드가 나올 때마다 하나를 판정(오만)으로 표시한다 — 판정한 카드를 칠 때 더 세다",
+     "전개": "편지를 열어 판정 하나를 뒤집는다 — 뒤집힌 카드와는 그 턴 서로 치지 않는다",
+     "결말": "뒤집은 판정 수만큼 아군 하나를 강화한다"
+    },
+    "counter": "판정받은 카드를 빼거나 바꾸면 표시가 사라진다. 처음부터 약한 카드만 내면 판정의 이득이 작다"
+   },
+   "forms": {
+    "발단": {
+     "look": "메리턴 무도회 — 리본 단 하이웨이스트 무도회 드레스, 편지지 책장을 접은 짧은 퍼프 소매, 진주 머리핀",
+     "role": "정찰",
+     "pose": "부채를 반쯤 펼쳐 입가를 가리고, 턱을 살짝 든 채 곁눈으로 상대를 판정하듯 보는 자세"
+    },
+    "전개": {
+     "look": "편지를 읽은 아침 — 짧은 스펜서 재킷과 진흙 튄 밑단, 봉랍 찍힌 편지 책장이 겹친 치마",
+     "role": "교란",
+     "pose": "한 손에 펼친 편지를 내려 들고 다른 손을 가슴에 얹은 채, 걸음을 멈추고 어깨 너머로 돌아보는 자세"
+    },
+    "결말": {
+     "look": "펨벌리의 답 — 아이보리 실크 드레스와 블러시 숄, 깃펜과 봉랍을 엮은 허리 리본",
+     "role": "지원",
+     "pose": "춤의 한 바퀴를 도는 중 치맛자락이 둥글게 퍼지고, 한 손을 앞으로 내밀어 이끄는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "촛불 샹들리에가 흔들리는 메리턴 무도회장, 비어 있는 춤 줄과 바닥에 떨어진 춤 카드",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "비 갠 로징스 정원 길, 바람에 흩날리는 편지 책장과 붉은 봉랍",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "새벽 안개 속 펨벌리 저택이 고요한 호수에 비치는 들판",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "로징스의 첫 청혼",
+    "레이디 캐서린과의 대면",
+    "리디아의 도주"
+   ]
+  },
+  {
+   "key": "dracula",
+   "title": "드라큘라",
+   "author": "브램 스토커",
+   "author_death": 1912,
+   "abroad_protected": false,
+   "source_scope": "『드라큘라』(1897) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "문턱에서 초대받기를 기다렸다가, 들어온 뒤로는 무엇도 놓아주지 않는 밤의 귀족",
+   "desire": "끝나지 않는 밤",
+   "conflict": "매혹 대 기록",
+   "symbols": [
+    "박쥐 날개 그림자",
+    "흙을 채운 상자",
+    "타자기로 옮긴 일기"
+   ],
+   "arc": {
+    "question": "밤은 무엇으로 이기는가",
+    "conflict": "매혹은 퍼지고, 흩어진 기록은 아무도 믿지 않는다",
+    "answer": "흩어진 일기와 편지를 한데 엮자 밤이 이름을 얻고, 해가 뜬다"
+   },
+   "genre": "공포",
+   "era": "19세기 말",
+   "region": "트란실바니아 → 런던·휘트비",
+   "form_material": "일기·편지·전보 책장을 이어 붙인 높은 깃 망토, 피처럼 붉은 봉랍과 은 장식",
+   "binding": "hardcover",
+   "ethnicity": "Slavic",
+   "silhouette": {
+    "body": "tall_statuesque",
+    "hair": "long_straight",
+    "garment": "cloak_wrapped",
+    "material": "paper_pages",
+    "pose": "commanding_stand",
+    "palette": "crimson_black"
+   },
+   "face": {
+    "face_shape": "diamond",
+    "eyes": "deep_set",
+    "brows": "low_heavy",
+    "nose": "aquiline",
+    "lips": "full_wide"
+   },
+   "rule": {
+    "principle": "들어온 카드에 \"자국\" 을 남겨 내 편으로 끌어들인다",
+    "forms": {
+     "발단": "상대가 이 줄에 카드를 낼 때마다 초대 하나 — 그 카드에 자국을 남긴다",
+     "전개": "자국 난 상대 카드 하나의 힘을 빨아 자신을 강화한다",
+     "결말": "자국이 셋인 상대 카드 하나를 이 판 동안 아군으로 데려온다 — 대신 마지막 턴(해 뜰 녘)에 자신은 사라진다"
+    },
+    "counter": "이 줄에 카드를 내지 않으면 초대가 없다. 기록·정화 쪽 효과로 자국을 지우면 모은 것이 사라진다"
+   },
+   "forms": {
+    "발단": {
+     "look": "성의 문턱 — 높은 깃의 검은 망토, 편지 책장을 겹친 진홍 안감, 촛대 같은 은 장식",
+     "role": "교란",
+     "pose": "성문 문턱에 서서 한 손을 문틀에 얹고, 다른 손을 안쪽으로 내밀어 들어오라 초대하는 자세"
+    },
+    "전개": {
+     "look": "런던의 밤 — 안개를 머금은 진홍 이브닝 드레스, 일기 책장이 찢겨 박쥐 날개처럼 퍼진 망토",
+     "role": "공격",
+     "pose": "한 팔로 망토 자락을 박쥐 날개처럼 크게 펼쳐 들고, 몸을 앞으로 기울여 내려다보는 자세"
+    },
+    "결말": {
+     "look": "해 뜨는 산성 — 빛바랜 드레스에 흩날리는 재, 끊어진 은 사슬과 흙 묻은 장갑",
+     "role": "버티기",
+     "pose": "흙 상자에 반쯤 기대 앉아, 한 손을 들어 떠오르는 빛을 가리며 고개를 돌린 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "보름달 아래 트란실바니아 산성, 끝없이 오르는 돌계단과 멀리 늑대 실루엣",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "안개 낀 런던 지붕 위, 박쥐 떼가 달을 가로지르고 창문 하나만 열린 밤",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "해가 뜨는 산성 앞 눈길, 깨진 흙 상자에서 재가 햇빛 속으로 흩어진다",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "조너선의 일기 — 성의 손님",
+    "휘트비 항구의 난파선",
+    "루시의 무덤"
+   ]
+  },
+  {
+   "key": "three_musketeers",
+   "title": "삼총사",
+   "author": "알렉상드르 뒤마",
+   "author_death": 1870,
+   "abroad_protected": false,
+   "source_scope": "『삼총사』(1844) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "혼자 덤벼도 늘 셋을 등에 업은 듯 싸우는, 하나는 모두를 위한 검객",
+   "desire": "명예와 우정",
+   "conflict": "충성 대 음모",
+   "symbols": [
+    "다이아몬드 장식끈 열두 개",
+    "십자 무늬 총사 망토",
+    "던진 결투 장갑"
+   ],
+   "arc": {
+    "question": "혼자인 검은 무엇을 지킬 수 있나",
+    "conflict": "추기경의 음모와 밀레디의 덫이 친구를 하나씩 떼어 놓는다",
+    "answer": "하나는 모두를 위해 — 함께 건 검이 끝내 왕비의 명예를 지킨다"
+   },
+   "genre": "모험",
+   "era": "17세기 전반(1625~1628)",
+   "region": "프랑스 파리·라로셸, 영국 해협",
+   "form_material": "총사대 십자 망토를 천 제본 책장으로 겹친 상의, 가죽 제본 장갑과 검대, 깃털 모자",
+   "binding": "hardcover",
+   "ethnicity": "Mediterranean",
+   "silhouette": {
+    "body": "athletic",
+    "hair": "ponytail",
+    "garment": "coat_trousers",
+    "material": "cloth_binding",
+    "pose": "en_garde",
+    "palette": "navy_gold"
+   },
+   "face": {
+    "face_shape": "square_soft",
+    "eyes": "narrow_upturned",
+    "brows": "straight_thick",
+    "nose": "aquiline",
+    "lips": "wide_smile"
+   },
+   "rule": {
+    "principle": "\"맹세\" 로 아군을 묶어, 하나가 맞으면 모두가 받아친다",
+    "forms": {
+     "발단": "결투 신청 — 이 줄의 가장 센 상대와 먼저 일대일로 붙는다(다른 카드는 끼어들 수 없다)",
+     "전개": "아군 셋까지 맹세로 묶는다 — 묶인 하나가 맞으면 나머지가 한 번씩 받아친다",
+     "결말": "맹세로 묶인 아군 수만큼 강해져, 상대 계략(효과) 하나를 끊는다"
+    },
+    "counter": "아군을 줄마다 흩어 놓게 만들면 묶을 셋이 없다. 약한 카드를 미끼로 내면 결투 신청이 헛돈다"
+   },
+   "forms": {
+    "발단": {
+     "look": "가스코뉴에서 온 날 — 낡은 가죽 더블릿과 바랜 노란 망토, 아버지의 검과 천 제본 책장 깃",
+     "role": "공격",
+     "pose": "깃털 모자를 한 손으로 벗어 들고 다른 손으로 칼자루를 잡은 채, 한 발 내디뎌 결투를 청하는 자세"
+    },
+    "전개": {
+     "look": "총사대 — 은빛 십자가를 수놓은 청색 망토(천 제본 책장), 깃털 모자, 가죽 검대",
+     "role": "버티기",
+     "pose": "가는 검을 앞으로 겨누고 다른 손은 뒤로 들어 올린 펜싱 자세, 망토가 뒤로 날린다"
+    },
+    "결말": {
+     "look": "해협을 건넌 뒤 — 다이아몬드 장식끈을 어깨에 건 금빛 예복, 맹세의 리본을 묶은 검",
+     "role": "돌파",
+     "pose": "검을 하늘로 곧게 치켜들어 맹세하고, 다른 손을 가슴에 얹은 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "파리 수도원 뒤뜰의 결투장, 흩날리는 꽃잎과 돌바닥에 던져진 결투 장갑",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "횃불이 흔들리는 칼레 항구의 밤, 바람에 부푼 돛과 말발굽 먼지",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "루브르 무도회장, 샹들리에 아래 반짝이는 다이아몬드 장식끈 열두 개",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "밀레디의 백합 낙인",
+    "생제르베 보루의 아침 식사",
+    "추기경 친위대와의 결투"
+   ]
+  },
+  {
+   "key": "arabian_nights",
+   "title": "천일야화",
+   "author": "작자 미상(셰에라자드 전승)",
+   "anonymous": true,
+   "abroad_protected": false,
+   "source_scope": "『천일야화』 — 셰에라자드의 액자 이야기와 그 안의 이야기들(갈랑 판에 더해진 이야기 포함)",
+   "quote_source": "직접 옮김",
+   "persona": "이야기를 끊지 않는 한 아침이 오지 않는, 천 하루 밤의 이야기꾼",
+   "desire": "이야기로 죽음을 미루는 것",
+   "conflict": "이야기 대 처형",
+   "symbols": [
+    "기름 등잔",
+    "겹겹의 액자 이야기",
+    "날아오르는 양탄자"
+   ],
+   "arc": {
+    "question": "이야기는 사람을 살릴 수 있는가",
+    "conflict": "밤마다 끝을 미뤄야만 내일이 온다",
+    "answer": "천 하루 밤 끝에, 이야기가 왕의 마음을 바꾼다"
+   },
+   "genre": "동화·판타지",
+   "era": "중세 이슬람 세계(8~14세기 이야기들)",
+   "region": "바그다드·페르시아",
+   "form_material": "금박 아라베스크를 새긴 필사본 책장, 등잔불이 비치는 비단 두루마리 베일과 겹겹의 액자 장식",
+   "binding": "hardcover",
+   "ethnicity": "Middle Eastern",
+   "silhouette": {
+    "body": "curvy",
+    "hair": "long_wavy",
+    "garment": "robe_overlap",
+    "material": "silk_scroll",
+    "pose": "reclining_tale",
+    "palette": "lapis_saffron"
+   },
+   "face": {
+    "face_shape": "long",
+    "eyes": "almond_wide",
+    "brows": "arched_thin",
+    "nose": "straight_narrow",
+    "lips": "full_wide"
+   },
+   "rule": {
+    "principle": "판을 끝내지 않고 \"다음 밤\" 으로 미뤄, 미룬 만큼 이야기를 쌓는다",
+    "forms": {
+     "발단": "이 줄의 패배를 한 번 다음 밤으로 미루고, 이야기 하나를 쌓는다",
+     "전개": "이야기 둘을 써서 액자를 연다 — 손패의 카드 하나를 이 줄에 끼워 넣는다(이야기 속 이야기)",
+     "결말": "쌓인 이야기 수만큼 상대의 가장 센 카드를 약하게 해, 그 판의 결말을 바꾼다"
+    },
+    "counter": "첫 턴부터 몰아쳐 미룰 틈을 주지 않는다. 이야기를 쓰기 전에 두 번 이기면 미루기가 무너진다"
+   },
+   "forms": {
+    "발단": {
+     "look": "첫날 밤 — 등잔불이 비치는 겹겹의 비단 베일, 금박 필사본 책장을 엮은 허리띠",
+     "role": "버티기",
+     "pose": "방석 위에 비스듬히 기대 앉아 한 손에 등잔을 받쳐 들고, 다른 손을 펼쳐 이야기를 시작하는 자세"
+    },
+    "전개": {
+     "look": "이야기 속 이야기 — 푸른 연기빛 겉옷, 이야기마다 다른 액자 무늬가 겹친 넓은 소매",
+     "role": "교란",
+     "pose": "두 팔을 좌우로 크게 펼쳐 겹겹의 소매를 액자처럼 열어 보이며, 몸을 반쯤 돌려 돌아보는 자세"
+    },
+    "결말": {
+     "look": "천 하루째 새벽 — 금빛 카프탄과 진주 머리장식, 다 타고 꺼진 등잔",
+     "role": "지원",
+     "pose": "곧게 서서 두 손으로 꺼진 등잔을 가슴 앞에 받치고, 떠오르는 새벽 쪽을 보는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "등잔 하나만 켠 궁전 침실, 벽의 그림자가 이야기 속 장면(배·바위새·성채)으로 움직인다",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "밤하늘을 나는 양탄자 아래 달빛 사막 도시와 둥근 지붕, 구름 사이 거대한 바위새 그림자",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "새벽빛이 스며드는 궁전 정원, 천 개의 등잔이 차례로 꺼진다",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "신드바드의 일곱 항해",
+    "알리바바와 마흔 명의 도적",
+    "알라딘의 램프"
+   ]
+  },
+  {
+   "key": "gulliver",
+   "title": "걸리버 여행기",
+   "author": "조너선 스위프트",
+   "author_death": 1745,
+   "abroad_protected": false,
+   "source_scope": "『걸리버 여행기』(1726) 네 편 전체",
+   "quote_source": "직접 옮김",
+   "persona": "거인이 되었다 소인이 되었다 하며, 어느 나라에서든 사람의 우스꽝스러움을 재는 여행자",
+   "desire": "모든 나라를 재어 보는 것",
+   "conflict": "크기 대 오만",
+   "symbols": [
+    "가는 밧줄 수백 가닥",
+    "하늘에 뜬 섬",
+    "측량용 컴퍼스"
+   ],
+   "arc": {
+    "question": "인간은 얼마나 큰가",
+    "conflict": "작은 나라에선 거인, 큰 나라에선 장난감 — 어디서나 인간의 다툼은 우스꽝스럽다",
+    "answer": "말의 나라에서 돌아와, 자기 자신을 가장 낯설게 본다"
+   },
+   "genre": "희극·풍자",
+   "era": "18세기 초",
+   "region": "영국 → 릴리퍼트·브롭딩낵·라퓨타·후이늠",
+   "form_material": "항해 일지 양피지와 해도를 겹친 롱코트, 소인국 밧줄이 감긴 소매, 측량 컴퍼스 장식",
+   "binding": "hardcover",
+   "ethnicity": "European",
+   "silhouette": {
+    "body": "tall_statuesque",
+    "hair": "short_crop",
+    "garment": "coat_trousers",
+    "material": "parchment",
+    "pose": "towering_lean",
+    "palette": "sea_sand"
+   },
+   "face": {
+    "face_shape": "round",
+    "eyes": "round_large",
+    "brows": "soft_round",
+    "nose": "broad_soft",
+    "lips": "thin_long"
+   },
+   "rule": {
+    "principle": "상대를 \"잣대\" 로 재어, 크면 작게 작으면 크게 뒤집는다",
+    "forms": {
+     "발단": "이 줄의 상대 카드가 모두 자신보다 작으면, 그 카드 셋까지 한 번에 묶는다(소인국)",
+     "전개": "상대 카드 하나와 자신의 힘을 맞바꾼다(거인국)",
+     "결말": "판 위 모든 카드의 힘 순서를 한 턴 뒤집는다 — 가장 센 카드가 가장 약해진다"
+    },
+    "counter": "고만고만한 카드만 내면 뒤집어도 차이가 없다. 결말의 뒤집기는 아군에게도 걸린다"
+   },
+   "forms": {
+    "발단": {
+     "look": "릴리퍼트 — 항해복 롱코트에 소인국 밧줄 수백 가닥이 감겼다 끊어지는 소매, 해도 양피지 깃",
+     "role": "버티기",
+     "pose": "한쪽 무릎을 꿇고 몸을 낮게 숙여, 손바닥을 펴 발치의 아주 작은 무언가를 내려다보는 자세"
+    },
+    "전개": {
+     "look": "브롭딩낵 — 거인 나라 바느질 상자 같은 과장된 레이스 깃과 큼직한 단추, 장난감처럼 작아진 칼",
+     "role": "교란",
+     "pose": "작은 칼을 들어 올려 막아서듯 올려다보며, 다른 팔로 커다란 그늘을 가리는 자세"
+    },
+    "결말": {
+     "look": "하늘 섬과 말의 나라 — 천문 기구를 단 망토, 말갈기 빛 머리장식과 다 쓴 항해 일지",
+     "role": "공격",
+     "pose": "곧게 서서 한 손으로 컴퍼스를 세워 들고, 다른 손을 허리에 짚은 채 비꼬듯 웃는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "해변에 누웠다 일어난 그녀 둘레로 손가락만 한 성벽·배·깃발이 펼쳐진 릴리퍼트(작은 사람들은 얼굴 없는 점처럼 멀리)",
+     "one_figure": true
+    },
+    "전개": {
+     "scene": "거인의 식탁 위 — 집채만 한 은수저와 찻잔, 그녀는 골무 곁에 선다",
+     "one_figure": true
+    },
+    "결말": {
+     "scene": "하늘에 뜬 돌섬 라퓨타가 그림자를 드리운 바다, 멀리 초원을 달리는 말들",
+     "one_figure": true
+    }
+   },
+   "scene_cards": [
+    "궁전의 불을 끈 방법",
+    "달걀을 어느 쪽으로 깰 것인가",
+    "라가도 학술원"
+   ]
   }
  ]
 }

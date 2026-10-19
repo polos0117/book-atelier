@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-19 · claude · 저작권 사망 연도 검사를 경고로
+- tools/book-design.py — 한국에서 아직 보호 중인 책(저자 1963년 이후 사망)을 막지 않고 `!` 경고로 알린다(`warnings()`). 개인 취미용이라. 사망 연도·작자 미상·해외 보호 여부·인용 출처 칸은 그대로 검사한다.
+- tests/book-design.py — 1996년 사망 저자는 통과하되 경고가 나온다, 지금 열다섯 권은 경고가 없다.
+- AGENTS.md · docs/GAME_CONCEPT.md · data/book-design.json(note) — 기준 문장. 원작 삽화와 함께 영화·게임이 만든 모습(오즈의 루비 구두 같은)도 베끼지 않는다.
+
 ## 2026-10-19 · claude · 책 다섯 권 더 — 장르 두 바퀴째
 - data/book-design.json — 오만과 편견(로맨스)·드라큘라(공포)·삼총사(모험)·천일야화(동화·판타지)·걸리버 여행기(희극·풍자). 원리·폼 셋(모습·역할·자세)·개방 셋·고유 규칙과 대응·장면 카드·얼굴 계통까지. 정한 말에 재료 letter_paper, 자세 dance_turn·en_garde·reclining_tale·towering_lean, 팔레트 blush_ivory·crimson_black·lapis_saffron·sea_sand. 새 책은 시범을 두지 않는다(시범끼리 장르가 겹치면 안 된다). 설계표 검사 통과 — 열다섯 권 어느 둘도 실루엣 3+·얼굴 2+ 다르다.
 - lib/prompt-spec.js — 새 말의 영어 풀이.

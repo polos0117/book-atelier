@@ -24,7 +24,10 @@ def twin(d):
 fails(twin, '실루엣 축 6 중')
 fails(twin, '얼굴 5 묶음 중')
 fails(lambda d: d['books'][0]['silhouette'].update(hair='mohawk'), '정한 말이 아니다')
-fails(lambda d: d['books'][0].update(author_death=1996), '아직 보호 중')                    # 세이건 『코스모스』
+# 한국에서 아직 보호 중인 책은 막지 않고 경고만(세이건 『코스모스』처럼 1996년 사망)
+d = copy.deepcopy(doc); d['books'][0].update(author_death=1996)
+assert B.check(d) == [] and any('아직 보호 중' in w for w in B.warnings(d)), B.warnings(d)
+assert B.warnings(doc) == [], B.warnings(doc)
 fails(lambda d: d['books'][0].update(quote_source='국내 번역본'), '인용 출처')
 fails(lambda d: d['books'][0]['opens']['결말'].update(one_figure=False), '한 명')
 fails(lambda d: d['books'][0]['rule'].update(counter=''), '대응')
@@ -37,4 +40,4 @@ fails(lambda d: d['books'][1].update(genre=d['books'][0]['genre']), '장르가 �
 fails(lambda d: d['books'][4].pop('anonymous'), '사망 연도')
 fails(lambda d: d['vocab']['form_key'].update(전개='begin'), 'form_key')
 fails(lambda d: d['books'][0].update(key='Don Quixote'), 'key 는')
-print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권 · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르' % len(doc['books']))
+print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르' % len(doc['books']))

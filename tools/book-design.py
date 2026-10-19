@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """책 설계표(data/book-design.json) 검사. docs/GAME_CONCEPT.md 5·6·7절의 규칙을 기계로 본다.
 
-  python3 tools/book-design.py check   — 어기는 칸이 있으면 1 로 끝난다
+  python3 tools/book-design.py check   — 어기는 칸이 있으면 1 로 끝난다. 경고(!)는 알리기만 한다
 
 보는 것:
   - 칸이 다 찼나(원전 범위·인용 출처·한 줄 인격·욕망·갈등·상징 셋·질문→갈등→답·장르·시대·지역·형태와 재료)
@@ -10,7 +10,8 @@
   - 어느 두 책도 실루엣 축 6 중 셋 이상, 얼굴 5 묶음 중 둘 이상 다르다 — 화풍의 기본 얼굴·흔한 차림으로 수렴하지 않게
   - 폼·개방이 발단·전개·결말 셋씩, 폼마다 다른 자세(pose), 개방은 한 명으로 표현된다고 확인했다(one_figure)
   - 고유 규칙: 공통 원리 하나 + 폼별 사용법 셋 + 상대의 대응
-  - 저작권: 저자가 1962년 이전에 죽었거나 작자 미상(한국 기준 만료). 해외 보호 중이면 abroad_protected 로 표시
+  - 저작권: 저자 사망 연도(작자 미상이면 anonymous)·해외 보호 여부를 적는다. 한국에서 아직 보호 중인 책(1963년 이후 사망)은
+    경고만 한다 — 개인 취미용이라 막지 않는다(2026-10-19). 삽화·영화 디자인을 베끼지 않기, 번역문 대신 원문·직접 옮김은 그대로
   - 시범(pilot)은 폼 하나·개방 하나, 시범 책끼리 장르·시대가 겹치지 않는다"""
 import json, os, re, sys
 
@@ -68,13 +69,8 @@ def check(doc):
             if (b.get("face") or {}).get(k) not in V.get(k, []):
                 bad("얼굴 %s=%r 는 정한 말이 아니다" % (k, (b.get("face") or {}).get(k)))
         # 저작권 — 한국 기준 만료
-        d = b.get("author_death")
-        if b.get("anonymous"):
-            pass
-        elif not isinstance(d, int):
+        if not b.get("anonymous") and not isinstance(b.get("author_death"), int):
             bad("저자 사망 연도가 없다(작자 미상이면 anonymous: true)")
-        elif d > KOREA_LAST_EXPIRED_DEATH:
-            bad("저자가 %d년에 죽어 한국에서 아직 보호 중이다(%d년 이전 사망만)" % (d, KOREA_LAST_EXPIRED_DEATH + 1))
         if not isinstance(b.get("abroad_protected"), bool):
             bad("abroad_protected(해외 보호 여부)를 적는다")
         # 폼·개방
@@ -130,12 +126,25 @@ def check(doc):
     return errs
 
 
+def warnings(doc):
+    """막지는 않고 알리는 것 — 한국에서 아직 보호 중인 책. 넣어도 되지만 삽화·영화 디자인·번역문을 더 조심한다"""
+    out = []
+    for b in doc.get("books") or []:
+        d = b.get("author_death")
+        if not b.get("anonymous") and isinstance(d, int) and d > KOREA_LAST_EXPIRED_DEATH:
+            out.append("%s: 저자가 %d년에 죽어 한국에서 아직 보호 중이다(%d년까지) — 삽화·영화 디자인을 베끼지 않고 번역문을 싣지 않는다"
+                       % (b.get("title") or b.get("key"), d, d + 70))
+    return out
+
+
 def main():
     if len(sys.argv) < 2 or sys.argv[1] != "check":
         raise SystemExit("python3 tools/book-design.py check")
     with open(DATA, encoding="utf-8") as f:
         doc = json.load(f)
     errs = check(doc)
+    for w in warnings(doc):
+        print("  ! " + w)
     for e in errs:
         print("  ✗ " + e)
     if errs:

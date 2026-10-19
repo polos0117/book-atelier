@@ -6,16 +6,16 @@
   "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
   "hair": ["short_crop", "bob", "ponytail", "long_straight", "long_wavy", "updo_bun", "braids", "voluminous"],
   "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped"],
-  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper"],
-  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "en_garde", "reclining_tale", "towering_lean"],
-  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "lapis_saffron", "sea_sand"],
+  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages"],
+  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "towering_lean", "skyward_gaze"],
+  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "sea_sand", "teal_silver", "forest_red"],
   "face_shape": ["oval", "round", "heart", "long", "square_soft", "diamond"],
   "eyes": ["almond_wide", "round_large", "narrow_upturned", "droopy_soft", "deep_set", "monolid_long"],
   "brows": ["straight_thick", "arched_thin", "soft_round", "angled_sharp", "low_heavy"],
   "nose": ["small_button", "straight_narrow", "aquiline", "broad_soft", "upturned"],
   "lips": ["full_wide", "thin_long", "small_bow", "heart_full", "wide_smile"],
   "role": ["공격", "돌파", "버티기", "지원", "정찰", "교란"],
-  "quote_source": ["원문", "직접 옮김"],
+  "quote_source": ["원문", "직접 옮김", "인용 안 함"],
   "binding": ["hardcover", "hanji", "bamboo"],
   "ethnicity": ["East Asian", "Korean", "Japanese", "Chinese", "Southeast Asian", "Central Asian", "South Asian", "Middle Eastern", "European", "Nordic", "Mediterranean", "Slavic", "Latin American", "African", "mixed East Asian and European"],
   "form_key": {"발단": "begin", "전개": "middle", "결말": "end"}
@@ -874,179 +874,191 @@
    ]
   },
   {
-   "key": "three_musketeers",
-   "title": "삼총사",
-   "author": "알렉상드르 뒤마",
-   "author_death": 1870,
-   "abroad_protected": false,
-   "source_scope": "『삼총사』(1844) 전체",
-   "quote_source": "직접 옮김",
-   "persona": "혼자 덤벼도 늘 셋을 등에 업은 듯 싸우는, 하나는 모두를 위한 검객",
-   "desire": "명예와 우정",
-   "conflict": "충성 대 음모",
+   "key": "tear_drinking_bird",
+   "title": "눈물을 마시는 새",
+   "author": "이영도",
+   "alive": true,
+   "abroad_protected": true,
+   "adaptations": [
+    "출간본 표지·삽화",
+    "크래프톤의 게임화 작업",
+    "팬아트·웹 연재 그림"
+   ],
+   "source_scope": "『눈물을 마시는 새』(2003) 네 권 전체 — 『피를 마시는 새』는 넣지 않는다",
+   "quote_source": "인용 안 함",
+   "persona": "심장을 꺼내 차가워지기를 거부하고, 서로 다른 종족과 끝까지 같은 길을 걷는 길동무",
+   "desire": "심장을 지킨 채 살아가는 것",
+   "conflict": "영원 대 감정",
    "symbols": [
-    "다이아몬드 장식끈 열두 개",
-    "십자 무늬 총사 망토",
-    "던진 결투 장갑"
+    "나가의 비늘",
+    "도깨비불",
+    "레콘의 깃털"
    ],
    "arc": {
-    "question": "혼자인 검은 무엇을 지킬 수 있나",
-    "conflict": "추기경의 음모와 밀레디의 덫이 친구를 하나씩 떼어 놓는다",
-    "answer": "하나는 모두를 위해 — 함께 건 검이 끝내 왕비의 명예를 지킨다"
+    "question": "서로 다른 종족이 같은 길을 걸을 수 있는가",
+    "conflict": "불을 다루는 이, 물을 두려워하는 이, 심장을 버린 이가 한 길에서 부딪힌다",
+    "answer": "다름을 지닌 채 함께 걸어, 끝내 남의 눈물을 대신 마셔 준다"
    },
-   "genre": "모험",
-   "era": "17세기 전반(1625~1628)",
-   "region": "프랑스 파리·라로셸, 영국 해협",
-   "form_material": "총사대 십자 망토를 천 제본 책장으로 겹친 상의, 가죽 제본 장갑과 검대, 깃털 모자",
+   "genre": "동화·판타지",
+   "era": "가상 세계(2003년 작)",
+   "region": "키보렌 숲에서 북부까지(가상 대륙)",
+   "form_material": "비늘처럼 겹친 책장 겉옷, 이끼 빛 비단, 깃털과 도깨비불 등롱 장식",
    "binding": "hardcover",
-   "ethnicity": "Mediterranean",
+   "ethnicity": "Korean",
    "silhouette": {
-    "body": "athletic",
-    "hair": "ponytail",
-    "garment": "coat_trousers",
-    "material": "cloth_binding",
-    "pose": "en_garde",
-    "palette": "navy_gold"
+    "body": "lanky",
+    "hair": "long_straight",
+    "garment": "robe_overlap",
+    "material": "scaled_pages",
+    "pose": "skyward_gaze",
+    "palette": "teal_silver"
    },
    "face": {
-    "face_shape": "square_soft",
-    "eyes": "narrow_upturned",
-    "brows": "straight_thick",
-    "nose": "aquiline",
-    "lips": "wide_smile"
+    "face_shape": "oval",
+    "eyes": "monolid_long",
+    "brows": "soft_round",
+    "nose": "small_button",
+    "lips": "thin_long"
    },
    "rule": {
-    "principle": "\"맹세\" 로 아군을 묶어, 하나가 맞으면 모두가 받아친다",
+    "principle": "서로 다른 아군을 \"동행\" 으로 묶어, 다를수록 강해진다",
     "forms": {
-     "발단": "결투 신청 — 이 줄의 가장 센 상대와 먼저 일대일로 붙는다(다른 카드는 끼어들 수 없다)",
-     "전개": "아군 셋까지 맹세로 묶는다 — 묶인 하나가 맞으면 나머지가 한 번씩 받아친다",
-     "결말": "맹세로 묶인 아군 수만큼 강해져, 상대 계략(효과) 하나를 끊는다"
+     "발단": "이 줄의 아군 장르가 서로 다를 때마다 동행을 하나 쌓는다",
+     "전개": "동행 둘로, 아군 하나가 상성에 질 때 다른 아군이 한 번 대신 받는다",
+     "결말": "동행이 넷(서로 다른 장르 넷)이면 상대 카드 하나의 효과를 지운다 — 남의 눈물을 마신다"
     },
-    "counter": "아군을 줄마다 흩어 놓게 만들면 묶을 셋이 없다. 약한 카드를 미끼로 내면 결투 신청이 헛돈다"
+    "counter": "한 줄에 같은 장르만 남게 만들면 동행이 쌓이지 않는다. 아군 장르를 바꾸는 효과로 묶음을 끊는다"
    },
    "forms": {
     "발단": {
-     "look": "가스코뉴에서 온 날 — 낡은 가죽 더블릿과 바랜 노란 망토, 아버지의 검과 천 제본 책장 깃",
-     "role": "공격",
-     "pose": "깃털 모자를 한 손으로 벗어 들고 다른 손으로 칼자루를 잡은 채, 한 발 내디뎌 결투를 청하는 자세"
+     "look": "키보렌의 밤 — 서늘한 청록 비늘 무늬 책장 겉옷, 젖은 이끼 빛 비단, 맨팔에 감긴 은빛 띠",
+     "role": "정찰",
+     "pose": "젖은 고사리 사이에서 몸을 낮춰 어깨 너머 뒤를 돌아보며, 한 손을 가슴의 심장 자리에 얹은 자세"
     },
     "전개": {
-     "look": "총사대 — 은빛 십자가를 수놓은 청색 망토(천 제본 책장), 깃털 모자, 가죽 검대",
+     "look": "네 종족의 길 — 커다란 깃털을 엮은 어깨 망토, 허리에 매단 도깨비불 등롱, 여행용 가죽끈",
      "role": "버티기",
-     "pose": "가는 검을 앞으로 겨누고 다른 손은 뒤로 들어 올린 펜싱 자세, 망토가 뒤로 날린다"
+     "pose": "한 팔로 깃털 망토를 펼쳐 비바람을 막아서고, 다른 손으로 도깨비불 등롱을 높이 든 자세"
     },
     "결말": {
-     "look": "해협을 건넌 뒤 — 다이아몬드 장식끈을 어깨에 건 금빛 예복, 맹세의 리본을 묶은 검",
-     "role": "돌파",
-     "pose": "검을 하늘로 곧게 치켜들어 맹세하고, 다른 손을 가슴에 얹은 자세"
+     "look": "비 내리는 북부 — 빗물에 젖어 은빛으로 빛나는 겉옷, 하나만 남은 깃털 장식",
+     "role": "지원",
+     "pose": "고개를 들어 하늘을 올려다보며, 두 손바닥을 펴 떨어지는 빗방울을 받는 자세"
     }
    },
    "opens": {
     "발단": {
-     "scene": "파리 수도원 뒤뜰의 결투장, 흩날리는 꽃잎과 돌바닥에 던져진 결투 장갑",
+     "scene": "안개 낀 키보렌 숲, 거대한 나무뿌리 사이로 서늘한 빛이 흐르는 밤(멀리 얼굴 없는 비늘 실루엣)",
      "one_figure": true
     },
     "전개": {
-     "scene": "횃불이 흔들리는 칼레 항구의 밤, 바람에 부푼 돛과 말발굽 먼지",
+     "scene": "도깨비불이 줄지어 떠다니는 밀림 길, 커다란 깃털 하나가 바람에 떨어진다",
      "one_figure": true
     },
     "결말": {
-     "scene": "루브르 무도회장, 샹들리에 아래 반짝이는 다이아몬드 장식끈 열두 개",
+     "scene": "비구름 사이로 멀리 하늘치의 그림자가 지나가고, 빗줄기가 빛나는 북부 평원",
      "one_figure": true
     }
    },
    "scene_cards": [
-    "밀레디의 백합 낙인",
-    "생제르베 보루의 아침 식사",
-    "추기경 친위대와의 결투"
+    "심장적출 의식",
+    "하늘치가 지나가는 하늘",
+    "도깨비의 불"
    ]
   },
   {
-   "key": "arabian_nights",
-   "title": "천일야화",
-   "author": "작자 미상(셰에라자드 전승)",
-   "anonymous": true,
-   "abroad_protected": false,
-   "source_scope": "『천일야화』 — 셰에라자드의 액자 이야기와 그 안의 이야기들(갈랑 판에 더해진 이야기 포함)",
-   "quote_source": "직접 옮김",
-   "persona": "이야기를 끊지 않는 한 아침이 오지 않는, 천 하루 밤의 이야기꾼",
-   "desire": "이야기로 죽음을 미루는 것",
-   "conflict": "이야기 대 처형",
+   "key": "lord_of_the_rings",
+   "title": "반지의 제왕",
+   "author": "J. R. R. 톨킨",
+   "author_death": 1973,
+   "abroad_protected": true,
+   "adaptations": [
+    "피터 잭슨 영화 3부작(2001~2003) — 의상·갑옷·소품, 영화에서 생긴 소품(이븐스타 목걸이 같은)",
+    "랄프 박시 애니메이션(1978)",
+    "드라마 『힘의 반지』",
+    "게임·보드게임 디자인",
+    "출간본 표지·삽화"
+   ],
+   "source_scope": "『반지의 제왕』(1954~1955) 세 권 전체 — 『호빗』·『실마릴리온』은 넣지 않는다",
+   "quote_source": "인용 안 함",
+   "persona": "가장 작은 손으로 가장 무거운 것을 끝까지 나르는, 돌아오지 못할 길의 짐꾼",
+   "desire": "반지를 없애는 것",
+   "conflict": "유혹 대 인내",
    "symbols": [
-    "기름 등잔",
-    "겹겹의 액자 이야기",
-    "날아오르는 양탄자"
+    "금반지 하나",
+    "별빛을 담은 유리병",
+    "부러졌다 다시 벼린 검"
    ],
    "arc": {
-    "question": "이야기는 사람을 살릴 수 있는가",
-    "conflict": "밤마다 끝을 미뤄야만 내일이 온다",
-    "answer": "천 하루 밤 끝에, 이야기가 왕의 마음을 바꾼다"
+    "question": "작은 이가 세상을 바꿀 수 있는가",
+    "conflict": "반지의 무게가 가장 강한 이들부터 무너뜨린다",
+    "answer": "끝까지 나른 작은 손 — 그러나 돌아온 고향은 예전 같지 않다"
    },
-   "genre": "동화·판타지",
-   "era": "중세 이슬람 세계(8~14세기 이야기들)",
-   "region": "바그다드·페르시아",
-   "form_material": "금박 아라베스크를 새긴 필사본 책장, 등잔불이 비치는 비단 두루마리 베일과 겹겹의 액자 장식",
+   "genre": "모험",
+   "era": "가운데땅 제3시대 말(가상)",
+   "region": "샤이어에서 모르도르까지(가상)",
+   "form_material": "붉은 가죽 제본 책장을 덧댄 여행복, 회녹색 요정 망토와 잎 모양 브로치, 놋쇠 단추",
    "binding": "hardcover",
-   "ethnicity": "Middle Eastern",
+   "ethnicity": "Nordic",
    "silhouette": {
-    "body": "curvy",
-    "hair": "long_wavy",
-    "garment": "robe_overlap",
-    "material": "silk_scroll",
-    "pose": "reclining_tale",
-    "palette": "lapis_saffron"
+    "body": "petite",
+    "hair": "voluminous",
+    "garment": "cloak_wrapped",
+    "material": "leather_binding",
+    "pose": "striding",
+    "palette": "forest_red"
    },
    "face": {
-    "face_shape": "long",
-    "eyes": "almond_wide",
-    "brows": "arched_thin",
-    "nose": "straight_narrow",
-    "lips": "full_wide"
+    "face_shape": "heart",
+    "eyes": "droopy_soft",
+    "brows": "soft_round",
+    "nose": "upturned",
+    "lips": "heart_full"
    },
    "rule": {
-    "principle": "판을 끝내지 않고 \"다음 밤\" 으로 미뤄, 미룬 만큼 이야기를 쌓는다",
+    "principle": "\"짐\" 을 지고 버틸수록 강해지지만, 짐은 나를 갉아먹는다",
     "forms": {
-     "발단": "이 줄의 패배를 한 번 다음 밤으로 미루고, 이야기 하나를 쌓는다",
-     "전개": "이야기 둘을 써서 액자를 연다 — 손패의 카드 하나를 이 줄에 끼워 넣는다(이야기 속 이야기)",
-     "결말": "쌓인 이야기 수만큼 상대의 가장 센 카드를 약하게 해, 그 판의 결말을 바꾼다"
+     "발단": "턴마다 짐을 하나 진다 — 상대 공격 하나를 자신이 대신 받는다",
+     "전개": "짐 둘로 아군 하나를 그 턴 상대 눈에서 숨긴다(공격받지 않는다)",
+     "결말": "짐이 셋이면 반지를 던진다 — 상대의 가장 센 카드 하나를 없애고, 자신은 판에서 내려간다"
     },
-    "counter": "첫 턴부터 몰아쳐 미룰 틈을 주지 않는다. 이야기를 쓰기 전에 두 번 이기면 미루기가 무너진다"
+    "counter": "짐을 지기 전에 크게 쳐서 쓰러뜨린다. 숨은 아군 대신 짐을 진 그녀를 노린다"
    },
    "forms": {
     "발단": {
-     "look": "첫날 밤 — 등잔불이 비치는 겹겹의 비단 베일, 금박 필사본 책장을 엮은 허리띠",
+     "look": "샤이어를 떠나는 날 — 놋쇠 단추 조끼와 짧은 여행 망토, 붉은 가죽 책장을 덧댄 배낭끈, 맨발",
      "role": "버티기",
-     "pose": "방석 위에 비스듬히 기대 앉아 한 손에 등잔을 받쳐 들고, 다른 손을 펼쳐 이야기를 시작하는 자세"
+     "pose": "굽은 길 모퉁이에서 한 발을 내디디며 어깨 너머 고향을 돌아보고, 한 손을 가슴 주머니에 얹은 자세"
     },
     "전개": {
-     "look": "이야기 속 이야기 — 푸른 연기빛 겉옷, 이야기마다 다른 액자 무늬가 겹친 넓은 소매",
+     "look": "원정대 — 회녹색 요정 망토와 은빛 잎맥의 초록 잎 브로치, 겉옷 틈으로 비치는 은빛 사슬 셔츠",
      "role": "교란",
-     "pose": "두 팔을 좌우로 크게 펼쳐 겹겹의 소매를 액자처럼 열어 보이며, 몸을 반쯤 돌려 돌아보는 자세"
+     "pose": "망토를 몸에 감싸고 바위 위에 한쪽 무릎을 세워 웅크린 채, 별빛 유리병을 앞으로 내밀어 어둠을 밝히는 자세"
     },
     "결말": {
-     "look": "천 하루째 새벽 — 금빛 카프탄과 진주 머리장식, 다 타고 꺼진 등잔",
-     "role": "지원",
-     "pose": "곧게 서서 두 손으로 꺼진 등잔을 가슴 앞에 받치고, 떠오르는 새벽 쪽을 보는 자세"
+     "look": "운명의 산 뒤 — 재에 그을린 해진 여행복 위에 걸친 흰 돛빛 겉옷, 붕대 감은 한 손",
+     "role": "돌파",
+     "pose": "곧게 서서 바닷바람을 맞으며, 붕대 감은 손을 펴 내려다보다 먼 수평선을 보는 자세"
     }
    },
    "opens": {
     "발단": {
-     "scene": "등잔 하나만 켠 궁전 침실, 벽의 그림자가 이야기 속 장면(배·바위새·성채)으로 움직인다",
+     "scene": "가을 오후의 샤이어 언덕길, 둥근 문이 난 언덕 굴집과 길 위에 떨어진 금반지 하나",
      "one_figure": true
     },
     "전개": {
-     "scene": "밤하늘을 나는 양탄자 아래 달빛 사막 도시와 둥근 지붕, 구름 사이 거대한 바위새 그림자",
+     "scene": "끝없는 돌기둥이 늘어선 모리아의 어둠, 멀리 번지는 불꽃 그림자",
      "one_figure": true
     },
     "결말": {
-     "scene": "새벽빛이 스며드는 궁전 정원, 천 개의 등잔이 차례로 꺼진다",
+     "scene": "저녁의 회색 항구, 흰 배가 서쪽 바다의 은빛 길로 떠난다",
      "one_figure": true
     }
    },
    "scene_cards": [
-    "신드바드의 일곱 항해",
-    "알리바바와 마흔 명의 도적",
-    "알라딘의 램프"
+    "톰 봄바딜의 숲",
+    "헬름 협곡",
+    "곤도르의 봉화"
    ]
   },
   {

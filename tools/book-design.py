@@ -10,8 +10,9 @@
   - 어느 두 책도 실루엣 축 6 중 셋 이상, 얼굴 5 묶음 중 둘 이상 다르다 — 화풍의 기본 얼굴·흔한 차림으로 수렴하지 않게
   - 폼·개방이 발단·전개·결말 셋씩, 폼마다 다른 자세(pose), 개방은 한 명으로 표현된다고 확인했다(one_figure)
   - 고유 규칙: 공통 원리 하나 + 폼별 사용법 셋 + 상대의 대응
-  - 저작권: 저자 사망 연도(작자 미상이면 anonymous)·해외 보호 여부를 적는다. 한국에서 아직 보호 중인 책(1963년 이후 사망)은
-    경고만 한다 — 개인 취미용이라 막지 않는다(2026-10-19). 삽화·영화 디자인을 베끼지 않기, 번역문 대신 원문·직접 옮김은 그대로
+  - 저작권: 저자 사망 연도(작자 미상이면 anonymous, 살아 있으면 alive)·해외 보호 여부를 적는다. 한국에서 아직 보호 중인 책
+    (1963년 이후 사망·생존 작가)은 경고만 한다 — 개인 취미용이라 막지 않는다(2026-10-19). 보호 중인 책(국내·해외)은
+    따라 하지 않을 각색(adaptations — 영화·드라마·게임·표지)을 적는다. 생성기가 원작 글에서만 그리라는 줄을 싣는다
   - 시범(pilot)은 폼 하나·개방 하나, 시범 책끼리 장르·시대가 겹치지 않는다"""
 import json, os, re, sys
 
@@ -69,8 +70,12 @@ def check(doc):
             if (b.get("face") or {}).get(k) not in V.get(k, []):
                 bad("얼굴 %s=%r 는 정한 말이 아니다" % (k, (b.get("face") or {}).get(k)))
         # 저작권 — 한국 기준 만료
-        if not b.get("anonymous") and not isinstance(b.get("author_death"), int):
-            bad("저자 사망 연도가 없다(작자 미상이면 anonymous: true)")
+        if not b.get("anonymous") and not b.get("alive") and not isinstance(b.get("author_death"), int):
+            bad("저자 사망 연도가 없다(작자 미상이면 anonymous: true, 살아 있으면 alive: true)")
+        if b.get("alive") and b.get("author_death") is not None:
+            bad("살아 있는 저자(alive)에 사망 연도가 있다")
+        if protected(b) and not [a for a in (b.get("adaptations") or []) if str(a).strip()]:
+            bad("보호 중인 책은 따라 하지 않을 각색(adaptations — 영화·드라마·게임·표지)을 적는다")
         if not isinstance(b.get("abroad_protected"), bool):
             bad("abroad_protected(해외 보호 여부)를 적는다")
         # 폼·개방
@@ -126,14 +131,25 @@ def check(doc):
     return errs
 
 
+def protected_kr(b):
+    """한국에서 아직 보호 중 — 생존 작가이거나 1963년 이후 사망. lib/prompt-book.js 의 isProtected 와 같은 기준"""
+    d = b.get("author_death")
+    return not b.get("anonymous") and (bool(b.get("alive")) or (isinstance(d, int) and d > KOREA_LAST_EXPIRED_DEATH))
+
+
+def protected(b):
+    return protected_kr(b) or b.get("abroad_protected") is True
+
+
 def warnings(doc):
     """막지는 않고 알리는 것 — 한국에서 아직 보호 중인 책. 넣어도 되지만 삽화·영화 디자인·번역문을 더 조심한다"""
     out = []
     for b in doc.get("books") or []:
-        d = b.get("author_death")
-        if not b.get("anonymous") and isinstance(d, int) and d > KOREA_LAST_EXPIRED_DEATH:
-            out.append("%s: 저자가 %d년에 죽어 한국에서 아직 보호 중이다(%d년까지) — 삽화·영화 디자인을 베끼지 않고 번역문을 싣지 않는다"
-                       % (b.get("title") or b.get("key"), d, d + 70))
+        if not protected_kr(b):
+            continue
+        who, d = b.get("title") or b.get("key"), b.get("author_death")
+        why = "저자가 살아 있다" if b.get("alive") else "저자가 %d년에 죽었다(%d년까지)" % (d, d + 70)
+        out.append("%s: 한국에서 아직 보호 중 — %s. 원작 글에서만 그리고, 각색 디자인·번역문을 싣지 않는다" % (who, why))
     return out
 
 

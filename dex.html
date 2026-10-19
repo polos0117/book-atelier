@@ -248,9 +248,14 @@ function isPilot(card, defs, form) {
 
 /* 책이 들고 있는 글. 없는 값은 줄 자체를 안 만든다 */
 function Facts({ card }) {
+  /* 한국에서 아직 보호 중 — 생존 작가이거나 1963년 이후 사망(tools/book-design.py · lib/prompt-spec.js 와 같은 기준) */
+  const kr = !card.anonymous && (card.alive || card.author_death > 1962);
+  const adapt = (card.adaptations || []).filter(Boolean);
   const rows = [
-    [W('book.author'), html`<b>${card.author}</b>${' '}${card.anonymous ? W('book.anonymous') : W('book.death', { n: card.author_death })}
+    [W('book.author'), html`<b>${card.author}</b>${' '}${card.anonymous ? W('book.anonymous') : card.alive ? W('book.alive') : W('book.death', { n: card.author_death })}
+      ${kr && html`<span class="tag warn">${W('book.protected')}</span>`}
       ${card.abroad_protected && html`<span class="tag warn">${W('book.abroad')}</span>`}`],
+    adapt.length > 0 && [W('book.adaptations'), html`<div class="chips">${adapt.map(s => html`<span key=${s}>${s}</span>`)}</div>`],
     [W('book.genre'), [card.genre, card.era, card.region].filter(Boolean).join(' · ')],
     [W('book.scope'), card.source_scope],
     card.form_material && [W('book.material'), card.form_material],

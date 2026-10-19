@@ -7,6 +7,15 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-19 · claude · 보호 중인 책은 원작 글에서만 — 반지의 제왕·눈물을 마시는 새
+- lib/prompt-book.js · lib/prompt-spec.js — 아직 보호 중인 책(생존 작가·1963년 이후 사망·해외 보호)이면 새 인물·이어가기·개방·일상컷 모두에 SOURCE ONLY 줄: 원작 글에서만 그리고 영화·드라마·게임·애니·표지의 의상·소품·디자인·문장·배색을 따라 하지 않는다. 각색 이름은 싣지 않는다. 기준 해(1962)를 `KOREA_LAST_EXPIRED_DEATH` 로.
+- tools/book-design.py — 생존 작가 `alive: true`(사망 연도 대신). 보호 중인 책은 따라 하지 않을 각색 `adaptations` 를 적어야 통과. 경고에 생존 작가도.
+- data/book-design.json — 세 번째 다섯 권에서 삼총사·천일야화를 빼고 반지의 제왕(모험)·눈물을 마시는 새(동화·판타지)를 넣었다. 둘 다 인용 안 함(정한 말에 더함). 재료 scaled_pages, 자세 skyward_gaze, 팔레트 teal_silver·forest_red. 빠진 두 권만 쓰던 말(en_garde·reclining_tale·lapis_saffron)은 걷었다.
+- dex.html · lib/words.js — 책 정보에 생존 작가·국내 보호 중 표시, 따라 하지 않을 각색 줄.
+- lib/book-frame.js — 새 팔레트 표지 빛.
+- tests/prompt-book.cjs · tests/book-design.py — 보호 판정과 줄이 네 갈래에 다 실리고 만료된 책엔 없다, 각색 이름이 프롬프트에 없다, 기준 해가 검사기와 같다. 생존 작가·각색 칸 검사.
+- AGENTS.md · docs/GAME_CONCEPT.md — 기준 문장, 세 번째 다섯 권 표, 후보 목록의 보호 중 줄.
+
 ## 2026-10-19 · claude · 저작권 사망 연도 검사를 경고로
 - tools/book-design.py — 한국에서 아직 보호 중인 책(저자 1963년 이후 사망)을 막지 않고 `!` 경고로 알린다(`warnings()`). 개인 취미용이라. 사망 연도·작자 미상·해외 보호 여부·인용 출처 칸은 그대로 검사한다.
 - tests/book-design.py — 1996년 사망 저자는 통과하되 경고가 나온다, 지금 열다섯 권은 경고가 없다.

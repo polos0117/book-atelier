@@ -166,4 +166,22 @@ const chRef = P.buildPrompt({ outputMode: 'form', book: ch, stage: '결말', bas
 assert(chRef.includes('GARMENT: ') && chRef.includes('not Chinese hanfu') && chRef.includes('jokduri'), '이어가기 — 한복 구조를 지킨다');
 assert(!P.buildPrompt({ outputMode: 'open', book: ch, stage: '결말', styleText: text }).includes('GARMENT: '), '개방은 첨부 그림의 차림 그대로');
 assert.throws(() => P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: '' }), /Style text/);
-console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세·폼 자세 · 한복 구조`);
+
+/* 7. 아직 보호 중인 책 — 원작 글에서만 그리라는 줄이 새 인물·이어가기·개방·일상컷 모두에. 만료된 책엔 없다. 각색 이름은 싣지 않는다 */
+const guard = S.BOOK_LINES.adaptation;
+for (const bk of design.books) {
+  const prot = bk.abroad_protected === true || (!bk.anonymous && (!!bk.alive || bk.author_death > S.KOREA_LAST_EXPIRED_DEATH));
+  assert.equal(P.isProtected(bk), prot, bk.key + ' 보호 판정');
+  const ts = [P.buildPrompt({ outputMode: 'form', book: bk, stage: '발단', styleText: text }),
+    P.buildPrompt({ outputMode: 'form', book: bk, stage: '전개', baseStage: '발단', identityMode: 'reference', styleText: text }),
+    P.buildPrompt({ outputMode: 'open', book: bk, stage: '결말', styleText: text }),
+    P.buildCasual({ book: bk, styleText: text, cat: 'library_life', ex: 'lib_binding' })];
+  for (const t of ts) {
+    assert.equal(t.includes(guard), prot, bk.key + (prot ? ' 에 원작 글만 줄이 없다' : ' 은 만료됐는데 원작 글만 줄이 있다'));
+    for (const a of bk.adaptations || []) assert(!t.includes(a), '각색 이름은 프롬프트에 싣지 않는다: ' + a);
+  }
+}
+assert(design.books.some(bk => P.isProtected(bk)), '보호 중인 책이 하나는 있다(검사가 헛돌지 않게)');
+const py = fs.readFileSync('tools/book-design.py', 'utf8').match(/KOREA_LAST_EXPIRED_DEATH = (\d+)/);
+assert.equal(Number(py[1]), S.KOREA_LAST_EXPIRED_DEATH, '보호 기준 해가 검사기와 생성기에서 같다');
+console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세·폼 자세 · 한복 구조 · 보호 중인 책은 원작 글만`);

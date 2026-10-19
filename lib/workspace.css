@@ -1,4 +1,5 @@
-/* 서고 화면 껍데기 — pkm-atelier 의 lib/workspace.css 에서 왔다. 테마 열쇠는 pkm 과 같다. */
+/* 서고 화면 껍데기 — pkm-atelier 의 lib/workspace.css 에서 왔다. 테마 열쇠는 pkm 과 같다(같은 주소에서 고른 테마가 이어진다).
+   빛깔과 배경은 책 재료로 바꿨다 — 종이·양피지·가죽·천 장정·마블지·별자리 지도·등잔불(2026-10-19). */
 :root {
   --void:var(--bg);--panel:var(--card);--rule:var(--line);
   --ink:var(--text);--dim:var(--muted);--plate:var(--accent);
@@ -6,58 +7,58 @@
 }
 :root[data-theme="midnight"],[data-theme-preview="midnight"] {
   color-scheme:dark;
-  --bg:#11182b;--deck:#19243c;--card:#1e2d47;--card2:#263754;--text:#eef5ff;
-  --muted:#b3c4df;--line:#3b506e;--accent:#88d6f6;--accent-soft:#243f58;--on-accent:#102538;
-  --signal:#f8c869;--gold:#c9b9ff;--ok:#8fddba;--warn:#f8c869;--pattern:#88d6f610;
+  --bg:#121a2b;--deck:#1a2438;--card:#212d45;--card2:#2a3753;--text:#eef1fb;
+  --muted:#b8c2d9;--line:#3d4b68;--accent:#e8c66f;--accent-soft:#3b3a3c;--on-accent:#1d1a10;
+  --signal:#9fc8f0;--gold:#e8c66f;--ok:#8fddba;--warn:#f8c869;--pattern:#e8c66f14;
   --shadow:0 8px 26px #00000026;
 }
 :root, :root[data-theme="daylight"],[data-theme-preview="daylight"] {
   color-scheme:light;
-  --bg:#f4f3eb;--deck:#faf9f3;--card:#ffffff;--card2:#eaf2ef;--text:#223b3a;
-  --muted:#566b64;--line:#cddbd4;--accent:#b52e42;--accent-soft:#fae7e9;--on-accent:#ffffff;
-  --signal:#247e71;--gold:#d8b749;--ok:#256d51;--warn:#875719;--pattern:#247e7110;
-  --shadow:0 8px 26px #263e3010;
+  --bg:#f3eee2;--deck:#f8f4ea;--card:#fffdf8;--card2:#efe6d4;--text:#2e2a24;
+  --muted:#5e5545;--line:#dccfb6;--accent:#8e2b2b;--accent-soft:#f4e1da;--on-accent:#ffffff;
+  --signal:#2f6b5e;--gold:#b8892c;--ok:#2f6b4f;--warn:#875719;--pattern:#8e2b2b10;
+  --shadow:0 8px 26px #3a2a1012;
 }
 :root[data-theme="blossom"],[data-theme-preview="blossom"] {
   color-scheme:light;
-  --bg:#fbf0f7;--deck:#fff5fc;--card:#fffbfe;--card2:#f5e8f6;--text:#4c304d;
-  --muted:#76556f;--line:#e1c7dd;--accent:#974385;--accent-soft:#f5dff0;--on-accent:#ffffff;
-  --signal:#8556ac;--gold:#c9973c;--ok:#347565;--warn:#885921;--pattern:#97438510;
-  --shadow:0 8px 26px #263e3010;
+  --bg:#f8eef0;--deck:#fcf4f5;--card:#fffafb;--card2:#f2e2e6;--text:#4a2e38;
+  --muted:#735462;--line:#e3c9d1;--accent:#963c5d;--accent-soft:#f6dfe7;--on-accent:#ffffff;
+  --signal:#7a5aa6;--gold:#c0913a;--ok:#3a7362;--warn:#885921;--pattern:#963c5d12;
+  --shadow:0 8px 26px #3a2a1012;
 }
 :root[data-theme="moss"],[data-theme-preview="moss"] {
   color-scheme:dark;
-  --bg:#14251e;--deck:#1b3026;--card:#233d2e;--card2:#2b4736;--text:#f1f6e7;
-  --muted:#b8cdb5;--line:#46664d;--accent:#b9dd85;--accent-soft:#3b542f;--on-accent:#233322;
-  --signal:#81d6bb;--gold:#e5c46e;--ok:#89dab5;--warn:#eed48a;--pattern:#b9dd850d;
+  --bg:#17241c;--deck:#1d2d23;--card:#24382b;--card2:#2c4333;--text:#f0f3e6;
+  --muted:#bccab4;--line:#4a6250;--accent:#dcc173;--accent-soft:#3c4a30;--on-accent:#22251a;
+  --signal:#8fd3b4;--gold:#dcc173;--ok:#89dab5;--warn:#eed48a;--pattern:#dcc17310;
   --shadow:0 8px 26px #00000026;
 }
 :root[data-theme="plum"],[data-theme-preview="plum"] {
   color-scheme:dark;
-  --bg:#211a35;--deck:#2b2243;--card:#352a50;--card2:#40325e;--text:#f7edff;
-  --muted:#c8b7e3;--line:#5e4b7a;--accent:#d5adff;--accent-soft:#503968;--on-accent:#30213f;
-  --signal:#9de3cb;--gold:#f0c687;--ok:#9de3cb;--warn:#f0c687;--pattern:#d5adff12;
+  --bg:#221a33;--deck:#2b2242;--card:#352a4f;--card2:#40325d;--text:#f6eefe;
+  --muted:#c9b9e2;--line:#5e4b79;--accent:#e7c27e;--accent-soft:#4d3b5e;--on-accent:#2a1f36;
+  --signal:#c9a6ff;--gold:#e7c27e;--ok:#9de3cb;--warn:#f0c687;--pattern:#e7c27e12;
   --shadow:0 8px 26px #00000026;
 }
 :root[data-theme="sand"],[data-theme-preview="sand"] {
   color-scheme:light;
-  --bg:#fff3c5;--deck:#fff8d9;--card:#fffcf0;--card2:#fae9a1;--text:#403622;
-  --muted:#6f613a;--line:#decc83;--accent:#775219;--accent-soft:#f7df83;--on-accent:#fffdf5;
-  --signal:#cc4138;--gold:#e3b321;--ok:#416c37;--warn:#884a1f;--pattern:#b8901714;
-  --shadow:0 8px 26px #263e3010;
+  --bg:#f2e5c4;--deck:#f7ecd2;--card:#fbf5e4;--card2:#ecdcb4;--text:#3b2f1e;
+  --muted:#655437;--line:#d6c08c;--accent:#7a4a1c;--accent-soft:#f0d9a8;--on-accent:#fffaf0;
+  --signal:#a33a2f;--gold:#b98a25;--ok:#416c37;--warn:#884a1f;--pattern:#7a4a1c14;
+  --shadow:0 8px 26px #3a2a1012;
 }
 :root[data-theme="deep"],[data-theme-preview="deep"] {
   color-scheme:dark;
-  --bg:#072d38;--deck:#0a3945;--card:#104554;--card2:#175262;--text:#e6fbfb;
-  --muted:#acd0d7;--line:#356774;--accent:#80e5e0;--accent-soft:#205b63;--on-accent:#07343d;
-  --signal:#9bbcf6;--gold:#f0d596;--ok:#93e8be;--warn:#f0d596;--pattern:#80e5e00d;
+  --bg:#082b35;--deck:#0b3642;--card:#104452;--card2:#165161;--text:#e6fbfb;
+  --muted:#acd0d7;--line:#356774;--accent:#86e3dc;--accent-soft:#205b63;--on-accent:#07343d;
+  --signal:#9bbcf6;--gold:#f0d596;--ok:#93e8be;--warn:#f0d596;--pattern:#86e3dc10;
   --shadow:0 8px 26px #00000026;
 }
 :root[data-theme="ember"],[data-theme-preview="ember"] {
   color-scheme:dark;
-  --bg:#281c1d;--deck:#332327;--card:#412b2a;--card2:#503330;--text:#fff0e4;
-  --muted:#e0bdad;--line:#805147;--accent:#ffbb82;--accent-soft:#68422e;--on-accent:#3a241d;
-  --signal:#ff927e;--gold:#f5db83;--ok:#b4da9c;--warn:#f5db83;--pattern:#ffbb8210;
+  --bg:#24170f;--deck:#2f1f15;--card:#3c281b;--card2:#4a3222;--text:#fff0e1;
+  --muted:#e2c2a6;--line:#7a5236;--accent:#ffbf7a;--accent-soft:#62402a;--on-accent:#3a2416;
+  --signal:#ff9d7e;--gold:#f5d77f;--ok:#b4da9c;--warn:#f5d77f;--pattern:#ffbf7a12;
   --shadow:0 8px 26px #00000026;
 }
 :root[data-density="relaxed"] {
@@ -113,14 +114,16 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,te
 .crest-name {color:var(--accent);font-weight:700;letter-spacing:.04em}
 .crest-signature i {width:100px;height:6px;border-radius:9px;background:linear-gradient(to right,var(--accent) 0 52%,var(--card) 52% 57%,var(--signal) 57% 82%,var(--card) 82% 87%,var(--gold) 87%)}
 .crest-signature b {font-size:8px;font-weight:500;letter-spacing:.18em}
-body {background-color:var(--bg);background-image:radial-gradient(var(--pattern) 1px,transparent 1px);background-size:18px 18px}
-[data-theme="midnight"] body {background-image:radial-gradient(circle at 85% 0,var(--pattern),transparent 45%),radial-gradient(var(--pattern) 1px,transparent 1px);background-size:auto,24px 24px}
-[data-theme="blossom"] body {background-image:radial-gradient(ellipse at 10% 0,var(--pattern),transparent 60%),radial-gradient(var(--pattern) 2px,transparent 2px);background-size:auto,28px 28px}
-[data-theme="moss"] body {background-image:repeating-linear-gradient(125deg,transparent 0 35px,var(--pattern) 36px 37px,transparent 38px 70px)}
-[data-theme="plum"] body {background-image:radial-gradient(ellipse at 85% 10%,var(--pattern),transparent 60%),radial-gradient(var(--pattern) 2px,transparent 2px);background-size:auto,32px 32px}
-[data-theme="sand"] body {background-image:repeating-linear-gradient(135deg,transparent 0 40px,var(--pattern) 40px 42px,transparent 42px 80px)}
-[data-theme="deep"] body {background-image:repeating-radial-gradient(ellipse at 15% 0,transparent 0 44px,var(--pattern) 45px 46px,transparent 47px 90px)}
-[data-theme="ember"] body {background-image:radial-gradient(ellipse at 80% 100%,var(--pattern),transparent 65%),radial-gradient(var(--pattern) 1.5px,transparent 1.5px);background-size:auto,26px 26px}
+/* 배경 — 테마마다 책 재료 하나. 그림 조각은 다 인라인 SVG 라 따로 받아 올 것이 없다. 글자 대비는 판(카드) 위에서 지킨다 */
+body {background-color:var(--bg);background-attachment:fixed}
+:root:not([data-theme]) body,[data-theme="daylight"] body {background-image:linear-gradient(115deg,#fff8 0,#0000 45%),repeating-linear-gradient(0deg,#0000 0 31px,#8e2b2b0d 31px 32px),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.27 0 0 0 0 0.15 0 0 0 .10 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+[data-theme="midnight"] body {background-image:radial-gradient(ellipse at 80% -10%,#e8c66f12,#0000 55%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cg fill='%23e8c66f' fill-opacity='.32'%3E%3Ccircle cx='22' cy='30' r='1.3'/%3E%3Ccircle cx='70' cy='18' r='.9'/%3E%3Ccircle cx='118' cy='52' r='1.6'/%3E%3Ccircle cx='160' cy='26' r='1'/%3E%3Ccircle cx='214' cy='70' r='1.2'/%3E%3Ccircle cx='40' cy='120' r='.8'/%3E%3Ccircle cx='96' cy='150' r='1.4'/%3E%3Ccircle cx='150' cy='132' r='.9'/%3E%3Ccircle cx='200' cy='176' r='1.5'/%3E%3Ccircle cx='30' cy='214' r='1.1'/%3E%3Ccircle cx='120' cy='230' r='.8'/%3E%3Ccircle cx='236' cy='238' r='1'/%3E%3C/g%3E%3Cpath d='M22 30L70 18L118 52L160 26M96 150L150 132L200 176M118 52L96 150' stroke='%23e8c66f' stroke-opacity='.14' stroke-width='.8' fill='none'/%3E%3Ccircle cx='130' cy='130' r='118' stroke='%23e8c66f' stroke-opacity='.05' fill='none'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .03 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:auto,260px 260px,auto}
+[data-theme="blossom"] body {background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cg fill='%23c46a8a' fill-opacity='.10'%3E%3Cellipse cx='40' cy='50' rx='14' ry='6' transform='rotate(30 40 50)'/%3E%3Cellipse cx='52' cy='40' rx='12' ry='5' transform='rotate(-40 52 40)'/%3E%3Cellipse cx='160' cy='120' rx='15' ry='6' transform='rotate(70 160 120)'/%3E%3Cellipse cx='100' cy='190' rx='11' ry='5' transform='rotate(-15 100 190)'/%3E%3C/g%3E%3Cpath d='M46 46c20 18 30 38 34 60M160 120c-10 24-30 40-50 46' stroke='%236a8a5a' stroke-opacity='.10' fill='none'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.25 0 0 0 0 0.3 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:220px 220px,auto}
+[data-theme="moss"] body {background-image:repeating-linear-gradient(45deg,#0000 0 46px,#dcc1730c 46px 47px),repeating-linear-gradient(-45deg,#0000 0 46px,#dcc1730c 46px 47px),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+[data-theme="plum"] body {background-image:repeating-linear-gradient(0deg,#ffffff07 0 1px,#0000 1px 3px),repeating-linear-gradient(90deg,#00000014 0 1px,#0000 1px 3px),radial-gradient(ellipse at 85% 10%,#e7c27e10,#0000 60%)}
+[data-theme="sand"] body {background-image:radial-gradient(ellipse at 50% 40%,#0000 55%,#7a4a1c22),radial-gradient(circle at 18% 72%,#a0703518 0,#0000 18%),radial-gradient(circle at 82% 22%,#a0703512 0,#0000 14%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.3 0 0 0 0 0.12 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+[data-theme="deep"] body {background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.007 .035' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .52 0 0 0 0 .89 0 0 0 0 .86 0 0 0 1.1 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),radial-gradient(ellipse at 15% 0,#86e3dc10,#0000 60%);background-size:420px 420px,auto}
+[data-theme="ember"] body {background-image:radial-gradient(ellipse at 85% 105%,#ffbf7a26,#0000 55%),radial-gradient(circle at 85% 100%,#ffd9a012,#0000 25%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.003 .09' numOctaves='3' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .05 0 0 0 0 .02 0 0 0 .5 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E")}
 /* Archive: compact search deck above an image-led collection. */
 .dex-page main,.prompt-page .wrap {width:100%;max-width:1440px;margin:auto;padding:calc(16px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .dex-page header {margin:0;padding:0 14px 12px;border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:12px;background:var(--deck);box-shadow:var(--shadow)}

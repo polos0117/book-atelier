@@ -9,7 +9,7 @@
 |---|---|
 | 이 문서 | 규칙과 자리 |
 | `docs/GAME_CONCEPT.md` | 게임 구조 — 고정 원칙·전투·장르·설계표·디자인 규칙·저작권·시범 |
-| `docs/DUEL_DESIGN.md` | 결투 — 세 방향 비교와 선택, 규칙 전체, 열다섯 권 규칙, 시뮬레이터 균형 |
+| `docs/DUEL_DESIGN.md` | 결투 — 세 방향 비교와 선택, 규칙 전체, 스무 권 규칙, 시뮬레이터 균형 |
 | `data/book-design.json` | 책 설계표. 책 한 권 = 한 칸, 외형과 전투를 함께 뽑는다 |
 | `IMAGE_RULES.md` | 그림 만들기·파일 이름·기록·등록 — 그림 작업 전에 |
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
@@ -90,7 +90,7 @@ node tests/img-shards.cjs            # 그림 주소·등록기·워크플로·.
 node tests/prompt-book.cjs           # 프롬프트 — 다섯 권 × 폼 셋 × 갈래, 정한 말 영어
 node tests/words.cjs                 # 낱말 표
 node tests/patch.cjs                 # 패치 기록 모양
-node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·열다섯 권 규칙·AI
+node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·책마다 고유 규칙·AI
 node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 600판은 보고만): 책마다 40~60% · 세 폼 규칙 모두 돈다 · 선공
 
 # 브라우저 — ESM_DIR 에 preact·htm 이 든 node_modules, CHROMIUM_PATH 에 브라우저

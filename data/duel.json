@@ -1,7 +1,7 @@
 {
  "version": 1,
  "note": "책 결투의 수치 — 규칙은 lib/duel.js, 설명은 docs/DUEL_DESIGN.md 3절. roles: 역할 여섯의 힘·타격·방패와 하나 더(pierce 방패 무시 · aura 다른 아군 힘 · any 어느 자리든 · splash 다른 상대 하나에도). chart: 공격 장르 → 수비 장르 타격 보정(유리 +2 · 불리 −1). opens: 절정(개방) 장면 효과 — 그 폼의 역할로. first_bonus: 첫 장의 선공 쪽 합에 더하는 보정(후공이 마지막 수를 둔다). books: 책마다 고유 규칙에 쓰는 수. tests/duel-sim.cjs 가 승률을 보고 여기 수를 고친다.",
- "first_bonus": 4,
+ "first_bonus": 5,
  "roles": {
   "공격": {"power": 6, "strike": 3, "guard": 0},
   "돌파": {"power": 5, "strike": 3, "guard": 0, "pierce": true},
@@ -35,7 +35,7 @@
   "don_quixote": {"gain": 1},
   "alice": {"steal": 1},
   "frankenstein": {"max": 2},
-  "chunhyang": {"max": 2},
+  "chunhyang": {"max": 1},
   "hamlet": {"burst": 1},
   "baskervilles": {"need": 2, "expose": 2},
   "treasure_island": {"need": 2, "treasure": 2},
@@ -45,6 +45,11 @@
   "dracula": {"need": 2},
   "tear_drinking_bird": {"shield": 2, "need": 3},
   "lord_of_the_rings": {"hide": 2, "need": 2},
-  "gulliver": {}
+  "gulliver": {},
+  "project_hail_mary": {"max": 2, "fuel": 4, "need": 2, "share": 1},
+  "anna_karenina": {"max": 2, "need": 3},
+  "arsene_lupin": {"notice": 1, "steal": 2},
+  "faust": {"pact": 2, "strive": 1, "toll": 2},
+  "jasan_eobo": {"tag": 1, "record": 1}
  }
 }

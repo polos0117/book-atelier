@@ -23,10 +23,10 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
 (async () => {
   const h = await start();
   try {
-    /* 1. 덱 고르기 — 열다섯 권, 여섯이 돼야 시작 */
+    /* 1. 덱 고르기 — 설계표의 책 모두, 여섯이 돼야 시작 */
     const a = await h.open('duel.html', opt()), p = a.page;
     await p.waitForSelector('.duel-screen[data-screen="deck"]');
-    assert.equal(await p.locator('.deck-cell').count(), design.books.length, '열다섯 권');
+    assert.equal(await p.locator('.deck-cell').count(), design.books.length, '설계표의 책 ' + design.books.length + '권');
     assert(await p.locator('#duel-start').isDisabled(), '빈 덱은 시작 못 한다');
     assert.equal(await p.locator('.deck-cell[data-key="don_quixote"] img').count(), 1, '그림 있는 책은 발단 그림');
     assert.equal(await p.locator('.deck-cell[data-key="hamlet"] img').count(), 0, '그림 없는 책은 이름표');
@@ -220,6 +220,6 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
       assert.deepEqual(e.errors, [], name + ' 오류 없음');
       await e.close();
     }
-    console.log('PASS 결투 화면: 덱 고르기(열다섯·여섯·자동·저장) · 자리 셋씩 · 내기·공격·절정 장면·규칙 · 새로고침 · 끝까지 세 장 · 다시·덱 바꾸기 · 상대 차례 · 네 크기(가로 펼친 책·세로·폴드·PC) 끝까지·크게 보기·돌려도 그대로');
+    console.log('PASS 결투 화면: 덱 고르기(' + design.books.length + '권·여섯·자동·저장) · 자리 셋씩 · 내기·공격·절정 장면·규칙 · 새로고침 · 끝까지 세 장 · 다시·덱 바꾸기 · 상대 차례 · 네 크기(가로 펼친 책·세로·폴드·PC) 끝까지·크게 보기·돌려도 그대로');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

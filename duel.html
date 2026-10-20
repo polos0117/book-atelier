@@ -38,7 +38,7 @@ body {color:var(--text);font-size:15px}
 .duel-page .btn[aria-pressed="true"] {border-color:var(--gold);color:var(--text);box-shadow:inset 0 -2px var(--gold)}
 .duel-page .btn:disabled {opacity:.45;cursor:default}
 .duel-page .deck-cell,.duel-page .pick {padding:0}
-/* 덱 고르기 — 열다섯 권 */
+/* 덱 고르기 — 설계표의 책 */
 .deck-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 12px}
 @media (min-width:600px) {.deck-grid {grid-template-columns:repeat(5,minmax(0,1fr))}}
 .deck-cell {display:flex;flex-direction:column;min-height:44px;padding:0;text-align:left;color:inherit;font:inherit;background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden;cursor:pointer}
@@ -231,7 +231,7 @@ function ZoomBtn({ onZoom, label }) {
   return html`<button type="button" class="zoom" aria-label=${W('duel.zoom') + ' · ' + label} onClick=${e => { e.stopPropagation(); onZoom(); }}><span aria-hidden="true">⌕</span></button>`;
 }
 
-/* 덱 고르기 — 열다섯 권에서 여섯 */
+/* 덱 고르기 — 설계표의 책에서 여섯 */
 function Deck({ S, deck, onChange, onStart }) {
   const data = S.data, max = D.DECK, v = D.validateDeck(data, deck);
   const toggle = key => onChange(deck.includes(key) ? deck.filter(k => k !== key) : deck.length < max ? deck.concat(key) : deck);
@@ -264,6 +264,10 @@ function Unit({ S, st, u, who, sel, target, onClick, onZoom }) {
   if (u.flags.judged) flags.push(W('duel.flag.judged'));
   if (u.flags.linked) flags.push(W('duel.flag.linked'));
   if (u.mark > 0) flags.push(W('duel.flag.mark', { n: u.mark }));
+  if (u.flags.notice) flags.push(W('duel.flag.notice'));
+  if (u.flags.tag) flags.push(W('duel.flag.tag'));
+  if (u.flags.sample) flags.push(W('duel.flag.sample'));
+  if (u.flags.teacher) flags.push(W('duel.flag.teacher'));
   return html`<div class=${'duel-slot duel-unit' + (sel ? ' sel' : '') + (target ? ' duel-target' : '') + (!D.live(u) ? ' off' : '')}
       data-side=${who} data-slot=${slot} data-key=${u.key} data-kind=${target || undefined}>
     <i class="no" aria-hidden="true">${NO[slot]}</i>
@@ -366,7 +370,7 @@ function Match({ S, st, onMove, onAgain, onDeck, onZoom, onForfeit }) {
     </div>`}
     ${help && html`<div class="duel-rules" role="dialog" aria-label=${W('duel.rules.title')}>
       <p class="sec">${W('duel.rules.title')}</p>
-      <ol>${[1, 2, 3, 4, 5].map(i => html`<li key=${i}>${W('duel.rules.' + i)}</li>`)}</ol>
+      <ol>${[1, 2, 3, 4, 5].map(i => html`<li key=${i}>${W('duel.rules.' + i, { first: D.firstBonus(data) })}</li>`)}</ol>
       <div class="acts"><button type="button" class="btn" id="duel-rules-close" onClick=${() => setHelp(false)}>${W('duel.rules.close')}</button></div>
     </div>`}
     </div>

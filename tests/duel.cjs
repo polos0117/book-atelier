@@ -1,4 +1,4 @@
-/* 책 결투 규칙을 화면 없이 하나하나 본다 — 파생·덱·판·치기·상성·장·절정·열다섯 권 고유 규칙·AI.
+/* 책 결투 규칙을 화면 없이 하나하나 본다 — 파생·덱·판·치기·상성·장·절정·책마다 고유 규칙(설계표의 책 모두)·AI.
    Run: node tests/duel.cjs */
 const fs = require('node:fs'), assert = require('node:assert/strict');
 const D = require('../lib/duel.js');
@@ -9,10 +9,11 @@ const KEYS = data.design.books.map(b => b.key);
 const G = Object.fromEntries(data.design.books.map(b => [b.key, b.genre]));
 const R = (key, f) => data.design.books.find(b => b.key === key).forms[D.stagesOf(data)[f]].role;
 
-/* ── 파생 — 열다섯 권, 폼 셋의 역할, 책마다 효과가 있다 ── */
+/* ── 파생 — 설계표의 책 모두, 폼 셋의 역할, 책마다 효과가 있다 ── */
 {
   const C = D.cardsOf(data);
-  ok(C.list.length === 15 && C.list.every(k => C.cards[k].roles.length === 3 && data.duel.roles[C.cards[k].roles[0]]), '열다섯 권 · 역할 셋 · 역할 수치가 있다');
+  ok(C.list.length === KEYS.length && KEYS.length >= 20 && C.list.every(k => C.cards[k].roles.length === 3 && data.duel.roles[C.cards[k].roles[0]]), '설계표의 책 ' + KEYS.length + '권 · 역할 셋 · 역할 수치가 있다');
+  ok(KEYS.every(k => data.duel.books[k]), '책마다 data/duel.json 의 books 칸이 있다: ' + KEYS.filter(k => !data.duel.books[k]).join());
   ok(KEYS.every(k => D.BOOK[k]), '책마다 고유 규칙 효과가 있다: ' + KEYS.filter(k => !D.BOOK[k]).join());
   ok(Object.keys(D.BOOK).every(k => KEYS.includes(k)), '효과 표에 설계표에 없는 책이 없다');
   ok(data.design.vocab.role.every(r => data.duel.roles[r] && data.duel.opens[r]), '정한 역할 여섯 모두 수치와 절정 장면이 있다');
@@ -153,7 +154,7 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   { const s = scene('alice', 0, ['sunzi', 'kosmos']); ok(s.last.role === '교란' && D.units(s, 'foe').length === 2 && D.sum(data, s, 'foe') === 4 + 4 - 2, '교란 장면 — 자리를 뒤섞고 상대 책 모두 −1'); }
 }
 
-/* ── 열다섯 권 ── */
+/* ── 책마다 고유 규칙 ── */
 { /* 코스모스 — 연결 */
   const st = rig(['kosmos', 'hamlet', 'treasure_island'], ['sunzi']);
   const ko = put(st, 'me', 'kosmos', 0), hm = put(st, 'me', 'hamlet', 1);
@@ -199,8 +200,9 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   const st = rig(['chunhyang'], ['dracula', 'hamlet'], { chapter: 1 });
   const ch = put(st, 'me', 'chunhyang', 0); const dr = put(st, 'foe', 'dracula', 0);   /* 드라큘라 전개 공격 3 + 공포 → 로맨스 2 − 방패 1 = 4 */
   ok(ch.power === 3 && ch.tok === 1, '전개 — 맞으면 절개 +1');
-  hit(st, 'foe', 0, 0); ok(ch.power === 1 && ch.flags.endured && ch.tok === 2, '닫힐 피해에 한 번 힘 1 로 버틴다');
-  st.chapter = 2; ch.power = 6; const hm = put(st, 'foe', 'hamlet', 1); dr.power = 6; hm.power = 6;
+  const MAX = data.duel.books.chunhyang.max;
+  hit(st, 'foe', 0, 0); ok(ch.power === 1 && ch.flags.endured && ch.tok === Math.min(2, MAX), '닫힐 피해에 한 번 힘 1 로 버틴다 — 절개는 books.chunhyang.max 까지');
+  st.chapter = 2; ch.power = 6; ch.tok = 2; const hm = put(st, 'foe', 'hamlet', 1); dr.power = 6; hm.power = 6;
   hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 - 1 - 1) && hm.power === 6 - 2, '결말 — 공격(3, 로맨스 → 공포 −1, 드라큘라 결말 방패 1)하면 다른 상대 책 모두에게 절개(2)만큼 반격 — 맞은편은 빼고');
 }
 { /* 햄릿 — 의심 */
@@ -310,6 +312,74 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   st.chapter = 2; const al = put(st, 'me', 'alice', 1); gv.power = 6; al.power = 3; hm.power = 9; ti.power = 1;
   gv.flags.entered = {}; D.BOOK.gulliver.form({ data, st }, gv, 2);
   ok(hm.power === 1 && ti.power === 9 && gv.power === 3 && al.power === 6, '결말 — 판 위 모든 책의 힘 차례를 뒤집는다(아군도)');
+}
+{ /* 프로젝트 헤일메리 — 실험(표본) */
+  const st = rig(['project_hail_mary', 'treasure_island'], ['sunzi']);
+  const sz = put(st, 'foe', 'sunzi', 0), ph = put(st, 'me', 'project_hail_mary', 0);
+  ok(sz.power === 4 - (2 - 1), '들어오며 맞은편을 친다(정찰 2, SF → 사상 −1)');
+  start(st, 'me'); ok(ph.tok === 1 && sz.flags.sample === 1, '발단 — 내 턴마다 맞은편을 실험해 표본 +1');
+  start(st, 'me'); start(st, 'me'); ok(ph.tok === 2 && sz.flags.sample === 2, '표본은 둘까지');
+  hit(st, 'foe', 0, 0); ok(ph.power === 4 - (2 + 2 - 2), '표본마다 그 책에게 받는 피해 −1(정찰 2 + 사상 → SF 2 − 표본 2)');
+  st.chapter = 1; ph.power = 7; sz.power = 9;
+  hit(st, 'foe', 0, 0); ok(ph.power === 7 - (2 + 2 - 1 - 2) && ph.flags.fuel === 1, '전개 — 받은 피해(교란 2 + 2 − 방패 1 − 표본 2 = 1)를 금빛 연료로');
+  hit(st, 'me', 0, 0); ok(sz.power === 9 - (0 + 1) && !ph.flags.fuel, '다음 타격에 연료를 모두 더한다(버티기 1, SF → 사상 −1 = 0 + 연료 1)');
+  st.chapter = 2; const ti = put(st, 'me', 'treasure_island', 1); ph.flags.entered = {}; D.BOOK.project_hail_mary.form({ data, st }, ph, 2);
+  ok(ph.flags.teacher && D.targets({ data, st }, ph).length === 0 && LG(st, 'me').attack.every(x => x.slot !== 0), '결말 — 표본 둘이면 선생님: 자신은 더 치지 않는다');
+  st.foe.slots[1] = sz; st.foe.slots[0] = null; sz.power = 9;
+  hit(st, 'me', 1, 1); ok(sz.power === 9 - (1 + 2 + 1), '아군 모두 타격 +1(보물섬 지원 1 + 모험 → 사상 2 + 1)');
+  const s2 = rig(['project_hail_mary'], []); const p2 = put(s2, 'me', 'project_hail_mary', 0); start(s2, 'me'); ok(p2.tok === 0, '맞은편이 비면 실험할 것이 없다');
+}
+{ /* 안나 카레니나 — 열정과 시선 */
+  const st = rig(['anna_karenina', 'hamlet', 'gulliver'], ['sunzi']);
+  const an = put(st, 'me', 'anna_karenina', 0); ok(an.tok === 1 && an.power === 5 + 1, '발단 — 내 책이 들어올 때마다(자신 포함) 열정 하나, 힘 +1');
+  put(st, 'me', 'hamlet', 1); put(st, 'me', 'gulliver', 2); ok(an.tok === 2 && an.power === 5 + 2, '열정은 둘까지');
+  st.chapter = 1; an.power = 6; const sz = put(st, 'foe', 'sunzi', 0);
+  ok(an.flags.gaze === 1 && an.power === 6 - 2, '전개 — 맞을 때마다 시선 하나(손자병법 교란 2)');
+  sz.power = 9; hit(st, 'me', 0, 0); ok(sz.power === 9 - 3 - 3 && an.tok === 1, '공격하면 열정 하나를 태워 맞은편을 한 번 더 친다(공격 3 × 2)');
+  st.chapter = 2; st.foe.slots[0] = null; an.flags.gaze = 3; an.flags.entered = {}; D.BOOK.anna_karenina.form({ data, st }, an, 2);
+  ok(st.me.slots[0] === an, '맞은편이 비면 기차가 와도 데려갈 책이 없다');
+  st.foe.slots[0] = sz; an.flags.gaze = 2; start(st, 'me'); ok(st.me.slots[0] === an && st.foe.slots[0] === sz, '시선이 셋이 안 되면 오지 않는다');
+  an.flags.gaze = 3; start(st, 'me');
+  ok(st.me.slots[0] === null && st.foe.slots[0] === null && st.me.grave.includes('anna_karenina') && st.foe.grave.includes('sunzi') && st.me.lost === 1, '결말 — 시선 셋이면 기차가 온다: 맞은편과 자신을 함께 닫는다');
+}
+{ /* 괴도 신사 아르센 뤼팽 — 예고장 */
+  const st = rig(['arsene_lupin'], ['sunzi', 'treasure_island', 'hamlet']);
+  const sz = put(st, 'foe', 'sunzi', 0), ti = put(st, 'foe', 'treasure_island', 1), lp = put(st, 'me', 'arsene_lupin', 2);
+  ok(sz.flags.notice && !ti.flags.notice, '발단 — 들어오면 상대 책 하나(가장 센 것, 같으면 먼저 온 것)에 예고장');
+  hit(st, 'me', 2, 0); ok(sz.power === 4 - (2 + 1), '예고장 붙은 책을 칠 때 +1(정찰 2, 추리 → 사상 0)');
+  st.chapter = 1; const hm = put(st, 'foe', 'hamlet', 2);
+  ok(st.me.slots[0] === lp && st.me.slots[2] === null && lp.power === 4 && hm.flags.notice, '전개 — 변장: 맞기 직전 빈 자리로 빠져나가고, 친 책에 예고장을 하나 더');
+  hit(st, 'foe', 0, 0); ok(lp.power === 4 - 2 && st.me.slots[0] === lp, '장마다 한 번 — 둘째 타격은 맞는다');
+  st.chapter = 2; lp.power = 6; sz.power = 1; ti.power = 5; hm.power = 6; lp.flags.entered = {}; D.BOOK.arsene_lupin.form({ data, st }, lp, 2);
+  ok(lp.power === 6 + 2 && hm.power === 6 - 2 && sz.power === 1 && ti.power === 5, '결말 — 예고장 붙은 상대 책마다 힘 2 를 훔친다(힘 1 은 남긴다, 예고장 없는 책은 그대로)');
+  const s2 = rig(['arsene_lupin'], ['sunzi']); const l2 = put(s2, 'me', 'arsene_lupin', 0); const z2 = put(s2, 'foe', 'sunzi', 1);
+  ok(l2.flags.pending === false && z2.flags.notice, '판이 비어 있으면 다음에 들어오는 상대 책에 예고장');
+}
+{ /* 파우스트 — 계약과 빚 */
+  const st = rig(['faust'], ['sunzi', 'treasure_island']);
+  const sz = put(st, 'foe', 'sunzi', 0), fa = put(st, 'me', 'faust', 0);
+  ok(fa.tok === 1 && sz.power === 4 - (1 + 2), '발단 — 들어오면 계약: 빚 하나, 이 장 동안 타격 +2(버티기 1 + 2, 사상 → 사상 0)');
+  st.chapter = 1; fa.power = 5; const ti = put(st, 'foe', 'treasure_island', 1);
+  ok(LG(st, 'me').attack.filter(x => x.slot === 0).map(x => x.target).sort().join() === '0,1', '전개 — 빚이 있으면 맞은편이 아닌 상대 책도 칠 수 있다');
+  hit(st, 'me', 0, 1); ok(ti.power === 5 - (3 - 1) && fa.tok === 2, '맞은편이 아닌 책을 치면 빚 하나 더(돌파 3, 사상 → 모험 −1)');
+  sz.power = 9; hit(st, 'me', 0, 0); ok(sz.power === 9 - 3 && fa.tok === 2, '맞은편은 빚 없이');
+  st.chapter = 2; fa.power = 4; start(st, 'me'); ok(fa.power === 5, '결말 — 멈추지 않는다: 내 턴마다 힘 +1');
+  st.turn = 'me'; st.turnNo = 5; D.pass(data, st);
+  ok(st.phase === 'done' && st.me.slots[0] === null && st.me.grave.includes('faust') && sz.power === 6 - 2 * 2 && st.chapters[0].me === 0, '결말이 끝날 때 빚이 남았으면 — 빚마다 상대의 가장 센 책에 2, 자신은 닫힌다(합을 세기 전)');
+  const s2 = rig(['faust'], ['sunzi', 'treasure_island'], { chapter: 1 }); const z2 = put(s2, 'foe', 'sunzi', 0); put(s2, 'foe', 'treasure_island', 1); const f2 = put(s2, 'me', 'faust', 0);
+  ok(f2.tok === 0 && D.targets({ data, st: s2 }, f2).length === 1, '발단에 계약하지 않았으면 빚이 없어 맞은편만');
+}
+{ /* 자산어보 — 분류(표식) */
+  const st = rig(['jasan_eobo', 'treasure_island'], ['gulliver', 'don_quixote', 'sunzi']);
+  const gv = put(st, 'foe', 'gulliver', 0), js = put(st, 'me', 'jasan_eobo', 0);
+  ok(gv.power === 7 - (2 - 1), '들어오며 친다(정찰 2, 과학 → 희극 0, 버티기 방패 1)');
+  start(st, 'me'); ok(gv.flags.tag, '발단 — 내 턴마다 맞은편을 관찰해 표식');
+  hit(st, 'me', 0, 0); ok(gv.power === 6 - (2 + 1 - 1), '표식 붙은 책을 칠 때 +1');
+  st.chapter = 1; const dq = put(st, 'foe', 'don_quixote', 1), sz = put(st, 'foe', 'sunzi', 2);
+  start(st, 'me'); ok(dq.flags.tag && !sz.flags.tag, '전개 — 표식 붙은 책과 장르가 같은 상대 책(돈키호테·걸리버 둘 다 희극)에 표식이 번진다');
+  const ti = put(st, 'me', 'treasure_island', 1); ok(dq.power === 5 - (3 + 1), '아군도 표식 붙은 책을 칠 때 +1(보물섬 돌파 3)');
+  st.chapter = 2; js.power = 7; ti.power = 4; js.flags.entered = {}; D.BOOK.jasan_eobo.form({ data, st }, js, 2);
+  ok(js.power === 7 + 2 && ti.power === 4 + 2, '결말 — 표식 붙은 상대 책 수(2)만큼 아군 모두 힘 +1');
 }
 /* ── 자동 넘기기 — 할 수 있는 것이 없으면 넘긴다 ── */
 {

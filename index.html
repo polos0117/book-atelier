@@ -6,23 +6,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f8f4ea">
 <title>책의 공방</title>
-<link rel="stylesheet" href="lib/workspace.css?v=2">
-<script src="lib/workspace-theme.js?v=2"></script>
-<script src="lib/words.js?v=2"></script>
+<link rel="stylesheet" href="lib/workspace.css?v=3">
+<script src="lib/workspace-theme.js?v=3"></script>
+<script src="lib/words.js?v=3"></script>
 <script src="lib/patch.js?v=1"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
 <link rel="stylesheet" href="lib/gallery.css?v=1">
 <link rel="stylesheet" href="lib/landscape.css?v=1">
-<link rel="stylesheet" href="lib/room.css?v=1">
+<link rel="stylesheet" href="lib/room.css?v=2">
 </head>
 <body class="prompt-page lab-page">
 <div class="wrap"><div id="app"></div></div>
 <script type="module">
 import {h,render} from 'https://esm.sh/preact@10.24.3';
 import {useState,useEffect,useRef} from 'https://esm.sh/preact@10.24.3/hooks';
-import {WorkspaceHeader,ThemeGallery,PAGES} from './lib/workspace-ui.js?v=2';
+import {WorkspaceHeader,ThemeGallery,PAGES} from './lib/workspace-ui.js?v=3';
 const W=window.W,IMG=window.AtelierImg,FILTER=window.AtelierDexFilter;
 /* 패치 기록 — docs/PATCH.md 를 그대로 읽는다. 열 때 한 번만 받아 온다.
    닫혀 있으면 단추만 그려 집 화면의 자리를 건드리지 않는다. */

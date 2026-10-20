@@ -40,6 +40,10 @@ fails(lambda d: d['books'][0].update(quote_source='국내 번역본'), '인용 �
 fails(lambda d: d['books'][0]['opens']['결말'].update(one_figure=False), '한 명')
 fails(lambda d: d['books'][0]['rule'].update(counter=''), '대응')
 fails(lambda d: d['books'][0]['rule']['forms'].pop('전개'), '폼별 사용법')
+# 결투에 줄(lane)이 없다 — 옛 3줄 엔진 말은 걸린다. "줄기·줄어든다" 는 괜찮다
+fails(lambda d: d['books'][0]['rule']['forms'].update(전개='이 줄의 아군이 단단해진다'), '줄(lane)')
+fails(lambda d: d['books'][0]['rule'].update(counter='뒷줄을 비워 두면 허공을 친다'), '줄(lane)')
+d = copy.deepcopy(doc); d['books'][0]['rule']['forms'].update(전개='큰 줄기 하나로 받는 피해가 줄어든다'); assert B.check(d) == [], B.check(d)
 fails(lambda d: d['books'][0]['forms'].pop('결말'), '셋씩')
 fails(lambda d: [f.update(role='공격') for f in d['books'][0]['forms'].values()], '역할이 다 같다')
 fails(lambda d: d['books'][0].update(symbols=['풍차']), '상징은 셋')
@@ -48,4 +52,4 @@ fails(lambda d: d['books'][1].update(genre=d['books'][0]['genre']), '장르가 �
 fails(lambda d: d['books'][4].pop('anonymous'), '사망 연도')
 fails(lambda d: d['vocab']['form_key'].update(전개='begin'), 'form_key')
 fails(lambda d: d['books'][0].update(key='Don Quixote'), 'key 는')
-print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르' % len(doc['books']))
+print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르 · 줄(lane) 말 없음' % len(doc['books']))

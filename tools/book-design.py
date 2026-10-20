@@ -9,7 +9,8 @@
   - 정한 말(vocab)만 썼나 — 장르·실루엣 축 6·얼굴 5 묶음·역할·인용 출처·장정·얼굴 계통
   - 어느 두 책도 실루엣 축 6 중 셋 이상, 얼굴 5 묶음 중 둘 이상 다르다 — 화풍의 기본 얼굴·흔한 차림으로 수렴하지 않게
   - 폼·개방이 발단·전개·결말 셋씩, 폼마다 다른 자세(pose), 개방은 한 명으로 표현된다고 확인했다(one_figure)
-  - 고유 규칙: 공통 원리 하나 + 폼별 사용법 셋 + 상대의 대응
+  - 고유 규칙: 공통 원리 하나 + 폼별 사용법 셋 + 상대의 대응. 결투는 줄(lane)이 아니라 장(章)·자리로 돈다(docs/DUEL_DESIGN.md) —
+    "이 줄의·다른 줄로·뒷줄" 같은 옛 3줄 엔진 말은 못 쓴다
   - 저작권: 저자 사망 연도(작자 미상이면 anonymous, 살아 있으면 alive)·해외 보호 여부를 적는다. 한국에서 아직 보호 중인 책
     (1963년 이후 사망·생존 작가)은 경고만 한다 — 개인 취미용이라 막지 않는다(2026-10-19). 보호 중인 책(국내·해외)은
     따라 하지 않을 각색(adaptations — 영화·드라마·게임·표지)을 적는다. 생성기가 원작 글에서만 그리라는 줄을 싣는다
@@ -23,6 +24,8 @@ SIL = ["body", "hair", "garment", "material", "pose", "palette"]
 FACE = ["face_shape", "eyes", "brows", "nose", "lips"]
 KOREA_LAST_EXPIRED_DEATH = 1962   # 1962년 이전 사망은 옛 사후 50년으로 끝났다. 1963년부터는 사후 70년
 SIL_MIN, FACE_MIN = 3, 2
+# 옛 3줄(lane) 엔진 전제의 말 — 새 결투(docs/DUEL_DESIGN.md)에는 줄이 없다. "줄기·줄어든다" 는 걸리지 않게 조사까지 본다
+LANE_WORDS = re.compile(r"(이|다른|같은|뒷|앞|결말|발단|전개|한) ?줄|줄(을|에|로|마다| 전체| 안| 하나)")
 TEXT = ["source_scope", "persona", "desire", "conflict", "era", "region", "form_material", "title", "key"]
 
 
@@ -108,6 +111,9 @@ def check(doc):
             bad("고유 규칙의 폼별 사용법이 셋 다 있어야 한다")
         if not str(r.get("counter") or "").strip():
             bad("상대의 대응 방법이 없다")
+        for where, s in [("원리", r.get("principle")), ("대응", r.get("counter"))] + [("%s 사용법" % k, v) for k, v in (r.get("forms") or {}).items()]:
+            if LANE_WORDS.search(str(s or "")):
+                bad("고유 규칙 %s 에 줄(lane) 말이 있다 — 결투는 장(章)·자리·맞은편으로 쓴다: %s" % (where, s))
         p = b.get("pilot")
         if p is not None and (p.get("form") not in STAGES or p.get("open") not in STAGES):
             bad("시범은 폼 하나·개방 하나(발단·전개·결말 중)")

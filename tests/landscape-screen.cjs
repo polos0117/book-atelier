@@ -60,11 +60,10 @@ const wide = p => p.evaluate(() => document.documentElement.scrollWidth <= inner
 
       /* 서재 — 진열대가 화면 높이 안에, 글 띠와 진열 그림이 겹치지 않게 왼쪽 */
       a = await h.open('index.html', opt); p = a.page;
-      await p.waitForSelector('.hall-copy h2');
-      const hall = await box(p, '.hall'), copy = await box(p, '.hall-copy');
-      assert(hall.y + hall.height <= vp.height + 2, at + ' 진열대가 첫 화면 안에');
-      assert(copy.width < vp.width * 0.5 && copy.x < vp.width * 0.1, at + ' 글은 왼쪽 띠');
-      const t = await box(p, '.hall-copy h2');
+      await p.waitForSelector('.shelf-book');
+      const first = await box(p, '.shelf-row');
+      assert(first.y + first.height <= vp.height + 8, at + ' 첫 책장이 화면 안에');
+      const t = await box(p, '.bookshelf-head h2');
       assert(t.height < 64, at + ' 제목이 두 줄을 넘지 않는다');
       assert(await wide(p), at + ' 서재가 가로로 넘치지 않는다');
       assert.deepEqual(a.errors, []);

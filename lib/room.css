@@ -55,9 +55,6 @@ body.dex-page,body.prompt-page {
 .room-choice:hover {border-color:var(--accent)}
 .room-background-toggle {min-height:44px;margin-top:8px;padding:9px 16px;border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--text);font:inherit;font-size:12px}
 .room-background-toggle:hover {border-color:var(--accent)}
-/* Hall keeps its original interactions; its architectural decoration now shares the actual room. */
-.hall {background-color:var(--bg);background-image:linear-gradient(rgb(var(--room-rgb) / .21),rgb(var(--room-rgb) / .40)),var(--room-image);background-size:cover;background-position:var(--room-position);border-top:1px solid var(--line)}
-.hall .hall-col,.hall .hall-floor,.hall .hall-fog {display:none}
 html[data-background="off"] .gallery-intro {background-image:none;background-color:var(--card)}
 html[data-background="off"] .room-preview-art {display:none}
 html[data-background="off"] .room-preview {grid-template-columns:1fr}
@@ -85,7 +82,7 @@ html[data-background="off"] .room-preview {grid-template-columns:1fr}
 @media(orientation:landscape) and (max-height:550px) {.gallery-intro{display:none}.gallery-detail .artwork-panel{padding-top:0;border:0}}
 @media(prefers-reduced-transparency:reduce) {.gallery-intro>p{background:var(--bg)}}
 @media(forced-colors:active) {
- body.dex-page,body.prompt-page,.gallery-intro,.hall {background-image:none}
+ body.dex-page,body.prompt-page,.gallery-intro {background-image:none}
  .room-preview-art {display:none}
 }
 

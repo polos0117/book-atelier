@@ -95,12 +95,14 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     await p.waitForSelector('.grid > .cell');
     assert(/dex\.html/.test(p.url()), '뒤로 가기는 서가 목록에 머문다');
     assert.equal(await p.$$eval('.grid > .cell.hall-on', es => es.map(e => e.dataset.card).join()), 'don_quixote', '진열한 책에 금테');
-    /* 서재 진열대 — 진열한 책 하나만 돈다 */
+    /* 서재 책장 — 진열한 책 한 권을 꺼내 펼친다 */
     await p.goto(h.base + '/index.html');
-    await p.waitForSelector('.hall-card');
-    assert.deepEqual(await p.$$eval('.hall-card', es => es.map(e => e.dataset.key)), ['don_quixote'], '서재 진열대에 진열한 책');
-    await p.click('.hall-mode[data-mode="open"]');
-    assert.match(await p.$eval('.hall-card img.on', e => e.getAttribute('src')), /_open_/, '개방 보기 — 명장면으로');
+    await p.waitForSelector('.shelf-book');
+    assert.deepEqual(await p.$$eval('.shelf-book', es => es.map(e => e.dataset.key)), ['don_quixote'], '서재 진열대에 진열한 책');
+    await p.click('.shelf-book');
+    await p.waitForSelector('.reading-dialog[open]');
+    await p.click('.reading-mode');
+    assert.match(await p.$eval('.reading-art img', e => e.getAttribute('src')), /_open_/, '개방 보기 — 명장면으로');
     assert.deepEqual(a.errors, []);
     assert.deepEqual(await p.evaluate(() => window.AtelierWords.missing()), [], '낱말 표에 없는 열쇠');
     await a.close();

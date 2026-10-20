@@ -66,31 +66,4 @@
   .studio-card {padding:12px;margin-bottom:10px}
   .studio-tabs {margin-bottom:10px}
 
-  /* ── 서재: 진열대는 화면 높이에, 글은 왼쪽 띠로 ── */
-  .hall {height:max(240px,calc(var(--atelier-vh,100dvh) - 64px));perspective:800px;margin-bottom:14px}
-  .hall-carousel {left:68%;top:40%}
-  .hall-rings {left:68%;top:50%}
-  .hall-card {--r:170px;width:78px;height:117px;left:-39px;top:-58px}
-  .hall-ring:nth-child(1) {width:320px;height:320px;margin:-160px 0 0 -160px}
-  .hall-ring:nth-child(2) {width:220px;height:220px;margin:-110px 0 0 -110px}
-  .hall-ring:nth-child(3) {width:130px;height:130px;margin:-65px 0 0 -65px}
-  .hall-col {bottom:26%;height:60%;width:46px}
-  .hall-col:nth-child(5),.hall-col:nth-child(6) {display:none}
-  .hall-copy {top:0;right:auto;width:min(40%,380px);z-index:1;display:flex;flex-direction:column;justify-content:flex-end;padding:14px 18px;
-    background:linear-gradient(90deg,var(--bg) 62%,transparent)}
-  .hall-copy h2 {font-size:23px;margin-bottom:6px;word-break:keep-all}
-  .hall-copy p {font-size:12px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .hall-copy .lab-tag {margin-top:8px;align-self:flex-start}
-  .hall-modes {margin:8px 0 0}
-  .hall-pick {margin-top:6px}
-}
-/* 폴드 덮개 가로 · 주소창이 보이는 휴대폰 가로 — 높이 400 아래. 서재 글 띠를 더 줄인다 */
-@media (orientation:landscape) and (max-height:400px) {
-  .hall-copy {padding:10px 16px}
-  .hall-copy .eyebrow {display:none}
-  .hall-copy h2 {font-size:20px}
-  .hall-copy p {-webkit-line-clamp:2}
-  .hall-copy .lab-tag {display:none}
-  .hall-copy > div:last-child {display:inline-block;margin-left:8px}
-  .hall-modes {display:inline-flex}
 }

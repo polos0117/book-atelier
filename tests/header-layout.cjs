@@ -70,7 +70,7 @@ function same(actual,expected,label){
     }
     assert(await p.locator('.appearance-toggle').isVisible(),'접어도 설정 단추는 남는다');
     assert((await p.locator('.workspace-nav').boundingBox()).y<=open['.workspace-nav'].y,'접으면 항해가 위로 온다 (낮은 화면에서는 이미 제목이 숨어 같다)');
-    await p.locator('.workspace-nav a[href="dex.html"]').click();await p.waitForURL(/dex\.html/);await p.waitForSelector('.workspace-header.folded');
+    await p.locator('.workspace-nav a[href="dex.html"]').click();await p.waitForURL(/dex\.html/);await p.waitForSelector('.grid .cell');await p.waitForSelector('.workspace-header.folded');
     assert.equal(await p.locator('.workspace-heading').evaluate(e=>getComputedStyle(e).display),narrow?'flex':'none','다음 화면에서도 접힌 채');
     await settings(p);await p.locator('.header-fold').click();await p.waitForFunction(()=>!document.querySelector('.workspace-header.folded'));
     /* 낮은 화면(max-height:550)에서는 제목이 원래 숨어 있다 — 접기 전 상태로 돌아오면 된다 */

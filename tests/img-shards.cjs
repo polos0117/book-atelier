@@ -37,6 +37,6 @@ SHARDS.forEach((s, i) => {
   assert(new RegExp('repository: polos0117/' + s + '\\s*\\n\\s*path: ' + path + '\\b').test(wf), s + ' 를 ' + path + ' 로 받는다');
   assert(wf.includes('ln -s ' + path + '/img ' + (i ? EXTRA[i - 1] : 'img')), path + ' 를 잇는다');
 });
-const ignore = fs.readFileSync('.gitignore', 'utf8').split('\n');
+const ignore = fs.readFileSync('.gitignore', 'utf8').split(/\r?\n/);
 for (const d of ['img', ...EXTRA]) assert(ignore.includes('/' + d), d + ' 는 올리지 않는다');
 console.log(`PASS 그림 저장소: 등록 ${files.length}개 주소 · BASES=SHARDS=워크플로=.gitignore`);

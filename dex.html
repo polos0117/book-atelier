@@ -162,6 +162,7 @@ body.zoomed {overflow:hidden}
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
 <script src="lib/book-frame.js?v=1"></script>
+<link rel="stylesheet" href="lib/gallery.css?v=1">
 </head>
 <body class="dex-page">
 <div id="app"></div>
@@ -179,15 +180,16 @@ const FILTER_STORE = 'book_dex_filters_v1', COMPACT_STORE = 'book_dex_compact_v1
 const V = 'f';
 
 /* 썸네일을 먼저 걸고 없으면 원본으로 되돌아간다 */
-function Pic({ file, full, alt }) {
-  return html`<img loading=${full ? 'eager' : 'lazy'} alt=${alt || ''}
+function Pic({ file, full, alt, onClick }) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [file]);
+  return html`<img key=${file} loading=${full ? 'eager' : 'lazy'} decoding="async" width="800" height="1200" alt=${alt || ''} onClick=${onClick}
     src=${full ? IMG.imgURL(file) : IMG.thumbURL(file)}
     onError=${e => {
       const t = e.currentTarget;
-      if (full || t.dataset.fallback) return;
-      t.dataset.fallback = '1';
-      t.src = IMG.imgURL(file);
-    }} />`;
+      if (full || t.dataset.fallback) { setFailed(true); return; }
+      t.dataset.fallback = '1'; t.src = IMG.imgURL(file);
+    }} />${failed && html`<span class="image-status">${W('gallery.image.failed')}</span>`}`;
 }
 
 /* 책 틀 — 그림은 틀 없이 올리고 여기서 그 책의 장정(양장·한지 선장)을 두른다(lib/book-frame.js) */
@@ -199,12 +201,12 @@ function Frame({ book, on, children }) {
 }
 
 /* 껍데기 — .collection-scroll 한 곳만 구른다. 굴리면 main 에 dex-scrolled 가 붙어 검색 도구만 간결해진다 */
-function Shell({ head, children }) {
+function Shell({ head, children, detail = false }) {
   const [scrolled, setScrolled] = useState(false);
-  return html`<main class=${scrolled ? 'dex-scrolled' : ''}>
+  return html`<main class=${(detail ? 'gallery-detail' : 'gallery-list') + (scrolled ? ' dex-scrolled' : '')}>
     <${WorkspaceHeader} page="dex" />
     <header>${head}</header>
-    <div class="collection-scroll" tabindex="0"
+    <div class="collection-scroll" tabindex="0" aria-label=${W(detail ? 'gallery.detail' : 'gallery.collection')}
       onScroll=${e => { const on = e.currentTarget.scrollTop > 8; setScrolled(v => v === on ? v : on); }}>
       ${children}
     </div>
@@ -341,12 +343,13 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
     if (n) return apply(n);
     if (d < 0 && prevCard) onGo(prevCard, 'last', '.big', zoom); if (d > 0 && nextCard) onGo(nextCard, 'first', '.big', zoom); };
   useLayoutEffect(() => {
+    if (!selection?.zoom) document.getElementById('detail-title')?.focus({ preventScroll: true });
     if (selection?.at === 'last' && shots.length) apply(shots[shots.length - 1]);
     if (selection?.zoom && shots.length) setZoom(true);
     const k = selection?.keep, sc = document.querySelector('.collection-scroll'), el = k && document.querySelector(k.sel);
     if (sc && el) sc.scrollTop += el.getBoundingClientRect().top - k.y;
   }, []);
-  useEffect(() => { document.body.classList.toggle('zoomed', zoom); return () => document.body.classList.remove('zoomed'); }, [zoom]);
+  useLayoutEffect(() => { document.body.classList.toggle('zoomed', zoom); return () => document.body.classList.remove('zoomed'); }, [zoom]);
   /* 방향키 — 크게 보기가 열려 있으면 그쪽 몫이고, 셀렉트 같은 입력칸에 있을 땐 그 칸 몫 */
   const liveMove = useRef(); liveMove.current = { move, zoom };
   useEffect(() => {
@@ -372,11 +375,30 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
   const head = html`
     <div class="bar">
       <button class="back" onClick=${onClose}>${W('ui.back')}</button>
-      <h2>${card.name}<small>${card.author}</small></h2>
+      <h2 tabindex="-1" id="detail-title">${card.name}<small>${card.author}</small></h2>
       <span class="n">${W('art.form.done', prog)}</span>
     </div>`;
 
-  return html`<${Shell} head=${head}>
+  return html`<${Shell} head=${head} detail>
+    <section class="detail-spread">
+      <div class="artwork-panel">
+    ${shown ? html`
+      <p class="sec">${shotLabel(shown, defs)}<span>${showFocus ? W('dex.selected') : (styleName[style] || '')}</span></p>
+      <div class="big" ...${swipe}><button type="button" class="zoom" aria-label=${W('dex.zoom')} onClick=${() => setZoom(true)}><${Frame} book=${card} on=${framed}><${Pic} full file=${shown.file} alt=${card.name} /></${Frame}></button>${bigNav}${bigCount}</div>
+      ${caption && html`<p class="note">${caption}</p>`}
+    ` : html`<p class="empty">${W('art.none')}</p>`}
+    ${nav && html`<div class="card-nav" role="group" aria-label=${W('dex.card.count', { n: nav.index + 1, total: nav.total })}>
+      <button type="button" id="dex-card-prev" disabled=${!prevCard} title=${prevCard ? prevCard.name : ''} aria-label=${W('dex.card.prev') + (prevCard ? ' · ' + prevCard.name : '')}
+        onClick=${() => onGo(prevCard, 'first', '.card-nav')}><b>‹</b><span>${prevCard ? prevCard.name : W('dex.card.prev')}</span></button>
+      <span class="card-count">${W('dex.card.count', { n: nav.index + 1, total: nav.total })}</span>
+      <button type="button" id="dex-card-next" disabled=${!nextCard} title=${nextCard ? nextCard.name : ''} aria-label=${W('dex.card.next') + (nextCard ? ' · ' + nextCard.name : '')}
+        onClick=${() => onGo(nextCard, 'first', '.card-nav')}><span>${nextCard ? nextCard.name : W('dex.card.next')}</span><b>›</b></button>
+    </div>`}
+      </div>
+      <div class="story-panel">
+        <p class="editorial-kicker">${card.genre} · ${card.era}</p>
+    <p class="sec">${W('book.persona')}</p>
+    <p class="persona">${card.persona}</p>
     <div class="bar-links">
       <a href=${'prompt.html?book=' + encodeURIComponent(card.key)} id="dex-to-prompt">${W('dex.toPrompt')}</a>
       <button type="button" id="dex-hall" aria-pressed=${inHall} disabled=${hallFull} title=${W('dex.hall.note')}
@@ -411,22 +433,24 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
       })}
     </div>
 
-    ${shown ? html`
-      <p class="sec">${shotLabel(shown, defs)}<span>${showFocus ? W('dex.selected') : (styleName[style] || '')}</span></p>
-      <div class="big" ...${swipe}><button type="button" class="zoom" aria-label=${W('dex.zoom')} onClick=${() => setZoom(true)}><${Frame} book=${card} on=${framed}><${Pic} full file=${shown.file} alt=${card.name} /></${Frame}></button>${bigNav}${bigCount}</div>
-      ${caption && html`<p class="note">${caption}</p>`}
-    ` : html`<p class="empty">${W('art.none')}</p>`}
-    ${nav && html`<div class="card-nav" role="group" aria-label=${W('dex.card.count', { n: nav.index + 1, total: nav.total })}>
-      <button type="button" id="dex-card-prev" disabled=${!prevCard} title=${prevCard ? prevCard.name : ''} aria-label=${W('dex.card.prev') + (prevCard ? ' · ' + prevCard.name : '')}
-        onClick=${() => onGo(prevCard, 'first', '.card-nav')}><b>‹</b><span>${prevCard ? prevCard.name : W('dex.card.prev')}</span></button>
-      <span class="card-count">${W('dex.card.count', { n: nav.index + 1, total: nav.total })}</span>
-      <button type="button" id="dex-card-next" disabled=${!nextCard} title=${nextCard ? nextCard.name : ''} aria-label=${W('dex.card.next') + (nextCard ? ' · ' + nextCard.name : '')}
-        onClick=${() => onGo(nextCard, 'first', '.card-nav')}><span>${nextCard ? nextCard.name : W('dex.card.next')}</span><b>›</b></button>
-    </div>`}
-    ${zoom && shown && at >= 0 && html`<${Zoom} card=${card} defs=${defs} shots=${shots} at=${at} canPrev=${canPrev} canNext=${canNext} onMove=${move} onClose=${() => setZoom(false)} framed=${framed} />`}
+      </div>
+    </section>
+    ${zoom && shown && at >= 0 && html`<${Zoom} card=${card} defs=${defs} shots=${shots} at=${at} canPrev=${canPrev} canNext=${canNext} onMove=${move} onClose=${() => setZoom(false)} framed=${framed} onFrame=${flipFrame} />`}
 
-    <p class="sec">${W('book.persona')}</p>
-    <p class="persona">${card.persona}</p>
+    <section class="other-art">
+    ${acts.length > 0 && html`
+      <p class="sec">${W('dex.action')}<span>${W('art.count', { n: acts.length })}</span></p>
+      <div class="gal form-actions">${acts.map((f, i) => html`<button key=${f} class="cell" data-cut="action" onClick=${() => setFocus({ file: f, cut: 'action', form, index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.action')} /></button>`)}</div>`}
+    ${casual.length > 0 && html`
+      <p class="sec">${W('dex.casual')}<span>${W('art.count', { n: casual.length })}</span></p>
+      <div class="gal">${casual.map((f, i) => html`<button key=${f} class="cell" data-cut="casual" onClick=${() => setFocus({ file: f, cut: 'casual', index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.casual')} /></button>`)}</div>`}
+    ${extra.length > 0 && html`
+      <p class="sec">${W('dex.extra')}<span>${W('art.count', { n: extra.length })}</span></p>
+      <div class="gal">${extra.map((f, i) => html`<button key=${f} class="cell" data-cut="extra" onClick=${() => setFocus({ file: f, cut: 'extra', index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.extra')} /></button>`)}</div>`}
+
+    </section>
+    <section class="reading-notes">
+      <div>
     <${Arc} arc=${card.arc} />
 
     <p class="sec">${W('book.rule')}</p>
@@ -438,21 +462,14 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
     <p class="sec">${W('book.forms')}</p>
     <${Stages} card=${card} defs=${defs} form=${form} />
 
-    ${acts.length > 0 && html`
-      <p class="sec">${W('dex.action')}<span>${W('art.count', { n: acts.length })}</span></p>
-      <div class="gal form-actions">${acts.map((f, i) => html`<button key=${f} class="cell" data-cut="action" onClick=${() => setFocus({ file: f, cut: 'action', form, index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.action')} /></button>`)}</div>`}
-    ${casual.length > 0 && html`
-      <p class="sec">${W('dex.casual')}<span>${W('art.count', { n: casual.length })}</span></p>
-      <div class="gal">${casual.map((f, i) => html`<button key=${f} class="cell" data-cut="casual" onClick=${() => setFocus({ file: f, cut: 'casual', index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.casual')} /></button>`)}</div>`}
-    ${extra.length > 0 && html`
-      <p class="sec">${W('dex.extra')}<span>${W('art.count', { n: extra.length })}</span></p>
-      <div class="gal">${extra.map((f, i) => html`<button key=${f} class="cell" data-cut="extra" onClick=${() => setFocus({ file: f, cut: 'extra', index: i + 1 })}><${Pic} file=${f} alt=${W('dex.cut.extra')} /></button>`)}</div>`}
-
+      </div>
+      <div>
     <p class="sec">${W('book.about')}</p>
     <${Facts} card=${card} />
     <${Design} card=${card} />
-  <//>`;
-}
+      </div>
+    </section>
+  <//>`;}
 
 /* 밀어 넘기기 — 가로로 40px 넘게, 세로보다 확실히 많이 끌면 한 칸(손가락이 왼쪽으로 가면 다음).
    10px 넘게 끈 손가락 뒤에 따라오는 click 은 삼킨다 — 크게 보기를 열거나 닫지 않게. 화살표 단추에서 시작한 건 단추 몫 */
@@ -477,25 +494,65 @@ function useSwipe(onMove) {
 }
 
 /* 크게 보기 — 키 핸들러는 한 번만 걸고 최신 함수를 참조로 읽는다(myth 도감에서 빠르게 누르면 옛 자리를 잡은 일이 있었다) */
-function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose, framed }) {
+function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose, framed, onFrame }) {
+  const layer = useRef();
   const live = useRef(); live.current = { onMove, onClose };
-  useEffect(() => {
-    const key = e => { const f = live.current; if (e.key === 'Escape') f.onClose(); if (e.key === 'ArrowLeft') f.onMove(-1); if (e.key === 'ArrowRight') f.onMove(1); };
+  useLayoutEffect(() => {
+    const previous = document.activeElement, hidden = [];
+    let branch = layer.current;
+    while (branch && branch !== document.body) {
+      for (const sibling of branch.parentElement.children) {
+        if (sibling !== branch && !['SCRIPT', 'STYLE'].includes(sibling.tagName)) {
+          hidden.push([sibling, sibling.inert]); sibling.inert = true;
+        }
+      }
+      branch = branch.parentElement;
+    }
+    layer.current.querySelector('.zoom-close').focus();
+    return () => {
+      hidden.forEach(([el, inert]) => { el.inert = inert; });
+      queueMicrotask(() => {
+        if (!document.querySelector('.zoom-layer')) {
+          const target = previous?.isConnected && previous !== document.body && !previous.closest('.zoom-layer')
+            ? previous : document.querySelector('.big .zoom');
+          target?.focus({ preventScroll: true });
+        }
+      });
+    };
+  }, []);
+  useLayoutEffect(() => {
+    const key = e => {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const f = live.current;
+      if (e.key === 'Escape') { e.preventDefault(); f.onClose(); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); f.onMove(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); f.onMove(1); }
+      if (e.key === 'Tab') {
+        const items = [...layer.current.querySelectorAll('button:not(:disabled), a[href]')];
+        e.preventDefault();
+        const current = items.indexOf(document.activeElement);
+        const next = (current + (e.shiftKey ? -1 : 1) + items.length) % items.length;
+        items[next]?.focus();
+      }
+    };
     addEventListener('keydown', key);
     return () => removeEventListener('keydown', key);
   }, []);
   const swipe = useSwipe(d => live.current.onMove(d));
   const shot = shots[at];
-  return html`<div class="zoom-layer" role="dialog" aria-modal="true" aria-label=${W('dex.zoom')}>
-    <div class="zoom-bar"><b>${card.name} · ${shotLabel(shot, defs)}</b><span>${at + 1} / ${shots.length}</span>
-      <a href=${IMG.imgURL(shot.file)} target="_blank" rel="noopener" class="zoom-open">${W('dex.zoom.original')}</a>
+  return html`<div ref=${layer} class="zoom-layer" role="dialog" aria-modal="true" aria-label=${W('dex.zoom')}>
+    <div class="zoom-bar"><b>${card.name} · ${shotLabel(shot, defs)}</b><span aria-live="polite">${at + 1} / ${shots.length}</span>
+      <a href=${IMG.imgURL(shot.file)} target="_blank" rel="noopener" class="zoom-open">${W('dex.zoom.original')} ↗</a>
       <button type="button" class="zoom-close" onClick=${onClose} aria-label=${W('dex.zoom.close')}>✕</button></div>
     <div class="zoom-body" ...${swipe} onClick=${e => { if (e.target === e.currentTarget) onClose(); }}>
-      <${Frame} book=${card} on=${framed}><img src=${IMG.imgURL(shot.file)} alt=${card.name} onClick=${onClose} /></${Frame}>
+      <${Frame} book=${card} on=${framed}><${Pic} full file=${shot.file} alt=${card.name + ' · ' + shotLabel(shot, defs)} onClick=${onClose} /></${Frame}>
       <div class="zoom-nav">
         <button type="button" class="zoom-prev" disabled=${!canPrev} onClick=${() => onMove(-1)} aria-label=${W('dex.shot.prev')}>‹</button>
         <button type="button" class="zoom-next" disabled=${!canNext} onClick=${() => onMove(1)} aria-label=${W('dex.shot.next')}>›</button>
       </div>
+    </div>
+    <div class="zoom-footer"><p><span class="viewer-keyboard">${W('gallery.viewer.hint')}</span><span class="viewer-touch">${W('gallery.viewer.touch')}</span></p>
+      <button type="button" class="viewer-frame" aria-pressed=${framed} onClick=${onFrame}>${W('gallery.viewer.frame')} ${framed ? '✓' : '+'}</button>
     </div>
   </div>`;
 }
@@ -508,6 +565,7 @@ function shotLabel(shot, defs) {
 
 function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
   const f = FILTER.normalize(filters, st);
+  const [filtersOpen, setFiltersOpen] = useState(() => ['style', 'form', 'art'].some(k => f[k]) || f.cut !== 'auto');
   const hall = IMG.hallPicks();
   /* 상세에서 돌아오면 열기 전에 굴려 둔 자리로. 상세에서 다른 책으로 넘어갔으면 그 책 칸이 보이게 한 번 더 민다 */
   useLayoutEffect(() => {
@@ -515,6 +573,8 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
     if (!r || !sc) return;
     restore.current = null;
     sc.scrollTop = r.top;
+    const trigger = [...sc.querySelectorAll('.grid > .cell')].find(x => x.dataset.card === r.card);
+    if (trigger) trigger.focus({ preventScroll: true });
     if (!r.card || r.card === r.from) return;
     const el = [...sc.querySelectorAll('.grid > .cell')].find(x => x.dataset.card === r.card);
     if (!el) return;
@@ -540,8 +600,10 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
   const slots = st.cards.length * wanted(st.defs).length;
   const done = st.cards.reduce((n, c) => n + FILTER.best(st.img[c.key], st.defs).prog.done, 0);
   return html`<${Shell} head=${head}>
-    <details class="dex-filters" open>
-      <summary>${W('dex.filter.title')}</summary>
+    <section class="gallery-intro"><div><p class="editorial-kicker">${W('gallery.eyebrow')}</p><h2>${W('gallery.title')}</h2></div><p>${W('gallery.intro')}</p></section>
+    <div class="genre-strip" role="group" aria-label=${W('dex.filter.genre')}>${['', ...genres].map(g => html`<button type="button" aria-pressed=${f.genre === g} onClick=${() => update('genre', g)}>${g || W('dex.filter.all')}</button>`)}</div>
+    <details class="dex-filters" open=${filtersOpen} onToggle=${e => setFiltersOpen(e.currentTarget.open)}>
+      <summary>${W('dex.filter.title')}${active > 0 && html`<span class="filter-count">${active}</span>`}</summary>
       <div class="dex-filter-grid">
         ${pick('style', [all, ...Object.entries(st.styleName)])}
         ${pick('genre', [all, ...genres.map(g => [g, g])])}
@@ -558,17 +620,16 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
     ${shown.length === 0
       ? html`<p class="empty">${W('dex.filter.empty')}</p>`
       : html`<div class="grid">${shown.map((shot, i) => {
-          const c = shot.card, prog = FILTER.best(st.img[c.key], st.defs, shot.style).prog;
+          const c = shot.card;
           return html`<button key=${c.key + '-' + shot.style + '-' + shot.file + '-' + i} class=${'cell' + (hall.includes(c.key) ? ' hall-on' : '')}
             data-card=${c.key} data-style=${shot.style} data-form=${shot.form} data-cut=${shot.cut}
             onClick=${() => onOpen(shot)}>
             <span class="face">${shot.file
               ? html`<${Pic} file=${shot.file} alt=${c.name + ' · ' + shotLabel(shot, st.defs)} />`
               : html`<span class="ph">${W('art.none')}</span>`}</span>
-            <span class="cap">${c.name}
-              <i>${c.genre}</i>
-              ${shot.file && html`<i>${st.styleName[shot.style] || shot.style}</i><i>${shotLabel(shot, st.defs)}</i>`}
-              <i>${W('art.form.done', prog)}</i>
+            <span class="cap"><span class="card-meta"><span>${c.genre}</span><span>${String(st.cards.indexOf(c) + 1).padStart(2, '0')}</span></span>
+              <strong>${c.name}</strong><i class="card-author">${c.author}</i>
+              <span class="card-caption">${shot.file ? shotLabel(shot, st.defs) : W('art.none')}<span aria-hidden="true"> ↗</span></span>
             </span>
           </button>`;
         })}</div>`}

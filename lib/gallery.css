@@ -184,3 +184,7 @@ body.dex-page,body.lab-page {background-image:none}
 .story-panel .fstrip{max-width:340px}
 @media(max-width:719px){.story-panel .fstrip{max-width:none}}
 @media(max-width:599px){.workspace-heading{height:60px}.gallery-intro{padding-block:18px 12px}.gallery-intro h2{font-size:26px}.gallery-intro>p{line-height:1.6}.dex-view-row{margin-block:6px 12px}}
+/* 원본 크기 — 제 픽셀 크기로 펼치고 이 칸 안에서 가로·세로로 민다(넘기기 손짓·틀은 끈다) */
+.zoom-layer .zoom-body.actual {display:block;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom;padding:0;-webkit-overflow-scrolling:touch}
+.zoom-layer .zoom-body.actual > img {width:auto;height:auto;min-height:0;max-width:none;max-height:none;object-fit:none;margin:0 auto;cursor:auto}
+.zoom-layer .zoom-body.actual .zoom-nav {display:none}

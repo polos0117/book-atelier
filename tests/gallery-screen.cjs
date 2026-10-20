@@ -53,6 +53,14 @@ const svg = (wide = false) => '<svg xmlns="http://www.w3.org/2000/svg" width="' 
         assert.equal(await p.locator('.zoom-body>.bframe').count(), 0);
         const image = await p.locator('.zoom-body>img').boundingBox(), body = await p.locator('.zoom-body').boundingBox();
         assert(image.width <= body.width && image.height <= body.height, 'unframed artwork fits viewer');
+        /* 원본 크기 — 새 창을 열지 않고 이 안에서 제 픽셀 크기로. 홈 화면 앱에서는 새 창이 같은 앱 창에 떠서 돌아올 길이 없었다 */
+        const pages = p.context().pages().length;
+        await p.locator('.zoom-open').click();
+        assert.equal(await p.locator('.zoom-body.actual').count(), 1, '원본 크기로 펼친다');
+        assert.equal(p.context().pages().length, pages, '새 창을 열지 않는다');
+        assert(await p.locator('.zoom-body.actual img').evaluate(i => Math.round(i.getBoundingClientRect().width) === i.naturalWidth), '제 픽셀 크기');
+        await p.locator('.zoom-open').click();
+        assert.equal(await p.locator('.zoom-body.actual').count(), 0, '다시 누르면 화면에 맞춘다');
         await p.keyboard.press('Escape');
         assert.equal(await p.locator('.zoom-layer').count(), 0);
         assert.equal(await p.evaluate(() => document.activeElement.className), 'zoom');

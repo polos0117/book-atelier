@@ -642,6 +642,15 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
   <//>`;
 }
 
+/* 주소의 ?book= — 읽고 쓰기. 다른 물음표 값은 그대로 둔다 */
+function askedBook() { try { return new URLSearchParams(location.search).get('book'); } catch { return null; } }
+function bookURL(key) {
+  const q = new URLSearchParams(location.search);
+  if (key) q.set('book', key); else q.delete('book');
+  const s = q.toString();
+  return location.pathname + (s ? '?' + s : '') + location.hash;
+}
+
 function App() {
   const st = useDex();
   const [open, setOpen] = useState(null);
@@ -663,15 +672,17 @@ function App() {
   useEffect(() => { const on = () => setTheme(n => n + 1); addEventListener('atelier-appearance', on); return () => removeEventListener('atelier-appearance', on); }, []);
   const listTop = useRef(0), from = useRef(null), restore = useRef(null), openNow = useRef(null);
   openNow.current = open;
-  /* 휴대폰 뒤로 가기 — 상세를 열 때 기록을 한 칸 쌓고, 뒤로 가기(popstate)면 그 칸을 내리며 목록으로.
-     "목록으로" 단추도 같은 칸을 내린다(history.back). 책을 넘겨도 칸은 하나 그대로 */
-  const pushed = useRef(false), skipPop = useRef(false);
+  /* 휴대폰 뒤로 가기 — 상세를 열 때 기록을 한 칸 쌓고(주소는 ?book=<열쇠>), 뒤로 가기(popstate)면 그 칸을 내리며 목록으로.
+     "목록으로" 단추도 같은 칸을 내린다(history.back). 책을 넘기면 칸은 하나 그대로 두고 주소만 바꾼다(replaceState).
+     그래서 상세에서 새로고침·공유해도 그 책이 열리고, 앞으로 가기면 다시 열린다 */
+  const pushed = useRef(false), skipPop = useRef(false), cards = useRef(null);
+  cards.current = st.cards;
   const shut = () => { restore.current = { top: listTop.current, card: openNow.current?.card?.key, from: from.current }; setOpen(null); };
   const openShot = shot => {
     const sc = document.querySelector('.collection-scroll');
     listTop.current = sc ? sc.scrollTop : 0; from.current = shot.card.key;
     setOpen(shot);
-    if (!pushed.current) { try { history.pushState({ dex: 'card' }, ''); pushed.current = true; skipPop.current = false; } catch {} }
+    if (!pushed.current) { try { history.pushState({ dex: 'card' }, '', bookURL(shot.card.key)); pushed.current = true; skipPop.current = false; } catch {} }
   };
   const close = () => {
     shut();
@@ -679,13 +690,28 @@ function App() {
   };
   const liveShut = useRef(); liveShut.current = shut;
   useEffect(() => {
-    const pop = () => { if (skipPop.current) { skipPop.current = false; return; } if (pushed.current) { pushed.current = false; liveShut.current(); } };
+    const pop = () => {
+      if (skipPop.current) { skipPop.current = false; return; }
+      const c = (cards.current || []).find(x => x.key === askedBook());
+      if (c) { pushed.current = true; setOpen(o => o && o.card.key === c.key ? o : { card: c }); return; }
+      if (pushed.current || openNow.current) { pushed.current = false; liveShut.current(); }
+    };
     addEventListener('popstate', pop);
     return () => removeEventListener('popstate', pop);
   }, []);
   /* dex.html?book=<열쇠> — 서재 진열대·생성기가 그 책의 상세로 바로 연다 */
-  const [asked] = useState(() => { try { return new URLSearchParams(location.search).get('book'); } catch { return null; } });
-  useEffect(() => { if (asked && st.cards) { const c = st.cards.find(x => x.key === asked); if (c) openShot({ card: c }); } }, [st.cards]);
+  /* 바로 온 주소의 칸은 목록 주소로 바꾸고 그 위에 상세 칸을 쌓는다 — 뒤로 가기면 목록으로 */
+  const [asked] = useState(askedBook);
+  useEffect(() => {
+    if (!asked || !st.cards) return;
+    const c = st.cards.find(x => x.key === asked); if (!c) return;
+    /* 상세에서 새로고침했으면 이미 상세 칸이다 — 칸을 더 쌓지 않는다 */
+    if (history.state && history.state.dex === 'card') { pushed.current = true; setOpen({ card: c }); return; }
+    try { history.replaceState(history.state, '', bookURL(null)); } catch {}
+    openShot({ card: c });
+  }, [st.cards]);
+  /* 상세 안에서 책을 넘기면 주소도 그 책으로 */
+  useEffect(() => { const k = open?.card?.key; if (k && pushed.current && askedBook() !== k) { try { history.replaceState(history.state, '', bookURL(k)); } catch {} } }, [open?.card?.key]);
 
   if (st.error) return html`<${Shell} head=${null}>
     <p class="empty">${W('ui.error', { message: st.error })}</p><//>`;

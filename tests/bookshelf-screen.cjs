@@ -7,6 +7,7 @@ const hex=c=>'#'+c.match(/\d+/g).slice(0,3).map(n=>Number(n).toString(16).padSta
 /* 책등 제목 — 한 줄(두 단으로 갈리지 않는다)이고 제목 칸 안에 다 든다(잘리지 않는다) */
 const spineFit=p=>p.locator('.spine-title').evaluateAll(es=>es.filter(e=>{const s=e.firstElementChild,c=e.getBoundingClientRect(),b=s.getBoundingClientRect(),f=parseFloat(getComputedStyle(s).fontSize);
  return !(b.height<=c.height+.5&&b.top>=c.top-.5&&b.width<f*1.6&&f>=10);}).map(e=>e.textContent));
+const openParam=p=>p.evaluate(()=>new URLSearchParams(location.search).get('open'));
 const boxes=[{width:1440,height:1000},FOLD.inner,{width:390,height:844},FOLD.cover,{width:882,height:344}];
 (async()=>{
  const h=await start();try {
@@ -38,6 +39,7 @@ const boxes=[{width:1440,height:1000},FOLD.inner,{width:390,height:844},FOLD.cov
     await button.click();
     await p.waitForSelector('.reading-dialog[open]');await p.waitForTimeout(510);
     assert.equal(await p.locator('.reading-book').getAttribute('data-book'),key);
+    assert.equal(await openParam(p),key,'opened book is in the address (?open=)');
     const r=await p.locator('.reading-book').boundingBox();
     assert(r.x>=0&&r.y>=0&&r.x+r.width<=viewport.width+1&&r.y+r.height<=viewport.height+1,'open book fits viewport');
     assert(await p.locator('.reading-detail').getAttribute('href')==='dex.html?book='+key);
@@ -51,6 +53,7 @@ const boxes=[{width:1440,height:1000},FOLD.inner,{width:390,height:844},FOLD.cov
     }
     await p.keyboard.press('Escape');await p.waitForSelector('.reading-dialog',{state:'detached'});
     assert.equal(await p.evaluate(()=>document.activeElement.dataset.key),key,'focus returns to the book');
+    assert.equal(await openParam(p),null,'closing removes ?open=');
     assert.notEqual(await p.locator('.wrap').evaluate(e=>e.style.overflow),'hidden','page scroll restored');
    }
   }
@@ -67,8 +70,30 @@ const boxes=[{width:1440,height:1000},FOLD.inner,{width:390,height:844},FOLD.cov
   await p.setViewportSize(boxes[0]);await p.locator('.shelf-book').first().click();
   await p.locator('.reading-dialog').click({position:{x:2,y:2}});
   await p.waitForSelector('.reading-dialog',{state:'detached'});
+  /* 주소 — 펼친 책은 ?open=. 새로고침해도 그 책, 뒤로 가기면 닫히고(포커스는 책등으로), 앞으로 가기면 다시 펼친다 */
+  await p.emulateMedia({reducedMotion:'no-preference'});
+  const third=keys[2];
+  await p.locator('.shelf-book[data-key="'+third+'"]').click();await p.waitForSelector('.reading-dialog[open]');
+  const len=await p.evaluate(()=>history.length)-1;
+  await p.reload();await p.waitForSelector('.reading-dialog[open]');
+  assert.equal(await p.locator('.reading-book').getAttribute('data-book'),third,'reload keeps the opened book');
+  assert.equal(await p.evaluate(()=>history.length),len+1,'reload adds no entry');
+  await p.goBack();await p.waitForSelector('.reading-dialog',{state:'detached'});
+  assert.equal(await openParam(p),null,'back closes the book');
+  assert.equal(await p.evaluate(()=>document.activeElement.dataset.key),third,'back returns focus to the spine');
+  await p.goForward();await p.waitForSelector('.reading-dialog[open]');
+  assert.equal(await p.locator('.reading-book').getAttribute('data-book'),third,'forward reopens it');
+  await p.locator('.reading-close').click();await p.waitForSelector('.reading-dialog',{state:'detached'});
+  assert.equal(await openParam(p),null);
   assert.deepEqual(a.errors,[]);assert.deepEqual(await p.evaluate(()=>AtelierWords.missing()),[]);
   await a.close();
+  /* 공유한 주소로 바로 — 그 책이 펼쳐지고, 뒤로 가기면 책장 */
+  const shared=await h.open('index.html?open=hamlet',{viewport:boxes[2]});
+  await shared.page.waitForSelector('.reading-dialog[open]');
+  assert.equal(await shared.page.locator('.reading-book').getAttribute('data-book'),'hamlet','shared ?open= opens that book');
+  await shared.page.goBack();await shared.page.waitForSelector('.reading-dialog',{state:'detached'});
+  assert.equal(await openParam(shared.page),null);assert.deepEqual(shared.errors,[]);
+  await shared.close();
   const picked=await h.open('index.html',{store:['book_hall_v1',JSON.stringify({sunlit:['don_quixote','kosmos'],moonlit:['alice']})]});
   await picked.page.waitForSelector('.shelf-book');
   assert.deepEqual(await picked.page.locator('.shelf-book').evaluateAll(es=>es.map(e=>e.dataset.key)),['don_quixote','kosmos']);

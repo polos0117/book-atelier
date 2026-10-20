@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-20 · claude · 주소에 상태 남기기 — 서가 상세·생성기·펼친 책
+
+- dex.html — 상세를 열면 기록 칸에 ?book=<열쇠> 를 싣는다(pushState). 상세 안에서 책을 넘기면 주소만 바꾸고(replaceState), 앞으로 가기면 다시 그 책. 상세에서 새로고침해도 그 책이고 기록 칸이 늘지 않는다. 바로 온 ?book= 주소는 목록 칸 위에 상세 칸을 쌓아 뒤로 가기가 목록으로 간다
+- lib/prompt-ui.js — 고른 책·모드를 ?book=&mode= 로 늘 적는다(replaceState — 고르기마다 기록이 쌓이지 않게). 주소의 모드가 저장값보다 먼저다. 공유한 주소가 그 책·그 모드로 열린다
+- lib/bookshelf.js · index.html — 책을 펼치면 ?open=<열쇠>(서가의 ?book= 과 짝). 닫거나 뒤로 가기면 빠지고 포커스는 그 책등으로, 새로고침·앞으로 가기·공유면 그 책이 펼쳐진다
+- tests/dex-screen.cjs · tests/prompt-screen.cjs · tests/bookshelf-screen.cjs — 주소·새로고침·뒤로·앞으로·공유 주소를 본다
+
 ## 2026-10-20 · claude · 글꼴을 실제로 싣고, 영어 어깨 글자를 걷다
 
 - index.html · dex.html · prompt.html · duel.html — Google Fonts 에서 명조(Noto Serif KR 500·600·700)와 고딕(IBM Plex Sans KR 400–700)을 싣는다. preconnect 두 줄 + display=swap. 못 받으면 기기 글꼴로 그대로 뜬다(검사는 바깥이 막힌 채로 돈다)

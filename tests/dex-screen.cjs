@@ -45,6 +45,8 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     await p.waitForSelector('.fstrip');
     assert.equal(await title(p), '돈키호테');
     assert.equal(await p.evaluate(() => history.length), len0 + 1, '상세를 열면 기록이 한 칸');
+    const asked = () => p.evaluate(() => new URLSearchParams(location.search).get('book'));
+    assert.equal(await asked(), 'don_quixote', '상세를 열면 주소에 ?book=');
     assert.deepEqual(await p.$$eval('.fcell', es => es.map(e => e.dataset.form)), ['begin', 'middle', 'end', 'begin_open', 'middle_open', 'end_open']);
     assert.deepEqual(await p.$$eval('.fcell .pilot', es => es.map(e => e.closest('.fcell').dataset.form)), ['middle', 'middle_open'], '시범 자리 — 전개 폼·전개 개방');
     assert.equal(await p.$$eval('.style-cell', x => x.length), 2, '화풍 비교 띠 — 화풍 둘');
@@ -64,6 +66,7 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     const second = await title(p);
     assert.notEqual(second, '돈키호테', '끝을 넘으면 다음 책');
     assert.equal(await p.evaluate(() => history.length), len0 + 1, '책을 넘겨도 기록은 한 칸');
+    assert.notEqual(await asked(), 'don_quixote', '책을 넘기면 주소도 그 책으로');
     await p.keyboard.press('ArrowLeft');
     await p.waitForFunction(() => document.querySelector('.bar h2').firstChild.textContent.trim() === '돈키호테');
     assert.equal(await count(p), total + ' / ' + total, '앞 책으로 돌아가면 마지막 그림');
@@ -90,10 +93,19 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     /* 진열 — 이 서고(테마)에 올리면 목록 칸에 금테 */
     await p.click('#dex-hall');
     assert.equal(await p.$eval('#dex-hall', e => e.getAttribute('aria-pressed')), 'true');
-    /* 뒤로 가기 — 목록으로 */
+    assert.equal(await asked(), 'don_quixote', '되돌아온 책의 주소');
+    /* 새로고침 — 그 책 상세가 그대로, 기록 칸은 늘지 않는다 */
+    await p.reload(); await p.waitForSelector('.fstrip');
+    assert.equal(await title(p), '돈키호테', '상세에서 새로고침해도 그 책');
+    assert.equal(await p.evaluate(() => history.length), len0 + 1, '새로고침해도 기록 칸은 그대로');
+    /* 뒤로 가기 — 목록으로(주소에서 book 이 빠진다), 앞으로 가기면 다시 그 책 */
     await p.goBack();
     await p.waitForSelector('.grid > .cell');
     assert(/dex\.html/.test(p.url()), '뒤로 가기는 서가 목록에 머문다');
+    assert.equal(await asked(), null, '목록 주소엔 book 이 없다');
+    await p.goForward(); await p.waitForSelector('.fstrip');
+    assert.equal(await title(p), '돈키호테', '앞으로 가기면 다시 그 책');
+    await p.goBack(); await p.waitForSelector('.grid > .cell');
     assert.equal(await p.$$eval('.grid > .cell.hall-on', es => es.map(e => e.dataset.card).join()), 'don_quixote', '진열한 책에 금테');
     /* 서재 책장 — 진열한 책 한 권을 꺼내 펼친다 */
     await p.goto(h.base + '/index.html');
@@ -111,6 +123,10 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     const b = await h.open('dex.html?book=alice', opt({ viewport: FOLD.inner }));
     await b.page.waitForSelector('.fstrip');
     assert.equal(await title(b.page), '이상한 나라의 앨리스');
+    /* 바로 온 주소 — 뒤로 가기면 같은 화면의 목록으로 */
+    await b.page.goBack(); await b.page.waitForSelector('.grid > .cell');
+    assert.equal(await b.page.evaluate(() => location.search), '', '바로가기에서 뒤로 — 목록');
+    await b.page.goForward(); await b.page.waitForSelector('.fstrip');
     assert.equal(await b.page.$eval('#dex-to-prompt', e => e.getAttribute('href')), 'prompt.html?book=alice');
     assert(await b.page.evaluate(() => document.body.scrollWidth <= innerWidth), '펼친 화면에서 가로로 넘치지 않는다');
     assert.deepEqual(b.errors, []);

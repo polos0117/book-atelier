@@ -70,6 +70,8 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.selectOption('#form', 'middle');
     /* 5. 개방 — 그 폼 그림 첨부, 명장면, 파일 이름에 _open */
     await p.click('#mode-open');
+    const q = () => p.evaluate(() => Object.fromEntries(new URLSearchParams(location.search)));
+    assert.deepEqual(await q(), { book: 'don_quixote', mode: 'open' }, '고른 책·모드가 주소에');
     t = await out(p);
     assert(t.includes('풍차 앞으로 돌진하는 순간') && t.startsWith("INPUT: attach this book's development form card image"));
     assert.match(await p.$eval('#file-name code', e => e.textContent), /don_quixote_middle_open_literary_fantasy_f\.webp/);
@@ -102,8 +104,12 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     /* 8. 저장 — 새로고침해도 이어지고, 다른 책은 직전 책 외형을 가져올 수 있다 */
     await p.reload(); await p.waitForSelector('#prompt-output');
     assert.equal(await p.$eval('#mode-casual', e => e.getAttribute('aria-pressed')), 'true', '새로고침해도 일상컷');
+    assert.equal((await q()).mode, 'casual', '주소의 모드도 일상컷');
+    const len = await p.evaluate(() => history.length);
     await p.selectOption('#source', 'alice');
     await p.waitForFunction(() => document.querySelector('#mode-form'));
+    assert.equal((await q()).book, 'alice', '책을 바꾸면 주소도');
+    assert.equal(await p.evaluate(() => history.length), len, '고르기는 기록 칸을 쌓지 않는다(replaceState)');
     assert.equal(await p.$eval('#form', e => e.value), 'end', '앨리스는 시범 폼(결말)에서');
     await p.click('#take-prev');
     assert.equal(await p.$eval('#param-apparent-age', e => e.value), '20s', '직전 책 외형');
@@ -113,6 +119,13 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.setViewportSize(FOLD.cover);
     assert(await p.evaluate(() => document.body.scrollWidth <= innerWidth + 1), '덮개 화면에서 가로로 넘친다');
     await a.close();
+    /* 공유한 주소 — 저장값이 없어도 그 책·그 모드로 연다 */
+    const c = await h.open('prompt.html?book=kosmos&mode=open', opt());
+    await c.page.waitForSelector('#prompt-output');
+    assert.equal(await c.page.$eval('#source', e => e.value), 'kosmos', '주소의 책');
+    assert.equal(await c.page.$eval('#mode-open', e => e.getAttribute('aria-pressed')), 'true', '주소의 모드');
+    assert.deepEqual(c.errors, []);
+    await c.close();
     console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·갈래·원작 시대·잠금 · 복사·기록 · 저장·직전 책 외형');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

@@ -1,0 +1,50 @@
+{
+ "version": 1,
+ "note": "책 결투의 수치 — 규칙은 lib/duel.js, 설명은 docs/DUEL_DESIGN.md 3절. roles: 역할 여섯의 힘·타격·방패와 하나 더(pierce 방패 무시 · aura 다른 아군 힘 · any 어느 자리든 · splash 다른 상대 하나에도). chart: 공격 장르 → 수비 장르 타격 보정(유리 +2 · 불리 −1). opens: 절정(개방) 장면 효과 — 그 폼의 역할로. first_bonus: 첫 장의 선공 쪽 합에 더하는 보정(후공이 마지막 수를 둔다). books: 책마다 고유 규칙에 쓰는 수. tests/duel-sim.cjs 가 승률을 보고 여기 수를 고친다.",
+ "first_bonus": 4,
+ "roles": {
+  "공격": {"power": 6, "strike": 3, "guard": 0},
+  "돌파": {"power": 5, "strike": 3, "guard": 0, "pierce": true},
+  "버티기": {"power": 7, "strike": 1, "guard": 1},
+  "지원": {"power": 4, "strike": 1, "guard": 0, "aura": 1},
+  "정찰": {"power": 4, "strike": 2, "guard": 0, "any": true},
+  "교란": {"power": 5, "strike": 2, "guard": 0, "splash": 1}
+ },
+ "chart": {
+  "비극": {"로맨스": 2, "모험": 2, "과학": 2, "희극·풍자": -1},
+  "희극·풍자": {"비극": 2, "사상": 2, "공포": -1},
+  "추리": {"공포": 2, "SF": 2, "동화·판타지": -1},
+  "모험": {"사상": 2, "동화·판타지": 2, "비극": -1},
+  "로맨스": {"사상": 2, "비극": -1, "공포": -1},
+  "공포": {"로맨스": 2, "희극·풍자": 2, "추리": -1, "과학": -1},
+  "SF": {"동화·판타지": 2, "모험": 2, "사상": -1},
+  "동화·판타지": {"추리": 2, "로맨스": 2, "과학": -1, "SF": -1},
+  "사상": {"과학": 2, "SF": 2, "희극·풍자": -1, "모험": -1},
+  "과학": {"공포": 2, "동화·판타지": 2, "사상": -1, "비극": -1}
+ },
+ "opens": {
+  "공격": {"kind": "strikeAll"},
+  "돌파": {"kind": "pierce", "n": 4},
+  "버티기": {"kind": "shield", "n": 2},
+  "지원": {"kind": "heal", "n": 1},
+  "정찰": {"kind": "reveal", "n": 1},
+  "교란": {"kind": "shuffle", "n": 1}
+ },
+ "books": {
+  "kosmos": {"link": 1, "end": 2},
+  "don_quixote": {"gain": 1},
+  "alice": {"steal": 1},
+  "frankenstein": {"max": 2},
+  "chunhyang": {},
+  "hamlet": {"burst": 1},
+  "baskervilles": {"need": 3, "expose": 2},
+  "treasure_island": {"need": 2, "treasure": 2},
+  "time_machine": {},
+  "sunzi": {"move": 2, "need": 3},
+  "pride_prejudice": {"judge": 2, "flip": 2},
+  "dracula": {"need": 2},
+  "tear_drinking_bird": {"shield": 2, "need": 3},
+  "lord_of_the_rings": {"hide": 2, "need": 2},
+  "gulliver": {}
+ }
+}

@@ -17,7 +17,7 @@
   tools/register-images.py 를 거치기 전에는 없는 것으로 본다.
   책의 글(인격·질문과 답·고유 규칙·폼·명장면)은 data/book-design.json 에서 온다.
 -->
-<link rel="stylesheet" href="lib/workspace.css?v=1">
+<link rel="stylesheet" href="lib/workspace.css?v=2">
 <link rel="stylesheet" href="lib/book-frame.css?v=1">
 <style>
 /* 색·밀도 토막은 lib/workspace.css 한 곳에 있다. 여기는 뼈대만 — pkm 도감과 같다 */
@@ -156,14 +156,15 @@ body.zoomed {overflow:hidden}
 .gal img {display:block;width:100%;border:1px solid var(--line);border-radius:8px}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
-<script src="lib/workspace-theme.js?v=1"></script>
-<script src="lib/words.js?v=1"></script>
+<script src="lib/workspace-theme.js?v=2"></script>
+<script src="lib/words.js?v=2"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
 <script src="lib/book-frame.js?v=1"></script>
 <link rel="stylesheet" href="lib/gallery.css?v=1">
 <link rel="stylesheet" href="lib/landscape.css?v=1">
+<link rel="stylesheet" href="lib/room.css?v=1">
 </head>
 <body class="dex-page">
 <div id="app"></div>
@@ -172,7 +173,7 @@ body.zoomed {overflow:hidden}
 import { h, render, Fragment } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=1';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=2';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame;
 const FILTER_STORE = 'book_dex_filters_v1', COMPACT_STORE = 'book_dex_compact_v1';

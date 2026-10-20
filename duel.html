@@ -18,7 +18,7 @@
   한 판 도중 화면을 돌려도 같은 상태(React 상태 + localStorage)를 다른 그리드에 그릴 뿐이다.
   그림은 data/img.json 에 적힌 것만(lib/img.js) — 그 폼의 초상, 절정은 그 폼의 개방 그림. 없으면 이름표.
 -->
-<link rel="stylesheet" href="lib/workspace.css?v=1">
+<link rel="stylesheet" href="lib/workspace.css?v=2">
 <link rel="stylesheet" href="lib/gallery.css?v=1">
 <style>
 * {box-sizing:border-box}
@@ -161,12 +161,13 @@ body {color:var(--text);font-size:15px}
 }
 .pw2 {display:none}
 </style>
-<script src="lib/workspace-theme.js?v=1"></script>
-<script src="lib/words.js?v=1"></script>
+<script src="lib/workspace-theme.js?v=2"></script>
+<script src="lib/words.js?v=2"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
 <script src="lib/duel.js?v=1"></script>
+<link rel="stylesheet" href="lib/room.css?v=1">
 </head>
 <body class="prompt-page duel-page">
 <div class="wrap"><div id="app"></div></div>
@@ -174,7 +175,7 @@ body {color:var(--text);font-size:15px}
 import { h, render } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=1';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=2';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel;
 const STORE = 'book_duel_v1', AI_DELAY = 650, SCENE_MS = 2200;

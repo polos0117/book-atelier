@@ -1,77 +1,55 @@
-/* Shared themes across the laboratory, collection, and prompt studio. */
+/* Room appearance: readable paper surfaces, persisted scenery and preserved legacy shelves. */
 const assert=require('node:assert/strict'),{start,FOLD}=require('./browser-harness.cjs');
-const luminance=hex=>{
- const c=hex.trim().slice(1).match(/../g).map(x=>parseInt(x,16)/255)
-  .map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4);
- return c[0]*.2126+c[1]*.7152+c[2]*.0722;
-};
+const luminance=hex=>{const c=hex.trim().slice(1).match(/../g).map(x=>parseInt(x,16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
 const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
 (async()=>{
  const harness=await start();
  try{
-  const a=await harness.open('index.html',{viewport:{width:1280,height:900}});
-  const p=a.page;
-  await p.waitForSelector('.theme-card');
-  assert.equal(await p.locator('.theme-card').count(),8);
-  assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),'daylight');
-  const keys=await p.evaluate(()=>window.AtelierAppearance.themes);
-  const marks=new Set(),backgrounds=new Set();
-  for(const key of keys){
-   await p.locator('[data-theme-preview="'+key+'"]').click();
-   await p.waitForFunction(k=>document.documentElement.dataset.theme===k,key);
-   assert.equal(await p.locator('.theme-card[aria-pressed="true"]').getAttribute('data-theme-preview'),key);
-   const colors=await p.evaluate(()=>{
-    const s=getComputedStyle(document.documentElement),out={};
-    for(const k of ['bg','card','card2','text','muted','accent','accent-soft','on-accent','deck'])out[k]=s.getPropertyValue('--'+k).trim();
-    return out;
-   });
-   for(const [fg,bg] of [['text','bg'],['text','card'],['muted','bg'],['muted','card2'],['accent','accent-soft'],['on-accent','accent']])
-    assert(contrast(colors[fg],colors[bg])>=4.5,key+' '+fg+'/'+bg+': '+contrast(colors[fg],colors[bg]));
-   assert.equal(await p.locator('meta[name="theme-color"]').getAttribute('content'),colors.deck);
-   assert.equal(await p.locator('.crest-name').innerText(),await p.evaluate(k=>window.W('theme.'+k),key));
-   backgrounds.add(colors.bg);
-   marks.add(await p.locator('.workspace-title svg').innerHTML());
-  }
-  assert.equal(backgrounds.size,8);assert.equal(marks.size,8);
-  for(const [page,selector] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.theme-card']]){
-   await p.goto(harness.base+'/'+page);await p.waitForSelector(selector);
-   const nav=await p.locator('.workspace-nav a').evaluateAll(es=>es.map(e=>({
-    href:e.getAttribute('href'),current:e.getAttribute('aria-current'),decoration:getComputedStyle(e).textDecorationLine
-   })));
-   assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html','duel.html'],page+' common navigation');
-   assert.deepEqual(nav.filter(x=>x.current==='page').map(x=>x.href),[page],page+' selected tab');
-   assert(nav.every(x=>x.decoration==='none'),page+' navigation underlines');
-   assert(await p.evaluate(()=>{
-    const heading=document.querySelector('.workspace-heading'),nav=document.querySelector('.workspace-nav'),
-     controls=document.querySelector('.appearance-controls');
-    return !!(heading.compareDocumentPosition(nav)&Node.DOCUMENT_POSITION_FOLLOWING)&&
-     !!(nav.compareDocumentPosition(controls)&Node.DOCUMENT_POSITION_FOLLOWING);
-   }),page+' heading, navigation, appearance order');
-   assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),'ember','theme follows navigation');
-   const before=page==='prompt.html'?await p.locator('#prompt-output').inputValue():null;
-   for(const key of keys){
-    /* 테마는 ⚙ 패널 안에 있다. 머리가 다시 그려지면 패널이 닫힐 수 있어 매번 본다 */
-    if(!await p.locator('.appearance-panel').count())await p.locator('.appearance-toggle').click();
-    await p.getByLabel('테마',{exact:true}).selectOption(key);
-    assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),key);
-    if(before)assert.equal(await p.locator('#prompt-output').inputValue(),before,'appearance never changes the prompt');
+  const a=await harness.open('index.html',{viewport:{width:1440,height:1000},init:()=>{
+   if(!sessionStorage.getItem('room-seeded')){
+    localStorage.setItem('atelier_theme_v1','moss');
+    localStorage.setItem('book_hall_v1',JSON.stringify({moss:['alice','kosmos'],ember:['hamlet']}));
+    sessionStorage.setItem('room-seeded','1');
    }
-   for(const viewport of [FOLD.cover,FOLD.inner,{width:1280,height:900}]){
+  }}),p=a.page;
+  await p.waitForSelector('.room-preview');
+  assert.deepEqual(await p.evaluate(()=>window.AtelierAppearance.get()),{theme:'sunlit',background:'on',density:'compact'});
+  assert.deepEqual(await p.evaluate(()=>window.AtelierImg.hallPicks()),['alice','kosmos']);
+  assert.deepEqual(await p.evaluate(()=>JSON.parse(localStorage.getItem('book_hall_v1'))),{moss:['alice','kosmos'],ember:['hamlet'],sunlit:['alice','kosmos']});
+  assert.equal(await p.evaluate(()=>localStorage.getItem('atelier_theme_v1')),'moss','other ateliers retain their theme');
+  const colors=await p.evaluate(()=>{const s=getComputedStyle(document.documentElement),out={};for(const k of ['bg','card','card2','text','muted','accent','accent-soft','on-accent','deck'])out[k]=s.getPropertyValue('--'+k).trim();return out;});
+  for(const [fg,bg] of [['text','bg'],['text','card'],['muted','bg'],['muted','card2'],['accent','accent-soft'],['on-accent','accent']])assert(contrast(colors[fg],colors[bg])>=4.5,fg+'/'+bg+': '+contrast(colors[fg],colors[bg]));
+  assert.equal(await p.locator('meta[name="theme-color"]').getAttribute('content'),colors.deck);
+  assert.equal(await p.locator('.crest-name').innerText(),await p.evaluate(()=>W('theme.sunlit')));
+  await p.locator('.room-background-toggle').click();
+  assert.equal(await p.evaluate(()=>document.documentElement.dataset.background),'off');
+  await p.evaluate(()=>window.AtelierImg.setHallPicks([]));
+  await p.reload();await p.waitForSelector('.room-preview');
+  assert.deepEqual(await p.evaluate(()=>window.AtelierImg.hallPicks()),[],'empty new shelf must not be replaced by old picks');
+  for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.room-preview']]){
+   await p.goto(harness.base+'/'+file);await p.waitForSelector(ready);
+   assert.equal(await p.evaluate(()=>document.documentElement.dataset.background),'off','background preference persists');
+   const nav=await p.locator('.workspace-nav a').evaluateAll(es=>es.map(e=>({href:e.getAttribute('href'),current:e.getAttribute('aria-current')})));
+   assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html','duel.html']);
+   assert.deepEqual(nav.filter(x=>x.current==='page').map(x=>x.href),[file]);
+   const before=file==='prompt.html'?await p.locator('#prompt-output').inputValue():null;
+   for(const viewport of [FOLD.cover,{width:390,height:844},FOLD.inner,{width:1440,height:1000},{width:844,height:390}]){
     await p.setViewportSize(viewport);
-    const size=await p.evaluate(()=>({
-     body:document.body.scrollWidth,width:innerWidth,
-     scroll:(document.querySelector('.collection-scroll')||document.querySelector('.wrap')).clientHeight
-    }));
-    assert(size.body<=size.width+1,page+' horizontal overflow: '+JSON.stringify(size));
-    assert(size.scroll>100,page+' scroll area collapsed');
     if(!await p.locator('.appearance-panel').count())await p.locator('.appearance-toggle').click();
-    const theme=await p.getByLabel('테마',{exact:true}).boundingBox();
-    assert(theme.x>=0&&theme.x+theme.width<=viewport.width+1,page+' theme selector clipped');
+    for(const setting of ['on','off']){
+     await p.getByLabel('배경',{exact:true}).selectOption(setting);
+     assert.equal(await p.evaluate(()=>document.documentElement.dataset.background),setting);
+     if(setting==='off')assert.equal(await p.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--room-image').trim()),'none');
+    }
+    const rect=await p.getByLabel('배경',{exact:true}).boundingBox();assert(rect.x>=0&&rect.x+rect.width<=viewport.width+1,'visible background selector');
+    assert(await p.evaluate(()=>document.body.scrollWidth<=innerWidth),'no horizontal overflow');
+    assert(await p.evaluate(()=>(document.querySelector('.collection-scroll')||document.querySelector('.wrap')).clientHeight>100),'usable scroll area');
+    if(before)assert.equal(await p.locator('#prompt-output').inputValue(),before,'appearance does not change prompt');
+    await p.keyboard.press('Escape');
+    assert.equal(await p.evaluate(()=>document.activeElement.className),'appearance-toggle','Escape returns focus to settings');
    }
   }
-  assert.deepEqual(a.errors,[]);
-  assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
-  await a.close();
-  console.log('PASS theme screens: 8 palettes and motifs, AA text contrast, persisted navigation over 4 pages, unchanged prompts, 3 viewports');
+  assert.deepEqual(a.errors,[]);assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
+  await a.close();console.log('PASS room theme: AA text contrast, legacy shelf migration, no cross-atelier mutation, persisted background, 4 pages x 5 viewports');
  }finally{await harness.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

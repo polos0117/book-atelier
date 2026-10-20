@@ -1,0 +1,74 @@
+/* Sunlit library: scenery belongs to the room, plates sit on an opaque paper surface.
+   Fixed-size CSS backgrounds never participate in layout; no parallax or image-dependent height. */
+:root {
+  --room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/sunlit-library.webp');
+  --room-paper:#f6f2e9;
+}
+html[data-background="off"] {--room-image:none}
+body.dex-page,body.prompt-page {
+  background-color:var(--room-paper);
+  background-image:linear-gradient(#f6f2e94d,#f6f2e94d),var(--room-image);
+  background-position:center top;background-size:cover;background-repeat:no-repeat;background-attachment:fixed;
+}
+.dex-page main,.prompt-page .wrap {
+  max-width:1360px;background:var(--room-paper);
+  box-shadow:0 0 60px #2f251b20;
+}
+.workspace-header {position:relative}
+.workspace-heading .eyebrow {letter-spacing:.14em}
+.workspace-heading .crest-name {font-family:var(--gallery-serif);font-size:12px;font-weight:500;letter-spacing:.03em}
+.appearance-panel {border-radius:5px;box-shadow:0 8px 30px #302d2626}
+.appearance-panel select {border-radius:3px;background:var(--card)}
+.gallery-intro {
+  position:relative;isolation:isolate;min-height:144px;align-items:center;
+  margin:14px 0 16px;padding:22px 32px;gap:24px;border:1px solid var(--line);
+  background-color:var(--card2);
+  background-image:linear-gradient(90deg,#f6f2e9 0%,#f6f2e9f5 24%,#f6f2e9cc 38%,#f6f2e926 63%,#f6f2e900 100%),var(--room-image);
+  background-size:cover;background-position:center,center 42%;
+}
+.gallery-intro>div {max-width:60%}
+.gallery-intro h2 {font-size:clamp(28px,2.7vw,38px);text-wrap:balance}
+.gallery-intro>p {max-width:220px;margin:0;align-self:flex-end;padding:12px 16px;background:#f6f2e9f5;color:var(--muted);font-size:12px;line-height:1.8;border-left:2px solid var(--line)}
+.editorial-kicker {color:var(--accent)}
+.dex-page .grid>.cell .face {box-shadow:0 5px 18px #3324141a}
+.dex-page .grid .card-caption {border-color:var(--line)}
+.gallery-detail .artwork-panel {background:var(--card2);border:1px solid var(--line);padding-top:6px}
+.gallery-detail .story-panel {padding-bottom:16px}
+.room-preview {display:grid;grid-template-columns:1.15fr 1fr;border:1px solid var(--line);margin:24px 0;background:var(--card)}
+.room-preview-art {min-height:250px;background:var(--card2) var(--room-image) center 42% / cover no-repeat}
+.room-preview-copy {padding:32px;align-self:center}
+.room-preview-copy h2 {font:500 28px/1.5 var(--gallery-serif);margin:0 0 12px}
+.room-preview-copy>p:not(.editorial-kicker) {color:var(--muted);font-size:13px;line-height:1.9;max-width:38ch}
+.room-background-toggle {min-height:44px;margin-top:8px;padding:9px 16px;border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--text);font:inherit;font-size:12px}
+.room-background-toggle:hover {border-color:var(--accent)}
+/* Hall keeps its original interactions; its architectural decoration now shares the actual room. */
+.hall {background-color:var(--bg);background-image:linear-gradient(#f6f2e936,#f6f2e966),var(--room-image);background-size:cover;background-position:center 42%;border-top:1px solid var(--line)}
+.hall .hall-col,.hall .hall-floor,.hall .hall-fog {display:none}
+html[data-background="off"] .gallery-intro {background-image:none;background-color:var(--card)}
+html[data-background="off"] .room-preview-art {display:none}
+html[data-background="off"] .room-preview {grid-template-columns:1fr}
+@media(max-width:1000px) {
+ .gallery-intro {padding:18px 24px;min-height:126px}
+ .gallery-intro>p {max-width:180px;font-size:11px}
+}
+@media(max-width:599px) {
+ :root {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/sunlit-library-small.webp')}
+ .gallery-intro {display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:156px;margin:12px 0 14px;padding:38px 18px 14px;gap:0;
+  background-image:linear-gradient(0deg,#f6f2e9 0%,#f6f2e9f5 24%,#f6f2e9bb 48%,#f6f2e900 85%),var(--room-image);
+  background-position:center,65% 34%;}
+ .gallery-intro>div {max-width:100%}
+ .gallery-intro h2 {font-size:26px}
+ .gallery-intro .editorial-kicker {font-size:9px;margin-bottom:5px}
+ .gallery-intro>p {align-self:auto;max-width:100%;padding:0;margin:6px 0 0;border:0;background:none;font-size:11px;line-height:1.6}
+ .room-preview {grid-template-columns:1fr}
+ .room-preview-art {min-height:170px}
+ .room-preview-copy {padding:22px}
+ .room-preview-copy h2 {font-size:25px}
+ html[data-background="off"] .gallery-intro {min-height:156px}
+}
+@media(orientation:landscape) and (max-height:550px) {.gallery-intro{display:none}.gallery-detail .artwork-panel{padding-top:0;border:0}}
+@media(prefers-reduced-transparency:reduce) {.gallery-intro>p{background:var(--bg)}}
+@media(forced-colors:active) {
+ body.dex-page,body.prompt-page,.gallery-intro,.hall {background-image:none}
+ .room-preview-art {display:none}
+}

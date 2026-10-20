@@ -31,7 +31,7 @@ function same(actual,expected,label){
      await p.goto(h.base+'/index.html');await p.waitForSelector('.workspace-nav');
      await p.evaluate(d=>window.AtelierAppearance.set('density',d),density);
      const reference=await geometry(p);
-     for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.theme-card']]){
+     for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.room-preview']]){
       /* 서재 탭은 덮개에서 숨는다 — 집으로는 문양·제목 링크로 간다 */
       const tab=p.locator(`.workspace-nav a[href="${file}"]`);
       await (file==='index.html'&&!await tab.isVisible()?p.locator('a.workspace-title'):tab).click();

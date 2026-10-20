@@ -7,7 +7,8 @@ body.dex-page,body.lab-page {background-image:none}
 .workspace-heading {height:92px;padding:6px 0 18px}
 .workspace-heading::after,.crest-signature i {display:none}
 .workspace-heading h1 {font-family:var(--gallery-serif);font-size:28px;line-height:1.25;font-weight:700;letter-spacing:-.04em}
-.workspace-heading p {min-height:0;font-size:12px}
+.workspace-heading p {min-height:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}   /* 소개가 두 줄이 되면 화면마다 제목 높이가 달라졌다(690 폭 프롬프트) */
+.workspace-title > div {min-width:0}
 .workspace-title {gap:14px}
 .crest-mark {width:44px;height:44px;border-radius:3px;background:transparent;padding:5px;border:0}
 .crest-signature {gap:5px}

@@ -27,7 +27,7 @@
   "돌파": {"kind": "pierce", "n": 4},
   "버티기": {"kind": "shield", "n": 2},
   "지원": {"kind": "heal", "n": 1},
-  "정찰": {"kind": "reveal", "n": 1},
+  "정찰": {"kind": "reveal", "n": 2},
   "교란": {"kind": "shuffle", "n": 1}
  },
  "books": {
@@ -35,9 +35,9 @@
   "don_quixote": {"gain": 1},
   "alice": {"steal": 1},
   "frankenstein": {"max": 2},
-  "chunhyang": {},
+  "chunhyang": {"max": 2},
   "hamlet": {"burst": 1},
-  "baskervilles": {"need": 3, "expose": 2},
+  "baskervilles": {"need": 2, "expose": 2},
   "treasure_island": {"need": 2, "treasure": 2},
   "time_machine": {},
   "sunzi": {"move": 2, "need": 3},

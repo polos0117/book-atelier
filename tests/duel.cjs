@@ -7,7 +7,7 @@ const data = { design: J('book-design'), duel: J('duel') };
 let n = 0; const ok = (c, m) => { assert(c, m); n++; };
 const KEYS = data.design.books.map(b => b.key);
 const G = Object.fromEntries(data.design.books.map(b => [b.key, b.genre]));
-const R = (key, f) => data.design.books.find(b => b.key === key).forms[D.STAGES[f]].role;
+const R = (key, f) => data.design.books.find(b => b.key === key).forms[D.stagesOf(data)[f]].role;
 
 /* ── 파생 — 열다섯 권, 폼 셋의 역할, 책마다 효과가 있다 ── */
 {
@@ -149,7 +149,7 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   { const s = scene('don_quixote', 1, ['chunhyang', 'kosmos']); ok(s.last.role === '돌파' && u(s, 'foe', 0).power === 7 - 4, '돌파 장면 — 가장 센 상대(춘향전 7)에 4, 방패 무시'); }
   { const s = scene('chunhyang', 0, ['sunzi']); ok(s.last.role === '버티기' && u(s, 'me', 2).power === 9, '버티기 장면 — 내 책 모두 +2'); }
   { const s = scene('kosmos', 2, ['sunzi']); u(s, 'me', 2).power = 1; s.turn = 'me'; s.me.opened = false; D.act(data, s, { kind: 'open', slot: 2 }); ok(s.last.role === '지원' && u(s, 'me', 2).power === 4 + 1, '지원 장면 — 기본 힘까지 회복하고 +1'); }
-  { const s = scene('hamlet', 0, ['sunzi', 'kosmos']); ok(s.last.role === '정찰' && s.foe.revealedAll && u(s, 'foe', 0).power === 3 && u(s, 'foe', 1).power === 3, '정찰 장면 — 상대 손패가 보이고 상대 책 모두 −1'); }
+  { const s = scene('hamlet', 0, ['sunzi', 'kosmos']); ok(s.last.role === '정찰' && s.foe.revealedAll && u(s, 'foe', 0).power === 2 && u(s, 'foe', 1).power === 2, '정찰 장면 — 상대 손패가 보이고 상대 책 모두 −2'); }
   { const s = scene('alice', 0, ['sunzi', 'kosmos']); ok(s.last.role === '교란' && D.units(s, 'foe').length === 2 && D.sum(data, s, 'foe') === 4 + 4 - 2, '교란 장면 — 자리를 뒤섞고 상대 책 모두 −1'); }
 }
 
@@ -191,9 +191,9 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   st.chapter = 1; fr.power = 6; ch.power = 1; ch.flags.endured = true; st.foe.slots[0] = ch; st.foe.slots[1] = null; hit(st, 'me', 0, 0);
   ok(st.foe.slots[0] === null && fr.flags.borrow === 1, '전개 — 상대 책이 닫히면 타격을 하나 이어받는다');
   const dr = put(st, 'foe', 'dracula', 0); fr.power = 6; hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 + 1), '빌린 타격 +1(공격 3 + 1, 공포 → 공포 0)');
-  st.chapter = 2; const hm = put(st, 'me', 'hamlet', 2); fr.power = 6;
-  const L = LG(st, 'me'); ok(L.attack.filter(x => x.slot === 0).length === 0 && L.rule.length === 1 && L.rule[0].target === 2, '결말 — 공격 대신 넘기고 떠난다: ' + JSON.stringify(L.rule));
-  st.turn = 'me'; ok(D.act(data, st, { kind: 'rule', slot: 0, target: 2 }).ok && st.me.slots[0] === null && hm.power === 6 + 6 + 1 && st.me.grave.includes('frankenstein'), '지닌 힘(6) + 조각(1)을 햄릿에게 넘기고 떠난다');
+  st.chapter = 2; fr.power = 6; fr.flags.entered = {}; D.BOOK.frankenstein.form({ data, st }, fr, 2); ok(st.me.slots[0] === fr, '결말 — 아군이 없으면 남아 싸운다');
+  const hm = put(st, 'me', 'hamlet', 2); fr.flags.entered = {}; D.BOOK.frankenstein.form({ data, st }, fr, 2);
+  ok(st.me.slots[0] === null && hm.power === 6 + 6 + 2 && st.me.grave.includes('frankenstein') && st.me.lost === 1, '결말에 들면 지닌 힘(6) + 조각마다 2 를 가장 센 아군(햄릿)에게 넘기고 떠난다 — 떠난 것은 패배로 세지 않는다');
 }
 { /* 춘향전 — 절개 */
   const st = rig(['chunhyang'], ['dracula', 'hamlet'], { chapter: 1 });
@@ -218,7 +218,8 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   const st = rig(['baskervilles'], ['dracula', 'kosmos', 'sunzi', 'alice']);
   const bk = put(st, 'me', 'baskervilles', 0);
   put(st, 'foe', 'dracula', 1); put(st, 'foe', 'kosmos', 2); ok(bk.tok === 2, '발단 — 상대가 책을 낼 때마다 단서');
-  st.chapter = 1; bk.tok = 3; start(st, 'me'); ok(bk.tok === 0 && st.foe.revealed.join() === 'sunzi', '전개 — 단서 셋으로 상대 손패 한 장 공개');
+  st.chapter = 1; bk.tok = 2; start(st, 'me'); ok(bk.tok === 0 && st.foe.revealed.join() === 'sunzi', '전개 — 단서 둘로 상대 손패 한 장 공개');
+  bk.tok = 2; st.foe.hand = []; start(st, 'me'); ok(bk.tok === 0 && u(st, 'foe', 1).flags.revealed, '손패가 비었으면 판 위 가장 센 상대 책을 공개'); st.foe.hand = ['sunzi', 'alice'];
   bk.power = 5; const sz = put(st, 'foe', 'sunzi', 0); ok(sz.flags.revealed && bk.power === 5, '공개된 책은 들어올 때 첫 타격이 없다(손자병법 사상 → 추리 0, 교란 2 였을 것)');
   st.chapter = 2; bk.power = 6; const dr = u(st, 'foe', 1); st.foe.slots[0] = dr; st.foe.slots[1] = sz;   /* 공개된 책을 다른 자리로 */
   const T = LG(st, 'me').attack.filter(x => x.slot === 0).map(x => x.target).sort().join(); ok(T === '0,1', '결말 — 맞은편(드라큘라)과 공개된 책(손자병법, 자리 1): ' + T);
@@ -247,16 +248,18 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   const st = rig(['sunzi'], ['dracula', 'kosmos', 'alice']);
   const sz = put(st, 'me', 'sunzi', 0); start(st, 'me'); start(st, 'me'); ok(sz.tok === 2, '발단 — 턴마다 형세');
   const dr = put(st, 'foe', 'dracula', 0), ko = put(st, 'foe', 'kosmos', 1); st.chapter = 1; sz.power = 5; ko.power = 2;
-  start(st, 'me'); ok(st.foe.slots[0] === ko && st.foe.slots[1] === dr && sz.tok === 1, '전개 — 형세 둘로 맞은편을 상대의 가장 약한 책과 바꿔 세운다(형세는 먼저 +1)');
+  start(st, 'me'); ok(st.foe.slots[0] === ko && st.foe.slots[1] === dr && sz.tok === 1 && sz.flags.moved, '전개 — 형세 둘로 맞은편을 상대의 가장 약한 책과 바꿔 세운다(형세는 먼저 +1)');
+  sz.tok = 4; start(st, 'me'); ok(st.foe.slots[0] === ko && sz.tok === 5, '장마다 한 번 — 둘째 턴엔 쌓기만');
   st.chapter = 2; sz.tok = 3; sz.power = 4; ko.power = 9; hit(st, 'me', 0, 0);
   ok(st.foe.slots[0] === null && st.foe.grave.includes('kosmos') && sz.flags.won, '결말 — 형세 셋이면 첫 공격이 싸우지 않고 맞은편을 닫는다');
   st.foe.slots[0] = dr; st.foe.slots[1] = null; dr.power = 9; hit(st, 'me', 0, 0); ok(dr.power === 9 && !st.foe.grave.includes('dracula'), '둘째 공격은 보통(지원 타격 1, 사상 → 공포 0, 드라큘라 결말 방패 1 → 0)');
 }
 { /* 오만과 편견 — 판정 */
   const st = rig(['pride_prejudice', 'alice'], ['dracula', 'kosmos']);
-  const pp = put(st, 'me', 'pride_prejudice', 0); const dr = put(st, 'foe', 'dracula', 1);
+  const ko0 = put(st, 'foe', 'kosmos', 2); const pp = put(st, 'me', 'pride_prejudice', 0); ok(ko0.flags.judged, '발단에 들어서면 이미 판 위의 상대도 판정');
+  const dr = put(st, 'foe', 'dracula', 1);
   ok(dr.flags.judged, '발단 — 상대가 낸 책에 판정');
-  const al = put(st, 'me', 'alice', 1); ok(dr.power === 5 - 2, '다른 아군(앨리스 교란 2)은 보통으로 친다');
+  const al = put(st, 'me', 'alice', 1); ok(dr.power === 5 - 2 - 2, '내 책 모두 판정한 책을 칠 때 +2(앨리스 교란 2 + 2)');
   dr.power = 9; hit(st, 'me', 0, 1); ok(dr.power === 9 - (2 + 2 - 1), '판정한 책을 칠 때 +2(정찰 2 + 2, 로맨스 → 공포 −1)');
   st.chapter = 1; start(st, 'me'); ok(!dr.flags.judged && dr.flags.truce === pp.id && pp.flags.truce === dr.id && pp.tok === 1, '전개 — 판정 하나를 뒤집는다, 서로 휴전');
   st.foe.slots[0] = dr; st.foe.slots[1] = null;
@@ -268,10 +271,10 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   const dr = put(st, 'me', 'dracula', 0); const al = put(st, 'foe', 'alice', 0); const ko = put(st, 'foe', 'kosmos', 1);
   ok(al.mark === 1 && ko.mark === 0, '발단 — 맞은편에 들어오는 책에 자국(초대)');
   dr.power = 5; hit(st, 'me', 0, 0); ok(al.mark === 2, '친 책에도 자국');
-  st.chapter = 1; dr.power = 3; al.power = 6; al.flags.dodge = false; hit(st, 'me', 0, 0); ok(al.power === 6 - 3 && dr.power === 6, '전개 — 자국 난 책을 칠 때 준 피해만큼 힘을 빤다');
+  st.chapter = 1; dr.power = 3; al.power = 6; al.flags.dodge = false; hit(st, 'me', 0, 0); ok(al.power === 6 - 3 && dr.power === 6 && al.mark === 3, '전개 — 자국 난 책을 칠 때 준 피해만큼 힘을 빨고 자국을 하나 더');
   st.chapter = 2; const L = LG(st, 'me');
   ok(L.rule.length === 1 && L.rule[0].target === 0, '결말 — 자국 둘인 상대 책을 데려오는 수');
-  st.turn = 'me'; ok(D.act(data, st, { kind: 'rule', slot: 0, target: 0 }).ok && st.me.slots.includes(al) && st.foe.slots[0] === null && st.me.slots[0] === null && st.me.grave.includes('dracula'), '데려오고 자신은 사라진다');
+  st.turn = 'me'; ok(D.act(data, st, { kind: 'rule', slot: 0, target: 0 }).ok && st.me.slots[0] === al && st.foe.slots[0] === null && st.me.grave.includes('dracula') && st.me.lost === 0, '데려온 책이 그녀 자리에 서고 자신은 사라진다(패배가 아니다)');
 }
 { /* 눈물을 마시는 새 — 동행 */
   const st = rig(['tear_drinking_bird', 'frankenstein', 'hamlet'], ['dracula', 'kosmos'], { chapter: 1 });

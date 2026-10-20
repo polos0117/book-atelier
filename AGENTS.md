@@ -1,7 +1,7 @@
 # 작업 지침
 
-**기획·책 설계표 · 화면(서재·서가·생성기)·그림 등록** 까지 왔다. 놀이(폼 결투)는 아직이다.
-화면은 pkm-atelier 를 바탕으로 myth·atelier(건담)의 것을 얹었다 — 무엇을 어디서 가져왔는지는 `docs/PORT_NOTES.md`.
+**기획·책 설계표 · 화면(서재·서가·생성기·결투)·그림 등록** 까지 왔다. 놀이는 책장 넘기기 결투(`docs/DUEL_DESIGN.md`) — AI 와 한 판.
+화면은 pkm-atelier 를 바탕으로 myth·atelier(건담)의 것을 얹었다 — 무엇을 어디서 가져왔는지는 `docs/PORT_NOTES.md`. 결투는 옮기지 않고 책에 맞게 새로 만들었다.
 
 ## 먼저 읽을 것
 
@@ -9,6 +9,7 @@
 |---|---|
 | 이 문서 | 규칙과 자리 |
 | `docs/GAME_CONCEPT.md` | 게임 구조 — 고정 원칙·전투·장르·설계표·디자인 규칙·저작권·시범 |
+| `docs/DUEL_DESIGN.md` | 결투 — 세 방향 비교와 선택, 규칙 전체, 열다섯 권 규칙, 시뮬레이터 균형 |
 | `data/book-design.json` | 책 설계표. 책 한 권 = 한 칸, 외형과 전투를 함께 뽑는다 |
 | `IMAGE_RULES.md` | 그림 만들기·파일 이름·기록·등록 — 그림 작업 전에 |
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
@@ -22,6 +23,7 @@
 | 서재 | `index.html` | 서재 진열대(서가에서 진열한 책이 돈다)·패치 기록·테마 |
 | 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
+| 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만 |
 
 ## 지켜야 할 것
 
@@ -29,6 +31,8 @@
 
 세 폼은 그 원리를 이야기의 단계(발단·전개·결말 — 설계 기준은 질문 → 갈등 → 답)에 따라 다르게 쓴다.
 폼은 위아래가 아니라 쓰임이 다르다. 고유 규칙에는 반드시 상대의 대응 방법이 있다.
+결투에서 폼은 장(章) = 시간이다 — 설계표 `rule.forms` 는 장·자리·맞은편으로 쓰고 줄(lane) 말은 못 쓴다(`tools/book-design.py` 가 본다).
+책을 더하면 `lib/duel.js` 의 `BOOK` 표에 효과 하나(폼 셋의 쓰임)를 더하고 `tests/duel.cjs` 에 확인을 적는다 — `node tests/duel-sim.cjs` 가 승률 40~60% 를 본다.
 
 ### 2. 책은 손에 들지 않는다, 책끼리 닮지 않는다
 
@@ -86,13 +90,16 @@ node tests/img-shards.cjs            # 그림 주소·등록기·워크플로·.
 node tests/prompt-book.cjs           # 프롬프트 — 다섯 권 × 폼 셋 × 갈래, 정한 말 영어
 node tests/words.cjs                 # 낱말 표
 node tests/patch.cjs                 # 패치 기록 모양
+node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·열다섯 권 규칙·AI
+node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 600판은 보고만): 책마다 40~60% · 세 폼 규칙 모두 돈다 · 선공
 
 # 브라우저 — ESM_DIR 에 preact·htm 이 든 node_modules, CHROMIUM_PATH 에 브라우저
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-screen.cjs      # 서가
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/prompt-screen.cjs   # 생성기
-ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/header-layout.cjs   # 머리 자리(화면 셋 · 크기 다섯)
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/header-layout.cjs   # 머리 자리(화면 넷 · 크기 다섯)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # 테마 여덟 · 대비
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/patch-screen.cjs    # 서재의 패치 기록
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지
 ```
 
 브라우저 검사의 그림은 `tests/fixtures/make-art.py` 가 임시 자리에 만든다(Pillow 필요) — 실제 등록기로 img.json 을 짠다.

@@ -131,6 +131,52 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
     await noOverflow(r);
     assert.deepEqual(c.errors, [], '오류 없음');
     await c.close();
-    console.log('PASS 결투 화면: 덱 고르기(열다섯·여섯·자동·저장) · 자리 셋씩 · 내기·공격·절정 장면·규칙 · 새로고침 · 끝까지 세 장 · 다시·덱 바꾸기 · 상대 차례');
+    /* 5. 네 크기 — 휴대폰 가로(펼친 책: 왼쪽 나·오른쪽 상대)·휴대폰 세로(위 상대·아래 나·손패 맨 아래)·폴드 안쪽·PC.
+          넘치지 않고 끝까지, 크게 보기는 화면 가득, 한 수 두고 화면을 돌려도 판이 그대로(배치만 바뀐다) */
+    const SIZES = [['phone-land', { width: 844, height: 390 }, true], ['phone-port', { width: 390, height: 844 }, true], ['fold', FOLD.inner, true], ['pc', { width: 1280, height: 900 }, false]];
+    for (const [name, vp, mobile] of SIZES) {
+      const e = await h.open('duel.html', opt({ viewport: vp, mobile, store: [STORE, JSON.stringify({ deck: MINE, st: rigged() })] })), g = e.page;
+      const press = sel => mobile ? g.locator(sel).first().tap() : g.locator(sel).first().click();
+      const box = sel => g.locator(sel).first().boundingBox();
+      const spread = async (expectLand, label) => {
+        const me = await box('.duel-row[data-side="me"]'), foe = await box('.duel-row[data-side="foe"]'), hand = await box('.duel-dock');
+        if (expectLand) {
+          assert(me.x + me.width <= foe.x + 1 && Math.abs(me.y - foe.y) < 2, label + ' 가로 — 왼쪽 면 나, 오른쪽 면 상대, 같은 높이: ' + JSON.stringify([me, foe]));
+          assert(hand.x + hand.width <= foe.x + 1, label + ' 손패는 내 면 아래');
+          assert(await g.locator('.duel-slot .no').first().isVisible(), label + ' 가로엔 자리 번호(맞은편)');
+        } else {
+          assert(foe.y + foe.height <= me.y + 1, label + ' 세로 — 위 상대, 아래 나');
+          assert(hand.y > me.y && hand.y + hand.height >= me.y + me.height - 1, label + ' 손패는 맨 아래(바닥에 붙어 내 자리 아래에)');
+          assert(!(await g.locator('.duel-slot .no').first().isVisible()), label + ' 세로엔 번호 없음');
+        }
+        const xs = await g.locator('.duel-bar .stages b').evaluateAll(es => es.map(x => x.getBoundingClientRect().x));
+        assert(xs[0] < xs[1] && xs[1] < xs[2], label + ' 발단→전개→결말은 왼쪽→오른쪽');
+        await noOverflow(g);
+      };
+      await g.waitForSelector('.duel-screen[data-screen="match"]'); await myTurn(g);
+      const land = vp.width > vp.height;
+      await spread(land, name);
+      if (name === 'phone-land') assert(await g.evaluate(() => { const w = document.querySelector('.wrap'); return w.scrollHeight <= w.clientHeight + 1; }), '휴대폰 가로 — 높이 390 한 화면에 다 들어간다');
+      /* 크게 보기 — 자리의 ⌕, 화면 가득 */
+      await press('.duel-row[data-side="foe"] .duel-unit .zoom'); await g.waitForSelector('.duel-zoom');
+      assert.equal(await g.locator('.duel-zoom').getAttribute('data-key'), 'treasure_island', name + ' 크게 보기 — 그 책');
+      const zb = await box('.duel-zoom'); assert(zb.width >= vp.width - 1 && zb.height >= vp.height - 1, name + ' 크게 보기는 화면 가득');
+      assert(await g.locator('.duel-zoom .pic').isVisible() && (await box('.duel-zoom .pic')).height >= 150, name + ' 큰 그림');
+      await press('#duel-zoom-close'); await g.waitForSelector('.duel-zoom', { state: 'detached' });
+      /* 한 수 두고 돌린다 */
+      await press('.duel-hand .card[data-key="chunhyang"]'); await press('.duel-row[data-side="me"] .duel-slot[data-slot="1"]');
+      await g.waitForSelector('.duel-row[data-side="me"] .duel-unit[data-slot="1"][data-key="chunhyang"]'); await myTurn(g);
+      const before = await saved(g);
+      await g.setViewportSize({ width: vp.height, height: vp.width }); await g.waitForTimeout(150);
+      assert.equal(await g.locator('.duel-row[data-side="me"] .duel-unit[data-slot="1"][data-key="chunhyang"]').count(), 1, name + ' 돌려도 판 위 책 그대로');
+      assert.equal((await saved(g)).st.log.length, before.st.log.length, name + ' 돌려도 기록 그대로');
+      await spread(!land, name + ' 돌린 뒤');
+      await g.setViewportSize(vp); await g.waitForTimeout(150); await spread(land, name + ' 되돌린 뒤');
+      for (let i = 0; i < 40; i++) { await myTurn(g); if (await g.locator('.duel-result').count()) break; await press('#duel-pass'); await g.waitForTimeout(50); }
+      await g.waitForSelector('.duel-result[data-result]', { timeout: 20000 }); await noOverflow(g);
+      assert.deepEqual(e.errors, [], name + ' 오류 없음');
+      await e.close();
+    }
+    console.log('PASS 결투 화면: 덱 고르기(열다섯·여섯·자동·저장) · 자리 셋씩 · 내기·공격·절정 장면·규칙 · 새로고침 · 끝까지 세 장 · 다시·덱 바꾸기 · 상대 차례 · 네 크기(가로 펼친 책·세로·폴드·PC) 끝까지·크게 보기·돌려도 그대로');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

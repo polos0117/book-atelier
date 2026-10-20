@@ -124,8 +124,8 @@ body.dex-page,body.lab-page {background-image:none}
 .zoom-footer p {margin:0}
 .viewer-touch {display:none}
 .zoom-layer :focus-visible {outline:2px solid #f5ddb2;outline-offset:4px}
-.lab-link,.prompt-page .theme-card {border-radius:4px;box-shadow:none}
-.lab-link h3,.theme-gallery-head h2 {font-family:var(--gallery-serif)}
+.prompt-page .theme-card {border-radius:4px;box-shadow:none}
+.theme-gallery-head h2 {font-family:var(--gallery-serif)}
 @media(min-width:1600px) {.dex-page .grid {grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:1000px) {
  .dex-page main,.prompt-page .wrap {padding-inline:24px}
@@ -146,8 +146,7 @@ body.dex-page,body.lab-page {background-image:none}
  .dex-page main,.prompt-page .wrap {padding-inline:16px;padding-top:calc(10px + env(safe-area-inset-top))}
  .workspace-heading {height:74px;padding:4px 0 12px}.workspace-heading h1{font-size:23px}.workspace-heading p{display:none}
  .workspace-title{gap:8px}.crest-mark{width:34px;height:34px}.workspace-header{margin-bottom:12px}
- .workspace-nav{gap:12px}.workspace-nav a,.workspace-nav a[href="index.html"],.workspace-nav a[href="prompt.html"]{padding:0 14px;min-width:60px;font-size:12px;flex:0 1 auto}
- .workspace-nav a[href="index.html"]{display:none}
+ .workspace-nav{gap:4px}.workspace-nav a,.workspace-nav a[href="index.html"],.workspace-nav a[href="prompt.html"]{padding:0 8px;min-width:48px;font-size:12px;flex:1 1 auto}
  .appearance-toggle{width:44px;flex-basis:44px}
  .dex-page header,.dex-page main.dex-scrolled header{padding:0 0 12px}
  .search-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}.search-row input{font-size:12px;padding-inline:10px}.dex-reset{padding-inline:10px;font-size:11px}
@@ -174,7 +173,6 @@ body.dex-page,body.lab-page {background-image:none}
  .dex-page main,.prompt-page .wrap{padding-top:8px}.zoom-layer .zoom-bar{padding-block:5px}.zoom-footer{min-height:32px;padding-block:6px}
  .zoom-layer .zoom-body{padding-block:8px}.big{width:min(100%,calc(70dvh * 2 / 3))}
 }
-@media(max-width:599px) and (max-height:550px){.workspace-nav a[href="index.html"]{display:flex}}
 @media(hover:none){.big-nav button{opacity:1}}
 @media(prefers-reduced-motion:reduce){.big-nav button{transition:none}}
 

@@ -125,6 +125,7 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
     assert.equal(await q.locator('.duel-bar .stages b.on').textContent(), '결말', '마지막 장은 결말');
     assert(end.st.log.some(e => e.t === 'page'), '책장을 넘긴 기록');
     await tappable(q, '#duel-again, #duel-deck'); await noOverflow(q);
+    assert.equal(await q.locator('#duel-forfeit').count(), 0, '끝난 판엔 판 접기가 없다(덱 바꾸기가 있다)');
     /* 같은 덱으로 다시 → 새 판 · 덱 바꾸기 → 덱 화면, 고른 덱은 그대로 */
     await q.locator('#duel-again').tap(); await q.waitForFunction(k => { const s = JSON.parse(localStorage.getItem(k)); return s.st && s.st.phase === 'play' && s.st.chapter === 0; }, STORE);
     const again = await saved(q); assert(again.deck.join() === MINE.join() && again.st.me.hand.length + again.st.me.deck.length + again.st.me.slots.filter(Boolean).length === 6, '같은 덱으로 새 판');
@@ -136,6 +137,24 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
     assert.deepEqual(b.errors, [], '화면 오류 없음');
     assert.deepEqual(await q.evaluate(() => window.AtelierWords.missing()), [], '낱말 표에 없는 열쇠');
     await b.close();
+    /* 판 접기 — 한 판 도중에 확인 상자. 기본 포커스는 계속 두기, Esc 면 그대로, 접으면 덱 화면(고른 덱은 그대로) */
+    const f = await h.open('duel.html', opt({ store: [STORE, JSON.stringify({ deck: MINE, st: rigged() })] })), fp = f.page;
+    await fp.waitForSelector('.duel-screen[data-screen="match"]'); await myTurn(fp);
+    await tappable(fp, '#duel-forfeit'); await noOverflow(fp);
+    await fp.locator('#duel-forfeit').tap(); await fp.waitForSelector('.duel-confirm[role="alertdialog"][aria-modal="true"]');
+    assert.equal(await fp.evaluate(() => document.activeElement.id), 'duel-forfeit-no', '판 접기 — 기본 포커스는 계속 두기');
+    assert(await boardInert(fp), '판 접기 — 뒤쪽 판은 inert');
+    await fp.keyboard.press('Escape'); await fp.waitForSelector('.duel-confirm', { state: 'detached' });
+    assert.equal(await fp.evaluate(() => document.activeElement.id), 'duel-forfeit', '닫으면 판 접기 단추로');
+    assert((await saved(fp)).st, 'Esc 면 판은 그대로');
+    await fp.locator('#duel-forfeit').tap(); await fp.locator('#duel-forfeit-no').tap(); await fp.waitForSelector('.duel-confirm', { state: 'detached' });
+    assert.equal(await fp.locator('.duel-screen[data-screen="match"]').count(), 1, '계속 두기');
+    await fp.locator('#duel-forfeit').tap(); await fp.locator('#duel-forfeit-yes').tap();
+    await fp.waitForSelector('.duel-screen[data-screen="deck"]');
+    const fs2 = await saved(fp); assert(!fs2.st && fs2.deck.join() === MINE.join(), '접으면 판이 지워지고 덱은 그대로');
+    assert.equal(await fp.locator('.deck-cell.in').count(), 6, '덱 화면에 고른 여섯');
+    assert.deepEqual(f.errors, [], '판 접기 오류 없음');
+    await f.close();
     /* 4. 상대 차례부터 — 상대 AI 가 두고 내 차례가 온다 */
     const st4 = rigged(); st4.turn = st4.first = st4.coin = 'foe'; st4.foe.hand = ['baskervilles'];
     const c = await h.open('duel.html', opt({ store: [STORE, JSON.stringify({ deck: MINE, st: st4 })] })), r = c.page;

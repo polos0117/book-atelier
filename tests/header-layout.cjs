@@ -39,9 +39,8 @@ function same(actual,expected,label){
      await p.evaluate(d=>window.AtelierAppearance.set('density',d),density);
      const reference=await geometry(p);
      for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.room-preview']]){
-      /* 서재 탭은 덮개에서 숨는다 — 집으로는 문양·제목 링크로 간다 */
-      const tab=p.locator(`.workspace-nav a[href="${file}"]`);
-      await (file==='index.html'&&!await tab.isVisible()?p.locator('a.workspace-title'):tab).click();
+      /* 탭 넷은 어느 크기에서나 보인다 — 서재 탭이 집으로 가는 길 */
+      await p.locator(`.workspace-nav a[href="${file}"]`).click();
       await p.waitForSelector(ready);
       same(await geometry(p),reference,`${viewport.width} ${density} ${file}`);
       assert(await p.evaluate(()=>document.body.scrollWidth<=innerWidth),'horizontal overflow');
@@ -55,13 +54,15 @@ function same(actual,expected,label){
       }
      }
     }
-    /* 덮개(599px 이하)에서는 항해가 한 줄 — 서재 탭은 숨고 문양·제목이 서재 링크. 넓은 화면에서는 탭 전부 */
+    /* 어느 크기에서나 항해는 한 줄이고 탭 넷이 다 보인다(서재 탭이 집으로 가는 길). 문양 링크는 보이는 글자가 없어 접근성 이름 "서재" 와 어긋나지 않는다 */
     await p.goto(h.base+'/prompt.html');await p.waitForSelector('#prompt-output');
     const navH=(await p.locator('.workspace-nav').boundingBox()).height,narrow=viewport.width<=599;
     assert(navH<=56,viewport.width+' 항해는 한 줄: '+navH);
-    const titleShown=await p.locator('a.workspace-title[href="index.html"]').isVisible();
-    assert.equal(await p.locator('.workspace-nav a[href="index.html"]').isVisible(),!narrow||!titleShown,viewport.width+' 서재 탭은 넓은 화면에서만(제목이 숨는 낮은 화면은 예외)');
-    assert(titleShown||await p.locator('.workspace-nav a[href="index.html"]').isVisible(),viewport.width+' 집으로 가는 길이 하나는 있다');
+    assert(await p.locator('.workspace-nav a[href="index.html"]').isVisible(),viewport.width+' 서재 탭이 보인다');
+    assert.equal(await p.locator('.workspace-nav a:visible').count(),4,viewport.width+' 탭 넷이 다 보인다');
+    assert.equal(await p.locator('.workspace-heading a').count(),1,'머리에서 링크는 문양 하나');
+    assert.equal(await p.locator('.workspace-heading a').evaluate(e=>[e.getAttribute('href'),e.textContent.trim()].join('|')),'index.html|','문양 링크는 서재로, 보이는 글자 없음');
+    assert.equal(await p.locator('.workspace-heading h1').evaluate(e=>!!e.closest('a')),false,'화면 제목은 링크가 아니다');
     assert(await p.locator('.workspace-nav a[href="dex.html"]').isVisible()&&await p.locator('.workspace-nav a[href="prompt.html"]').isVisible(),viewport.width+' 서가·프롬프트 탭이 보인다');
     for(const a of await p.locator('.workspace-nav a').all()) if(await a.isVisible()) assert(await a.evaluate(e=>e.scrollWidth<=e.clientWidth+1),viewport.width+' 탭 글자가 안 잘린다: '+await a.textContent());
     /* 접기 — 제목이 숨고 항해(와 ⚙)만 남는다. 다음 화면에서도 접힌 채다. 펼치면 돌아온다 */
@@ -72,7 +73,7 @@ function same(actual,expected,label){
     assert.equal(await p.locator('.workspace-heading').evaluate(e=>getComputedStyle(e).display),narrow?'flex':'none','접으면 제목이 숨는다(덮개는 한 줄로 준다)');
     if(narrow){
      assert((await p.locator('.workspace-heading').boundingBox()).height<=48,viewport.width+' 접은 제목은 한 줄');
-     assert(await p.locator('a.workspace-title[href="index.html"]').isVisible(),viewport.width+' 접어도 서재 링크가 있다');
+     assert(await p.locator('.workspace-nav a[href="index.html"]').isVisible(),viewport.width+' 접어도 서재 탭이 있다');
      assert((await p.locator('.workspace-nav').boundingBox()).height<=56,viewport.width+' 접어도 항해는 한 줄');
     }
     assert(await p.locator('.appearance-toggle').isVisible(),'접어도 설정 단추는 남는다');

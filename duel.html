@@ -22,8 +22,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="lib/workspace.css?v=5">
-<link rel="stylesheet" href="lib/gallery.css?v=2">
+<link rel="stylesheet" href="lib/workspace.css?v=6">
+<link rel="stylesheet" href="lib/gallery.css?v=3">
 <style>
 * {box-sizing:border-box}
 html,body {margin:0;padding:0}
@@ -118,6 +118,14 @@ body {color:var(--text);font-size:15px}
 .duel-scene p,.duel-zoom p {margin:0;text-align:center;font-size:13px;line-height:1.6;color:#e8e0d0;word-break:keep-all}
 .duel-zoom p.rule {color:#fff}
 .duel-page .duel-scene .btn,.duel-page .duel-zoom .btn {background:#ffffff14;color:#fff;border-color:#ffffff40}
+/* 판 접기 — 조용한 단추, 확인 상자 */
+.duel-page .btn.quiet {background:transparent;color:var(--muted)}
+.duel-confirm {position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:16px;background:#0b0d12b3}
+.duel-confirm .box {width:min(360px,100%);padding:18px;border:1px solid var(--line);border-top:2px solid var(--signal);border-radius:12px;background:var(--card);box-shadow:0 18px 48px #0008}
+.duel-confirm h3 {margin:0 0 8px;font:700 18px/1.35 var(--gallery-serif)}
+.duel-confirm p {margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.6;word-break:keep-all}
+.duel-confirm .acts {display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.duel-page .duel-confirm .btn.danger {background:var(--signal);color:var(--card);border-color:var(--signal)}
 /* 결과 · 규칙 */
 .duel-result,.duel-rules {margin:0;padding:14px;border:1px solid var(--gold);border-radius:12px;background:var(--card)}
 .duel-result h3 {margin:0 0 8px;font-size:22px;letter-spacing:-.02em}
@@ -167,7 +175,7 @@ body {color:var(--text);font-size:15px}
 .pw2 {display:none}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=5"></script>
+<script src="lib/words.js?v=6"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
@@ -180,7 +188,7 @@ body {color:var(--text);font-size:15px}
 import { h, render } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useLayoutEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=4';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel;
 const STORE = 'book_duel_v1', AI_DELAY = 650;
@@ -297,7 +305,7 @@ function logLine(S, st, e) {
   return '';
 }
 
-function Match({ S, st, onMove, onAgain, onDeck, onZoom }) {
+function Match({ S, st, onMove, onAgain, onDeck, onZoom, onForfeit }) {
   const data = S.data, mine = st.turn === 'me' && st.phase === 'play';
   const [sel, setSel] = useState(null);   /* {kind:'hand', key} | {kind:'unit', slot} | {kind:'rule', slot} | {kind:'open'} */
   const [help, setHelp] = useState(false);
@@ -366,6 +374,7 @@ function Match({ S, st, onMove, onAgain, onDeck, onZoom }) {
       <p class="sec">${W('duel.hand')}<span>${W('duel.deckLeft', { n: st.me.deck.length })}</span>
         <span class="acts">
           ${ruleMoves.length > 0 && sel.kind === 'unit' && html`<button type="button" class="btn" id="duel-rule" onClick=${() => setSel({ kind: 'rule', slot: sel.slot })}>${W('duel.act.rule')}</button>`}
+          ${!done && html`<button type="button" class="btn quiet" id="duel-forfeit" aria-haspopup="dialog" onClick=${onForfeit}>${W('duel.act.forfeit')}</button>`}
           <button type="button" class="btn" id="duel-help" aria-pressed=${help} onClick=${() => setHelp(v => !v)}>${W('duel.act.help')}</button>
           <button type="button" class="btn" id="duel-open" disabled=${!mine || st.me.opened || !L.open.length} aria-pressed=${!!sel && sel.kind === 'open'} onClick=${() => setSel(sel && sel.kind === 'open' ? null : { kind: 'open' })}>${W(st.me.opened ? 'duel.act.open.used' : 'duel.act.open')}</button>
           <button type="button" class="btn" id="duel-pass" disabled=${!mine} onClick=${() => onMove({ kind: 'pass' })}>${W('duel.act.pass')}</button>
@@ -432,6 +441,21 @@ function Scene({ S, scene, onClose }) {
       <button type="button" class="btn modal-close" id="duel-scene-close" onClick=${onClose}>${W('duel.scene.close')}</button></div>
   </div>`;
 }
+/* 판 접기 확인 — 기본 포커스는 "계속 두기"(되돌릴 수 없는 쪽을 먼저 쥐여 주지 않는다). Esc·바깥 누르기도 계속 두기 */
+function Forfeit({ onYes, onNo }) {
+  const layer = useModal(onNo);
+  return html`<div ref=${layer} class="duel-confirm" role="alertdialog" aria-modal="true" aria-labelledby="duel-forfeit-title" aria-describedby="duel-forfeit-note"
+      onClick=${e => { if (e.target === e.currentTarget) onNo(); }}>
+    <div class="box">
+      <h3 id="duel-forfeit-title">${W('duel.forfeit.title')}</h3>
+      <p id="duel-forfeit-note">${W('duel.forfeit.note')}</p>
+      <div class="acts">
+        <button type="button" class="btn modal-close" id="duel-forfeit-no" onClick=${onNo}>${W('duel.forfeit.no')}</button>
+        <button type="button" class="btn danger" id="duel-forfeit-yes" onClick=${onYes}>${W('duel.forfeit.yes')}</button>
+      </div>
+    </div>
+  </div>`;
+}
 /* 크게 보기 — 자리의 책(지금 폼)이나 손패의 책(이번 장의 폼). 그 폼 그림·역할 수치·고유 규칙의 그 폼 쓰임 */
 function Zoom({ S, st, zoom, onClose }) {
   const layer = useModal(onClose);
@@ -456,34 +480,36 @@ const zoomKey = (st, zoom) => zoom.kind === 'unit' ? (st[zoom.who].slots[zoom.sl
 function App() {
   const S = useData();
   const [game, setGame] = useState(() => { const s = readStore(); return { deck: Array.isArray(s.deck) ? s.deck : [], st: s.st && s.st.v === D.VERSION ? s.st : null, screen: s.st && s.st.v === D.VERSION ? 'match' : 'deck' }; });
-  const [scene, setScene] = useState(null), [zoom, setZoom] = useState(null);
+  const [scene, setScene] = useState(null), [zoom, setZoom] = useState(null), [forfeit, setForfeit] = useState(false);
   const timer = useRef(null);
   const save = g => { writeStore({ deck: g.deck, st: g.st }); return g; };
   /* 절정이 터졌으면 장면을 보인다 — 내 것도 상대 것도 */
   const showScene = st => { if (st.last && st.last.kind === 'open') setScene({ key: st.last.key, form: st.last.form, who: st.last.who }); };
   const commit = st => { setGame(g => save({ ...g, st })); showScene(st); };
-  /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게. 절정 장면이 떠 있으면 닫을 때까지 기다린다 */
+  /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게. 절정 장면·판 접기 확인이 떠 있으면 닫을 때까지 기다린다 */
   useEffect(() => {
-    if (scene || !S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;
+    if (scene || forfeit || !S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;
     clearTimeout(timer.current);
     timer.current = setTimeout(() => { const st = JSON.parse(JSON.stringify(game.st)); D.aiTurn(S.data, st, 'greedy'); commit(st); }, AI_DELAY);
     return () => clearTimeout(timer.current);
-  }, [S.data, game.st, scene]);
+  }, [S.data, game.st, scene, forfeit]);
   useEffect(() => { if (zoom && (!game.st || !zoomKey(game.st, zoom))) setZoom(null); }, [zoom, game.st]);
   const start = deck => {
     const seed = (Date.now() ^ (Math.random() * 1e9)) | 0, rng = { rngState: seed };
     const st = D.newMatch(S.data, { me: deck, foe: D.randomDeck(S.data, rng) }, seed);
-    setScene(null); setZoom(null); setGame(save({ deck, st, screen: 'match' }));
+    setScene(null); setZoom(null); setForfeit(false); setGame(save({ deck, st, screen: 'match' }));
   };
+  const toDeck = () => { clearTimeout(timer.current); setScene(null); setZoom(null); setGame(g => save({ ...g, st: null, screen: 'deck' })); };
   const move = m => { const st = JSON.parse(JSON.stringify(game.st)); const r = D.step(S.data, st, m); if (!r.ok) return; commit(st); };
   if (S.error) return html`<${WorkspaceHeader} page="duel" /><p class="empty-msg">${W('ui.error', { message: S.error })}</p>`;
   if (!S.data) return html`<${WorkspaceHeader} page="duel" /><p class="empty-msg">${W('ui.loading')}</p>`;
   return html`<${WorkspaceHeader} page="duel" />
     ${game.screen === 'match' && game.st
-      ? html`<${Match} S=${S} st=${game.st} onMove=${move} onZoom=${setZoom} onAgain=${() => start(game.deck)} onDeck=${() => setGame(g => save({ ...g, st: null, screen: 'deck' }))} />`
+      ? html`<${Match} S=${S} st=${game.st} onMove=${move} onZoom=${setZoom} onForfeit=${() => setForfeit(true)} onAgain=${() => start(game.deck)} onDeck=${toDeck} />`
       : html`<${Deck} S=${S} deck=${game.deck} onChange=${deck => setGame(g => save({ ...g, deck }))} onStart=${() => start(game.deck)} />`}
     ${zoom && game.st && zoomKey(game.st, zoom) && html`<${Zoom} S=${S} st=${game.st} zoom=${zoom} onClose=${() => setZoom(null)} />`}
-    ${scene && html`<${Scene} S=${S} scene=${scene} onClose=${() => setScene(null)} />`}`;
+    ${scene && html`<${Scene} S=${S} scene=${scene} onClose=${() => setScene(null)} />`}
+    ${forfeit && game.st && html`<${Forfeit} onNo=${() => setForfeit(false)} onYes=${() => { setForfeit(false); toDeck(); }} />`}`;
 }
 render(html`<${App} />`, document.getElementById('app'));
 window.AtelierFresh.watch();

@@ -10,15 +10,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="lib/workspace.css?v=5">
+<link rel="stylesheet" href="lib/workspace.css?v=6">
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=5"></script>
+<script src="lib/words.js?v=6"></script>
 <script src="lib/patch.js?v=1"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
 <script src="lib/book-frame.js?v=1"></script>
-<link rel="stylesheet" href="lib/gallery.css?v=2">
+<link rel="stylesheet" href="lib/gallery.css?v=3">
 <link rel="stylesheet" href="lib/landscape.css?v=2">
 <link rel="stylesheet" href="lib/room.css?v=3">
 <link rel="stylesheet" href="lib/bookshelf.css?v=3">
@@ -28,7 +28,7 @@
 <script type="module">
 import {h,render} from 'https://esm.sh/preact@10.24.3';
 import {useState,useEffect} from 'https://esm.sh/preact@10.24.3/hooks';
-import {WorkspaceHeader,ThemeGallery,PAGES} from './lib/workspace-ui.js?v=4';
+import {WorkspaceHeader,ThemeGallery} from './lib/workspace-ui.js?v=5';
 import {Bookshelf} from './lib/bookshelf.js?v=4';
 const W=window.W;
 /* 패치 기록 — docs/PATCH.md 를 그대로 읽는다. 열 때 한 번만 받아 온다.
@@ -62,10 +62,6 @@ function App(){
     h(WorkspaceHeader,{page:'index'}),
     h(Bookshelf),
     h(Patch),
-    h('div',{class:'lab-links'},PAGES.filter(k=>k!=='index').map(key=>
-      h('a',{class:'lab-link',href:key+'.html',key},
-        h('small',null,W('home.'+key+'.code')),h('h3',null,W('home.'+key+'.title')),
-        h('p',null,W('home.'+key+'.note')),h('span',{class:'lab-arrow','aria-hidden':'true'},'↗')))),
     h(ThemeGallery));
 }
 render(h(App),document.getElementById('app'));

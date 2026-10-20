@@ -22,6 +22,7 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     assert.deepEqual((await cells(p)).sort(), design.books.map(b => b.key).sort(), '설계표의 책이 다 선다');
     assert.equal(await p.$$eval('.grid > .cell[data-card="chunhyang"] img', x => x.length), 0, '그림 없는 책은 이름표');
     /* 작업 현황 — 그림 없음 · 빈 자리 있음 */
+    await p.locator('.dex-filters summary').click();
     await p.selectOption('#dex-art', 'none');
     assert.deepEqual((await cells(p)).sort(), none, '그림 없음');
     await p.selectOption('#dex-art', 'left');
@@ -29,6 +30,7 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     assert.match(await p.$eval('#dex-reset', e => e.textContent), /1/, '초기화 단추가 켠 조건 수를 보인다');
     await p.click('#dex-reset');
     /* 컷 거르기 — 개방만 */
+    if (!await p.locator('.dex-filters').evaluate(e => e.open)) await p.locator('.dex-filters summary').click();
     await p.selectOption('#dex-cut', 'open');
     const opens = await p.$$eval('.grid > .cell', es => es.map(e => e.dataset.form));
     assert(opens.length === 8 && opens.every(f => f.endsWith('_open')), '개방만: ' + opens.join(','));

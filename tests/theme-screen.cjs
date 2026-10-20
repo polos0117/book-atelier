@@ -33,12 +33,12 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
    marks.add(await p.locator('.workspace-title svg').innerHTML());
   }
   assert.equal(backgrounds.size,8);assert.equal(marks.size,8);
-  for(const [page,selector] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['index.html','.theme-card']]){
+  for(const [page,selector] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.theme-card']]){
    await p.goto(harness.base+'/'+page);await p.waitForSelector(selector);
    const nav=await p.locator('.workspace-nav a').evaluateAll(es=>es.map(e=>({
     href:e.getAttribute('href'),current:e.getAttribute('aria-current'),decoration:getComputedStyle(e).textDecorationLine
    })));
-   assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html'],page+' common navigation');
+   assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html','duel.html'],page+' common navigation');
    assert.deepEqual(nav.filter(x=>x.current==='page').map(x=>x.href),[page],page+' selected tab');
    assert(nav.every(x=>x.decoration==='none'),page+' navigation underlines');
    assert(await p.evaluate(()=>{
@@ -72,6 +72,6 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
   assert.deepEqual(a.errors,[]);
   assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
   await a.close();
-  console.log('PASS theme screens: 8 palettes and motifs, AA text contrast, persisted navigation, unchanged prompts, 3 viewports');
+  console.log('PASS theme screens: 8 palettes and motifs, AA text contrast, persisted navigation over 4 pages, unchanged prompts, 3 viewports');
  }finally{await harness.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

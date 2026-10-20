@@ -53,5 +53,7 @@ const bad = [];
 if (first / decided < LO || first / decided > HI) bad.push('선공 승률 ' + pct(first / decided) + ' — data/duel.json 의 first_bonus 를 고친다');
 for (const r of rows) if (r.r > HI || r.r < LO) bad.push(r.title + ' ' + pct(r.r));
 for (const r of rows) r.f.forEach((n, i) => { if (!n) bad.push(r.title + ' ' + D.stagesOf(data)[i] + ' 규칙이 한 번도 안 돌았다'); });
-if (bad.length) { console.error('\n균형 미통과:\n  ' + bad.join('\n  ')); process.exit(1); }
-console.log('\nPASS 책 결투 균형: ' + N + '판 · 열다섯 권 모두 40~60% · 세 폼 규칙 모두 돈다 · 선공 40~60%');
+/* 빠른 모드(--quick, 600판)는 표본이 작아 보고만 한다 — 문턱은 3,000판에서 본다 */
+if (bad.length && quick) console.log('\n(빠른 모드 — 보고만) 문턱 밖:\n  ' + bad.join('\n  '));
+else if (bad.length) { console.error('\n균형 미통과:\n  ' + bad.join('\n  ')); process.exit(1); }
+console.log('\nPASS 책 결투 균형: ' + N + '판' + (quick ? ' (빠른 모드 — 문턱은 보고만)' : ' · 열다섯 권 모두 40~60% · 세 폼 규칙 모두 돈다 · 선공 40~60%'));

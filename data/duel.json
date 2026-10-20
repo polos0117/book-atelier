@@ -40,7 +40,7 @@
   "baskervilles": {"need": 2, "expose": 2},
   "treasure_island": {"need": 2, "treasure": 2},
   "time_machine": {},
-  "sunzi": {"move": 2, "need": 3},
+  "sunzi": {"move": 1, "need": 3},
   "pride_prejudice": {"judge": 2, "flip": 2},
   "dracula": {"need": 2},
   "tear_drinking_bird": {"shield": 2, "need": 3},

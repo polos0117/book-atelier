@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8f4ea">
+<title>책의 공방</title>
+<!--
+  결투 — 책장 넘기기(docs/DUEL_DESIGN.md). 규칙은 lib/duel.js 에만, 수치는 data/duel.json 에만 있다.
+  여기는 상태를 그리고 단추를 엔진에 넘길 뿐이다. 휴대폰 세로 한 화면: 상대 자리 셋 · 내 자리 셋 · 손패 한 줄.
+  그림은 data/img.json 에 적힌 것만(lib/img.js) — 그 폼의 초상, 절정은 그 폼의 개방 그림. 없으면 이름표.
+  판은 localStorage(book_duel_v1)에 매 수 저장돼 새로고침해도 이어진다.
+-->
+<link rel="stylesheet" href="lib/workspace.css?v=1">
+<style>
+* {box-sizing:border-box}
+html,body {margin:0;padding:0}
+body {color:var(--text);font-size:15px}
+.duel-screen {display:block;min-height:120px}
+.sec {margin:14px 0 6px;font:700 11px/1.6 ui-monospace,monospace;letter-spacing:.1em;color:var(--accent);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sec span {color:var(--muted);font-weight:400;letter-spacing:0}
+.note {margin:6px 0 10px;color:var(--muted);font-size:12px;line-height:1.6;word-break:keep-all}
+/* 껍데기(.prompt-page button)가 단추 높이를 40 으로 두므로 여기선 더 센 선택자로 44 — 누르는 자리 */
+.duel-page .btn {min-height:44px;padding:8px 14px;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.duel-page .btn.primary {background:var(--accent);color:var(--on-accent,#fff);border-color:var(--accent);min-height:46px;font-size:14px}
+.duel-page .btn[aria-pressed="true"] {border-color:var(--gold);color:var(--text);box-shadow:inset 0 -2px var(--gold)}
+.duel-page .btn:disabled {opacity:.45;cursor:default}
+.duel-page .deck-cell,.duel-page .duel-slot,.duel-page .duel-hand .card {padding:0}
+/* 덱 고르기 — 열다섯 권 */
+.deck-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 12px}
+@media (min-width:600px) {.deck-grid {grid-template-columns:repeat(5,minmax(0,1fr))}}
+.deck-cell {display:flex;flex-direction:column;min-height:44px;padding:0;text-align:left;color:inherit;font:inherit;background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden;cursor:pointer}
+.deck-cell.in {outline:3px solid var(--accent);outline-offset:-3px}
+.face {display:block;position:relative;width:100%;aspect-ratio:2/3;background:var(--card2);overflow:hidden}
+.face img {display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
+.ph {display:flex;align-items:center;justify-content:center;height:100%;padding:6px;color:var(--muted);font:700 11px/1.4 var(--display,serif);text-align:center;word-break:keep-all}
+.cap {display:block;padding:6px 7px 7px;font-weight:700;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.cap i {display:block;margin-top:2px;font:400 10px ui-monospace,monospace;color:var(--muted);font-style:normal}
+.deck-act {display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 16px}
+.deck-act .n {margin-left:auto;font:700 12px ui-monospace,monospace;color:var(--accent)}
+/* 대결 — 위 막대 · 상대 셋 · 내 셋 · 손패 */
+.duel-bar {position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin:4px 0 6px;padding:8px 10px;border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:10px;background:var(--bg);font:700 12px ui-monospace,monospace;color:var(--muted)}
+.duel-bar .stages {display:flex;gap:4px}
+.duel-bar .stages b {padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-weight:700;font-size:11px}
+.duel-bar .stages b.on {background:var(--accent-soft);color:var(--text);border-color:var(--accent)}
+.duel-turn {margin-left:auto;color:var(--text)} .duel-turn[data-turn="me"] {color:var(--gold)} .duel-turn[data-turn="foe"] {color:var(--signal)}
+.duel-score {flex-basis:100%;display:flex;gap:12px;align-items:center;font-size:12px}
+.duel-score b {color:var(--text);font-size:15px} .duel-score b[data-side="foe"] {color:var(--signal)}
+.duel-score .won {display:inline-flex;gap:3px;vertical-align:middle;margin-left:4px} .duel-score .won i {width:8px;height:8px;border-radius:50%;border:1px solid var(--line);display:inline-block} .duel-score .won i.on {background:var(--gold);border-color:var(--gold)}
+.duel-row {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0}
+.duel-slot {position:relative;display:block;width:100%;min-height:118px;padding:0;text-align:left;color:inherit;font:inherit;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:default}
+.duel-slot .face {max-height:120px;aspect-ratio:3/4}
+.duel-slot.sel {outline:3px solid var(--accent);outline-offset:-3px}
+.duel-slot.duel-target {outline:3px dashed var(--gold);outline-offset:-3px;cursor:pointer}
+.duel-slot.duel-target[data-kind="attack"],.duel-slot.duel-target[data-kind="rule"] {outline-style:solid}
+.duel-slot.empty .face {display:flex;align-items:center;justify-content:center;color:var(--muted);font:11px ui-monospace,monospace;background:linear-gradient(160deg,var(--card2),var(--card))}
+.duel-slot.off {opacity:.75}
+.duel-row[data-side="foe"] .duel-slot {border-color:color-mix(in srgb,var(--signal) 40%,var(--line))}
+.pw {position:absolute;left:6px;bottom:6px;min-width:26px;padding:2px 6px;border-radius:7px;text-align:center;font:800 13px ui-monospace,monospace;background:#000a;color:#fff}
+.tok {position:absolute;right:6px;bottom:6px;min-width:22px;padding:2px 5px;border-radius:7px;text-align:center;font:800 11px ui-monospace,monospace;background:var(--gold);color:#221a06}
+.flags {position:absolute;left:4px;top:4px;right:4px;display:flex;flex-wrap:wrap;gap:3px}
+.flags i {padding:1px 5px;border-radius:999px;background:#000a;color:#fff;font:700 9px ui-monospace,monospace;font-style:normal}
+.unit-cap {display:block;padding:4px 6px 5px;font-size:11px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.unit-cap i {display:block;font:400 10px ui-monospace,monospace;color:var(--muted);font-style:normal}
+.duel-mode {position:sticky;top:0;z-index:7;display:flex;align-items:center;gap:8px;margin:4px 0;padding:6px 10px;border:1px solid var(--accent);border-radius:10px;background:var(--bg);font:700 12px ui-monospace,monospace;color:var(--text);word-break:keep-all}
+.duel-mode .btn {margin-left:auto;flex:none}
+.duel-hint {margin:6px 0;color:var(--muted);font-size:12px;line-height:1.5;word-break:keep-all;min-height:18px}
+.duel-log {margin:6px 0 0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--muted);font-size:12px;line-height:1.6;max-height:5.2em;overflow:auto;word-break:keep-all}
+.duel-log b {color:var(--text);font-weight:600}
+/* 손패 — 바닥에 붙는 칸 */
+.duel-dock {position:sticky;bottom:0;z-index:6;margin-top:8px;padding:2px 10px calc(6px + env(safe-area-inset-bottom));background:var(--bg);border:1px solid var(--line);border-bottom:0;border-top:2px solid var(--accent);border-radius:12px 12px 0 0;box-shadow:0 -10px 24px #0007}
+.duel-dock .sec {margin:4px 0 2px;min-height:46px}
+.duel-dock .acts {display:flex;gap:6px;margin-left:auto}
+.duel-hand {display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scroll-snap-type:x proximity;min-height:44px}
+.duel-hand .card {flex:none;width:84px;display:flex;flex-direction:column;padding:0;text-align:left;color:inherit;font:inherit;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;scroll-snap-align:start}
+.duel-hand .card.sel {outline:3px solid var(--accent);outline-offset:-3px}
+.duel-hand .card .face {aspect-ratio:3/4}
+.duel-hand .card .cap {padding:4px 5px 5px;font-size:10px}
+.duel-hand .card .cap i {font-size:9px}
+.duel-hand .card.seen {border-color:var(--gold)}
+.duel-hand .empty {color:var(--muted);font-size:12px;padding:12px 4px}
+/* 절정 — 명장면이 판 전체에 */
+.duel-scene {position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;background:#0b0d12e6;color:#fff;animation:scene-in .4s ease-out}
+@keyframes scene-in {from {opacity:0} to {opacity:1}}
+.duel-scene .pic {width:min(80vw,calc(58dvh * 2 / 3));aspect-ratio:2/3;border:1px solid var(--gold);border-radius:12px;overflow:hidden;background:#000;box-shadow:0 0 60px var(--gold)}
+.duel-scene .pic img {display:block;width:100%;height:100%;object-fit:cover}
+.duel-scene .pic .ph {color:#fff;font-size:16px}
+.duel-scene h3 {margin:0;font:700 18px/1.3 var(--display,serif);text-align:center}
+.duel-scene p {margin:0;max-width:520px;text-align:center;font-size:13px;line-height:1.6;color:#e8e0d0;word-break:keep-all}
+.duel-scene .btn {background:#ffffff14;color:#fff;border-color:#ffffff40}
+/* 결과 · 규칙 */
+.duel-result,.duel-rules {margin:10px 0;padding:14px;border:1px solid var(--gold);border-radius:12px;background:var(--card)}
+.duel-result h3 {margin:0 0 8px;font-size:22px;letter-spacing:-.02em}
+.duel-result[data-result="win"] h3 {color:var(--gold)} .duel-result[data-result="lose"] h3 {color:var(--signal)}
+.duel-result ol {margin:0 0 10px;padding-left:20px;font-size:13px;line-height:1.7}
+.duel-result .acts,.duel-rules .acts {display:flex;gap:8px;flex-wrap:wrap}
+.duel-rules ol {margin:0 0 10px;padding-left:20px;font-size:13px;line-height:1.7;word-break:keep-all}
+.empty-msg {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
+</style>
+<script src="lib/workspace-theme.js?v=1"></script>
+<script src="lib/words.js?v=1"></script>
+<script src="lib/fresh.js?v=1"></script>
+<script src="lib/img.js?v=1"></script>
+<script src="lib/dex-filter.js?v=1"></script>
+<script src="lib/duel.js?v=1"></script>
+</head>
+<body class="prompt-page duel-page">
+<div class="wrap"><div id="app"></div></div>
+<script type="module">
+import { h, render } from 'https://esm.sh/preact@10.24.3';
+import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=1';
+const html = htm.bind(h);
+const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel;
+const STORE = 'book_duel_v1', AI_DELAY = 650, SCENE_MS = 2200;
+const V = 'f';
+
+function readStore() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }
+function writeStore(o) { try { localStorage.setItem(STORE, JSON.stringify(o)); } catch (e) {} }
+
+function useData() {
+  const [st, set] = useState({ loading: true });
+  useEffect(() => {
+    Promise.all([
+      fetch('data/book-design.json', { cache: 'no-cache' }).then(r => r.json()),
+      fetch('data/duel.json', { cache: 'no-cache' }).then(r => r.json()),
+      IMG.load().catch(() => ({})),
+    ]).then(([design, duel, img]) => {
+      const fk = (design.vocab || {}).form_key || {}, defs = {};
+      for (const stage of Object.keys(fk)) defs[fk[stage]] = { stage };
+      const books = Object.fromEntries(design.books.map(b => [b.key, b]));
+      set({ data: { design, duel }, img, defs, fk, books, stages: Object.keys(fk) });
+    }).catch(e => set({ error: String((e && e.message) || e) }));
+  }, []);
+  return st;
+}
+
+/* 그 책의 그 폼 그림 — 가장 많이 채운 화풍에서. 없으면 null(이름표) */
+function picOf(S, key, formIndex, open) {
+  const entry = S.img[key]; if (!entry) return null;
+  const style = FILTER.best(entry, S.defs).style; if (!style) return null;
+  const fkey = S.fk[S.stages[formIndex]] + (open ? '_open' : '');
+  return (IMG.formOf(IMG.styleMap(entry)[style], fkey) || {})[V] || null;
+}
+function Pic({ file, full, alt }) {
+  if (!file) return html`<span class="ph">${alt}</span>`;
+  return html`<img loading=${full ? 'eager' : 'lazy'} alt=${alt || ''} src=${full ? IMG.imgURL(file) : IMG.thumbURL(file)}
+    onError=${e => { const t = e.currentTarget; if (full || t.dataset.fallback) return; t.dataset.fallback = '1'; t.src = IMG.imgURL(file); }} />`;
+}
+
+/* 덱 고르기 — 열다섯 권에서 여섯 */
+function Deck({ S, deck, onChange, onStart }) {
+  const data = S.data, max = D.DECK, v = D.validateDeck(data, deck);
+  const toggle = key => onChange(deck.includes(key) ? deck.filter(k => k !== key) : deck.length < max ? deck.concat(key) : deck);
+  return html`<section class="duel-screen" data-screen="deck">
+    <p class="sec">${W('duel.deck.title')}<span>${W('duel.deck.count', { n: deck.length, max })}</span></p>
+    <p class="note">${W('duel.deck.note')}</p>
+    <div class="deck-grid">${data.design.books.map(b => {
+      const file = picOf(S, b.key, 0), roles = S.stages.map(s => b.forms[s].role);
+      return html`<button key=${b.key} type="button" class=${'deck-cell' + (deck.includes(b.key) ? ' in' : '')} data-key=${b.key} aria-pressed=${deck.includes(b.key)} onClick=${() => toggle(b.key)}>
+        <span class="face"><${Pic} file=${file} alt=${b.title} /></span>
+        <span class="cap">${b.title}<i>${b.genre}</i><i>${W('duel.deck.role', { a: roles[0], b: roles[1], c: roles[2] })}</i></span>
+      </button>`; })}</div>
+    <div class="deck-act">
+      <button type="button" class="btn" id="duel-auto" onClick=${() => onChange(D.randomDeck(data, { rngState: (Date.now() ^ (Math.random() * 1e9)) | 0 }))}>${W('duel.deck.auto')}</button>
+      <button type="button" class="btn" id="duel-clear" disabled=${!deck.length} onClick=${() => onChange([])}>${W('duel.deck.clear')}</button>
+      <span class="n">${W('duel.deck.count', { n: deck.length, max })}</span>
+    </div>
+    <button type="button" class="btn primary" id="duel-start" disabled=${!v.ok} onClick=${onStart} style="width:100%">${W('duel.deck.start')}</button>
+  </section>`;
+}
+
+/* 판 위 책 한 칸 */
+function Unit({ S, st, u, who, sel, target, onClick }) {
+  const data = S.data, b = S.books[u.key], f = D.formOf(st, u), role = D.roleOf(data, st, u);
+  const flags = [];
+  if (u.flags.erased) flags.push(W('duel.flag.erased')); else if (u.flags.silenced) flags.push(W('duel.flag.silenced'));
+  if (u.flags.bound) flags.push(W('duel.flag.bound'));
+  if (u.flags.hidden) flags.push(W('duel.flag.hidden'));
+  if (u.flags.revealed) flags.push(W('duel.flag.revealed'));
+  if (u.flags.judged) flags.push(W('duel.flag.judged'));
+  if (u.flags.linked) flags.push(W('duel.flag.linked'));
+  if (u.mark > 0) flags.push(W('duel.flag.mark', { n: u.mark }));
+  return html`<button type="button" class=${'duel-slot duel-unit' + (sel ? ' sel' : '') + (target ? ' duel-target' : '') + (!D.live(u) ? ' off' : '')}
+      data-side=${who} data-slot=${D.slotOf(st, u)} data-key=${u.key} data-kind=${target || undefined} onClick=${onClick}
+      aria-label=${b.title + ' · ' + S.stages[f] + ' · ' + role}>
+    <span class="face"><${Pic} file=${picOf(S, u.key, f)} alt=${b.title} />
+      ${flags.length > 0 && html`<span class="flags">${flags.map((x, i) => html`<i key=${i}>${x}</i>`)}</span>`}
+      <span class="pw">${D.cur(data, st, u)}</span>
+      ${u.tok > 0 && html`<span class="tok">${W('duel.flag.tok', { n: u.tok })}</span>`}
+    </span>
+    <span class="unit-cap">${b.title}<i>${S.stages[f]} · ${role}</i></span>
+  </button>`;
+}
+function EmptySlot({ who, slot, target, onClick }) {
+  return html`<button type="button" class=${'duel-slot empty' + (target ? ' duel-target' : '')} data-side=${who} data-slot=${slot} data-kind=${target || undefined} disabled=${!target} onClick=${onClick}>
+    <span class="face">${W('duel.empty')}</span></button>`;
+}
+
+/* 기록 한 줄로 */
+function logLine(S, st, e) {
+  const name = k => (S.books[k] || {}).title || k, who = w => W(w === 'me' ? 'duel.me' : 'duel.foe');
+  const at = (side, slot) => { const u = st[side] && st[side].slots[slot]; return u ? name(u.key) : ''; };
+  switch (e.t) {
+    case 'first': return W('duel.log.first', { who: who(e.who) });
+    case 'play': return W('duel.log.play', { who: who(e.who), book: name(e.key) });
+    case 'attack': return W('duel.log.attack', { who: who(e.who), book: name(e.key), target: at(D.other(e.who), e.target) });
+    case 'strike': case 'hit': return e.instant ? W('duel.log.instant', { target: at(e.side, e.to) }) : e.dmg > 0 ? W('duel.log.strike', { target: at(e.side, e.to), n: e.dmg }) : '';
+    case 'close': return W(e.why === 'left' || e.why === 'dawn' ? 'duel.log.left' : 'duel.log.close', { book: name(e.key) });
+    case 'revive': return W('duel.log.revive', { book: name(e.key) });
+    case 'open': return W('duel.log.open', { who: who(e.who), book: name(e.key) });
+    case 'pass': return W('duel.log.pass', { who: who(e.who) });
+    case 'chapter': return W('duel.log.chapter', { stage: S.stages[e.n], me: e.me, foe: e.foe });
+    case 'page': return W('duel.log.page', { stage: S.stages[e.chapter] });
+    case 'rule': return W('duel.log.rule', { book: name(e.key), what: W('duel.rule.' + e.what) });
+    case 'done': return W('duel.log.done', { result: W(e.winner === 'me' ? 'duel.result.win' : e.winner === 'foe' ? 'duel.result.lose' : 'duel.result.draw') });
+  }
+  return '';
+}
+
+function Match({ S, st, onMove, onAgain, onDeck }) {
+  const data = S.data, mine = st.turn === 'me' && st.phase === 'play';
+  const [sel, setSel] = useState(null);   /* {kind:'hand', key} | {kind:'unit', slot} | {kind:'rule', slot} | {kind:'open'} */
+  const [help, setHelp] = useState(false);
+  useEffect(() => { setSel(null); }, [st.turn, st.turnNo, st.chapter]);
+  const L = mine ? D.legal(data, st, 'me') : { play: [], attack: [], rule: [], open: [], pass: false };
+  const selUnit = sel && (sel.kind === 'unit' || sel.kind === 'rule') ? st.me.slots[sel.slot] : null;
+  /* 표적 — 고른 것에 따라 빈 자리(내기) · 상대 책(공격·규칙) · 내 책(절정) */
+  const targetOf = (who, slot) => {
+    if (!sel) return null;
+    if (sel.kind === 'hand' && who === 'me' && !st.me.slots[slot] && L.play.some(p => p.key === sel.key && p.slots.includes(slot))) return 'play';
+    if (sel.kind === 'unit' && who === 'foe' && L.attack.some(a => a.slot === sel.slot && a.target === slot)) return 'attack';
+    if (sel.kind === 'rule' && who === 'foe' && L.rule.some(a => a.slot === sel.slot && a.target === slot)) return 'rule';
+    if (sel.kind === 'open' && who === 'me' && L.open.includes(slot)) return 'open';
+    return null;
+  };
+  const tap = (who, slot) => {
+    const t = targetOf(who, slot);
+    if (t === 'play') return onMove({ kind: 'play', key: sel.key, slot });
+    if (t === 'attack') return onMove({ kind: 'attack', slot: sel.slot, target: slot });
+    if (t === 'rule') return onMove({ kind: 'rule', slot: sel.slot, target: slot });
+    if (t === 'open') return onMove({ kind: 'open', slot });
+    if (who === 'me' && st.me.slots[slot] && mine) setSel(sel && sel.kind === 'unit' && sel.slot === slot ? null : { kind: 'unit', slot });
+  };
+  const hint = !mine ? (st.phase === 'done' ? W('duel.hint.done') : W('duel.hint.foe')) : !sel ? W('duel.hint.idle') : W('duel.hint.' + (sel.kind === 'unit' ? 'attack' : sel.kind));
+  const row = who => html`<div class="duel-row" data-side=${who}>${[0, 1, 2].map(i => {
+    const u = st[who].slots[i], t = targetOf(who, i);
+    return u ? html`<${Unit} key=${u.id} S=${S} st=${st} u=${u} who=${who} sel=${who === 'me' && selUnit === u} target=${t} onClick=${() => tap(who, i)} />`
+      : html`<${EmptySlot} key=${'e' + i} who=${who} slot=${i} target=${t} onClick=${() => tap(who, i)} />`; })}</div>`;
+  const won = who => st.chapters.filter(c => c.winner === who).length;
+  const dots = who => html`<span class="won">${[0, 1, 2].map(i => html`<i key=${i} class=${i < won(who) ? 'on' : ''}></i>`)}</span>`;
+  const ruleMoves = selUnit ? L.rule.filter(r => r.slot === sel.slot) : [];
+  const recent = st.log.slice(-6).map(e => logLine(S, st, e)).filter(Boolean);
+  const done = st.phase === 'done';
+  return html`<section class="duel-screen" data-screen="match">
+    <div class="duel-bar">
+      <span class="stages">${S.stages.map((s, i) => html`<b key=${s} class=${i === st.chapter ? 'on' : ''}>${s}</b>`)}</span>
+      <span>${W('duel.chapter', { stage: S.stages[st.chapter], n: Math.min(D.TURNS, Math.floor(st.turnNo / 2) + 1), max: D.TURNS })}</span>
+      <span class="duel-turn" data-turn=${st.turn || 'none'}>${done ? '' : W(mine ? 'duel.turn.me' : 'duel.turn.foe')}</span>
+      <span class="duel-score">
+        <span>${W('duel.foe')} <b data-side="foe">${D.sum(data, st, 'foe')}</b>${dots('foe')}</span>
+        <span>${W('duel.me')} <b data-side="me">${D.sum(data, st, 'me')}</b>${dots('me')}</span>
+        <span>${W('duel.foe.hand', { n: st.foe.hand.length })}${st.foe.seen.length > 0 || st.foe.revealedAll ? ' · ' + W('duel.seen', { list: (st.foe.revealedAll ? st.foe.hand : st.foe.seen.filter(k => st.foe.hand.includes(k))).map(k => S.books[k].title).join(', ') }) : ''}</span>
+      </span>
+    </div>
+    ${sel && mine && html`<div class="duel-mode" role="status">${hint}<button type="button" class="btn" id="duel-cancel" onClick=${() => setSel(null)}>${W('duel.act.cancel')}</button></div>`}
+    ${row('foe')}
+    ${row('me')}
+    ${!sel && html`<p class="duel-hint" role="status">${hint}</p>`}
+    ${ruleMoves.length > 0 && sel.kind === 'unit' && html`<button type="button" class="btn" id="duel-rule" onClick=${() => setSel({ kind: 'rule', slot: sel.slot })}>${W('duel.act.rule')}</button>`}
+    <div class="duel-log" aria-live="polite">${recent.map((x, i) => html`<div key=${i}>${i === recent.length - 1 ? html`<b>${x}</b>` : x}</div>`)}</div>
+    ${done && html`<div class="duel-result" data-result=${st.winner === 'me' ? 'win' : st.winner === 'foe' ? 'lose' : 'draw'}>
+      <h3>${W(st.winner === 'me' ? 'duel.result.win' : st.winner === 'foe' ? 'duel.result.lose' : 'duel.result.draw')}</h3>
+      <p class="sec">${W('duel.result.chapters')}</p>
+      <ol>${st.chapters.map((c, i) => html`<li key=${i}>${W('duel.log.chapter', { stage: S.stages[i], me: c.me, foe: c.foe })}</li>`)}</ol>
+      <div class="acts"><button type="button" class="btn primary" id="duel-again" onClick=${onAgain}>${W('duel.result.again')}</button><button type="button" class="btn" id="duel-deck" onClick=${onDeck}>${W('duel.result.deck')}</button></div>
+    </div>`}
+    ${help && html`<div class="duel-rules" role="dialog" aria-label=${W('duel.rules.title')}>
+      <p class="sec">${W('duel.rules.title')}</p>
+      <ol>${[1, 2, 3, 4, 5].map(i => html`<li key=${i}>${W('duel.rules.' + i)}</li>`)}</ol>
+      <div class="acts"><button type="button" class="btn" id="duel-rules-close" onClick=${() => setHelp(false)}>${W('duel.rules.close')}</button></div>
+    </div>`}
+    <div class="duel-dock">
+      <p class="sec">${W('duel.hand')}<span>${W('duel.deckLeft', { n: st.me.deck.length })}</span>
+        <span class="acts">
+          <button type="button" class="btn" id="duel-help" aria-pressed=${help} onClick=${() => setHelp(v => !v)}>${W('duel.act.help')}</button>
+          <button type="button" class="btn" id="duel-open" disabled=${!mine || st.me.opened || !L.open.length} aria-pressed=${!!sel && sel.kind === 'open'} onClick=${() => setSel(sel && sel.kind === 'open' ? null : { kind: 'open' })}>${W(st.me.opened ? 'duel.act.open.used' : 'duel.act.open')}</button>
+          <button type="button" class="btn" id="duel-pass" disabled=${!mine} onClick=${() => onMove({ kind: 'pass' })}>${W('duel.act.pass')}</button>
+        </span></p>
+      <div class="duel-hand">${st.me.hand.length ? st.me.hand.map(k => { const b = S.books[k], roles = S.stages.map(s => b.forms[s].role), r = roles[st.chapter], s = data.duel.roles[r];
+        return html`<button type="button" key=${k} class=${'card' + (sel && sel.kind === 'hand' && sel.key === k ? ' sel' : '') + (st.me.revealed.includes(k) ? ' seen' : '')} data-key=${k} disabled=${!mine || !L.play.length}
+          onClick=${() => setSel(sel && sel.kind === 'hand' && sel.key === k ? null : { kind: 'hand', key: k })}>
+          <span class="face"><${Pic} file=${picOf(S, k, st.chapter)} alt=${b.title} /><span class="pw">${s.power}</span></span>
+          <span class="cap">${b.title}<i>${S.stages[st.chapter]} · ${r}</i><i>${W('duel.card.stats', { p: s.power, s: s.strike, g: s.guard || 0 })}</i></span>
+        </button>`; }) : html`<span class="empty">${W('duel.hand.empty')}</span>`}</div>
+    </div>
+  </section>`;
+}
+
+/* 절정 — 그 폼의 개방 그림이 판 전체에 */
+function Scene({ S, scene, onClose }) {
+  const b = S.books[scene.key], file = picOf(S, scene.key, scene.form, true), text = ((b.opens || {})[S.stages[scene.form]] || {}).scene || '';
+  return html`<div class="duel-scene" role="dialog" aria-label=${W('duel.log.open', { who: W(scene.who === 'me' ? 'duel.me' : 'duel.foe'), book: b.title })} data-key=${scene.key} onClick=${onClose}>
+    <div class="pic"><${Pic} full file=${file} alt=${b.title} /></div>
+    <h3>${W('duel.log.open', { who: W(scene.who === 'me' ? 'duel.me' : 'duel.foe'), book: b.title })}</h3>
+    <p>${text}</p>
+    <button type="button" class="btn" id="duel-scene-close" onClick=${onClose}>${W('duel.scene.close')}</button>
+  </div>`;
+}
+
+function App() {
+  const S = useData();
+  const [game, setGame] = useState(() => { const s = readStore(); return { deck: Array.isArray(s.deck) ? s.deck : [], st: s.st && s.st.v === D.VERSION ? s.st : null, screen: s.st && s.st.v === D.VERSION ? 'match' : 'deck' }; });
+  const [scene, setScene] = useState(null);
+  const timer = useRef(null), sceneTimer = useRef(null);
+  const save = g => { writeStore({ deck: g.deck, st: g.st }); return g; };
+  /* 절정이 터졌으면 장면을 보인다 — 내 것도 상대 것도 */
+  const showScene = st => { if (st.last && st.last.kind === 'open') { setScene({ key: st.last.key, form: st.last.form, who: st.last.who }); clearTimeout(sceneTimer.current); sceneTimer.current = setTimeout(() => setScene(null), SCENE_MS); } };
+  const commit = st => { setGame(g => save({ ...g, st })); showScene(st); };
+  /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게 */
+  useEffect(() => {
+    if (!S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => { const st = JSON.parse(JSON.stringify(game.st)); D.aiTurn(S.data, st, 'greedy'); commit(st); }, AI_DELAY);
+    return () => clearTimeout(timer.current);
+  }, [S.data, game.st]);
+  const start = deck => {
+    const seed = (Date.now() ^ (Math.random() * 1e9)) | 0, rng = { rngState: seed };
+    const st = D.newMatch(S.data, { me: deck, foe: D.randomDeck(S.data, rng) }, seed);
+    setScene(null); setGame(save({ deck, st, screen: 'match' }));
+  };
+  const move = m => { const st = JSON.parse(JSON.stringify(game.st)); const r = D.step(S.data, st, m); if (!r.ok) return; commit(st); };
+  if (S.error) return html`<${WorkspaceHeader} page="duel" /><p class="empty-msg">${W('ui.error', { message: S.error })}</p>`;
+  if (!S.data) return html`<${WorkspaceHeader} page="duel" /><p class="empty-msg">${W('ui.loading')}</p>`;
+  return html`<${WorkspaceHeader} page="duel" />
+    ${game.screen === 'match' && game.st
+      ? html`<${Match} S=${S} st=${game.st} onMove=${move} onAgain=${() => start(game.deck)} onDeck=${() => setGame(g => save({ ...g, st: null, screen: 'deck' }))} />`
+      : html`<${Deck} S=${S} deck=${game.deck} onChange=${deck => setGame(g => save({ ...g, deck }))} onStart=${() => start(game.deck)} />`}
+    ${scene && html`<${Scene} S=${S} scene=${scene} onClose=${() => { clearTimeout(sceneTimer.current); setScene(null); }} />`}`;
+}
+render(html`<${App} />`, document.getElementById('app'));
+window.AtelierFresh.watch();
+</script>
+</body>
+</html>

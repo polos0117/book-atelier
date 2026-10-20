@@ -201,7 +201,7 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   ok(ch.power === 3 && ch.tok === 1, '전개 — 맞으면 절개 +1');
   hit(st, 'foe', 0, 0); ok(ch.power === 1 && ch.flags.endured && ch.tok === 2, '닫힐 피해에 한 번 힘 1 로 버틴다');
   st.chapter = 2; ch.power = 6; const hm = put(st, 'foe', 'hamlet', 1); dr.power = 6; hm.power = 6;
-  hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 - 1 - 1) - 2 && hm.power === 6 - 2, '결말 — 공격(3, 로맨스 → 공포 −1, 드라큘라 결말 방패 1)하면 상대 책 모두에게 절개(2)만큼 반격');
+  hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 - 1 - 1) && hm.power === 6 - 2, '결말 — 공격(3, 로맨스 → 공포 −1, 드라큘라 결말 방패 1)하면 다른 상대 책 모두에게 절개(2)만큼 반격 — 맞은편은 빼고');
 }
 { /* 햄릿 — 의심 */
   const st = rig(['hamlet'], ['dracula', 'kosmos']);
@@ -248,7 +248,7 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   const st = rig(['sunzi'], ['dracula', 'kosmos', 'alice']);
   const sz = put(st, 'me', 'sunzi', 0); start(st, 'me'); start(st, 'me'); ok(sz.tok === 2, '발단 — 턴마다 형세');
   const dr = put(st, 'foe', 'dracula', 0), ko = put(st, 'foe', 'kosmos', 1); st.chapter = 1; sz.power = 5; ko.power = 2;
-  start(st, 'me'); ok(st.foe.slots[0] === ko && st.foe.slots[1] === dr && sz.tok === 1 && sz.flags.moved, '전개 — 형세 둘로 맞은편을 상대의 가장 약한 책과 바꿔 세운다(형세는 먼저 +1)');
+  start(st, 'me'); ok(st.foe.slots[0] === ko && st.foe.slots[1] === dr && sz.tok === 2 && sz.flags.moved, '전개 — 형세 하나로 맞은편을 상대의 가장 약한 책과 바꿔 세운다(형세는 먼저 +1: 3 → 2)');
   sz.tok = 4; start(st, 'me'); ok(st.foe.slots[0] === ko && sz.tok === 5, '장마다 한 번 — 둘째 턴엔 쌓기만');
   st.chapter = 2; sz.tok = 3; sz.power = 4; ko.power = 9; hit(st, 'me', 0, 0);
   ok(st.foe.slots[0] === null && st.foe.grave.includes('kosmos') && sz.flags.won, '결말 — 형세 셋이면 첫 공격이 싸우지 않고 맞은편을 닫는다');

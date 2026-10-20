@@ -31,14 +31,14 @@ function same(actual,expected,label){
      await p.goto(h.base+'/index.html');await p.waitForSelector('.workspace-nav');
      await p.evaluate(d=>window.AtelierAppearance.set('density',d),density);
      const reference=await geometry(p);
-     for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['index.html','.theme-card']]){
+     for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.theme-card']]){
       /* 서재 탭은 덮개에서 숨는다 — 집으로는 문양·제목 링크로 간다 */
       const tab=p.locator(`.workspace-nav a[href="${file}"]`);
       await (file==='index.html'&&!await tab.isVisible()?p.locator('a.workspace-title'):tab).click();
       await p.waitForSelector(ready);
       same(await geometry(p),reference,`${viewport.width} ${density} ${file}`);
       assert(await p.evaluate(()=>document.body.scrollWidth<=innerWidth),'horizontal overflow');
-      const scroll=p.locator(file==='dex.html'?'.collection-scroll':'.wrap');
+      const scroll=p.locator(file==='dex.html'?'.collection-scroll':'.wrap').first();
       assert((await scroll.boundingBox()).height>100,file+' usable scroll viewport');
       /* 책이 다섯뿐이라 넓은 화면에서는 굴릴 것이 없다 — 굴릴 수 있을 때만 본다 */
       if(file==='dex.html'&&await scroll.evaluate(e=>e.scrollHeight-e.clientHeight>40)){
@@ -78,6 +78,6 @@ function same(actual,expected,label){
     assert.deepEqual(a.errors,[]);
    }finally{await a.close()}
   }
-  console.log('PASS header layout: 3 pages, 5 viewport sizes, both densities, stable navigation while scrolling');
+  console.log('PASS header layout: 4 pages, 5 viewport sizes, both densities, stable navigation while scrolling');
  }finally{await h.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

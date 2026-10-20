@@ -41,6 +41,7 @@ const boxes=[{width:1440,height:1000},FOLD.inner,{width:390,height:844},FOLD.cov
     const r=await p.locator('.reading-book').boundingBox();
     assert(r.x>=0&&r.y>=0&&r.x+r.width<=viewport.width+1&&r.y+r.height<=viewport.height+1,'open book fits viewport');
     assert(await p.locator('.reading-detail').getAttribute('href')==='dex.html?book='+key);
+    assert(!(await p.locator('.reading-detail').textContent()).includes('↗'),'internal link has no external-link arrow');
     for(let i=0;i<5;i++){await p.keyboard.press('Tab');assert(await p.evaluate(()=>!!document.activeElement.closest('.reading-dialog')),'dialog contains focus');}
     if(await p.locator('.reading-mode').count()) {
      await p.locator('.reading-mode').click();

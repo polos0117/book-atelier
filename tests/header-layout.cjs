@@ -1,5 +1,12 @@
 /* Tab changes must preserve the shared header's geometry, including native scrollbars. */
-const assert=require('node:assert/strict'),{start,FOLD}=require('./browser-harness.cjs');
+const assert=require('node:assert/strict'),{start,FOLD}=require('./browser-harness.cjs'),fs=require('node:fs');
+/* 글꼴 — 화면 넷이 같은 명조·고딕을 싣는다(preconnect + display=swap). 이 검사는 바깥으로 못 나가니 글꼴을 못 받은 채로 아래가 다 돌아야 한다 */
+for(const page of ['index.html','dex.html','prompt.html','duel.html']){
+ const src=fs.readFileSync(page,'utf8'),css=src.match(/<link rel="stylesheet" href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)">/);
+ assert(css&&/family=Noto\+Serif\+KR/.test(css[1])&&/family=IBM\+Plex\+Sans\+KR/.test(css[1])&&/display=swap/.test(css[1]),page+' 글꼴 링크(명조·고딕, swap)');
+ assert(src.includes('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')&&src.indexOf('preconnect')<src.indexOf(css[0]),page+' preconnect 가 먼저');
+ assert(!/LIBRARY|STORIES THAT|THE PRIVATE|THE LITERARY|BETWEEN THE PAGES/.test(src),page+' 영어 어깨 글자 없음');
+}
 const selectors=['.workspace-heading','.workspace-heading h1','.workspace-nav',
  '.workspace-nav a:nth-child(1)','.workspace-nav a:nth-child(2)','.workspace-nav a:nth-child(3)',
  '.appearance-controls','.appearance-toggle'];

@@ -18,8 +18,12 @@
   한 판 도중 화면을 돌려도 같은 상태(React 상태 + localStorage)를 다른 그리드에 그릴 뿐이다.
   그림은 data/img.json 에 적힌 것만(lib/img.js) — 그 폼의 초상, 절정은 그 폼의 개방 그림. 없으면 이름표.
 -->
-<link rel="stylesheet" href="lib/workspace.css?v=4">
-<link rel="stylesheet" href="lib/gallery.css?v=1">
+<!-- 글꼴 — 제목·책등·쪽 번호는 명조(Noto Serif KR), 본문은 고딕(IBM Plex Sans KR). 못 받으면(오프라인·막힘) 기기 글꼴로 그대로 뜬다 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="lib/workspace.css?v=5">
+<link rel="stylesheet" href="lib/gallery.css?v=2">
 <style>
 * {box-sizing:border-box}
 html,body {margin:0;padding:0}
@@ -41,7 +45,7 @@ body {color:var(--text);font-size:15px}
 .deck-cell.in {outline:3px solid var(--accent);outline-offset:-3px}
 .face {display:block;position:relative;width:100%;aspect-ratio:2/3;background:var(--card2);overflow:hidden}
 .face img {display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
-.ph {display:flex;align-items:center;justify-content:center;height:100%;padding:6px;color:var(--muted);font:700 11px/1.4 var(--display,serif);text-align:center;word-break:keep-all}
+.ph {display:flex;align-items:center;justify-content:center;height:100%;padding:6px;color:var(--muted);font:700 11px/1.4 var(--gallery-serif);text-align:center;word-break:keep-all}
 .cap {display:block;padding:6px 7px 7px;font-weight:700;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
 .cap i {display:block;margin-top:2px;font:400 10px ui-monospace,monospace;color:var(--muted);font-style:normal}
 .deck-act {display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 16px}
@@ -109,7 +113,7 @@ body {color:var(--text);font-size:15px}
 .duel-scene .pic img,.duel-zoom .pic img {display:block;width:100%;height:100%;object-fit:cover}
 .duel-scene .pic .ph,.duel-zoom .pic .ph {color:#fff;font-size:16px}
 .duel-scene .text,.duel-zoom .text {display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;max-width:520px}
-.duel-scene h3,.duel-zoom h3 {margin:0;font:700 18px/1.3 var(--display,serif);text-align:center}
+.duel-scene h3,.duel-zoom h3 {margin:0;font:700 18px/1.3 var(--gallery-serif);text-align:center}
 .duel-zoom h3 small {display:block;margin-top:4px;font:400 12px ui-monospace,monospace;color:#e8e0d0}
 .duel-scene p,.duel-zoom p {margin:0;text-align:center;font-size:13px;line-height:1.6;color:#e8e0d0;word-break:keep-all}
 .duel-zoom p.rule {color:#fff}
@@ -163,7 +167,7 @@ body {color:var(--text);font-size:15px}
 .pw2 {display:none}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=3"></script>
+<script src="lib/words.js?v=5"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
@@ -176,7 +180,7 @@ body {color:var(--text);font-size:15px}
 import { h, render } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useLayoutEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=3';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=4';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel;
 const STORE = 'book_duel_v1', AI_DELAY = 650;

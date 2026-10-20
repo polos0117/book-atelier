@@ -24,7 +24,6 @@ body.dex-page,body.prompt-page {
   box-shadow:0 0 60px #2f251b20;
 }
 .workspace-header {position:relative}
-.workspace-heading .eyebrow {letter-spacing:.14em}
 .workspace-heading .crest-name {font-family:var(--gallery-serif);font-size:12px;font-weight:500;letter-spacing:.03em}
 .appearance-panel {border-radius:5px;box-shadow:0 8px 30px #302d2626}
 .appearance-panel .room-control {grid-column:1 / -1}
@@ -71,7 +70,6 @@ html[data-background="off"] .room-preview {grid-template-columns:1fr}
   background-position:center,var(--room-mobile-position);}
  .gallery-intro>div {max-width:100%}
  .gallery-intro h2 {font-size:26px}
- .gallery-intro .editorial-kicker {font-size:9px;margin-bottom:5px}
  .gallery-intro>p {align-self:auto;max-width:100%;padding:0;margin:6px 0 0;border:0;background:none;font-size:11px;line-height:1.6}
  .room-preview {grid-template-columns:1fr}
  .room-preview-art {min-height:170px}

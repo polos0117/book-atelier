@@ -1,6 +1,6 @@
 /* Literary gallery: the existing theme tokens and single scroll owner remain authoritative. */
 :root {--gallery-serif:'Noto Serif KR','Batang','Apple Myungjo',Georgia,serif}
-body {font-family:'Pretendard','Malgun Gothic','Apple SD Gothic Neo',system-ui,sans-serif}
+body {font-family:'IBM Plex Sans KR','Pretendard','Malgun Gothic','Apple SD Gothic Neo',system-ui,sans-serif}
 body.dex-page,body.lab-page {background-image:none}
 .dex-page main,.prompt-page .wrap {max-width:1440px;padding-inline:40px;padding-top:20px}
 .workspace-header {margin-bottom:18px}
@@ -23,7 +23,7 @@ body.dex-page,body.lab-page {background-image:none}
 .dex-reset {border-radius:4px;min-height:44px;padding:8px 14px;font-size:12px}
 .dex-page .collection-scroll {padding:0 4px 48px;scrollbar-gutter:stable;scroll-padding-block:20px}
 .gallery-intro {display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:32px 0 24px}
-.editorial-kicker {margin:0 0 12px;color:var(--accent);font:600 10px/1.6 ui-monospace,monospace;letter-spacing:.18em}
+.editorial-kicker {margin:0 0 12px;color:var(--accent);font:600 12px/1.6 inherit;letter-spacing:.02em}
 .gallery-intro h2 {font:500 clamp(28px,3vw,42px)/1.4 var(--gallery-serif);letter-spacing:-.05em;margin:0}
 .gallery-intro>p {max-width:300px;margin:0 0 7px;color:var(--muted);font-size:13px;line-height:1.9;word-break:keep-all}
 .genre-strip {display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;padding:2px 2px 10px;scroll-snap-type:x proximity}
@@ -151,7 +151,7 @@ body.dex-page,body.lab-page {background-image:none}
  .appearance-toggle{width:44px;flex-basis:44px}
  .dex-page header,.dex-page main.dex-scrolled header{padding:0 0 12px}
  .search-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}.search-row input{font-size:12px;padding-inline:10px}.dex-reset{padding-inline:10px;font-size:11px}
- .gallery-intro{display:block;padding:22px 0 16px}.gallery-intro .editorial-kicker{font-size:9px;margin-bottom:7px}.gallery-intro h2{font-size:28px}
+ .gallery-intro{display:block;padding:22px 0 16px}.gallery-intro h2{font-size:28px}
  .gallery-intro>p{max-width:100%;font-size:12px;margin:8px 0 0;line-height:1.8}
  .genre-strip{margin-right:-4px;gap:2px;padding-bottom:6px}.genre-strip button{padding-inline:12px;font-size:11px}
  .dex-filter-grid{gap:12px}.dex-view-row{margin:10px 0 16px}.dex-view-row .sec{gap:4px;font-size:11px}

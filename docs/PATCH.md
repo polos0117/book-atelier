@@ -7,6 +7,15 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-20 · claude · 글꼴을 실제로 싣고, 영어 어깨 글자를 걷다
+
+- index.html · dex.html · prompt.html · duel.html — Google Fonts 에서 명조(Noto Serif KR 500·600·700)와 고딕(IBM Plex Sans KR 400–700)을 싣는다. preconnect 두 줄 + display=swap. 못 받으면 기기 글꼴로 그대로 뜬다(검사는 바깥이 막힌 채로 돈다)
+- lib/workspace.css · lib/gallery.css — 본문은 IBM Plex Sans KR 를 먼저. 제목·책등은 이미 쓰던 --gallery-serif(Noto Serif KR). .editorial-kicker 는 고정폭·자간 큰 대문자 꼴을 버리고 본문 글꼴로
+- lib/bookshelf.css — 책등·판·쪽 번호의 Georgia 를 같은 명조로. 걷어 낸 어깨 글자 자리의 규칙도 지웠다
+- duel.html — 정의되지 않은 var(--display) 대신 --gallery-serif(절정 제목·이름표)
+- lib/words.js · lib/workspace-ui.js · lib/bookshelf.js · dex.html · lib/room.css — "LIBRARY × ATELIER / BOOK / 001"·"STORIES THAT FIGHT"·"THE PRIVATE LIBRARY"·"A STORY BETWEEN THE PAGES"·"THE LITERARY PORTRAITS" 를 지웠다(정보가 없는 장식). 같은 사이트 안 링크의 ↗ 도 뺐다(서가에서 자세히 보기·책 고르기·생성기에서 열기·서가에서 보기·서가 칸). 원본 그림을 새 탭으로 여는 링크의 ↗ 만 남는다
+- tests/header-layout.cjs — 화면 넷의 글꼴 링크(명조·고딕·swap·preconnect)와 영어 어깨 글자가 없는지 본다. tests/bookshelf-screen.cjs — 펼친 책의 서가 링크에 ↗ 가 없는지
+
 ## 2026-10-20 · claude · 책등 빛을 그 책의 팔레트에서, 제목은 한 줄로 다
 
 - lib/bookshelf.js — 이름 해시로 여섯 색 중 하나를 고르던 것을 없애고, 서가 장정 틀과 같은 lib/book-frame.js 의 표지·금박 빛으로 책등을 칠한다. 양장은 가죽 빛 바탕에 금박(대비 4.5 가 안 되면 양피지 빛 글자), 한지 선장은 한지 바탕에 그 책의 실 빛, 죽간은 대나무에 그 책의 끈 빛. 높이는 제목 길이에서 정하고, 펼친 책 그림에 width/height 를 준다

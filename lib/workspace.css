@@ -29,7 +29,7 @@
   --ui-font:15px;--ui-small:13px;--ui-height:46px;--ui-pad:12px;--ui-gap:10px;--gap:14px;
 }
 *,*::before,*::after {box-sizing:border-box}
-body {margin:0;font:15px/1.55 'Pretendard','Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--text)}
+body {margin:0;font:15px/1.55 'IBM Plex Sans KR','Pretendard','Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--text)}
 button,select,input,textarea,a,summary {-webkit-tap-highlight-color:transparent}
 button,select,summary {touch-action:manipulation}
 button,a,select,input,textarea,summary {scroll-margin-block:16px}
@@ -58,7 +58,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,te
   .workspace-header.folded .workspace-title {align-self:stretch;min-height:44px}
   .workspace-header.folded .workspace-heading .crest-mark {width:28px;height:28px;padding:3px;border-radius:9px}
   .workspace-header.folded .workspace-heading h1 {font-size:15px;margin:0}
-  .workspace-header.folded .workspace-heading .eyebrow,.workspace-header.folded .workspace-heading p {display:none}
+  .workspace-header.folded .workspace-heading p {display:none}
 }
 .workspace-nav a[aria-current="page"] {color:var(--text);background:var(--accent-soft);box-shadow:inset 0 -2px var(--accent)}
 /* Reserve readable space for longer labels while keeping all six tabs on one row. */
@@ -70,8 +70,6 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,te
 .workspace-title:hover .crest-mark {border-color:var(--accent)}
 .workspace-title>div {min-width:0}
 .crest-mark {width:60px;height:60px;padding:8px;flex:none;color:var(--accent);background:var(--accent-soft);border:1px solid var(--line);border-radius:20px}
-.eyebrow {font:700 10px/1.6 ui-monospace,monospace;letter-spacing:.16em;color:var(--accent)}
-.eyebrow span {color:var(--muted);font-weight:400}
 .workspace-heading h1 {margin:3px 0 4px;font-size:clamp(24px,3.7vw,34px);line-height:1.2;letter-spacing:-.045em;font-weight:800;white-space:nowrap}
 .workspace-heading p {margin:0;min-height:36px;color:var(--muted);font-size:12px;line-height:18px;word-break:keep-all}
 .crest-signature {display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex:none;font:10px ui-monospace,monospace;letter-spacing:.12em;color:var(--muted)}
@@ -211,9 +209,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,te
   .crest-mark {width:44px;height:44px;padding:5px;border-radius:14px}
   .workspace-heading h1 {font-size:clamp(20px,5.7vw,25px)}
   .workspace-heading p {font-size:11px;line-height:16px;min-height:32px}
-  .workspace-heading .eyebrow {display:none}
   .crest-signature {display:none}
-  .eyebrow {font-size:9px}
   .dex-page header {padding:0 9px 10px;border-radius:10px}
   .dex-page .tab {flex:1;padding:10px 6px;white-space:nowrap;font-size:12px}
   .dex-page .tab b {font-size:10px;margin-left:3px}

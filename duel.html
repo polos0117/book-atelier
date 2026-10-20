@@ -156,6 +156,8 @@ body {color:var(--text);font-size:15px}
   .duel-page .duel-dock .btn {min-height:40px;padding:6px 10px;font-size:12px}
   .duel-hint {font-size:11px;min-height:0}
   .duel-mode {padding:4px 8px}
+  /* 덱 고르기 — 다섯 칸이면 그림 하나가 화면보다 높았다(폴드 덮개 가로 882×344). 좁게 여럿 */
+  .deck-grid {grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
 }
 .pw2 {display:none}
 </style>

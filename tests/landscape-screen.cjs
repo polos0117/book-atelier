@@ -6,7 +6,7 @@ const { execFileSync } = require('node:child_process');
 const { start } = require('./browser-harness.cjs');
 const art = fs.mkdtempSync(path.join(os.tmpdir(), 'book-art-'));
 const imgjson = execFileSync('python3', [path.join(__dirname, 'fixtures', 'make-art.py'), art]).toString();
-const SIZES = [{ width: 844, height: 390 }, { width: 915, height: 412 }, { width: 740, height: 360 }];
+const SIZES = [{ width: 844, height: 390 }, { width: 915, height: 412 }, { width: 740, height: 360 }, { width: 882, height: 344 }];   // 마지막은 폴드 덮개 가로
 const box = (p, sel) => p.locator(sel).first().boundingBox();
 const wide = p => p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1);
 (async () => {
@@ -21,6 +21,8 @@ const wide = p => p.evaluate(() => document.documentElement.scrollWidth <= inner
       assert.equal(await p.locator('.gallery-intro').isVisible(), false, at + ' 서가 안내문은 접힌다');
       const genre = await box(p, '.genre-strip'), filt = await box(p, '.dex-filters summary');
       assert(Math.abs(genre.y + genre.height / 2 - (filt.y + filt.height / 2)) < 12, at + ' 장르 띠와 검색 조건이 한 줄');
+      const size = await box(p, '#dex-size');
+      assert(Math.abs(size.y + size.height / 2 - (filt.y + filt.height / 2)) < 12, at + ' 크기 단추도 같은 줄');
       const cell = await box(p, '.grid > .cell .face');
       assert(cell.y + cell.height * 0.4 < vp.height, at + ' 첫 화면에 책 그림이 반쯤은 보인다: ' + Math.round(cell.y));
       assert(await wide(p), at + ' 서가 목록이 가로로 넘치지 않는다');

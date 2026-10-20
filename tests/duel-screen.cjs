@@ -12,7 +12,13 @@ const KEYS = design.books.map(b => b.key), STORE = 'book_duel_v1';
 const opt = extra => ({ viewport: FOLD.cover, mobile: true, imgRoot: art, files: { 'data/img.json': imgjson }, ...extra });
 const tappable = async (p, sel) => { for (const b of await p.locator(sel).all()) { if (!await b.isVisible()) continue; const r = await b.boundingBox(); assert(r && r.height >= 44 && r.width >= 40, sel + ' 누르는 자리 44px: ' + JSON.stringify(r)); } };
 const noOverflow = async p => assert(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), '가로 넘침');
-const myTurn = p => p.waitForSelector('.duel-turn[data-turn="me"], .duel-result', { timeout: 20000 });
+/* 내 차례(또는 끝)를 기다린다. 상대 절정 장면은 저절로 닫히지 않으므로 떠 있으면 Esc 로 닫고 다시 기다린다 */
+const myTurn = async p => { for (;;) {
+  await p.waitForSelector('.duel-turn[data-turn="me"], .duel-result, .duel-scene', { timeout: 20000 });
+  if (!await p.locator('.duel-scene').count()) return;
+  await p.keyboard.press('Escape'); await p.waitForSelector('.duel-scene', { state: 'detached' }); } };
+const focusIn = (p, sel) => p.evaluate(s => !!document.activeElement && !!document.activeElement.closest(s), sel);
+const boardInert = p => p.evaluate(() => !!document.querySelector('.duel-board').closest('[inert]'));
 const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
 (async () => {
   const h = await start();
@@ -88,7 +94,16 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
     await q.waitForSelector('.duel-scene');
     assert.equal(await q.locator('.duel-scene').getAttribute('data-key'), 'chunhyang', '절정 장면 — 그 책');
     assert.match(await q.locator('.duel-scene p').textContent(), /그네/, '발단 개방의 명장면 글(단옷날 그네)');
-    await q.locator('#duel-scene-close').tap(); await q.waitForSelector('.duel-scene', { state: 'detached' });
+    /* 대화상자 — 포커스가 닫기로, 뒤쪽은 inert, Tab 은 안에서 돈다. 2.2초가 지나도 저절로 닫히지 않는다 */
+    assert.equal(await q.locator('.duel-scene').getAttribute('aria-modal'), 'true', '절정 aria-modal');
+    assert.equal(await q.evaluate(() => document.activeElement.id), 'duel-scene-close', '절정 — 열면 닫기 단추로 포커스');
+    assert(await boardInert(q), '절정 — 뒤쪽 판은 inert');
+    for (let i = 0; i < 3; i++) { await q.keyboard.press('Tab'); assert(await focusIn(q, '.duel-scene'), '절정 — Tab 은 안에서만'); }
+    await q.waitForTimeout(3000);
+    assert.equal(await q.locator('.duel-scene').count(), 1, '절정은 저절로 닫히지 않는다(명장면 글을 읽을 때까지)');
+    await q.keyboard.press('Escape'); await q.waitForSelector('.duel-scene', { state: 'detached' });
+    assert(!await boardInert(q), '닫으면 판이 다시 살아난다');
+    assert(await focusIn(q, '.duel-board'), '닫으면 포커스가 판으로 돌아온다');
     assert(await q.locator('#duel-open').isDisabled(), '절정은 한 판에 한 번');
     assert((await saved(q)).st.me.opened, '저장에도');
     await myTurn(q);
@@ -162,7 +177,16 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
       assert.equal(await g.locator('.duel-zoom').getAttribute('data-key'), 'treasure_island', name + ' 크게 보기 — 그 책');
       const zb = await box('.duel-zoom'); assert(zb.width >= vp.width - 1 && zb.height >= vp.height - 1, name + ' 크게 보기는 화면 가득');
       assert(await g.locator('.duel-zoom .pic').isVisible() && (await box('.duel-zoom .pic')).height >= 150, name + ' 큰 그림');
+      assert.equal(await g.evaluate(() => document.activeElement.id), 'duel-zoom-close', name + ' 크게 보기 — 열면 닫기 단추로 포커스');
+      assert(await boardInert(g), name + ' 크게 보기 — 뒤쪽 판은 inert');
       await press('#duel-zoom-close'); await g.waitForSelector('.duel-zoom', { state: 'detached' });
+      /* 키보드로 — ⌕ 에 포커스, Enter 로 열고 Esc 로 닫으면 그 ⌕ 로 돌아온다 */
+      await g.locator('.duel-row[data-side="foe"] .duel-unit .zoom').first().focus(); await g.keyboard.press('Enter');
+      await g.waitForSelector('.duel-zoom[aria-modal="true"]');
+      await g.keyboard.press('Tab'); await g.keyboard.press('Tab'); assert(await focusIn(g, '.duel-zoom'), name + ' 크게 보기 — Tab 은 안에서만');
+      await g.keyboard.press('Escape'); await g.waitForSelector('.duel-zoom', { state: 'detached' });
+      assert(await g.evaluate(() => document.activeElement.matches('.duel-row[data-side="foe"] .duel-unit .zoom')), name + ' 크게 보기 — 닫으면 연 ⌕ 로 포커스');
+      assert(!await boardInert(g), name + ' 닫으면 inert 풀림');
       /* 한 수 두고 돌린다 */
       await press('.duel-hand .card[data-key="chunhyang"]'); await press('.duel-row[data-side="me"] .duel-slot[data-slot="1"]');
       await g.waitForSelector('.duel-row[data-side="me"] .duel-unit[data-slot="1"][data-key="chunhyang"]'); await myTurn(g);

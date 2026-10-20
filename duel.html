@@ -103,6 +103,7 @@ body {color:var(--text);font-size:15px}
 /* 절정 — 명장면이 판 전체에 · 크게 보기 */
 .duel-scene,.duel-zoom {position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;background:#0b0d12e6;color:#fff;animation:scene-in .4s ease-out}
 @keyframes scene-in {from {opacity:0} to {opacity:1}}
+@media (prefers-reduced-motion:reduce) {.duel-scene,.duel-zoom {animation:none}}
 .duel-scene .pic,.duel-zoom .pic {flex:none;width:min(80vw,calc(62dvh * 2 / 3));aspect-ratio:2/3;border:1px solid var(--gold);border-radius:12px;overflow:hidden;background:#000}
 .duel-scene .pic {box-shadow:0 0 60px var(--gold)}
 .duel-scene .pic img,.duel-zoom .pic img {display:block;width:100%;height:100%;object-fit:cover}
@@ -173,12 +174,12 @@ body {color:var(--text);font-size:15px}
 <div class="wrap"><div id="app"></div></div>
 <script type="module">
 import { h, render } from 'https://esm.sh/preact@10.24.3';
-import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
+import { useState, useEffect, useLayoutEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
 import { WorkspaceHeader } from './lib/workspace-ui.js?v=3';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel;
-const STORE = 'book_duel_v1', AI_DELAY = 650, SCENE_MS = 2200;
+const STORE = 'book_duel_v1', AI_DELAY = 650;
 const V = 'f', NO = ['①', '②', '③'];
 
 function readStore() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }
@@ -377,50 +378,94 @@ function Match({ S, st, onMove, onAgain, onDeck, onZoom }) {
   </div></section>`;
 }
 
-/* 절정 — 그 폼의 개방 그림이 판 전체에 */
+/* 크게 보기·절정의 대화상자 살림 — 서가의 Zoom(dex.html)과 같다. 열면 닫기 단추로 포커스, 뒤쪽은 inert,
+   Esc 로 닫고 Tab 은 안에서만 돈다. 닫으면 연 자리로 포커스가 돌아간다(그 자리가 없어졌으면 손패 쪽 단추로).
+   둘이 겹치면(크게 보는 동안 상대가 절정) 맨 위 하나만 키를 받는다 */
+function useModal(onClose) {
+  const layer = useRef(), live = useRef(); live.current = onClose;
+  useLayoutEffect(() => {
+    const previous = document.activeElement, hidden = [];
+    let branch = layer.current;
+    while (branch && branch !== document.body) {
+      for (const sibling of branch.parentElement.children)
+        if (sibling !== branch && !['SCRIPT', 'STYLE'].includes(sibling.tagName)) { hidden.push([sibling, sibling.inert]); sibling.inert = true; }
+      branch = branch.parentElement;
+    }
+    layer.current.querySelector('.modal-close').focus({ preventScroll: true });
+    const key = e => {
+      const top = [...document.querySelectorAll('[aria-modal="true"]')].pop();
+      if (top !== layer.current || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === 'Escape') { e.preventDefault(); live.current(); }
+      if (e.key === 'Tab') {
+        const items = [...layer.current.querySelectorAll('button:not(:disabled), a[href]')];
+        e.preventDefault();
+        const at = items.indexOf(document.activeElement);
+        items[(at + (e.shiftKey ? -1 : 1) + items.length) % items.length]?.focus();
+      }
+    };
+    addEventListener('keydown', key);
+    return () => {
+      removeEventListener('keydown', key);
+      hidden.forEach(([el, inert]) => { el.inert = inert; });
+      queueMicrotask(() => {
+        if (document.querySelector('[aria-modal="true"]')) return;
+        const target = previous?.isConnected && previous !== document.body && !previous.closest('[aria-modal]') ? previous : document.querySelector('#duel-help');
+        target?.focus({ preventScroll: true });
+      });
+    };
+  }, []);
+  return layer;
+}
+
+/* 절정 — 그 폼의 개방 그림이 판 전체에. 저절로 닫히지 않는다 — 명장면 글을 다 읽고 누르거나 Esc 로 닫는다(그동안 상대도 기다린다) */
 function Scene({ S, scene, onClose }) {
+  const layer = useModal(onClose);
   const b = S.books[scene.key], file = picOf(S, scene.key, scene.form, true), text = ((b.opens || {})[S.stages[scene.form]] || {}).scene || '';
   const title = W('duel.log.open', { who: W(scene.who === 'me' ? 'duel.me' : 'duel.foe'), book: b.title });
-  return html`<div class="duel-scene" role="dialog" aria-label=${title} data-key=${scene.key} onClick=${onClose}>
+  return html`<div ref=${layer} class="duel-scene" role="dialog" aria-modal="true" aria-labelledby="duel-scene-title" aria-describedby="duel-scene-text" data-key=${scene.key} onClick=${onClose}>
     <div class="pic"><${Pic} full file=${file} alt=${b.title} /></div>
-    <div class="text"><h3>${title}</h3><p>${text}</p>
-      <button type="button" class="btn" id="duel-scene-close" onClick=${onClose}>${W('duel.scene.close')}</button></div>
+    <div class="text"><h3 id="duel-scene-title">${title}</h3><p id="duel-scene-text">${text}</p>
+      <button type="button" class="btn modal-close" id="duel-scene-close" onClick=${onClose}>${W('duel.scene.close')}</button></div>
   </div>`;
 }
 /* 크게 보기 — 자리의 책(지금 폼)이나 손패의 책(이번 장의 폼). 그 폼 그림·역할 수치·고유 규칙의 그 폼 쓰임 */
 function Zoom({ S, st, zoom, onClose }) {
+  const layer = useModal(onClose);
   const data = S.data, u = zoom.kind === 'unit' ? st[zoom.who].slots[zoom.slot] : null;
   const key = u ? u.key : zoom.key, b = S.books[key];
-  if (!b) return null;
   const f = u ? D.formOf(st, u) : st.chapter, stage = S.stages[f], role = b.forms[stage].role, s = data.duel.roles[role];
-  return html`<div class="duel-zoom" role="dialog" aria-label=${b.title} data-key=${key} onClick=${onClose}>
+  return html`<div ref=${layer} class="duel-zoom" role="dialog" aria-modal="true" aria-label=${b.title} data-key=${key} onClick=${onClose}>
     <div class="pic"><${Pic} full file=${picOf(S, key, f)} alt=${b.title} /></div>
     <div class="text">
       <h3>${b.title}<small>${stage} · ${role}${u ? ' · ' + W('duel.zoom.power', { n: D.cur(data, st, u) }) : ''}${u && u.tok > 0 ? ' · ' + W('duel.flag.tok', { n: u.tok }) : ''}</small></h3>
       <p>${W('duel.card.stats', { p: s.power, s: s.strike, g: s.guard || 0 })} · ${b.genre}</p>
       <p class="rule">${(b.rule || {}).principle}</p>
       <p>${((b.rule || {}).forms || {})[stage]}</p>
-      <button type="button" class="btn" id="duel-zoom-close" onClick=${onClose}>${W('duel.scene.close')}</button>
+      <button type="button" class="btn modal-close" id="duel-zoom-close" onClick=${onClose}>${W('duel.scene.close')}</button>
     </div>
   </div>`;
 }
+
+/* 크게 보던 자리의 책이 판에서 사라졌으면 대화상자도 닫는다 — 빈 대화상자가 포커스를 쥐고 남지 않게 */
+const zoomKey = (st, zoom) => zoom.kind === 'unit' ? (st[zoom.who].slots[zoom.slot] || {}).key : zoom.key;
 
 function App() {
   const S = useData();
   const [game, setGame] = useState(() => { const s = readStore(); return { deck: Array.isArray(s.deck) ? s.deck : [], st: s.st && s.st.v === D.VERSION ? s.st : null, screen: s.st && s.st.v === D.VERSION ? 'match' : 'deck' }; });
   const [scene, setScene] = useState(null), [zoom, setZoom] = useState(null);
-  const timer = useRef(null), sceneTimer = useRef(null);
+  const timer = useRef(null);
   const save = g => { writeStore({ deck: g.deck, st: g.st }); return g; };
   /* 절정이 터졌으면 장면을 보인다 — 내 것도 상대 것도 */
-  const showScene = st => { if (st.last && st.last.kind === 'open') { setScene({ key: st.last.key, form: st.last.form, who: st.last.who }); clearTimeout(sceneTimer.current); sceneTimer.current = setTimeout(() => setScene(null), SCENE_MS); } };
+  const showScene = st => { if (st.last && st.last.kind === 'open') setScene({ key: st.last.key, form: st.last.form, who: st.last.who }); };
   const commit = st => { setGame(g => save({ ...g, st })); showScene(st); };
-  /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게 */
+  /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게. 절정 장면이 떠 있으면 닫을 때까지 기다린다 */
   useEffect(() => {
-    if (!S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;
+    if (scene || !S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;
     clearTimeout(timer.current);
     timer.current = setTimeout(() => { const st = JSON.parse(JSON.stringify(game.st)); D.aiTurn(S.data, st, 'greedy'); commit(st); }, AI_DELAY);
     return () => clearTimeout(timer.current);
-  }, [S.data, game.st]);
+  }, [S.data, game.st, scene]);
+  useEffect(() => { if (zoom && (!game.st || !zoomKey(game.st, zoom))) setZoom(null); }, [zoom, game.st]);
   const start = deck => {
     const seed = (Date.now() ^ (Math.random() * 1e9)) | 0, rng = { rngState: seed };
     const st = D.newMatch(S.data, { me: deck, foe: D.randomDeck(S.data, rng) }, seed);
@@ -433,8 +478,8 @@ function App() {
     ${game.screen === 'match' && game.st
       ? html`<${Match} S=${S} st=${game.st} onMove=${move} onZoom=${setZoom} onAgain=${() => start(game.deck)} onDeck=${() => setGame(g => save({ ...g, st: null, screen: 'deck' }))} />`
       : html`<${Deck} S=${S} deck=${game.deck} onChange=${deck => setGame(g => save({ ...g, deck }))} onStart=${() => start(game.deck)} />`}
-    ${zoom && game.st && html`<${Zoom} S=${S} st=${game.st} zoom=${zoom} onClose=${() => setZoom(null)} />`}
-    ${scene && html`<${Scene} S=${S} scene=${scene} onClose=${() => { clearTimeout(sceneTimer.current); setScene(null); }} />`}`;
+    ${zoom && game.st && zoomKey(game.st, zoom) && html`<${Zoom} S=${S} st=${game.st} zoom=${zoom} onClose=${() => setZoom(null)} />`}
+    ${scene && html`<${Scene} S=${S} scene=${scene} onClose=${() => setScene(null)} />`}`;
 }
 render(html`<${App} />`, document.getElementById('app'));
 window.AtelierFresh.watch();

@@ -13,7 +13,7 @@
   --room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/quiet-study.webp');
   --room-rgb:239 238 230;
 }
-html[data-background="off"] {--room-image:none}
+:root[data-background="off"] {--room-image:none}
 body.dex-page,body.prompt-page {
   background-color:var(--room-paper);
   background-image:linear-gradient(rgb(var(--room-rgb) / .30),rgb(var(--room-rgb) / .30)),var(--room-image);
@@ -90,4 +90,4 @@ html[data-background="off"] .room-preview {grid-template-columns:1fr}
 }
 
 /* Keep scenery disabled after both room and responsive image selection. */
-html[data-background="off"] {--room-image:none}
+:root[data-background="off"] {--room-image:none}

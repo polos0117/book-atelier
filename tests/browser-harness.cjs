@@ -55,6 +55,13 @@ async function start() {
       /* esm.sh 의 진입 모듈은 /es2022/… 같은 하위 모듈을 다시 부른다.
          ESM_DIR 이 없을 때 그것까지 아래 abort 에 걸리면 Preact 화면이 하나도 안 그려진다 */
       if (origin === 'https://esm.sh' && !process.env.ESM_DIR) return route.continue();
+      const background = origin === 'https://polos0117.github.io' &&
+        new URL(url).pathname.match(/^\/book-atelier-img\/backgrounds\/([a-z-]+\.webp)$/);
+      if (background && process.env.BACKGROUND_DIR) {
+        const file = path.join(process.env.BACKGROUND_DIR, background[1]);
+        return route.fulfill({status:fs.existsSync(file)?200:404, contentType:'image/webp',
+          body:fs.existsSync(file)?fs.readFileSync(file):'missing background'});
+      }
       const bare = url.split('?')[0];
       if (ESM[bare]) {
         const dir = process.env.ESM_DIR;

@@ -14,7 +14,7 @@
 | `IMAGE_RULES.md` | 그림 만들기·파일 이름·기록·등록 — 그림 작업 전에 |
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
 | `docs/PORT_NOTES.md` | 어디서 무엇을 가져왔고, 무엇을 일부러 뺐나 |
-| `docs/ART_INDEX.md` · `rust/README.md` | 그림 색인(모자이크 서명·dHash·색 막대)과 wasm 다시 짓기, 다음 일 "닮은 그림" 계획 |
+| `docs/ART_INDEX.md` · `rust/README.md` | 그림 색인(모자이크 서명·dHash·색 막대)과 닮은 그림(거리·무게·한 책 둘까지), wasm 다시 짓기 |
 | `docs/SCENE_MOTION.md` | 움직임 — 켄 번스·입자·열리기·넘기기(`lib/scene-motion.js`·`.css`, 네 공방이 글자 그대로 나눠 쓴다), 입자 종류와 자료 잇기 |
 | `docs/PATCH.md` | 무엇을 고쳤나 — 고친 쪽이 직접 적는다 (아래 규칙 7) |
 
@@ -23,7 +23,7 @@
 | 화면 | 파일 | 무엇 |
 |---|---|---|
 | 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
-| 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열. 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
+| 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열·닮은 그림 줄(`data/art-similar.json`, 상세를 열 때만 받는다). 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 다섯은 안 들어 항해에는 없다 |
 | 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절). 「오늘의 판」은 날짜가 씨앗(`lib/today.js`), 끝난 판은 `atelier_today_v1:book` 에 적혀 공방 지도(polos0117.github.io)가 읽는다 |
@@ -80,9 +80,10 @@
 
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 맨 위로 간다. `node tests/patch.cjs` 가 모양을 본다.
 
-### 8. 그림 색인과 wasm 은 다시 만든다
+### 8. 그림 색인·닮은 그림과 wasm 은 다시 만든다
 
-`data/art-index.json` 은 그림 저장소에서 셈한 표다 — 새 그림이 등록된 뒤 `cd rust && cargo run --release -p art-index` 로 다시 만든다(등록 흐름은 그대로, 늦어도 모자이크는 그 그림을 건너뛰며 돈다).
+`data/art-index.json` 은 그림 저장소에서 셈한 표, `data/art-similar.json` 은 그 색인에서 셈한 닮은 그림 표다 — 새 그림이 등록된 뒤 **둘 다** 다시 만든다:
+`cd rust && cargo run --release -p art-index && cargo run --release -p art-index -- --similar`(등록 흐름은 그대로, 늦어도 모자이크는 그 그림을 건너뛰고 서가는 그 그림의 닮은 그림 줄을 안 그리며 돈다).
 `rust/art-core` · `rust/mosaic-wasm` 을 고치면 `lib/mosaic.wasm` 을 다시 지어 올린다(`rust/README.md`) — `node tests/mosaic.cjs` 가 소스 셈으로 묵은 wasm 을 잡는다. `rust/target/` 은 올리지 않는다.
 
 ### 9. 올리기
@@ -101,12 +102,14 @@ node tests/words.cjs                 # 낱말 표
 node tests/patch.cjs                 # 패치 기록 모양
 node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·책마다 고유 규칙·AI
 node tests/mosaic.cjs                # 모자이크 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 배치·최대 횟수·간격, 색인 꼴
-(cd rust && cargo test)               # art-core · art-index · mosaic-wasm 단위 검사
+node tests/similar.cjs               # 닮은 그림 — 색인·등록부에 다 있다, k ≤ 8, 자기 자신 없음, 오름차순, 한 책 둘까지, 거의 같은 쌍
+(cd rust && cargo test)               # art-core(닮음 거리·top-k 포함) · art-index · mosaic-wasm 단위 검사
 node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 600판은 보고만): 책마다 40~60% · 세 폼 규칙 모두 돈다 · 선공
 
 # 브라우저 — ESM_DIR 에 preact·htm 이 든 node_modules, CHROMIUM_PATH 에 브라우저
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-screen.cjs      # 서가
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-recent-screen.cjs # 서가 최근 추가·새 표·새 그림만 · 다섯 크기
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/similar-screen.cjs  # 서가 닮은 그림 줄 — 열 때 받기·그림 따라 바뀜·누르면 그 책 그 그림·자료 없음이면 숨김 · 다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/prompt-screen.cjs   # 생성기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/header-layout.cjs   # 머리 자리(화면 넷 · 크기 다섯)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # 테마 여덟 · 대비

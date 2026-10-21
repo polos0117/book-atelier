@@ -2,8 +2,8 @@
 
 | 상자 | 무엇 | 나오는 것 |
 |---|---|---|
-| `art-core` | 그림 특징과 맞추기 — 2×3 칸 Lab 서명, dHash 64비트, Lab 4×4×4 색 막대, 칸마다 조각 고르기(벌점·최대 횟수·간격, 씨앗). 바깥 의존 없음 | (라이브러리) |
-| `art-index` | 그림 저장소의 그림 → 색인. `data/img.json` 에 등록된 것만 | `data/art-index.json` |
+| `art-core` | 그림 특징과 맞추기 — 2×3 칸 Lab 서명, dHash 64비트, Lab 4×4×4 색 막대, 칸마다 조각 고르기(벌점·최대 횟수·간격, 씨앗), 닮음 거리(`similarity`)·책마다 묶은 top-k(`nearest`)·거의 같은 쌍. 바깥 의존 없음 | (라이브러리) |
+| `art-index` | 그림 저장소의 그림 → 색인. `data/img.json` 에 등록된 것만. `--similar` 면 색인 → 닮은 그림(그림마다 8장, 한 책 2장까지) | `data/art-index.json` · `data/art-similar.json` |
 | `mosaic-wasm` | 브라우저 쪽 맞추기. `extern "C"` 내보내기 + 포인터·길이(붙임 생성기 없음) | `lib/mosaic.wasm` |
 
 화면(`mosaic.html`)과 싣개(`lib/mosaic.js`)는 빌드 없이 그대로 뜬다. 지은 `.wasm` 만 저장소에 올린다 — `rust/target/` 은 `.gitignore`.
@@ -18,9 +18,15 @@ cargo build -p mosaic-wasm --target wasm32-unknown-unknown --profile wasm   # �
 cp target/wasm32-unknown-unknown/wasm/mosaic_wasm.wasm ../lib/mosaic.wasm
 cargo run --release -p art-index                                            # data/art-index.json 다시 셈(그림 저장소: ../../book-atelier-img)
 cargo run --release -p art-index -- --check                                 # 색인이 그림과 같은지만(다르면 1)
+cargo run --release -p art-index -- --similar                               # data/art-similar.json 다시 셈(색인 + data/img.json 만 읽는다)
+cargo run --release -p art-index -- --similar --check                       # 닮은 그림이 색인과 같은지만(다르면 1)
 ```
 
-그다음 저장소 뿌리에서 `node tests/mosaic.cjs` — wasm 이 소스와 맞는지, 맞추기 규칙, 색인 꼴을 본다.
+**새 그림을 등록하면 색인 → 닮은 그림 차례로 둘 다 다시 만든다** — 늦으면 모자이크는 그 그림을 조각으로 안 쓰고, 서가는 그 그림의 "닮은 그림" 줄을 안 그린다(화면은 돈다).
+닮은 그림의 무게(dHash 0.40 · 색 막대 0.35 · Lab 서명 0.25, ΔE 40 에서 자름)와 고르기 규칙은 `docs/ART_INDEX.md` 4절.
+
+그다음 저장소 뿌리에서 `node tests/mosaic.cjs` — wasm 이 소스와 맞는지, 맞추기 규칙, 색인 꼴을 본다. `node tests/similar.cjs` — 닮은 그림이 색인·등록부와 맞는지.
+`art-core` 를 고치면(닮은 그림 셈만 고쳐도) wasm 소스 셈이 바뀌니 wasm 도 다시 짓는다.
 `mosaic.html` 의 `lib/mosaic.wasm?v=` · `lib/mosaic.js?v=` 숫자도 하나 올린다(Pages 캐시).
 
 ## 묵은 wasm 막기
@@ -43,4 +49,4 @@ cargo run --release -p art-index -- --check                                 # �
 | `repeat_cap(max) → n` · `target_mean(out) → 1` | | 실제 최대 횟수, 바탕 평균 Lab |
 | `api_version` · `sig_len` · `source_hash_ptr` · `source_hash_len` | | 맞춰 보기 |
 
-색인 꼴과 닮은 그림 계획은 `docs/ART_INDEX.md`.
+색인·닮은 그림의 꼴은 `docs/ART_INDEX.md`.

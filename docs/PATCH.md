@@ -7,6 +7,18 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 닮은 그림 — 서가 상세의 큰 그림 아래 한 줄, 색인에서 미리 셈한 top-8
+
+- rust/art-core/src/lib.rs — `similarity`(0.40·dHash 해밍/64 + 0.35·색 막대 카이제곱 + 0.25·min(1, Lab 서명 거리/40), 0..1, 대칭) · `similarity_score`(×1000 정수) · `nearest`(점수 오름차순·같으면 번호 차례·자기 자신 없음·한 책 per_group 장까지) · `near_duplicates`. 단위 검사: 같은 그림 0, 흔든 사본 < 0.05, 뒤집은 그림·빨강↔파랑 > 0.5, 대칭, 책 묶기·비김·거의 같은 쌍
+- rust/art-index/src/main.rs — `--similar`(`--index`·`--check` 함께): 색인 + 등록부만 읽어 data/art-similar.json 을 쓴다(그림마다 8장, 한 책 2장, near_below 50). 색인을 다시 만들면 다음 단계를 알린다. base64 되읽기·문서 만들기 단위 검사
+- data/art-similar.json — 새 파일. 154장 × 8, 73 KB(gzip 7 KB), 한 그림 한 줄. 거의 같은 쌍 없음(가장 가까운 쌍은 같은 책의 폼 ↔ 개방 85). data/art-index.json 은 다시 셈해도 그대로
+- lib/mosaic.wasm · mosaic.html — art-core 소스 셈이 바뀌어 다시 지음(맞추기는 그대로), `mosaic.wasm?v=2`
+- dex.html — `Similar`: 상세를 처음 열 때 한 번만 받고, 지금 보는 그림의 줄(그림이 바뀌면 같이), 등록부에 없는 그림은 뺀다. 다른 책이면 그 책 상세를 그 그림·그 화풍으로(?book=), 같은 책이면 그 자리에서. 자료가 없거나 틀리면 줄째 안 그린다
+- lib/gallery.css · lib/landscape.css — 줄 모양(그 안에서만 옆으로, 칸 72/64px·44px 넘게, focus-visible). 펼친 쪽은 그림 단 밑, 휴대폰 가로는 글 단 밑. `gallery.css?v=5` · `landscape.css?v=4`
+- lib/words.js — dex.similar.title · note · label, 낱말 표 `?v=11`(화면 다섯)
+- tests/similar.cjs · tests/similar-screen.cjs — 새 검사: 자료가 색인·등록부와 맞나(k ≤ 8·자기 자신 없음·오름차순·한 책 둘까지·서로 같은 점수) / 화면(열 때 받기·그림 따라 바뀜·누르면 그 책 그 그림·같은 책·Enter·자료 없음이면 숨김·다섯 크기)
+- docs/ART_INDEX.md · rust/README.md · AGENTS.md — 닮은 그림을 "한 것" 으로: 두 파일 다시 만드는 차례(그림 등록 뒤 색인 → --similar), 무게·고르기·꼴, 검사 목록
+
 ## 2026-10-21 · claude · 감상 흐름 — 장마다 방의 빛, 명장면 앞의 한 줄, 어디까지 읽었나 리본
 
 - lib/bookshelf.js · lib/bookshelf.css — 장마다 방의 빛(`.reading-mood`): 그 책의 표지·금박 빛(book-frame COVER)을 발단 차고 어둡게·전개 세고 따뜻하게·결말 노을로, 명장면은 한층 세게. 색 변수를 @property 로 등록해 0.6초에 바뀐다. 책이 다가올 때 서고의 빛도 0.42초에 걸쳐 어두워진다(전에는 바로 떴다). 명장면을 열면 장면 글이 어두운 무대에 0.85초 먼저 뜨고 그다음 그림이 열리고 입자는 천천히 — 누르거나 Enter 면 바로 연 상태로. 동작 줄이기·움직임 끄기면 글과 그림이 함께. 책등 리본은 읽는 중이면 책갈피(없으면 마지막) 장의 첫 글자와 명장면 표, 이름 "전개 명장면까지 읽음"·"발단에 책갈피"(책등 단추 이름에도), 다 읽으면 ✓ 그대로

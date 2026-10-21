@@ -1,0 +1,21 @@
+# 그림 특징(모자이크·닮은 그림) — art-core 를 art-index(색인 만들기)와 mosaic-wasm(브라우저)이 같이 쓴다.
+# 다시 만들기는 rust/README.md
+[workspace]
+resolver = "2"
+members = ["art-core", "art-index", "mosaic-wasm"]
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
+
+# lib/mosaic.wasm 은 이 판으로 짓는다 — 크기를 먼저 본다
+[profile.wasm]
+inherits = "release"
+opt-level = "z"
+strip = true

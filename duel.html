@@ -26,13 +26,13 @@
 <link rel="stylesheet" href="lib/gallery.css?v=6">
 <link rel="stylesheet" href="lib/duel.css?v=1">
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=12"></script>
+<script src="lib/words.js?v=13"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/today.js?v=1"></script>
 <script src="lib/speech.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
-<script src="lib/duel.js?v=1"></script>
+<script src="lib/duel.js?v=3"></script>
 <script src="lib/scene-motion.js?v=1"></script>
 <link rel="stylesheet" href="lib/scene-motion.css?v=1">
 <link rel="stylesheet" href="lib/room.css?v=3">
@@ -44,7 +44,7 @@ import { h, render } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useLayoutEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
 import { WorkspaceHeader } from './lib/workspace-ui.js?v=7';
-import { useData, picOf, Pic, Match, Scene, Forfeit, Zoom, zoomKey, speak } from './lib/duel-ui.js?v=1';
+import { useData, picOf, Pic, Match, Scene, Forfeit, Zoom, zoomKey, speak } from './lib/duel-ui.js?v=2';
 const html = htm.bind(h);
 const W = window.W, D = window.AtelierDuel;
 const STORE = 'book_duel_v1', AI_DELAY = 650;

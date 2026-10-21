@@ -50,6 +50,11 @@
   "anna_karenina": {"max": 2, "need": 3},
   "arsene_lupin": {"notice": 1, "steal": 2},
   "faust": {"pact": 2, "strive": 1, "toll": 2},
-  "jasan_eobo": {"tag": 1, "record": 1}
+  "jasan_eobo": {"tag": 1, "record": 1},
+  "twenty_thousand_leagues": {"max": 2, "ram": 2, "whirl": 1},
+  "arabian_nights": {"max": 3},
+  "guunmong": {"max": 3, "glory": 1},
+  "call_of_cthulhu": {"max": 3, "need": 2},
+  "midsummer_dream": {"feast": 2}
  }
 }

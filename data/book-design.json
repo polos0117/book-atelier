@@ -6,9 +6,9 @@
   "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
   "hair": ["short_crop", "bob", "ponytail", "long_straight", "long_wavy", "updo_bun", "braids", "voluminous"],
   "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped", "flight_suit"],
-  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages", "lab_notes", "fur_velvet"],
-  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "towering_lean", "skyward_gaze", "floating_drift", "veiled_glance", "tipping_hat", "pact_reach"],
-  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "sea_sand", "teal_silver", "forest_red", "gold_void", "violet_snow", "noir_ivory", "ash_ember", "tide_ink"],
+  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages", "lab_notes", "fur_velvet", "logbook_brass", "clippings", "petal_script"],
+  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "towering_lean", "skyward_gaze", "floating_drift", "veiled_glance", "tipping_hat", "pact_reach", "porthole_gaze", "tale_gesture", "cloud_recline", "recoil_reach", "mischief_leap"],
+  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "sea_sand", "teal_silver", "forest_red", "gold_void", "violet_snow", "noir_ivory", "ash_ember", "tide_ink", "deep_pearl", "lamp_indigo", "lotus_cloud", "drowned_green", "moon_moss"],
   "face_shape": ["oval", "round", "heart", "long", "square_soft", "diamond"],
   "eyes": ["almond_wide", "round_large", "narrow_upturned", "droopy_soft", "deep_set", "monolid_long"],
   "brows": ["straight_thick", "arched_thin", "soft_round", "angled_sharp", "low_heavy"],
@@ -1657,6 +1657,487 @@
     "홍어 이야기",
     "어부 장창대",
     "청어가 돌아오는 바다"
+   ]
+  },
+  {
+   "key": "twenty_thousand_leagues",
+   "title": "해저 2만 리",
+   "author": "쥘 베른",
+   "author_death": 1905,
+   "abroad_protected": false,
+   "source_scope": "『해저 2만 리』(1870) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "육지의 법을 등지고 바다 깊은 곳에서 자유를 찾는, 수수께끼의 잠수함 선장",
+   "voice": {
+    "발단": "괴물이 아니다. 바다를 품은 배다.",
+    "전개": "바다 밑 숲을 걷는다. 육지의 법은 여기 닿지 않는다.",
+    "결말": "소용돌이가 모든 것을 삼킨다 — 기록만 떠오른다."
+   },
+   "desire": "누구의 법에도 묶이지 않고 바다에서 사는 것",
+   "conflict": "자유 대 복수",
+   "symbols": [
+    "강철 잠수함의 둥근 현창",
+    "해저 숲의 진주",
+    "대왕오징어의 촉수"
+   ],
+   "arc": {
+    "question": "세상을 등지면 자유로워지는가",
+    "conflict": "바다의 자유 속에서도 육지를 향한 복수가 그를 끌어당긴다",
+    "answer": "소용돌이 속에 배는 사라지고, 바다의 기록만 세상에 남는다"
+   },
+   "genre": "모험",
+   "era": "19세기 후반(1866~1868)",
+   "region": "세계의 바다 — 태평양에서 남극, 북해의 소용돌이까지",
+   "form_material": "항해 일지 책장을 리벳 박은 황동판으로 이은 선장 코트, 둥근 현창 단추, 진주와 산호 장식",
+   "binding": "hardcover",
+   "ethnicity": "South Asian",
+   "silhouette": {
+    "body": "broad_strong",
+    "hair": "braids",
+    "garment": "armor_layered",
+    "material": "logbook_brass",
+    "pose": "porthole_gaze",
+    "palette": "deep_pearl"
+   },
+   "face": {
+    "face_shape": "square_soft",
+    "eyes": "deep_set",
+    "brows": "low_heavy",
+    "nose": "aquiline",
+    "lips": "thin_long"
+   },
+   "rule": {
+    "principle": "\"깊이\" 로 숨어 버티다가, 떠오를 때 그 깊이로 친다",
+    "forms": {
+     "발단": "내 턴마다 깊이 하나(최대 2) — 깊이가 있으면 받는 피해 −1",
+     "전개": "공격할 때 깊이를 모두 태워 깊이마다 타격 +2 — 친 책이 닫히면 깊이 하나를 되찾는다",
+     "결말": "결말에 들면 소용돌이 — 판 위 다른 모든 책(아군도)에 1, 남은 깊이마다 1 더"
+    },
+    "counter": "깊이가 쌓이기 전 발단에 몰아친다. 소용돌이는 그녀 아군도 할퀴니, 그녀 편이 붐빌수록 그녀가 손해다"
+   },
+   "forms": {
+    "발단": {
+     "look": "바다 괴물의 정체 — 강철 비늘처럼 겹친 황동판 코트, 어둠 속에 빛나는 현창 단추, 젖은 항해 일지 자락",
+     "role": "버티기",
+     "pose": "커다란 둥근 현창 앞에 서서 한 손바닥을 유리에 대고, 고개를 돌려 어두운 바다를 들여다보는 자세"
+    },
+    "전개": {
+     "look": "해저 산책 — 황동 잠수 투구를 옆구리에 낀 잠수복 차림, 진주 줄을 감은 팔, 산호 가지 장식",
+     "role": "공격",
+     "pose": "한 발을 앞으로 내딛고 몸을 낮춰, 한 손에 쥔 작살 도끼를 앞으로 겨누는 자세"
+    },
+    "결말": {
+     "look": "소용돌이 — 바닷물에 젖어 휘날리는 코트 자락, 풀린 땋은 머리, 가슴에 꼭 안은 항해 일지",
+     "role": "교란",
+     "pose": "몸을 크게 젖혀 한 팔로 항해 일지를 가슴에 안고, 다른 팔을 소용돌이 쪽으로 뻗어 휘감기는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "밤바다 위로 떠오르는 빛나는 강철 선체, 그 빛을 쫓는 군함의 탐조등",
+     "one_figure": true,
+     "particles": "mist"
+    },
+    "전개": {
+     "scene": "해저 숲 — 산호와 해초 사이로 빛줄기가 내리고, 그림자 속에서 대왕오징어의 촉수가 다가온다",
+     "one_figure": true,
+     "particles": "bubbles"
+    },
+    "결말": {
+     "scene": "북해의 거대한 소용돌이, 빙빙 도는 물벽 사이로 빨려 드는 작은 불빛 하나",
+     "one_figure": true,
+     "particles": "rain"
+    }
+   },
+   "scene_cards": [
+    "남극점에 꽂은 깃발",
+    "가라앉은 아틀란티스",
+    "진주조개 잡이"
+   ]
+  },
+  {
+   "key": "arabian_nights",
+   "title": "천일야화",
+   "author": "작자 미상",
+   "author_death": null,
+   "anonymous": true,
+   "abroad_protected": false,
+   "source_scope": "『천일야화』 — 셰에라자드의 액자 이야기와 그 안의 이야기들(아랍어 판본과 갈랑 판까지)",
+   "quote_source": "직접 옮김",
+   "persona": "죽음 앞에서 이야기 하나로 하룻밤씩 살아남아, 끝내 왕의 마음을 바꾸는 이야기꾼",
+   "voice": {
+    "발단": "오늘 밤 이야기는 끝나지 않았어요. 내일 들려 드릴게요.",
+    "전개": "이야기 속에 이야기가, 그 안에 또 이야기가 있어요.",
+    "결말": "천 하룻밤 — 칼을 거두게 한 것은 이야기였어요."
+   },
+   "desire": "이야기로 목숨과 사람들을 지키는 것",
+   "conflict": "이야기 대 칼",
+   "symbols": [
+    "밤마다 켜는 등잔",
+    "마법 양탄자",
+    "거두어진 왕의 칼"
+   ],
+   "arc": {
+    "question": "이야기는 칼을 멈출 수 있는가",
+    "conflict": "새벽마다 다가오는 처형, 끝나지 않아야 하는 이야기",
+    "answer": "천 하룻밤 이야기 끝에 왕이 칼을 거둔다 — 이야기가 사람을 바꾼다"
+   },
+   "genre": "동화·판타지",
+   "era": "중세 이슬람 세계(9~14세기 이야기 모음)",
+   "region": "페르시아·바그다드·카이로",
+   "form_material": "이야기 책장을 금실로 꿰맨 비단 겹치마, 등잔 모양 장신구, 책장마다 수놓은 아라베스크",
+   "binding": "hardcover",
+   "ethnicity": "Middle Eastern",
+   "silhouette": {
+    "body": "curvy",
+    "hair": "voluminous",
+    "garment": "layered_skirt",
+    "material": "silk_scroll",
+    "pose": "tale_gesture",
+    "palette": "lamp_indigo"
+   },
+   "face": {
+    "face_shape": "heart",
+    "eyes": "almond_wide",
+    "brows": "arched_thin",
+    "nose": "aquiline",
+    "lips": "heart_full"
+   },
+   "rule": {
+    "principle": "\"이야기\" 로 밤을 하나씩 미루고, 끝내 이야기가 목숨을 살린다",
+    "forms": {
+     "발단": "내 턴마다 밤 이야기 하나(최대 3)",
+     "전개": "닫힐 피해를 받으면 이야기 하나로 하룻밤을 미룬다 — 힘 1 로 남는다",
+     "결말": "이야기가 목숨을 살린다 — 아군이 닫히려 할 때마다 이야기 하나로 되살린다(그 폼의 기본 힘으로)"
+    },
+    "counter": "한 번에 닫으려 하지 말고 여러 번 나눠 쳐 이야기를 쓰게 한다 — 결말까지 남은 이야기가 적으면 되살릴 것도 적다. 그녀가 늦게 들어오면 이야기가 덜 모인다"
+   },
+   "forms": {
+    "발단": {
+     "look": "첫날 밤 — 등잔 빛에 물든 남빛 비단 겹치마, 이야기 책장을 꿰어 늘어뜨린 소매, 금실 머릿수건",
+     "role": "교란",
+     "pose": "등잔 곁에 앉아 한 손을 펼쳐 들고 이야기를 시작하며, 다른 손으로 등잔 불꽃을 감싸는 자세"
+    },
+    "전개": {
+     "look": "이야기 속 이야기 — 겹겹이 펼쳐지는 비단 치마마다 다른 이야기의 그림, 손목에 겹친 금 팔찌",
+     "role": "버티기",
+     "pose": "몸을 반쯤 돌려 두 팔을 벌리고, 펼친 손끝에서 이야기 그림이 피어오르게 하는 자세"
+    },
+    "결말": {
+     "look": "천 하룻밤의 새벽 — 새벽빛 금사 겉옷, 풀어 늘어뜨린 머리, 두 손에 받쳐 든 꺼진 등잔",
+     "role": "지원",
+     "pose": "꼿꼿이 서서 꺼진 등잔을 두 손으로 받쳐 들고, 새벽빛 쪽으로 고개를 들어 미소 짓는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "밤의 궁전 침실, 창밖 초승달 아래 등잔 연기가 피워 올린 배·새·궁전의 그림자",
+     "one_figure": true,
+     "particles": "embers"
+    },
+    "전개": {
+     "scene": "밤하늘을 나는 마법 양탄자 아래로 펼쳐진 바그다드의 지붕과 첨탑",
+     "one_figure": true,
+     "particles": "stars"
+    },
+    "결말": {
+     "scene": "천 하룻밤 뒤의 새벽, 궁전 뜰에 쏟아지는 첫 햇살과 흩날리는 장미 꽃잎",
+     "one_figure": true,
+     "particles": "petals"
+    }
+   },
+   "scene_cards": [
+    "신드바드의 일곱 항해",
+    "알리바바와 마흔 명의 도둑",
+    "어부와 지니"
+   ]
+  },
+  {
+   "key": "guunmong",
+   "title": "구운몽",
+   "author": "김만중",
+   "author_death": 1692,
+   "abroad_protected": false,
+   "source_scope": "『구운몽』(1687~1688) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "꿈속에서 부귀와 여덟 인연을 다 누리고 깨어나, 모든 것이 꿈이었음을 웃으며 받아들이는 몽상가",
+   "voice": {
+    "발단": "연화봉 아래 팔선녀를 만난 하룻밤, 마음이 흔들린다.",
+    "전개": "꿈속 영화는 끝이 없다. 인연마다 꽃이 핀다.",
+    "결말": "깨어 보니 한바탕 꿈 — 모두 비었으니 가볍다."
+   },
+   "desire": "삶의 참된 뜻을 깨닫는 것",
+   "conflict": "욕망 대 깨달음",
+   "symbols": [
+    "연화봉의 구름",
+    "여덟 선녀의 구슬",
+    "불가의 염주"
+   ],
+   "arc": {
+    "question": "모든 것을 다 가지면 행복한가",
+    "conflict": "꿈속 양소유의 부귀와 여덟 인연이 깊어질수록 흔들리는 마음",
+    "answer": "깨어 보니 한바탕 꿈 — 욕망이 비었음을 알 때 가벼워진다"
+   },
+   "genre": "로맨스",
+   "era": "조선 후기 작(1687), 배경은 당나라",
+   "region": "남악 형산 연화봉 → 당나라 도성",
+   "form_material": "구름무늬 한지 책장을 겹친 장삼과 비단 도포, 여덟 빛깔 구슬을 꿴 염주, 연꽃 매듭",
+   "binding": "hanji",
+   "ethnicity": "East Asian",
+   "silhouette": {
+    "body": "lanky",
+    "hair": "long_straight",
+    "garment": "robe_overlap",
+    "material": "hanji",
+    "pose": "cloud_recline",
+    "palette": "lotus_cloud"
+   },
+   "face": {
+    "face_shape": "oval",
+    "eyes": "narrow_upturned",
+    "brows": "soft_round",
+    "nose": "small_button",
+    "lips": "heart_full"
+   },
+   "rule": {
+    "principle": "꿈속에서 \"인연\" 을 모으지만, 깨고 나면 모두 공(空) — 상대의 것까지 비운다",
+    "forms": {
+     "발단": "판에 책이 들어올 때마다(양편, 자신 빼고) 인연 하나(최대 3)",
+     "전개": "꿈속의 영화 — 칠 때 인연마다 타격 +1(인연은 남는다)",
+     "결말": "결말에 들면 꿈에서 깬다 — 인연을 모두 놓고, 인연 하나마다 센 상대 책 하나의 고유 규칙을 이 장 동안 잠재운다"
+    },
+    "counter": "책을 적게, 늦게 낸다 — 들어오는 책이 적으면 인연도 적다. 고유 규칙보다 힘으로 싸우는 책은 잠재워도 그대로다"
+   },
+   "forms": {
+    "발단": {
+     "look": "연화봉의 성진 — 회색 장삼 위에 구름무늬 한지 가사, 손목에 감은 백팔 염주",
+     "role": "정찰",
+     "pose": "돌다리 위에 멈춰 서서 염주를 감은 손을 가슴에 대고, 고개를 돌려 구름 너머를 바라보는 자세"
+    },
+    "전개": {
+     "look": "양소유의 영화 — 장원 급제의 붉은 비단 도포, 머리에 꽂은 어사화, 여덟 빛깔 구슬 띠",
+     "role": "공격",
+     "pose": "한 손으로 도포 자락을 걷어 잡고 걸음을 내디디며, 다른 손에 든 퉁소를 입가로 가져가는 자세"
+    },
+    "결말": {
+     "look": "꿈에서 깬 새벽 — 흐트러진 흰 장삼, 풀어 내린 머리, 손바닥 위에서 구름처럼 흩어지는 구슬",
+     "role": "교란",
+     "pose": "구름 위에 비스듬히 기대 누웠다 일어나며, 한 손바닥을 펼쳐 흩어지는 구슬을 내려다보는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "구름이 흐르는 연화봉 돌다리, 물가에 흩날리는 복숭아꽃",
+     "one_figure": true,
+     "particles": "petals"
+    },
+    "전개": {
+     "scene": "달밤의 당나라 궁궐 누각, 여덟 개의 등롱이 하나씩 켜진다",
+     "one_figure": true,
+     "particles": "fireflies"
+    },
+    "결말": {
+     "scene": "꿈이 걷히는 새벽 연화봉, 흩어지는 구름 사이로 번지는 산사의 종소리",
+     "one_figure": true,
+     "particles": "mist"
+    }
+   },
+   "scene_cards": [
+    "천진교의 시 겨루기",
+    "퉁소로 부른 학",
+    "여덟 부인의 연회"
+   ]
+  },
+  {
+   "key": "call_of_cthulhu",
+   "title": "크툴루의 부름",
+   "author": "H. P. 러브크래프트",
+   "author_death": 1937,
+   "abroad_protected": false,
+   "source_scope": "『크툴루의 부름』(1928) 전체 — 단편",
+   "quote_source": "직접 옮김",
+   "persona": "흩어진 기록 조각을 맞추다 바다 밑의 진실 앞에 서 버린, 침착한 조사자",
+   "voice": {
+    "발단": "흩어진 조각을 맞추지 않는 것이 자비였다.",
+    "전개": "늪의 북소리 — 꿈꾸며 기다리는 것이 있다.",
+    "결말": "가라앉은 도시가 떠오른다. 깨어난 것 앞에서 모두 작아진다."
+   },
+   "desire": "진실을 끝까지 알아내는 것",
+   "conflict": "앎 대 광기",
+   "symbols": [
+    "점토 부조판",
+    "가라앉은 도시 르뤼에",
+    "선원의 일기"
+   ],
+   "arc": {
+    "question": "모든 것을 알면 견딜 수 있는가",
+    "conflict": "조각을 맞출수록 다가오는 바다 밑의 진실과 광기",
+    "answer": "진실은 다시 가라앉았지만, 아는 자는 다시는 예전처럼 잠들지 못한다"
+   },
+   "genre": "공포",
+   "era": "1920년대",
+   "region": "미국 뉴잉글랜드 → 루이지애나 늪 → 남태평양",
+   "form_material": "조사 기록과 신문 스크랩을 겹친 트렌치코트, 점토판 문양 단추, 바다 이끼 빛 안감",
+   "binding": "hardcover",
+   "ethnicity": "Nordic",
+   "silhouette": {
+    "body": "athletic",
+    "hair": "ponytail",
+    "garment": "coat_trousers",
+    "material": "clippings",
+    "pose": "recoil_reach",
+    "palette": "drowned_green"
+   },
+   "face": {
+    "face_shape": "square_soft",
+    "eyes": "round_large",
+    "brows": "straight_thick",
+    "nose": "straight_narrow",
+    "lips": "thin_long"
+   },
+   "rule": {
+    "principle": "흩어진 \"조각\" 을 맞출수록 진실에 다가가고, 다 맞추면 깊은 곳의 것이 깨어난다",
+    "forms": {
+     "발단": "내 턴마다 조각 하나(최대 3) — 전개에도 모은다",
+     "전개": "장마다 한 번, 조각 하나를 써서 맞은편 상대 책을 광기에 빠뜨린다 — 그 책은 이 장엔 못 친다",
+     "결말": "조각이 둘 이상이면 결말에 들 때 깨어난다 — 판 위 상대 책 모두 힘이 반으로(내림)"
+    },
+    "counter": "발단에 몰아쳐 조각이 모이기 전에 닫는다. 힘을 한 책에 몰지 않고 고루 나눈다 — 반으로 깎이는 것은 큰 힘일수록 아프다. 결말에 늦게 내는 책은 깎이지 않는다"
+   },
+   "forms": {
+    "발단": {
+     "look": "교수의 상자 — 신문 스크랩을 겹친 트렌치코트, 손에 든 점토 부조판, 목에 건 돋보기",
+     "role": "정찰",
+     "pose": "책상 앞에 서서 한 손으로 점토 부조판을 등불에 비춰 들고, 다른 손의 돋보기로 문양을 들여다보는 자세"
+    },
+    "전개": {
+     "look": "늪의 의식 — 진흙 튄 코트 자락, 횃불 빛에 물든 얼굴, 손목에 감긴 낯선 문양의 끈",
+     "role": "교란",
+     "pose": "한 팔로 얼굴을 가리며 뒷걸음치고, 다른 손으로 횃불을 앞으로 내미는 자세"
+    },
+    "결말": {
+     "look": "떠오른 도시의 바다 — 바닷물에 젖은 코트, 풀어 헤쳐진 머리, 가슴에 품은 선원의 일기",
+     "role": "돌파",
+     "pose": "흔들리는 갑판 위에 다리를 넓게 버티고 서서, 일기를 가슴에 안은 채 거대한 것을 올려다보는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "등불 하나 켜진 서재, 책상 위 점토판의 문양이 그림자 속에서 꿈틀대는 듯하다",
+     "one_figure": true,
+     "particles": "dust"
+    },
+    "전개": {
+     "scene": "횃불이 타오르는 한밤의 늪, 검은 물 위로 북소리처럼 번지는 물결",
+     "one_figure": true,
+     "particles": "embers"
+    },
+    "결말": {
+     "scene": "폭풍 바다 위로 솟아오른 뒤틀린 각도의 초록 돌 도시, 그 위로 드리운 거대한 날개 그림자",
+     "one_figure": true,
+     "particles": "rain"
+    }
+   },
+   "scene_cards": [
+    "조각가 윌콕스의 꿈",
+    "늪 속의 의식",
+    "요한센의 일기"
+   ]
+  },
+  {
+   "key": "midsummer_dream",
+   "title": "한여름 밤의 꿈",
+   "author": "윌리엄 셰익스피어",
+   "author_death": 1616,
+   "abroad_protected": false,
+   "source_scope": "『한여름 밤의 꿈』(1600) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "달빛 숲에서 사랑의 꽃즙을 뿌려 모두를 엇갈리게 하고는, 웃으며 제짝을 찾아 주는 장난꾸러기 요정",
+   "voice": {
+    "발단": "사랑은 눈이 아니라 마음으로 본대요 — 그럼 눈을 바꿔 볼까요?",
+    "전개": "엇갈린 사랑! 이 숲에선 모두 바보가 돼요.",
+    "결말": "그림자의 장난이 언짢았다면, 한바탕 꿈이라 여겨 주세요."
+   },
+   "desire": "엉킨 사랑을 제자리로 돌려놓는 것",
+   "conflict": "장난 대 진심",
+   "symbols": [
+    "사랑의 꽃즙(팬지)",
+    "당나귀 머리",
+    "달빛 숲"
+   ],
+   "arc": {
+    "question": "사랑은 눈으로 고르는가",
+    "conflict": "꽃즙 한 방울에 연인들의 마음이 뒤바뀌고 숲은 엉망이 된다",
+    "answer": "새벽이 오면 모두 제짝으로 — 한바탕 꿈이었다며 웃는다"
+   },
+   "genre": "희극·풍자",
+   "era": "고대 아테네(1595년경 작)",
+   "region": "아테네 근교의 요정 숲",
+   "form_material": "희곡 대본 책장을 꽃잎처럼 오려 겹친 짧은 드레스, 이슬 맺힌 거미줄 숄, 팬지 화관",
+   "binding": "hardcover",
+   "ethnicity": "Mediterranean",
+   "silhouette": {
+    "body": "petite",
+    "hair": "short_crop",
+    "garment": "one_piece_dress",
+    "material": "petal_script",
+    "pose": "mischief_leap",
+    "palette": "moon_moss"
+   },
+   "face": {
+    "face_shape": "diamond",
+    "eyes": "round_large",
+    "brows": "soft_round",
+    "nose": "upturned",
+    "lips": "wide_smile"
+   },
+   "rule": {
+    "principle": "\"꽃즙\" 으로 눈을 뒤바꿔, 서로 엉뚱한 상대를 치게 한다",
+    "forms": {
+     "발단": "내 턴마다 맞은편 상대 책에 꽃즙 — 반해서 이 장 동안 그녀와 서로 치지 않는다",
+     "전개": "장마다 한 번, 꽃즙 묻은 상대 책이 엉뚱하게 제 편 다른 책을 친다(그 책의 타격)",
+     "결말": "결말에 들면 모두 제짝으로 — 꽃즙을 풀고, 푼 꽃즙마다 가장 약한 아군 힘 +2"
+    },
+    "counter": "그녀의 맞은편을 비워 두면 꽃즙을 묻힐 데가 없다. 상대 책을 하나만 세우면 엇갈려 칠 옆 책이 없다"
+   },
+   "forms": {
+    "발단": {
+     "look": "숲으로 — 희곡 책장 꽃잎을 겹친 짧은 드레스, 등 뒤에 비치는 얇은 책장 날개, 손끝에 맺힌 꽃즙 한 방울",
+     "role": "교란",
+     "pose": "나뭇가지 위에 몸을 웅크리고 앉아, 팬지 꽃을 쥔 손을 입가에 대고 키득거리는 자세"
+    },
+    "전개": {
+     "look": "퍽의 장난 — 이슬 맺힌 거미줄 숄, 머리에 꽂은 팬지, 허리에 찬 당나귀 머리 모양 가면",
+     "role": "정찰",
+     "pose": "허공으로 뛰어오르며 한 손으로 꽃즙을 흩뿌리고, 다른 손가락으로 먼 곳을 가리키는 자세"
+    },
+    "결말": {
+     "look": "새벽의 잔치 — 달빛 은사 드레스, 팬지 화관, 가슴에 댄 극중극 대본",
+     "role": "지원",
+     "pose": "무대 끝에 서서 한 손으로 대본을 가슴에 대고, 다른 손을 펼쳐 관객에게 인사하는 자세"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "달빛이 쏟아지는 아테네 근교의 숲, 이슬 맺힌 거미줄과 반딧불이",
+     "one_figure": true,
+     "particles": "fireflies"
+    },
+    "전개": {
+     "scene": "엉킨 넝쿨과 버섯 고리가 빛나는 한밤의 숲 공터, 흩날리는 팬지 꽃잎",
+     "one_figure": true,
+     "particles": "petals"
+    },
+    "결말": {
+     "scene": "새벽빛이 드는 궁정 무대, 촛불 사이로 걷히는 숲 안개",
+     "one_figure": true,
+     "particles": "mist"
+    }
+   },
+   "scene_cards": [
+    "직공 보텀의 당나귀 머리",
+    "요정 여왕의 잠",
+    "피라무스와 티스베"
    ]
   }
  ]

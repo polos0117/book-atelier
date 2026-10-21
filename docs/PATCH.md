@@ -7,6 +7,16 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 책 다섯 권 더 — 해저 2만 리·천일야화·구운몽·크툴루의 부름·한여름 밤의 꿈
+- data/book-design.json — 다섯 번째 다섯 권 설계표: 모험·동화·판타지·로맨스·공포·희극·풍자에 세 번째 책(지역 처음 셋 — 아라비아·당나라 꿈·미국 바다). 정한 말 열셋(재료 logbook_brass·clippings·petal_script, 자세 porthole_gaze·tale_gesture·cloud_recline·recoil_reach·mischief_leap, 팔레트 deep_pearl·lamp_indigo·lotus_cloud·drowned_green·moon_moss). 천일야화는 작자 미상(anonymous), 구운몽은 한지 틀
+- lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯
+- lib/duel.js — `BOOK` 에 효과 다섯: 해저 2만 리 깊이(받는 피해 −1)·충각(깊이마다 +2, 닫으면 하나 되찾음)·소용돌이(아군도), 천일야화 이야기·하룻밤 미루기·되살리기(이야기 수만큼), 구운몽 인연(양편이 들어올 때)·영화(+1)·깨어남(센 상대 규칙을 잠재움), 크툴루 조각(전개에도)·광기(묶음)·깨어남(상대 힘 반), 한여름 밤의 꿈 꽃즙(휴전)·장난(제 편을 친다)·잔치(약한 아군 +2). 새 갈고리는 없다
+- data/duel.json — 새 다섯 권의 수. 3,000판에서 스물다섯 권 모두 45~59%, 선공 45.2%(보정 +5 그대로). 크툴루 결말이 3회라 조각을 전개에도 모은다
+- lib/words.js · lib/duel-ui.js — 규칙 기록 말 열일곱, 판 위 깃발 「꽃즙」. 화면들의 words.js ?v=13, duel.js ?v=3, duel-ui.js ?v=2, book-frame.js ?v=2, prompt-spec.js ?v=2
+- tests/duel.cjs — 새 다섯 권 규칙 확인 30가지
+- tests/dex-recent-screen.cjs — 「새 그림만」 이 풀린 서가 칸 수를 20 고정에서 설계표의 책 수로
+- docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md — 4절 표에 다섯 줄, 5절 균형을 스물다섯 권으로 다시, 9-4절 다섯 번째 다섯 권, "스무 권" → "스물다섯 권"
+
 ## 2026-10-21 · claude · 도트 걷기 v2 — 다리가 번갈아 나가게
 - tools/walk-swap.py — 새 도구: 걷기 반 주기 세 칸 + 다리 표시를 맞바꾼 세 칸. 다리 안내를 붙여 다시 뽑은 시트도 같은 다리만 앞이라(1·4칸이 같다) 뒤 세 칸을 만든다 — alice 스타킹 무늬, 손자 맨 허벅지(그늘·새로 그림), 춘향 신 자리
 - data/sprites.json — 세 인물 walk 를 `_walk_v2.png` 로(지난 시트는 그대로), 빠르기 alice 55 → 63·손자 55 → 82·춘향 49 → 52, dy 다시 셈(tools/sprite-bob.py)

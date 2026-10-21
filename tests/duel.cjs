@@ -381,6 +381,70 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   st.chapter = 2; js.power = 7; ti.power = 4; js.flags.entered = {}; D.BOOK.jasan_eobo.form({ data, st }, js, 2);
   ok(js.power === 7 + 2 && ti.power === 4 + 2, '결말 — 표식 붙은 상대 책 수(2)만큼 아군 모두 힘 +1');
 }
+{ /* 해저 2만 리 — 깊이 */
+  const st = rig(['twenty_thousand_leagues', 'treasure_island'], ['hamlet', 'sunzi']);
+  const hm = put(st, 'foe', 'hamlet', 0), tw = put(st, 'me', 'twenty_thousand_leagues', 0);
+  ok(hm.power === 4, '들어오며 친다(버티기 1, 모험 → 비극 −1 = 0)');
+  start(st, 'me'); start(st, 'me'); start(st, 'me'); ok(tw.tok === 2, '발단 — 내 턴마다 깊이 하나, 둘까지');
+  hit(st, 'foe', 0, 0); ok(tw.power === 7 - (2 + 2 - 1 - 1), '깊이가 있으면 받는 피해 −1(정찰 2 + 비극 → 모험 2 − 방패 1 − 깊이 1)');
+  st.chapter = 1; tw.power = 6; hm.power = 9;
+  hit(st, 'me', 0, 0); ok(hm.power === 9 - (3 - 1 + 2 * 2) && tw.tok === 0, '전개 — 충각: 깊이를 모두 태워 깊이마다 +2(공격 3, 모험 → 비극 −1)');
+  hm.power = 2; tw.tok = 0; hit(st, 'me', 0, 0); ok(st.foe.slots[0] === null && tw.tok === 0, '깊이를 태우지 않은 타격으로 닫으면 되찾지 않는다');
+  st.foe.slots[0] = hm; hm.power = 2; tw.tok = 1; hit(st, 'me', 0, 0); ok(st.foe.slots[0] === null && tw.tok === 1, '친 책이 닫히면 깊이 하나를 되찾는다');
+  st.chapter = 2; const sz = put(st, 'foe', 'sunzi', 1), ti = put(st, 'me', 'treasure_island', 2);
+  tw.power = 5; sz.power = 5; ti.power = 5; tw.flags.entered = {}; D.BOOK.twenty_thousand_leagues.form({ data, st }, tw, 2);
+  ok(tw.power === 5 && sz.power === 5 - 2 && ti.power === 5 - 2 && tw.tok === 0, '결말 — 소용돌이: 판 위 다른 모든 책(아군도)에 1 + 남은 깊이 1');
+}
+{ /* 천일야화 — 이야기 */
+  const st = rig(['arabian_nights', 'treasure_island'], ['hamlet', 'lord_of_the_rings']);
+  const hm = put(st, 'foe', 'hamlet', 0), an = put(st, 'me', 'arabian_nights', 0);
+  ok(hm.power === 4 - 2, '들어오며 친다(교란 2, 동화 → 비극 0)');
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(an.tok === 3, '발단 — 내 턴마다 밤 이야기 하나, 셋까지');
+  st.chapter = 1; an.power = 1; hm.power = 9;
+  hit(st, 'foe', 0, 0); ok(st.me.slots[0] === an && an.power === 1 && an.tok === 2, '전개 — 닫힐 피해를 받으면 이야기 하나로 하룻밤 미룬다(힘 1)');
+  an.power = 5; hit(st, 'foe', 0, 0); ok(an.power === 5 - (2 - 1) && an.tok === 2, '닫히지 않을 피해에는 이야기를 쓰지 않는다(교란 2 − 방패 1)');
+  st.chapter = 2; const ti = put(st, 'me', 'treasure_island', 1); ti.power = 2;
+  put(st, 'foe', 'lord_of_the_rings', 1);
+  ok(st.me.slots[1] === ti && ti.power === 4 && an.tok === 1, '결말 — 아군이 닫히려 하면 이야기 하나로 되살린다(지원 기본 4, 반지 돌파 3)');
+  an.tok = 0; ti.power = 1; hit(st, 'foe', 1, 1); ok(st.me.slots[1] === null, '이야기가 없으면 되살리지 못한다');
+}
+{ /* 구운몽 — 인연 */
+  const st = rig(['guunmong', 'treasure_island'], ['sunzi', 'dracula', 'kosmos']);
+  const gm = put(st, 'me', 'guunmong', 0); ok(gm.tok === 0, '자신이 들어올 때는 인연이 없다');
+  const sz = put(st, 'foe', 'sunzi', 1); ok(gm.tok === 1, '발단 — 상대 책이 들어오면 인연 하나');
+  put(st, 'me', 'treasure_island', 2); ok(gm.tok === 2, '아군이 들어와도 인연 하나');
+  const dr = put(st, 'foe', 'dracula', 2); put(st, 'foe', 'kosmos', 0); ok(gm.tok === 3, '인연은 셋까지');
+  st.chapter = 1; gm.power = 6; st.foe.slots[0] = sz; st.foe.slots[1] = null; sz.power = 9;
+  hit(st, 'me', 0, 0); ok(sz.power === 9 - (3 + 2 + 3) && gm.tok === 3, '전개 — 칠 때 인연마다 +1, 인연은 남는다(공격 3, 로맨스 → 사상 2)');
+  st.chapter = 2; sz.power = 9; dr.power = 3; gm.tok = 1; gm.flags.entered = {}; D.BOOK.guunmong.form({ data, st }, gm, 2);
+  ok(sz.flags.silenced && !dr.flags.silenced && !D.live(sz) && gm.tok === 0, '결말 — 꿈에서 깬다: 인연 하나마다 센 상대 책 하나의 규칙을 잠재운다');
+}
+{ /* 크툴루의 부름 — 조각 */
+  const st = rig(['call_of_cthulhu'], ['sunzi', 'treasure_island']);
+  const sz = put(st, 'foe', 'sunzi', 0), ct = put(st, 'me', 'call_of_cthulhu', 0);
+  ok(sz.power === 4 - 2, '들어오며 친다(정찰 2, 공포 → 사상 0)');
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(ct.tok === 3, '발단 — 내 턴마다 조각 하나, 셋까지');
+  st.chapter = 1; sz.power = 5; start(st, 'me');
+  ok(sz.flags.bound && ct.tok === 2 && D.targets({ data, st }, sz).length === 0, '전개 — 조각 하나로 맞은편을 광기에: 이 장엔 못 친다');
+  start(st, 'me'); ok(ct.tok === 3, '장마다 한 번 — 전개에도 조각을 모은다');
+  st.chapter = 2; const ti = put(st, 'foe', 'treasure_island', 1); sz.power = 4; ti.power = 7; ct.tok = 2;
+  ct.flags.entered = {}; D.BOOK.call_of_cthulhu.form({ data, st }, ct, 2);
+  ok(sz.power === 2 && ti.power === 3 && ct.tok === 0, '결말 — 조각 둘이면 깨어난다: 상대 책 모두 힘이 반으로(내림)');
+  sz.power = 4; ct.tok = 1; ct.flags.entered = {}; D.BOOK.call_of_cthulhu.form({ data, st }, ct, 2); ok(sz.power === 4, '조각이 모자라면 깨어나지 않는다');
+}
+{ /* 한여름 밤의 꿈 — 꽃즙 */
+  const st = rig(['midsummer_dream', 'kosmos'], ['treasure_island', 'dracula']);
+  const ti = put(st, 'foe', 'treasure_island', 0), dr = put(st, 'foe', 'dracula', 1), md = put(st, 'me', 'midsummer_dream', 0);
+  ok(ti.power === 4 - 2, '들어오며 친다(교란 2, 희극 → 모험 0)');
+  start(st, 'me');
+  ok(ti.flags.juice && ti.flags.truce === md.id && D.targets({ data, st }, ti).length === 0 && D.targets({ data, st }, md).length === 0, '발단 — 맞은편에 꽃즙: 반해서 이 장 동안 서로 치지 않는다');
+  st.chapter = 1; ti.flags.truce = null; md.flags.truce = null; ti.power = 5; dr.power = 9;
+  start(st, 'me'); ok(dr.power === 9 - 3 && md.flags.prank === 1, '전개 — 꽃즙 묻은 상대 책이 제 편 다른 책을 친다(보물섬 돌파 3, 모험 → 공포 0)');
+  start(st, 'me'); ok(dr.power === 6, '장마다 한 번');
+  st.chapter = 2; const ko = put(st, 'me', 'kosmos', 2); md.power = 6; ko.power = 3;
+  md.flags.entered = {}; D.BOOK.midsummer_dream.form({ data, st }, md, 2);
+  ok(ko.power === 3 + 2 && md.power === 6 && !ti.flags.juice, '결말 — 모두 제짝으로: 꽃즙을 풀고, 푼 꽃즙마다 가장 약한 아군 +2');
+}
 /* ── 자동 넘기기 — 할 수 있는 것이 없으면 넘긴다 ── */
 {
   const st = rig(['kosmos'], []);

@@ -2,7 +2,7 @@
 
 작성일: 2026-10-21 · 시간대: Asia/Seoul  
 문서 버전: 1.1 (저장소 편입·검토 반영·P0 완료)  
-상태: P1 완료(정지 도트 확정), P2 동작 시트 대기  
+상태: P2 완료(대기·걷기·반응 시트), P3 독립 재생 대기  
 첫 대상: book-atelier 서재의 작은 생활 공간  
 자리: docs/ATELIER_PIXEL_ART_PLAN.md
 
@@ -14,15 +14,15 @@
 
 | 재개에 필요한 항목 | 현재 상태 |
 |---|---|
-| 완료한 일 | 검토, 저장소 편입, P0(시범 캐릭터·기준 이미지 확정), P1(정지 도트 — 10절) |
-| 현재 단계 | P2 동작 시트 대기 |
-| 아직 하지 않은 일 | 동작 시트(idle·walk·react) 생성, 코드 연결, 실제 화면·성능 검증 |
+| 완료한 일 | 검토, 저장소 편입, P0(시범 캐릭터·기준 이미지 확정), P1(정지 도트), P2(동작 시트 — 10절) |
+| 현재 단계 | P3 독립 재생 대기 |
+| 아직 하지 않은 일 | 재생 모듈(lib/sprite-actor.js·css, data/sprites.json), 서재 연결, 실제 화면·성능 검증 |
 | 시범 캐릭터 | alice(이상한 나라의 앨리스), 도트 폼 발단(begin) |
 | 기준 이미지 | 정본 `img/alice_end_literary_fantasy_f.webp`, 도트 기준 `img/alice_begin_literary_fantasy_f.webp` (book-atelier-img) |
-| 도트 산출물 | `book-atelier-img/sprites/alice/alice_begin_still.png`(96×128), 원본 `sprites/alice/raw/`, 기록 `records/sprites/alice/still.json` |
+| 도트 산출물 | `book-atelier-img/sprites/alice/` — 정지 `alice_begin_still.png`, 시트 `alice_begin_idle.png`(4칸)·`_walk.png`(6칸)·`_react.png`(4칸), 칸 96×128. 원본 `raw/`, 기록 `records/sprites/alice/` |
 | 변경한 프로젝트 코드 | 없음 |
 | 이 작업의 커밋·push·배포 | 없음 |
-| 다음 한 일 | 정지 도트를 첨부해 동작 시트 지시문 작성(상태마다 시트 한 장) → 사용자 요청 시 생성 |
+| 다음 한 일 | P3 — 한 명·작은 공간의 독립 재생 예제(시트·재생 순서·시간은 `records/sprites/alice/<상태>.json` 의 playback) |
 | 작업 재개 기준 | 이 표와 10절 체크포인트를 실제 결과에 맞춰 갱신 |
 
 **이미 완성된 생성 이미지는 사용자의 추가 요청 없이 자의적으로 재생성하거나 대체하지 않는다.** 첫 정지 도트가 나오면 그 결과를 보여준다. 스타일·노출·디테일에 대한 어시스턴트의 선호로 두 번째 결과를 만들지 않는다. 수정이나 후속 동작 제작은 실제 요청 범위에 맞춰 진행한다.
@@ -248,18 +248,25 @@ book의 기존 검사 후보는 tests/bookshelf-screen.cjs, tests/reading-journe
 ### 현재 체크포인트
 
 - 마지막 갱신: 2026-10-21 · claude
-- 완료 단계: 검토, 저장소 편입, P0, P1
-- 다음 단계: P2 — 확정한 정지 도트를 첨부해 idle 4 · walk 6 · react 4 를 상태마다 시트 한 장으로 생성(사용자 요청 시), 받으면 `tools/sprite-grid.py` 를 칸마다 돌려 같은 팔레트·발 기준선으로 정리
+- 완료 단계: 검토, 저장소 편입, P0, P1, P2
+- 다음 단계: P3 — 독립 재생 예제. 시트는 칸 96×128 가로 잇기, 발 기준선 y=126, 재생 순서·시간은 기록의 playback
 - 시범 캐릭터와 기준 이미지: alice 발단(4절 P0 결정)
 - P1 결과:
   - gen1(11절 지시문 그대로, 16:36:48~16:37:50 KST) — 쓰지 않음. 1~2px 단위의 도트풍 일러스트(격자 없음, 약 7.5등신)라 96×128로 줄이면 얼굴 7px, 모자이크처럼 뭉갬
   - gen2(gen1 대화에 이어 "아주 큰 화소 · 색 16개 · 4등신 · 장식 절반"으로 재작업 요청) — 채택. 약 12px 도트 격자, 4.5~5등신, 윤곽선 있음. **P2 시트도 같은 네 줄을 지시문에 넣는다** — 큰 화소를 직접 요구해야 격자가 선다
   - 정리: `tools/sprite-grid.py` 로 격자(12.14×11.96px)를 찾아 칸 가운데 색 → 50×123, 24색(Lab 묶음 — 빨강·금 살림), 알파 160 문턱, 발 기준선 y=126. 그냥 줄이기(면적 평균)는 격자가 어긋나 뭉개졌다
   - 서재 세 테마 합성: 발밑 타원 그림자를 깔면 햇살·한옥에서 자연스럽고 달밤에서도 크게 뜨지 않음. 표시는 2배 권장
-- 그림 저장소: `sprites/alice/raw/alice_begin_still_gen1.png` · `…_gen2.png`(받은 그대로), `sprites/alice/alice_begin_still.png`(정리본), `records/sprites/alice/still.json`(프롬프트·시각·격자·팔레트·반전) — 커밋 `34a3959`
-- 수정한 프로젝트 파일: 이 문서, `tools/sprite-grid.py`(정리 도구), `AGENTS.md`, `IMAGE_RULES.md`, `docs/PATCH.md`
-- 승인 범위: 저장소 편입·P0(2026-10-21), P1 결과 업로드와 반전 허용(2026-10-21)
-- 남은 결정: 동작 시트 생성 시점, 실제 표시 크기, 도트 화풍 열쇠, 이후 제작 범위
+- P2 결과(시트마다 한 번, 이어 요청 없음 — 17:31~17:35 KST, 기록 `records/sprites/alice/p2-gpt-record.txt`):
+  - 지시한 6px 가 아니라 약 11.6px 블록, 블록은 10~13px 로 들쭉날쭉, 눈·하이라이트는 블록보다 잘게 그렸다
+  - 정리: `tools/sprite-sheet.py` — 블록 간격으로 뽑으면 64줄이 되어 얼굴이 뭉개져서 **절반 간격(6.0px) 고정**으로 뽑는다(큰 블록은 2×2, 잔디테일은 남고 정지 도트와 같은 해상도). 경계는 실제 블록 경계를 따라가는 느슨한 격자, 칸 안쪽에서 가장 많은 색, 정지 도트 24색, 떨어진 반짝이(react 2칸) 지움, 발 기준선·몸 중심 맞춤
+  - idle: 2칸이 팔·시계 자세가 달라 머리가 3줄 내려간다 — 재생은 1→4→1→3(깜빡임)으로 2칸을 쓰지 않는다(사용자 결정)
+  - walk: 다리 교차는 맞다. 머리 오르내림 4줄(지시는 2), 5칸은 조금 더 정면. 이 크기에서는 받아들인다
+  - react: 돌아봄 → 인사 → 돌아오기, 끝 칸이 처음 자세와 거의 같다
+  - 도구 재현: 원본에서 다시 돌리면 올린 정리본 넷과 바이트가 같다
+- 그림 저장소: `sprites/alice/raw/`(받은 그대로 — still gen1·gen2, idle·walk·react gen1), `sprites/alice/alice_begin_{still,idle,walk,react}.png`(정리본), `records/sprites/alice/{still,idle,walk,react}.json`(프롬프트·시각·격자·팔레트·재생·반전) — 커밋 `34a3959`·`384e188`
+- 수정한 프로젝트 파일: 이 문서, `tools/sprite_px.py`(공용)·`tools/sprite-grid.py`(정지)·`tools/sprite-sheet.py`(시트), `AGENTS.md`, `IMAGE_RULES.md`, `docs/PATCH.md`
+- 승인 범위: 저장소 편입·P0, P1 결과 업로드와 반전 허용, P2 시트 업로드와 idle 재생 순서(모두 2026-10-21)
+- 남은 결정: P3 착수 시점, 실제 표시 크기, 도트 화풍 열쇠, 이후 제작 범위
 
 ### 작업 중 갱신 양식
 

@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 시범 P2 — alice 대기·걷기·반응 시트
+- tools/sprite-sheet.py — 새 도구. 한 장에 격자로 그린 프레임을 찾아(칸 경계에 걸쳐도), 프레임마다 느슨한 격자(10~13px 로 들쭉날쭉한 생성 도트를 따라)로 칸 안쪽 최다 색을 뽑고, 정지 도트 팔레트·발 기준선·몸 중심으로 가로 시트. --fixed-pitch·--cell·--speck
+- tools/sprite_px.py — 새 공용(격자 찾기·Lab 팔레트·가까운 색·느슨한 격자). tools/sprite-grid.py 는 이것을 쓰도록 — 결과는 바이트까지 그대로
+- docs/ATELIER_PIXEL_ART_PLAN.md — P2 결과(블록 11.6px → 절반 간격 6.0 으로 정리한 까닭, idle 재생 1→4→1→3, walk 오르내림), 체크포인트를 P3 대기로. 그림은 book-atelier-img `sprites/alice/`·`records/sprites/alice/`
+- AGENTS.md — 도트 줄에 시트 도구
+
 ## 2026-10-21 · claude · 도트 계획 — P2 동작 시트 생성 지시문
 - docs/ATELIER_PIXEL_ART_PLAN.md — 11절에 P2 지시문(공통 + idle 4 · walk 6 · react 4, 세로 한 장 격자 칸, 6×6 화소, 정지 도트 6배 첨부)과 받은 뒤 정리 순서
 

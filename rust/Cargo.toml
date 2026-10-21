@@ -2,7 +2,7 @@
 # 다시 만들기는 rust/README.md
 [workspace]
 resolver = "2"
-members = ["art-core", "art-index", "mosaic-wasm"]
+members = ["art-core", "art-index", "mosaic-wasm", "shelf-gen"]
 
 [workspace.package]
 edition = "2021"

@@ -398,4 +398,22 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
     const mv = D.aiMove(data, st, 'greedy'); ok(mv.kind === 'play' && mv.key === 'don_quixote' && mv.slot === 1, '맞은편을 칠 수 있는 자리에 낸다: ' + JSON.stringify(mv)); }
   { const st = rig([], ['treasure_island']); put(st, 'foe', 'treasure_island', 1); st.turn = 'me'; ok(D.aiMove(data, st, 'greedy').kind === 'pass', '할 것이 없으면 넘긴다'); }
 }
+/* ── 서고 탐험이 쓰는 꼴 — 한 장만, 시작 장 고르기, 덱 셋~여섯 ── */
+{
+  ok(D.validateDeck(data, KEYS.slice(0, 3), { loose: true }).ok && D.validateDeck(data, KEYS.slice(0, 6), { loose: true }).ok, '느슨한 덱 — 셋과 여섯');
+  ok(!D.validateDeck(data, KEYS.slice(0, 2), { loose: true }).ok && !D.validateDeck(data, KEYS.slice(0, 7), { loose: true }).ok && !D.validateDeck(data, KEYS.slice(0, 3)).ok, '둘·일곱은 안 되고, 보통 덱은 여섯만');
+  const one = D.newMatch(data, { me: KEYS.slice(0, 3), foe: KEYS.slice(6, 12) }, 5, { start: 1, chapters: 1 });
+  ok(one.chapter === 1 && one.firstChapter === 1 && one.lastChapter === 1 && one.me.hand.length === 3 && one.me.deck.length === 0, '전개에서 시작하는 한 장 결투 — 손 셋, 덱 비움');
+  ok(one.me.hand.every(k => D.formOf(one, { key: k, offset: 0, flags: {} }) === 1), '손의 책은 전개 폼');
+  D.playOut(data, one, 'greedy', 'greedy');
+  ok(one.phase === 'done' && one.chapters.length === 1 && one.chapter === 1 && ['me', 'foe', 'draw'].includes(one.winner), '한 장이 끝나면 판이 끝난다 — 책장을 안 넘긴다: ' + JSON.stringify(one.chapters));
+  ok(one.chapters[0].winner === one.winner, '그 장의 승자가 곧 판의 승자');
+  { const bonus = data.duel.first_bonus, st = D.newMatch(data, { me: KEYS.slice(0, 3), foe: KEYS.slice(6, 12) }, 9, { start: 2, chapters: 1 });
+    st.me.hand = []; st.me.deck = []; st.foe.hand = []; st.foe.deck = []; D.playOut(data, st, 'greedy', 'greedy');
+    ok(st.chapters[0][st.coin] === bonus && st.chapters[0][st.coin === 'me' ? 'foe' : 'me'] === 0, '시작 장이 결말이어도 첫 장의 선공 보정이 붙는다'); }
+  const three = D.newMatch(data, { me: KEYS.slice(0, 6), foe: KEYS.slice(6, 12) }, 5);
+  ok(three.firstChapter === 0 && three.lastChapter === 2, '보통 판은 발단에서 결말까지');
+  const two = D.newMatch(data, { me: KEYS.slice(0, 6), foe: KEYS.slice(6, 12) }, 5, { start: 1, chapters: 5 });
+  ok(two.lastChapter === 2, '장 수는 결말을 넘지 않는다');
+}
 console.log('PASS 책 결투 규칙: ' + n + ' 가지');

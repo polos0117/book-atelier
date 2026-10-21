@@ -13,11 +13,18 @@
 - data/img.json — 지금 등록된 154장 모두 그림 저장소(얕지 않은 로컬 체크아웃) 이력에서 한 번 채웠다(10-16 ~ 10-21). 워크플로의 그림 저장소 체크아웃은 기본 얕은 받기라 거기서는 채우지 않고 새 그림의 오늘만 적는다 — 워크플로는 안 고쳤다
 - dex.html · lib/dex-filter.js · lib/img.js — 목록 맨 위(공간 띠 밑) "최근 추가": 7일 안에 등록된 그림, 새 날짜부터 24장, 줄 안에서만 옆으로 구른다. 누르면 그 책 상세를 그 그림(화풍·폼·컷)으로 연다(`?book=`), 돌아오면 그 칸에 초점. 없으면 줄째 숨는다. 지난번에 들른 뒤 들어온 그림은 목록 칸·최근 추가 칸 왼쪽 위에 "새"(대표 그림 목록은 그 책에 새 그림이 있으면, 컷을 고른 목록은 그 그림이). 들른 표는 시계가 아니라 그때 자료의 가장 늦은 날짜와 그날의 그림으로 적어(`book_dex_seen_v1`) 등록기(UTC)와 보는 사람의 날짜가 어긋나도 빠지거나 겹치지 않는다. 처음 오면 새 표 없음, 떠날 때(pagehide·숨김) 적고 이번 들름(30분 넘게 비우지 않으면, 새로고침 포함)은 기준이 그대로. 작업 현황에 "새 그림만"(새 그림이 있을 때만)
 - lib/gallery.css · lib/landscape.css — 최근 추가 줄(넓으면 이름이 왼쪽, 좁으면 위, 휴대폰 가로는 검색 줄 밑 낮게)·새 표. 칸 44px 넘게, focus-visible
-- lib/words.js — dex.recent.* · dex.new.* · dex.art.new, 거르기 안내에 새 그림만
+- lib/words.js · index.html · prompt.html · duel.html · mosaic.html — dex.recent.* · dex.new.* · dex.art.new, 거르기 안내에 새 그림만. 같은 날 감상 흐름이 올린 `?v=8` 위에 낱말 표 `?v=9`, img.js·dex-filter.js `?v=2`, gallery.css `?v=4`, landscape.css `?v=3` — 화면 다섯 모두 같은 판
 - tests/register-images.py · tests/dex-recent-screen.cjs — 등록한 날 갈래와 git 이력 채우기(교체·지운 것·얕은 저장소 경계), 줄·새 표·새 그림만·다섯 크기(344×882·390×844·844×390·690×829·1280×900) 브라우저 검사
 - tests/gallery-screen.cjs — "첫 화면에 그림" 을 최근 추가 줄이 있으면 그 줄로 보고, 책 칸은 첫 화면 안에서 시작하는지 따로 본다(줄이 책 칸을 백여 px 밀어 690 폭에서 600 선을 넘었다)
 - data/art-index.json — `cargo run --release -p art-index` 로 다시 셈했다. 154장 그대로(이미 최신이라 바뀐 줄 없음)
 - AGENTS.md · IMAGE_RULES.md — 서가 표에 최근·새, 검사 목록, 등록한 날과 한 번 채우기
+
+## 2026-10-21 · gpt · 한 권을 꺼내 감상하고 서고로 돌아오는 흐름
+
+- lib/bookshelf.js — 발단·전개·결말의 초상과 명장면을 순서대로 넘긴다. 장면 책갈피·마지막 장·감상 완료를 book_reading_v1 에 저장하고 다시 열면 이어본다. 마지막 장 뒤 여운 화면에서 책을 꽂거나 책갈피로 돌아간다. 서고에 돌아오면 같은 책등에 포커스와 리본·완료 표시가 남는다. 기존 주소·뒤로 가기와 연동, 그림 없음·저장 차단에도 감상은 계속된다
+- lib/bookshelf.css — 펼친 책의 그림과 조작부는 화면에 남기고 본문만 스크롤. 작은 화면·가로 화면·폴드 대응, 장 넘김과 책 복귀 연출, 동작 줄이기·키보드 포커스 지원
+- lib/words.js · index.html · dex.html · prompt.html · duel.html · mosaic.html — 감상 안내 문구와 새 자산 버전. 동시에 추가된 모자이크 진입 링크도 현재 장면에 맞춰 보존
+- tests/reading-journey-screen.cjs — 다섯 화면 크기에서 세 장 감상·명장면·책갈피·새로고침·이어보기·완료·책등 포커스·스크롤 복귀·그림 없음·저장 차단 확인
 
 ## 2026-10-21 · claude · 모자이크 — 그림 한 장을 서가의 조각으로 (Rust → WebAssembly)
 

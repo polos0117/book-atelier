@@ -39,6 +39,12 @@ fails(lambda d: d['books'][0].update(abroad_protected=True), '각색')
 fails(lambda d: d['books'][0].update(quote_source='국내 번역본'), '인용 출처')
 fails(lambda d: d['books'][0]['opens']['결말'].update(one_figure=False), '한 명')
 fails(lambda d: d['books'][0]['rule'].update(counter=''), '대응')
+# 움직임 — 개방마다 정한 입자 하나. 빠지거나 정한 말이 아니면 걸린다. 폼은 적을 때만 본다
+fails(lambda d: d['books'][0]['opens']['발단'].pop('particles'), '입자')
+fails(lambda d: d['books'][0]['opens']['전개'].update(particles='confetti'), '입자')
+fails(lambda d: d['books'][0]['forms']['결말'].update(particles='glitter'), '폼의 입자')
+d = copy.deepcopy(doc); d['books'][0]['forms']['결말']['particles'] = 'dust'; assert B.check(d) == [], B.check(d)
+assert all(o['particles'] in doc['vocab']['particles'] for b in doc['books'] for o in b['opens'].values())
 fails(lambda d: d['books'][0]['rule']['forms'].pop('전개'), '폼별 사용법')
 # 결투에 줄(lane)이 없다 — 옛 3줄 엔진 말은 걸린다. "줄기·줄어든다" 는 괜찮다
 fails(lambda d: d['books'][0]['rule']['forms'].update(전개='이 줄의 아군이 단단해진다'), '줄(lane)')
@@ -52,4 +58,4 @@ fails(lambda d: d['books'][1].update(genre=d['books'][0]['genre']), '장르가 �
 fails(lambda d: d['books'][4].pop('anonymous'), '사망 연도')
 fails(lambda d: d['vocab']['form_key'].update(전개='begin'), 'form_key')
 fails(lambda d: d['books'][0].update(key='Don Quixote'), 'key 는')
-print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르 · 줄(lane) 말 없음' % len(doc['books']))
+print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르 · 줄(lane) 말 없음 · 개방 입자' % len(doc['books']))

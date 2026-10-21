@@ -18,6 +18,7 @@
   "quote_source": ["원문", "직접 옮김", "인용 안 함"],
   "binding": ["hardcover", "hanji", "bamboo"],
   "ethnicity": ["East Asian", "Korean", "Japanese", "Chinese", "Southeast Asian", "Central Asian", "South Asian", "Middle Eastern", "European", "Nordic", "Mediterranean", "Slavic", "Latin American", "African", "mixed East Asian and European"],
+  "particles": ["petals", "snow", "embers", "ash", "bats", "dust", "sparks", "bubbles", "leaves", "pages", "cards", "stars", "rain", "mist", "gold", "fireflies"],
   "form_key": {"발단": "begin", "전개": "middle", "결말": "end"}
  },
  "books": [
@@ -57,9 +58,9 @@
     "결말": {"look": "코스모스를 강의하는 학자 — 은하가 인쇄된 책장 자락의 긴 코트, 천구의", "role": "지원", "pose": "한 손을 들어 손끝으로 하늘의 별을 가리키고, 다른 손은 곁의 천구의에 얹은 강연 자세"}
    },
    "opens": {
-    "발단": {"scene": "오리노코 밀림의 밤 — 반딧불이와 별이 한 강물처럼 흐르는 하늘", "one_figure": true},
-    "전개": {"scene": "침보라소 산의 고도별 식물대가 그녀 둘레로 층층이 펼쳐진다", "one_figure": true},
-    "결말": {"scene": "은하와 나뭇잎이 같은 궤도로 도는 우주", "one_figure": true}
+    "발단": {"scene": "오리노코 밀림의 밤 — 반딧불이와 별이 한 강물처럼 흐르는 하늘", "one_figure": true, "particles": "fireflies"},
+    "전개": {"scene": "침보라소 산의 고도별 식물대가 그녀 둘레로 층층이 펼쳐진다", "one_figure": true, "particles": "leaves"},
+    "결말": {"scene": "은하와 나뭇잎이 같은 궤도로 도는 우주", "one_figure": true, "particles": "stars"}
    },
    "scene_cards": [],
    "pilot": {"form": "결말", "open": "결말"}
@@ -100,9 +101,9 @@
     "결말": {"look": "꿈에서 깨어난 알론소 키하노 — 단정한 검은 외출복, 접은 책장 갑옷 조각을 띠처럼 두름", "role": "지원", "pose": "두 손을 가슴 앞에 가볍게 모으고 고개를 조금 숙여 미소 짓는 차분한 선 자세"}
    },
    "opens": {
-    "발단": {"scene": "여관 마당이 횃불 켜진 성으로 보이는 밤", "one_figure": true},
-    "전개": {"scene": "거인처럼 팔을 휘두르는 풍차 앞으로 돌진하는 순간", "one_figure": true},
-    "결말": {"scene": "새벽 라만차 평원, 바람에 흩어지는 기사도 책장 사이로 멈춘 풍차", "one_figure": true}
+    "발단": {"scene": "여관 마당이 횃불 켜진 성으로 보이는 밤", "one_figure": true, "particles": "embers"},
+    "전개": {"scene": "거인처럼 팔을 휘두르는 풍차 앞으로 돌진하는 순간", "one_figure": true, "particles": "dust"},
+    "결말": {"scene": "새벽 라만차 평원, 바람에 흩어지는 기사도 책장 사이로 멈춘 풍차", "one_figure": true, "particles": "pages"}
    },
    "scene_cards": ["사자와의 대치", "놋대야를 맘브리노 투구로 믿다", "몬테시노스 동굴"],
    "pilot": {"form": "전개", "open": "전개"}
@@ -143,9 +144,9 @@
     "결말": {"look": "재판정에 맞선 모습 — 트럼프 카드 뒷면을 엮은 망토, 당당히 선 자세", "role": "돌파", "pose": "두 발을 모으고 턱을 들어 정면을 보며, 한 손은 허리에 얹고 다른 손으로 망토 자락을 옆으로 젖힌 자세"}
    },
    "opens": {
-    "발단": {"scene": "끝없이 떨어지는 토끼굴 — 둥둥 떠다니는 시계와 찻잔", "one_figure": true},
-    "전개": {"scene": "커다래진 그녀에 비해 작아진 집과 정원", "one_figure": true},
-    "결말": {"scene": "무늬만 있는 트럼프 카드가 폭풍처럼 흩날린다", "one_figure": true}
+    "발단": {"scene": "끝없이 떨어지는 토끼굴 — 둥둥 떠다니는 시계와 찻잔", "one_figure": true, "particles": "dust"},
+    "전개": {"scene": "커다래진 그녀에 비해 작아진 집과 정원", "one_figure": true, "particles": "petals"},
+    "결말": {"scene": "무늬만 있는 트럼프 카드가 폭풍처럼 흩날린다", "one_figure": true, "particles": "cards"}
    },
    "scene_cards": ["미친 다과회", "체셔 고양이의 미소만 남은 나무"],
    "pilot": {"form": "결말", "open": "결말"}
@@ -186,9 +187,9 @@
     "결말": {"look": "북극 유빙 위 — 헐거운 망토 하나만 두르고 떠나는 모습", "role": "지원", "pose": "유빙 끝에 서서 두 손으로 망토를 여미고, 먼 수평선 쪽으로 고개를 살짝 돌린 3/4 얼굴의 자세"}
    },
    "opens": {
-    "발단": {"scene": "번개가 내리꽂히는 실험실 — 쇠사슬과 유리 기구", "one_figure": true},
-    "전개": {"scene": "몽블랑 빙하 위의 눈폭풍", "one_figure": true},
-    "결말": {"scene": "북극 유빙 위 타오르는 장작더미의 빛", "one_figure": true}
+    "발단": {"scene": "번개가 내리꽂히는 실험실 — 쇠사슬과 유리 기구", "one_figure": true, "particles": "sparks"},
+    "전개": {"scene": "몽블랑 빙하 위의 눈폭풍", "one_figure": true, "particles": "snow"},
+    "결말": {"scene": "북극 유빙 위 타오르는 장작더미의 빛", "one_figure": true, "particles": "embers"}
    },
    "scene_cards": ["오두막 틈으로 배운 말", "제네바의 번개"],
    "pilot": {"form": "전개", "open": "전개"}
@@ -230,9 +231,9 @@
     "결말": {"look": "어사출두 날 — 다시 단장한 혼례풍 한복과 옥가락지", "role": "공격", "pose": "옥가락지 낀 손을 가슴께에 올리고, 다른 손으로 치맛자락을 쥔 채 턱을 든 당당한 자세"}
    },
    "opens": {
-    "발단": {"scene": "단옷날 하늘 높이 솟는 그네와 흩날리는 오색 천", "one_figure": true},
-    "전개": {"scene": "달빛 비치는 옥 창살 사이로 내리는 비", "one_figure": true},
-    "결말": {"scene": "무너지는 잔칫상 위로 흩날리는 한지 꽃잎과 붉은 노을(글자 있는 마패는 그리지 않는다)", "one_figure": true}
+    "발단": {"scene": "단옷날 하늘 높이 솟는 그네와 흩날리는 오색 천", "one_figure": true, "particles": "petals"},
+    "전개": {"scene": "달빛 비치는 옥 창살 사이로 내리는 비", "one_figure": true, "particles": "rain"},
+    "결말": {"scene": "무너지는 잔칫상 위로 흩날리는 한지 꽃잎과 붉은 노을(글자 있는 마패는 그리지 않는다)", "one_figure": true, "particles": "petals"}
    },
    "scene_cards": ["오리정 이별", "옥중 꿈"],
    "pilot": {"form": "발단", "open": "발단"}
@@ -308,15 +309,18 @@
    "opens": {
     "발단": {
      "scene": "자정의 엘시노어 성벽, 짙은 안개 속에 번지는 차갑고 푸른 유령의 빛(얼굴 없는 빛의 형체)",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     },
     "전개": {
      "scene": "극중극의 무대 — 촛불이 흔들리는 연회장, 비어 있는 왕좌와 쓰러진 술잔",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "dust"
     },
     "결말": {
      "scene": "독이 번진 결투장 — 떨어진 왕관과 엎질러진 독배 위로 내려앉는 고요",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "ash"
     }
    },
    "scene_cards": [
@@ -400,15 +404,18 @@
    "opens": {
     "발단": {
      "scene": "가스등 켜진 베이커 거리의 서재, 벽난로 불빛과 흩어진 신문·편지",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "embers"
     },
     "전개": {
      "scene": "짙은 안개가 깔린 다트무어 황야와 그림펜 늪, 멀리 바위 언덕 위의 불빛",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     },
     "결말": {
      "scene": "안개를 찢고 뛰어드는 인광으로 빛나는 거대한 사냥개",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "fireflies"
     }
    },
    "scene_cards": [
@@ -492,15 +499,18 @@
    "opens": {
     "발단": {
      "scene": "눈 내리는 해변 여관, 바다 쪽에서 들려오는 지팡이 소리와 버려진 선원 궤짝",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "snow"
     },
     "전개": {
      "scene": "폭풍을 뚫고 섬을 향해 기울어진 범선의 갑판과 찢어질 듯 부푼 돛",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "rain"
     },
     "결말": {
      "scene": "횃불에 비친 동굴 가득 쏟아진 금화와 보석",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "gold"
     }
    },
    "scene_cards": [
@@ -584,15 +594,18 @@
    "opens": {
     "발단": {
      "scene": "레버를 당긴 순간 — 실험실의 해와 달이 번개처럼 지나가며 흐려지는 창밖",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "sparks"
     },
     "전개": {
      "scene": "거대한 스핑크스 석상과 무너진 궁전, 땅 밑 우물에서 올라오는 차가운 기계 소리",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "dust"
     },
     "결말": {
      "scene": "붉게 부푼 태양 아래 끝없는 모래 해변과 고요한 바다",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "ash"
     }
    },
    "scene_cards": [
@@ -676,15 +689,18 @@
    "opens": {
     "발단": {
      "scene": "먹으로 진형을 그린 거대한 모래판이 그녀 발밑까지 펼쳐진 막사",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "dust"
     },
     "전개": {
      "scene": "강을 따라 흐르는 물이 진형 선을 따라 빛나며 갈라지는 전장",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "gold"
     },
     "결말": {
      "scene": "칼을 거둔 채 고요해진 성문 앞, 바람에 눕는 깃발과 내려놓인 창",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "leaves"
     }
    },
    "scene_cards": [
@@ -768,15 +784,18 @@
    "opens": {
     "발단": {
      "scene": "촛불 샹들리에가 흔들리는 메리턴 무도회장, 비어 있는 춤 줄과 바닥에 떨어진 춤 카드",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "gold"
     },
     "전개": {
      "scene": "비 갠 로징스 정원 길, 바람에 흩날리는 편지 책장과 붉은 봉랍",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "pages"
     },
     "결말": {
      "scene": "새벽 안개 속 펨벌리 저택이 고요한 호수에 비치는 들판",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     }
    },
    "scene_cards": [
@@ -856,15 +875,18 @@
    "opens": {
     "발단": {
      "scene": "보름달 아래 트란실바니아 산성, 끝없이 오르는 돌계단과 멀리 늑대 실루엣",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     },
     "전개": {
      "scene": "안개 낀 런던 지붕 위, 박쥐 떼가 달을 가로지르고 창문 하나만 열린 밤",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "bats"
     },
     "결말": {
      "scene": "해가 뜨는 산성 앞 눈길, 깨진 흙 상자에서 재가 햇빛 속으로 흩어진다",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "ash"
     }
    },
    "scene_cards": [
@@ -949,15 +971,18 @@
    "opens": {
     "발단": {
      "scene": "안개 낀 키보렌 숲, 거대한 나무뿌리 사이로 서늘한 빛이 흐르는 밤(멀리 얼굴 없는 비늘 실루엣)",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     },
     "전개": {
      "scene": "도깨비불이 줄지어 떠다니는 밀림 길, 커다란 깃털 하나가 바람에 떨어진다",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "fireflies"
     },
     "결말": {
      "scene": "비구름 사이로 멀리 하늘치의 그림자가 지나가고, 빗줄기가 빛나는 북부 평원",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "rain"
     }
    },
    "scene_cards": [
@@ -1044,15 +1069,18 @@
    "opens": {
     "발단": {
      "scene": "가을 오후의 샤이어 언덕길, 둥근 문이 난 언덕 굴집과 길 위에 떨어진 금반지 하나",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "leaves"
     },
     "전개": {
      "scene": "끝없는 돌기둥이 늘어선 모리아의 어둠, 멀리 번지는 불꽃 그림자",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "embers"
     },
     "결말": {
      "scene": "저녁의 회색 항구, 흰 배가 서쪽 바다의 은빛 길로 떠난다",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     }
    },
    "scene_cards": [
@@ -1132,15 +1160,18 @@
    "opens": {
     "발단": {
      "scene": "해변에 누웠다 일어난 그녀 둘레로 손가락만 한 성벽·배·깃발이 펼쳐진 릴리퍼트(작은 사람들은 얼굴 없는 점처럼 멀리)",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "dust"
     },
     "전개": {
      "scene": "거인의 식탁 위 — 집채만 한 은수저와 찻잔, 그녀는 골무 곁에 선다",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "gold"
     },
     "결말": {
      "scene": "하늘에 뜬 돌섬 라퓨타가 그림자를 드리운 바다, 멀리 초원을 달리는 말들",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     }
    },
    "scene_cards": [
@@ -1224,15 +1255,18 @@
    "opens": {
     "발단": {
      "scene": "둥근 우주선 창밖, 금빛 점에 덮여 서서히 어두워지는 태양",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "gold"
     },
     "전개": {
      "scene": "타우 세티의 금빛 띠가 흐르는 우주, 두 우주선을 잇는 투명한 터널 하나",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "stars"
     },
     "결말": {
      "scene": "낯선 행성의 돔 교실, 둥근 창 너머로 짙은 안개 하늘과 바위 지평선",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     }
    },
    "scene_cards": [
@@ -1312,15 +1346,18 @@
    "opens": {
     "발단": {
      "scene": "눈 내리는 모스크바 역, 김을 뿜으며 들어오는 기차와 붉은 신호등",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "snow"
     },
     "전개": {
      "scene": "샹들리에가 빛나는 페테르부르크 무도회장, 흩날리는 보랏빛 팬지 꽃잎",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "petals"
     },
     "결말": {
      "scene": "눈보라 속으로 끝없이 뻗은 선로, 멀리서 다가오는 기차의 불빛 하나",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "snow"
     }
    },
    "scene_cards": [
@@ -1400,15 +1437,18 @@
    "opens": {
     "발단": {
      "scene": "밤바다 위 대서양 여객선 갑판, 무선실 불빛과 바람에 날리는 예고장 카드",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "cards"
     },
     "전개": {
      "scene": "어두운 저택 응접실, 텅 빈 액자 틀들과 활짝 열린 금고",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "dust"
     },
     "결말": {
      "scene": "새벽 파리 지붕 위, 멀리 대성당 탑과 지붕마다 흩어진 카드",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "cards"
     }
    },
    "scene_cards": [
@@ -1488,15 +1528,18 @@
    "opens": {
     "발단": {
      "scene": "부활절 새벽의 고딕 서재, 창으로 쏟아지는 종소리 같은 빛과 별 도표",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "dust"
     },
     "전개": {
      "scene": "발푸르기스의 밤 — 바위산 꼭대기를 휘감는 도깨비불과 회오리바람",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "embers"
     },
     "결말": {
      "scene": "바다를 막아 낸 새 땅 위로 떠오르는 해, 하늘로 오르는 장미 꽃잎",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "petals"
     }
    },
    "scene_cards": [
@@ -1576,15 +1619,18 @@
    "opens": {
     "발단": {
      "scene": "썰물의 흑산도 갯바위, 물웅덩이마다 반짝이는 바다 생물들",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "bubbles"
     },
     "전개": {
      "scene": "새벽 바다 위 작은 고깃배, 그물 가득 은빛 물고기 떼가 튀어 오른다",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "mist"
     },
     "결말": {
      "scene": "등잔불 켜진 초가 창밖, 달빛 아래 검은 바다를 지나는 커다란 고래 그림자",
-     "one_figure": true
+     "one_figure": true,
+     "particles": "bubbles"
     }
    },
    "scene_cards": [

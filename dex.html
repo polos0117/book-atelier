@@ -161,11 +161,13 @@ body.zoomed {overflow:hidden}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=9"></script>
+<script src="lib/words.js?v=10"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
 <script src="lib/book-frame.js?v=1"></script>
+<script src="lib/scene-motion.js?v=1"></script>
+<link rel="stylesheet" href="lib/scene-motion.css?v=1">
 <link rel="stylesheet" href="lib/gallery.css?v=4">
 <link rel="stylesheet" href="lib/landscape.css?v=3">
 <link rel="stylesheet" href="lib/room.css?v=3">
@@ -179,7 +181,7 @@ import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'https://e
 import htm from 'https://esm.sh/htm@3.1.1';
 import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
 const html = htm.bind(h);
-const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame;
+const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame, MOTION = window.AtelierMotion;
 const FILTER_STORE = 'book_dex_filters_v1', COMPACT_STORE = 'book_dex_compact_v1';
 /* 들른 표 — 이 브라우저에만. SEEN_STORE 는 지난번 들렀을 때의 자료 표(떠날 때 적는다), SEEN_TAB 은 이번 들름의 기준.
    이번 들름 동안(새로고침·다른 화면에 갔다 오기 포함, 30분 넘게 비우지 않으면)은 같은 기준이라 "새" 표가 그대로 남는다 */
@@ -396,6 +398,24 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
   /* 지금 보는 그림의 글 — 폼이면 그 폼의 모습, 개방이면 그 명장면 */
   const stage = shown && shown.form ? stageOf(defs, shown.form) : '';
   const caption = shown && (shown.cut === 'open' ? ((card.opens || {})[stage] || {}).scene : shown.cut === 'portrait' ? ((card.forms || {})[stage] || {}).look : '');
+  /* 움직임 — 큰 그림에서 폼 ↔ 그 폼의 개방으로 바뀌면 열리기(lib/scene-motion.js). 개방으로 갈 때만 그 장면의 입자가 터진다.
+     다른 그림으로 넘길 때·크게 보기에서는 그대로 바꾼다(살펴보는 자리라 켄 번스·입자 없음) */
+  const bigRef = useRef(null), lastShown = useRef(null);
+  const [motion, setMotion] = useState(() => !!MOTION && MOTION.enabled());
+  useEffect(() => MOTION ? MOTION.subscribe(setMotion) : undefined, []);
+  const motionLocked = !MOTION || MOTION.reduced();
+  useLayoutEffect(() => {
+    const prev = lastShown.current, now = shown && { book: card.key, file: shown.file, form: shown.form, cut: shown.cut };
+    lastShown.current = now;
+    if (!MOTION || !prev || !now || prev.file === now.file || prev.book !== now.book) return;
+    const pair = ['portrait', 'open'];
+    if (!pair.includes(prev.cut) || !pair.includes(now.cut) || prev.cut === now.cut || FILTER.baseForm(prev.form) !== FILTER.baseForm(now.form)) return;
+    const img = bigRef.current && bigRef.current.querySelector('img');
+    if (!img) return;
+    const kind = now.cut === 'open' ? ((card.opens || {})[stageOf(defs, now.form)] || {}).particles : null;
+    MOTION.reveal(MOTION.ghost(img, IMG.imgURL(prev.file), { fit: 'contain' }), img, { kind, removeFrom: true, key: 'dex-big', seed: now.file });
+  }, [card.key, shown && shown.file]);
+  useEffect(() => () => MOTION && MOTION.cancel('dex-big'), []);
 
   const head = html`
     <div class="bar">
@@ -409,7 +429,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
       <div class="artwork-panel">
     ${shown ? html`
       <p class="sec">${shotLabel(shown, defs)}<span>${showFocus ? W('dex.selected') : (styleName[style] || '')}</span></p>
-      <div class="big" ...${swipe}><button type="button" class="zoom" aria-label=${W('dex.zoom')} onClick=${() => setZoom(true)}><${Frame} book=${card} on=${framed}><${Pic} full file=${shown.file} alt=${card.name} /></${Frame}></button>${bigNav}${bigCount}</div>
+      <div class="big" ref=${bigRef} ...${swipe}><button type="button" class="zoom" aria-label=${W('dex.zoom')} onClick=${() => setZoom(true)}><${Frame} book=${card} on=${framed}><${Pic} full file=${shown.file} alt=${card.name} /></${Frame}></button>${bigNav}${bigCount}</div>
       ${caption && html`<p class="note">${caption}</p>`}
     ` : html`<p class="empty">${W('art.none')}</p>`}
     ${nav && html`<div class="card-nav" role="group" aria-label=${W('dex.card.count', { n: nav.index + 1, total: nav.total })}>
@@ -431,6 +451,8 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
       <span class="hall-n">${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span>
       <button type="button" id="dex-frame" aria-pressed=${framed} title=${W('dex.frame.note')} onClick=${flipFrame}>${W('dex.frame.' + FRAME.kind(card))}</button>
       ${shown && html`<a href=${'mosaic.html?file=' + encodeURIComponent(shown.file)} id="dex-to-mosaic">${W('dex.mosaic')}</a>`}
+      <button type="button" id="dex-motion" disabled=${motionLocked} title=${W(motionLocked ? 'motion.reduced' : 'motion.note')}
+        onClick=${() => MOTION.setEnabled(!motion)}>${W(motion ? 'motion.off' : 'motion.on')}</button>
     </div>
     ${keys.length > 1 && html`
       <p class="sec">${W('dex.style.compare')}<span>${W('art.count', { n: keys.length })}</span></p>

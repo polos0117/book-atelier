@@ -113,7 +113,7 @@ body {color:var(--text);font-size:15px}
 @keyframes scene-in {from {opacity:0} to {opacity:1}}
 @media (prefers-reduced-motion:reduce) {.duel-scene,.duel-zoom {animation:none}}
 .duel-scene .pic,.duel-zoom .pic {flex:none;width:min(80vw,calc(62dvh * 2 / 3));aspect-ratio:2/3;border:1px solid var(--gold);border-radius:12px;overflow:hidden;background:#000}
-.duel-scene .pic {box-shadow:0 0 60px var(--gold)}
+.duel-scene .pic {position:relative;box-shadow:0 0 60px var(--gold)}
 .duel-scene .pic img,.duel-zoom .pic img {display:block;width:100%;height:100%;object-fit:cover}
 .duel-scene .pic .ph,.duel-zoom .pic .ph {color:#fff;font-size:16px}
 .duel-scene .text,.duel-zoom .text {display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;max-width:520px}
@@ -179,12 +179,14 @@ body {color:var(--text);font-size:15px}
 .pw2 {display:none}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=9"></script>
+<script src="lib/words.js?v=10"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/today.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
 <script src="lib/duel.js?v=1"></script>
+<script src="lib/scene-motion.js?v=1"></script>
+<link rel="stylesheet" href="lib/scene-motion.css?v=1">
 <link rel="stylesheet" href="lib/room.css?v=3">
 </head>
 <body class="prompt-page duel-page">
@@ -195,7 +197,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'https://esm.sh/pre
 import htm from 'https://esm.sh/htm@3.1.1';
 import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
 const html = htm.bind(h);
-const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel;
+const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel, MOTION = window.AtelierMotion;
 const STORE = 'book_duel_v1', AI_DELAY = 650;
 const T = window.AtelierToday, ROOM = 'book';   /* 오늘 기록 — 공방 지도의 방 열쇠(lib/today.js) */
 const V = 'f', NO = ['①', '②', '③'];
@@ -449,8 +451,17 @@ function Scene({ S, scene, onClose }) {
   const layer = useModal(onClose);
   const b = S.books[scene.key], file = picOf(S, scene.key, scene.form, true), text = ((b.opens || {})[S.stages[scene.form]] || {}).scene || '';
   const title = W('duel.log.open', { who: W(scene.who === 'me' ? 'duel.me' : 'duel.foe'), book: b.title });
+  /* 움직임 — 그 폼의 초상에서 명장면이 열리고(lib/scene-motion.js reveal), 그 개방의 입자가 한 번 터진다 */
+  const pic = useRef(null);
+  useLayoutEffect(() => {
+    const img = MOTION && pic.current && pic.current.querySelector('img'), base = picOf(S, scene.key, scene.form, false);
+    if (!img) return;
+    const kind = ((b.opens || {})[S.stages[scene.form]] || {}).particles;
+    MOTION.reveal(base ? MOTION.ghost(img, IMG.imgURL(base), { fit: 'cover' }) : null, img, { kind, removeFrom: true, key: 'duel-scene', seed: file });
+    return () => MOTION.cancel('duel-scene');
+  }, [scene.key, scene.form]);
   return html`<div ref=${layer} class="duel-scene" role="dialog" aria-modal="true" aria-labelledby="duel-scene-title" aria-describedby="duel-scene-text" data-key=${scene.key} onClick=${onClose}>
-    <div class="pic"><${Pic} full file=${file} alt=${b.title} /></div>
+    <div class="pic" ref=${pic}><${Pic} full file=${file} alt=${b.title} /></div>
     <div class="text"><h3 id="duel-scene-title">${title}</h3><p id="duel-scene-text">${text}</p>
       <button type="button" class="btn modal-close" id="duel-scene-close" onClick=${onClose}>${W('duel.scene.close')}</button></div>
   </div>`;

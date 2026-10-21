@@ -7,6 +7,16 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 감상 흐름에 움직임 — 켄 번스·명장면 열리기·장면 입자
+
+- lib/scene-motion.js · lib/scene-motion.css — 새 파일(판 1). 정지 그림으로 만드는 움직임: `kenBurns`(씨앗으로 방향·12~20초가 정해지는 느린 밀기), `particles`(캔버스 하나·rAF 고리 하나, 종류 16 — 꽃잎·눈·불티·재·박쥐·먼지·불꽃·물방울·잎·종잇조각·카드·별·비·안개·금빛·반딧불, 크기·화소비에 맞춘 개수와 상한, 화면 밖·숨은 탭이면 멈춤, 한 번 터지기), `reveal`(그림이 그려진 크기에 맞춘 조리개 + 빛 고리·번짐 + 그 장면 입자 터짐 + 켄 번스로 이어지는 밀어 들어가기, 1.1초), `turn`(엇갈려 사라지며 읽는 쪽으로 조금), `ghost`·`snapshot`(갈아 끼운 그림의 정지 사본). 동작 줄이기면 켄 번스·떠도는 입자 없이 빠른 사라짐, 스위치는 `atelier_motion_v1`(공방 넷이 같이), 같은 열쇠로 부르면 앞의 것을 끊는다. 책 말이 없다 — 네 공방에 글자 그대로 복사한다
+- lib/bookshelf.js · lib/bookshelf.css · index.html — 감상 그림에 켄 번스, 명장면 장에는 그 장면 입자가 떠돈다. 같은 장의 초상 → 명장면은 열리기, 다른 장 이동·책갈피·마치기는 넘기기(옛 3D 책장 넘김 애니메이션을 걷었다). 링크 줄에 "움직임 끄기·켜기". 책갈피·이어보기·완료·포커스·주소·뒤로 가기는 그대로
+- dex.html — 큰 그림에서 폼 ↔ 그 폼의 개방은 열리기(개방으로 갈 때만 입자), 크게 보기는 켄 번스·입자 없음, 링크 줄에 움직임 단추. duel.html — 절정 장면이 그 폼의 초상에서 열리고 그 개방의 입자가 터진다
+- data/book-design.json · tools/book-design.py · tests/book-design.py — 개방 60칸마다 `particles` 하나(명장면 글에서: 드라큘라 안개·박쥐·재, 춘향전 꽃잎·비·꽃잎, 자산어보 물방울·안개·물방울, 헤일메리 금빛·별·안개 …), `vocab.particles`, 정한 말 검사(폼은 적을 때만)
+- lib/words.js · index.html · dex.html · prompt.html · duel.html · mosaic.html — motion.on·off·note·reduced, 낱말 표 `?v=10`(화면 다섯 같은 판), bookshelf.css `?v=6` · bookshelf.js `?v=7`
+- tests/scene-motion.cjs — 새 검사: 같은 파일(판·바깥 없음)·설계표 입자 = 모듈 종류, 입자(화소 변화·숨김·화면 밖·destroy·종류마다), 켄 번스, 열리기·끊기·넘기기·사본, 스위치(저장·새로고침), 동작 줄이기, 서재·서가·크게 보기·결투, 다섯 크기 넘침·오류 없음
+- docs/SCENE_MOTION.md · AGENTS.md — API·종류·복사 규칙, 공방마다 자료를 종류로 잇는 법(pkm 타입·myth 원소·건담), 검사 목록
+
 ## 2026-10-21 · claude · 서가 최근 추가 줄과 새 표 — 등록한 날(added)
 
 - tools/register-images.py — img.json 에 `added` {파일: "YYYY-MM-DD"}. 이번에 새로 적힌 그림만 오늘, 있던 날짜는 그대로, 틀린 날짜는 버린다, `--prune` 으로 빠진 그림은 날짜도. `--backfill-added <그림 저장소>` 는 날짜 없는 그림에만 git 이력의 처음 더해진 날(`git log --diff-filter=A --format=%cs` 와 같은 셈, 얕으면 `--depth` 를 늘려 받고 그래도 잘린 경계 커밋의 날짜는 안 쓴다). 날짜는 지어내지 않는다 — 이력에 없으면 날짜 없이 둔다

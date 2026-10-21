@@ -15,13 +15,14 @@
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
 | `docs/PORT_NOTES.md` | 어디서 무엇을 가져왔고, 무엇을 일부러 뺐나 |
 | `docs/ART_INDEX.md` · `rust/README.md` | 그림 색인(모자이크 서명·dHash·색 막대)과 wasm 다시 짓기, 다음 일 "닮은 그림" 계획 |
+| `docs/SCENE_MOTION.md` | 움직임 — 켄 번스·입자·열리기·넘기기(`lib/scene-motion.js`·`.css`, 네 공방이 글자 그대로 나눠 쓴다), 입자 종류와 자료 잇기 |
 | `docs/PATCH.md` | 무엇을 고쳤나 — 고친 쪽이 직접 적는다 (아래 규칙 7) |
 
 ## 화면
 
 | 화면 | 파일 | 무엇 |
 |---|---|---|
-| 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·패치 기록·공간 |
+| 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
 | 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열. 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 다섯은 안 들어 항해에는 없다 |
@@ -42,6 +43,7 @@
 얼굴 5 묶음 중 둘 이상 다르다 — 설계표를 고치면 `python3 tools/book-design.py check` 를 돌린다.
 개방 명장면은 그녀 한 명과 사물·환경·괴물로 표현할 수 있어야 한다.
 설계표에 새 정한 말(vocab)을 더하면 `lib/prompt-spec.js` 의 `VOCAB_EN` 에 영어도 더한다(`node tests/prompt-book.cjs` 가 본다).
+개방의 `particles`(입자 하나)는 프롬프트에 안 실리는 움직임 말이다 — 영어 대신 `lib/scene-motion.js` 의 `KINDS` 와 같아야 한다(`tests/scene-motion.cjs`).
 
 ### 3. 저작권 (비상업)
 
@@ -113,6 +115,8 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/bookshelf-screen.cjs # 
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지·오늘의 판(같은 씨앗)·오늘 기록 · 휴대폰 가로·세로·폴드·PC 넷에서 끝까지, 돌려도 그대로
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/mosaic-screen.cjs   # 모자이크 — ?file= 로 거칠게 그리기·받기·조각 누르기·겹치기 · 세로·가로·PC · wasm 없음
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 휴대폰 가로 — 서재·서가·프롬프트 첫 화면(lib/landscape.css)
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/scene-motion.cjs     # 움직임 — 입자·켄 번스·열리기·넘기기·스위치·동작 줄이기 · 서재 감상·서가 상세·결투 절정 · 다섯 크기
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/reading-journey-screen.cjs # 감상 흐름 — 세 장·명장면·책갈피·이어보기·완료·책등 포커스
 ```
 
 브라우저 검사의 그림은 `tests/fixtures/make-art.py` 가 임시 자리에 만든다(Pillow 필요) — 실제 등록기로 img.json 을 짠다.

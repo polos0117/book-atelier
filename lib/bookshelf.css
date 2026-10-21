@@ -165,7 +165,7 @@
 .reading-book {height:min(760px,calc(100dvh - 48px));grid-template-rows:minmax(0,1fr) auto;overflow:hidden}
 .reading-book::after {bottom:76px}
 .reading-art {overflow:hidden;padding:24px 24px 36px}
-.reading-image-page {width:100%;height:100%;min-height:0;animation:reading-turn 360ms ease both}
+.reading-image-page {width:100%;height:100%;min-height:0}
 .reading-art img {width:100%;height:100%;max-height:100%;object-fit:contain}
 .reading-story {justify-content:flex-start;overflow:auto;overscroll-behavior:contain;padding:54px 34px 26px}
 .reading-story h2 {font-size:clamp(24px,2.5vw,34px);line-height:1.4;margin-bottom:22px}
@@ -196,7 +196,6 @@
 .spine-ribbon {position:absolute;right:6px;top:-4px;width:17px;height:29px;padding-top:5px;background:#dcc18a;color:#352819;clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%);z-index:2;font:12px/1.3 sans-serif}
 .shelf-book[data-returned="true"] .book-volume {animation:shelf-settle 650ms ease both}
 .bookshelf-receipt {min-height:24px;margin:16px 0 4px;color:var(--muted);font-size:12px;line-height:1.8;text-align:center;word-break:keep-all}
-@keyframes reading-turn {from{opacity:.3;transform:perspective(1200px) rotateY(-9deg) translateX(12px)}to{opacity:1;transform:none}}
 @keyframes reading-ink {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 @keyframes shelf-settle {0%{transform:translateY(-12px);filter:drop-shadow(0 0 14px #dec386)}100%{transform:none;filter:drop-shadow(5px 0 3px #0008)}}
 @media(max-width:599px) and (orientation:portrait) {
@@ -238,8 +237,13 @@
 .reading-image-page img {position:absolute;inset:0;width:100%;height:100%;min-height:0;object-fit:contain}
 .reading-image-page>.shelf-no-art {height:100%;min-height:0}
 
-.reading-book[data-direction="previous"] .reading-image-page {animation-name:reading-turn-back}
-@keyframes reading-turn-back {from{opacity:.3;transform:perspective(1200px) rotateY(9deg) translateX(-12px)}to{opacity:1;transform:none}}
+/* 움직임(lib/scene-motion.js) — 장 넘김·명장면 열리기·켄 번스·입자. 나가는 그림의 사본은 .reading-ghosts 에 깔리고,
+   새 그림(.reading-image-page)이 그 위에서 열린다. 그림은 .reading-art 안에서만 움직인다(overflow:hidden) */
+.reading-ghosts {position:absolute;inset:0;z-index:0;pointer-events:none}
+.reading-motion-layer {position:absolute;inset:0;z-index:1;pointer-events:none}
+.reading-image-page img {transform-origin:center}
+.reading-links .reading-motion {min-height:44px;margin:0;padding:12px 0;background:none;border:0;color:var(--muted);font:inherit;font-size:12px;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.reading-links .reading-motion:disabled {cursor:default;opacity:.6}
 
 .reading-links {display:flex;flex-wrap:wrap;align-items:center;column-gap:18px;margin-top:auto}
 .reading-links a {margin:0;padding:12px 0;background:none;border:0;color:var(--muted);font-size:12px;text-decoration:underline;text-underline-offset:4px}

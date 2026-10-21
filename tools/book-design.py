@@ -14,7 +14,9 @@
   - 저작권: 저자 사망 연도(작자 미상이면 anonymous, 살아 있으면 alive)·해외 보호 여부를 적는다. 한국에서 아직 보호 중인 책
     (1963년 이후 사망·생존 작가)은 경고만 한다 — 개인 취미용이라 막지 않는다(2026-10-19). 보호 중인 책(국내·해외)은
     따라 하지 않을 각색(adaptations — 영화·드라마·게임·표지)을 적는다. 생성기가 원작 글에서만 그리라는 줄을 싣는다
-  - 시범(pilot)은 폼 하나·개방 하나, 시범 책끼리 장르·시대가 겹치지 않는다"""
+  - 시범(pilot)은 폼 하나·개방 하나, 시범 책끼리 장르·시대가 겹치지 않는다
+  - 움직임: 개방마다 입자(particles) 하나 — 명장면 글에서 고른 정한 말(vocab.particles, lib/scene-motion.js 의 KINDS 안).
+    폼의 particles 는 적지 않아도 되지만 적으면 정한 말이어야 한다(docs/SCENE_MOTION.md)"""
 import json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -99,6 +101,11 @@ def check(doc):
                 bad("%s 개방의 장면이 비었다" % s)
             if o.get("one_figure") is not True:
                 bad("%s 개방을 한 명(그녀 + 사물·환경·괴물)으로 표현할 수 있는지 확인하지 않았다" % s)
+            # 움직임 — 명장면이 열릴 때 터지고 그 뒤 떠도는 입자. 화면이 lib/scene-motion.js 에 그대로 넘긴다
+            if o.get("particles") not in V.get("particles", []):
+                bad("%s 개방의 입자 particles=%r 는 정한 말이 아니다(%s)" % (s, o.get("particles"), "·".join(V.get("particles", []))))
+            if "particles" in f and f.get("particles") not in V.get("particles", []):
+                bad("%s 폼의 입자 particles=%r 는 정한 말이 아니다" % (s, f.get("particles")))
         if len({(forms.get(s) or {}).get("pose") for s in STAGES}) < 3:
             bad("세 폼의 자세가 겹친다 — 넘겨 볼 때 같은 그림처럼 보인다")
         if len({(forms.get(s) or {}).get("role") for s in STAGES}) < 2:

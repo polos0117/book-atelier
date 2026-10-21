@@ -73,6 +73,19 @@
 .run-fight-head {margin:0;font-size:13px;color:var(--muted)}
 .run-fight-result {padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600}
 .run-fight-result[data-result="win"] {border-color:var(--accent, #d9b45a)} .run-fight-result[data-result="lose"], .run-fight-result[data-result="dead"] {border-color:#c0392b88}
+/* 복도 — 덱에 도트가 있는 책이 있으면 그 주인공이 지도 위 복도에 선다(lib/sprite-actor.js). 방을 고르면 제자리 걸음 0.7초,
+   그동안 벽(책장 결)이 왼쪽으로 흘러 나아가는 것처럼 보인다. 휴대폰 가로(낮은 화면)에서는 자리가 없어 복도째 숨는다 — 그때는 바로 도착 */
+.run-corridor {position:relative;height:150px;overflow:hidden;border:1px solid var(--line);border-radius:12px;
+  background:linear-gradient(#0000 68%,#0006 68% 69%,#0000 69%),linear-gradient(transparent 69%,color-mix(in srgb,#6d5236 55%,var(--card)) 69%),#3a2c21}
+/* 벽 — 책장 두 칸(책등 빛 줄무늬)과 칸 선반. 걷는 동안만 왼쪽으로 흐른다 */
+.run-corridor-wall {position:absolute;left:0;right:-240px;top:0;height:69%;opacity:.9;
+  background:linear-gradient(#0000 0 46%,#2a1f17 46% 50%,#0000 50% 96%,#2a1f17 96%),
+    repeating-linear-gradient(90deg,#6b3a2a 0 9px,#2e4a5e 9px 16px,#c9b48a 16px 19px,#4b5d3a 19px 30px,#7a2f3a 30px 36px,#0000 36px 44px,#5a4630 44px 53px,#24364a 53px 58px,#0000 58px 70px),
+    #3a2c21;box-shadow:inset 0 -10px 14px #0006}
+.run-corridor[data-moving] .run-corridor-wall {animation:run-corridor-pass .7s linear both}
+@keyframes run-corridor-pass {from {transform:translateX(0)} to {transform:translateX(-120px)}}
+@media (orientation:landscape) and (max-height:550px) {.run-corridor {display:none}}
+@media (prefers-reduced-motion:reduce) {.run-corridor[data-moving] .run-corridor-wall {animation:none}}
 /* 끝 */
 .run-end {text-align:center;padding:12px 0}
 .run-end h2 {margin:0 0 6px;font:700 24px/1.3 var(--serif, serif)}
@@ -80,7 +93,8 @@
 .run-end .run-deck {justify-content:center}
 .run-end .acts {display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 @media (orientation: landscape) and (min-width: 700px) {
-  .run-screen[data-screen="map"] {display:grid;grid-template-columns:minmax(0, 1fr) 240px;grid-template-areas:"bar bar" "map side" "next side" "last side";align-items:start}
+  .run-screen[data-screen="map"] {display:grid;grid-template-columns:minmax(0, 1fr) 240px;grid-template-areas:"bar bar" "corr side" "map side" "next side" "last side";align-items:start}
+  .run-screen[data-screen="map"] .run-corridor {grid-area:corr}
   .run-screen[data-screen="map"] .run-bar {grid-area:bar} .run-screen[data-screen="map"] .run-map {grid-area:map} .run-screen[data-screen="map"] .run-next {grid-area:next} .run-screen[data-screen="map"] .run-last {grid-area:last}
   .run-screen[data-screen="map"] .run-side {grid-area:side;display:flex;flex-direction:column;gap:8px}
   .run-screen[data-screen="map"] .run-deck {flex-wrap:wrap;overflow:visible}
@@ -97,6 +111,8 @@
 <script src="lib/run.js?v=1"></script>
 <script src="lib/shelf-gen.js?v=1"></script>
 <script src="lib/scene-motion.js?v=1"></script>
+<script src="lib/sprite-actor.js?v=3"></script>
+<link rel="stylesheet" href="lib/sprite-actor.css?v=2">
 <link rel="stylesheet" href="lib/scene-motion.css?v=1">
 <link rel="stylesheet" href="lib/room.css?v=3">
 </head>
@@ -112,6 +128,7 @@ const html = htm.bind(h);
 const W = window.W, D = window.AtelierDuel, R = window.AtelierRun, SH = window.AtelierShelf, T = window.AtelierToday;
 const STORE = 'book_run_v1', REC = 'book_run_rec_v1', ROOM = 'book', AI_DELAY = 650, WASM = 'lib/shelf-gen.wasm?v=1';
 const KINDS = ['entry', 'meet', 'read', 'rest', 'scene', 'stairs', 'boss'];
+const SPRITES = 'data/sprites.json', TRANSIT_MS = 700;
 
 function readStore() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }
 function writeStore(o) { try { localStorage.setItem(STORE, JSON.stringify(o)); } catch (e) {} }
@@ -184,10 +201,33 @@ function lastText(S, st) {
   if (l.kind === 'draw') return W('run.result.draw');
   return '';
 }
-function MapScreen({ S, st, onGo, onDescend, onChallenge }) {
+/* 복도의 길동무 — 덱에서 도트가 있는 첫 책의 주인공(data/sprites.json). 저절로 걷지 않고, 방을 고를 때만 제자리 걸음(march),
+   좋은 일(이긴 뒤 전리품·등불을 얻은 쉼)에 반응. 누르면 반응만 — 탐험 상태는 건드리지 않는다 */
+function Corridor({ sp, who, moving, cheer, onActor }) {
+  const box = useRef(null), a = useRef(null);
+  useEffect(() => {
+    const SP = window.AtelierSprite, d = sp.actors[who];
+    const x = SP.create(box.current, d, { base: sp.base, label: W('run.walker', { name: W('sprite.name.' + who) }), points: [0.38, 0.38], floor: 14, wander: false, seed: 3,
+      onSelect: () => x.play('react') });
+    a.current = x; onActor(x);
+    return () => { x.destroy(); a.current = null; onActor(null); };
+  }, [who]);
+  const walking = useRef(0); walking.current = moving;
+  useEffect(() => { if (moving && a.current) a.current.march(TRANSIT_MS); }, [moving]);
+  /* 반응은 걷기가 끝난 뒤(쉼 방은 걷고 나서 기뻐한다) */
+  useEffect(() => {
+    if (!cheer || !a.current) return;
+    const x = a.current, t = setTimeout(() => x.ready.then(y => y.play('react')), walking.current ? TRANSIT_MS + 30 : 0);
+    return () => clearTimeout(t);
+  }, [cheer]);
+  return html`<div class="run-corridor" ref=${box} data-moving=${moving ? 'true' : undefined} role="group" aria-label=${W('run.corridor')}>
+    <div class="run-corridor-wall" key=${moving || 'still'}></div></div>`;
+}
+function MapScreen({ S, st, onGo, onDescend, onChallenge, corridor }) {
   const L = R.legal(st), f = R.floorOf(st);
   return html`<section class="duel-screen run-screen" data-screen="map">
     <${Bar} S=${S} st=${st} />
+    ${corridor}
     <${FloorMap} st=${st} S=${S} onGo=${onGo} />
     <div class="run-next" aria-label=${W('run.map.next')}>
       ${L.rooms.map(id => { const r = f.rooms[id], title = r.book != null && r.kind !== 'read' ? bookTitle(S, R.keyOf(S.data, r.book)) : ''; return html`<button key=${id} type="button" class="btn" data-id=${id} data-kind=${r.kind} onClick=${() => onGo(id)}>${kindWord(r.kind)}${title && html`<small>${title}</small>`}</button>`; })}
@@ -238,6 +278,10 @@ function App() {
   const [screen, setScreen] = useState(() => (readStore().st ? 'run' : 'pick'));   /* 'pick' | 'run' — 하던 탐험이 있어도 고르기 화면에서 이어가기를 누른다 */
   const [after, setAfter] = useState(false), [scene, setScene] = useState(null), [zoom, setZoom] = useState(null);
   const timer = useRef(null);
+  /* 복도 — 걷는 것은 보여주기만: 상태는 바로 적고(save), 0.7초 동안 지도를 그대로 둔 뒤 그 방(싸움·상자)을 띄운다. 누르면 바로 */
+  const [sp, setSp] = useState(null), [transit, setTransit] = useState(0), [cheer, setCheer] = useState(0);
+  const walker = useRef(null), transitId = useRef(0), transitT = useRef(null);
+  useEffect(() => { if (window.AtelierSprite) window.AtelierSprite.load(SPRITES).then(setSp, () => {}); return () => clearTimeout(transitT.current); }, []);
   const save = (next, p) => { writeStore({ st: next, picks: p === undefined ? picks : p }); return next; };
   useEffect(() => { SH.load(WASM).then(() => setWasm(true)).catch(() => setWasm(false)); }, []);
   /* 한 수 — 싸움이 끝나는 수면 결과 띠를 띄워 두고(after), 절정은 장면으로, 말풍선 */
@@ -269,11 +313,22 @@ function App() {
   };
   /* 지도에서 ?daily 로 왔고 하던 탐험이 없고 책 셋이 골라져 있으면 바로 오늘의 서고. 다녀간 자국은 늘 */
   useEffect(() => { if (!S.data || !wasm) return; T.visit(ROOM); if (T.isDaily() && !st && picks.length === (S.data.run.start_pick || 3)) start(true); }, [S.data, wasm]);
-  const act = fn => { const n = JSON.parse(JSON.stringify(st)); const r = fn(n); if (r && r.ok === false) return; commit(n); };
-  const reset = () => { clearTimeout(timer.current); setAfter(false); setScene(null); setZoom(null); setScreen('pick'); setSt(save(null)); };
+  const act = fn => { const n = JSON.parse(JSON.stringify(st)); const r = fn(n); if (r && r.ok === false) return false; commit(n); return true; };
+  const canWalk = () => { const a = walker.current; return !!a && a.running && !!a.el.offsetParent; };
+  const walk = fn => {
+    const go = canWalk();
+    if (!act(fn) || !go) return;
+    const id = ++transitId.current; setTransit(id); clearTimeout(transitT.current);
+    transitT.current = setTimeout(() => setTransit(t => (t === id ? 0 : t)), TRANSIT_MS);
+  };
+  const arrive = () => { if (transit) { clearTimeout(transitT.current); setTransit(0); } };
+  const reset = () => { clearTimeout(timer.current); clearTimeout(transitT.current); setTransit(0); setAfter(false); setScene(null); setZoom(null); setScreen('pick'); setSt(save(null)); };
   if (S.error) return html`<${WorkspaceHeader} page="run" /><p class="empty-msg">${W('ui.error', { message: S.error })}</p>`;
   if (!S.data) return html`<${WorkspaceHeader} page="run" /><p class="empty-msg">${W('ui.loading')}</p>`;
-  const showFight = st && (st.phase === 'fight' || (after && st.fight));
+  const showFight = st && !transit && (st.phase === 'fight' || (after && st.fight));
+  const whoBook = sp && st && (st.deck || []).find(k => Object.values(sp.actors).some(a => a.book === k));
+  const who = whoBook && Object.keys(sp.actors).find(k => sp.actors[k].book === whoBook);
+  const corridor = who && html`<${Corridor} key=${who} sp=${sp} who=${who} moving=${transit} cheer=${cheer} onActor=${a => { walker.current = a; }} />`;
   const resultKind = st && after && st.fight ? (st.phase === 'clear' ? 'clear' : st.phase === 'over' ? 'dead' : st.last && st.last.kind === 'lose' ? 'lose' : st.last && st.last.kind === 'draw' ? 'draw' : 'win') : null;
   const resultText = resultKind === 'lose' ? W('run.result.lose', { n: st.lamps }) : resultKind ? W('run.result.' + resultKind) : '';
   let body;
@@ -284,15 +339,18 @@ function App() {
       <${Match} S=${S} st=${f} onMove=${m => act(n => R.fightMove(S.data, n, m))} onZoom=${setZoom}
         actions=${after ? html`<div class="run-fight-result" data-result=${resultKind}>${resultText}<div class="acts"><button type="button" class="btn primary" id="run-continue" onClick=${() => setAfter(false)}>${W('run.act.continue')}</button></div></div>` : null} /></section>`;
   }
-  else if (st.phase === 'over' || st.phase === 'clear') body = html`<${End} S=${S} st=${st} onAgain=${reset} />`;
-  else body = html`<${MapScreen} S=${S} st=${st} onGo=${id => act(n => R.enter(S.data, n, id))} onDescend=${() => act(n => R.descend(S.data, n))} onChallenge=${() => act(n => R.challenge(S.data, n))} />`;
-  const offering = st && !after && (st.phase === 'reward' || st.phase === 'read' || st.phase === 'scene');
+  else if (!transit && (st.phase === 'over' || st.phase === 'clear')) body = html`<${End} S=${S} st=${st} onAgain=${reset} />`;
+  else body = html`<div onClickCapture=${arrive}><${MapScreen} S=${S} st=${st} corridor=${corridor}
+    onGo=${id => { const rest = R.floorOf(st).rooms[id].kind === 'rest' && st.lamps < R.lampsMax(S.data); walk(n => R.enter(S.data, n, id)); if (rest) setCheer(c => c + 1); }}
+    onDescend=${() => walk(n => R.descend(S.data, n))} onChallenge=${() => walk(n => R.challenge(S.data, n))} /></div>`;
+  const offering = st && !after && !transit && (st.phase === 'reward' || st.phase === 'read' || st.phase === 'scene');
+  const won = () => { if (st.phase === 'reward') setCheer(c => c + 1); };
   return html`<${WorkspaceHeader} page="run" />
     ${!wasm && screen === 'pick' && html`<p class="note" role="status">${W('run.loading')}</p>`}
     ${body}
     ${offering && html`<${Offer} S=${S} st=${st}
-      onTake=${(k, drop) => act(n => st.phase === 'reward' ? R.takeLoot(S.data, n, k, drop) : st.phase === 'read' ? R.read(S.data, n, k, drop) : R.scene(S.data, n, 'read', drop))}
-      onSkip=${() => act(n => st.phase === 'reward' ? R.takeLoot(S.data, n, null) : st.phase === 'read' ? R.read(S.data, n, null) : R.scene(S.data, n, 'rest'))}
+      onTake=${(k, drop) => won() || act(n => st.phase === 'reward' ? R.takeLoot(S.data, n, k, drop) : st.phase === 'read' ? R.read(S.data, n, k, drop) : R.scene(S.data, n, 'read', drop))}
+      onSkip=${() => won() || act(n => st.phase === 'reward' ? R.takeLoot(S.data, n, null) : st.phase === 'read' ? R.read(S.data, n, null) : R.scene(S.data, n, 'rest'))}
       onScene=${c => act(n => R.scene(S.data, n, c))} />`}
     ${st && screen === 'run' && st.phase !== 'over' && st.phase !== 'clear' && !showFight && !offering && html`<p class="note"><button type="button" class="btn quiet" id="run-leave" onClick=${() => { if (confirm(W('run.leave.note'))) reset(); }}>${W('run.act.leave')}</button></p>`}
     ${zoom && st && st.fight && zoomKey(st.fight, zoom) && html`<${Zoom} S=${S} st=${st.fight} zoom=${zoom} onClose=${() => setZoom(null)} />`}

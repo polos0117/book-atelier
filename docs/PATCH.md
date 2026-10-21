@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 시범 P5 — 서고 탐험 복도의 길동무
+- run.html — 지도 위 복도 띠(Corridor). 덱에서 도트가 있는 첫 책의 주인공이 서고, 방·계단·보스를 고르면 상태는 바로 적고 0.7초 제자리 걸음·벽 흐름 뒤 그 방을 띄운다(누르면 바로). 쉼에서 등불·이긴 뒤 전리품에 반응. 움직임 끔·동작 줄이기·휴대폰 가로·새로고침·도트 없는 덱이면 바로. sprite-actor.js·css 를 싣는다
+- lib/sprite-actor.js — wander 옵션(저절로 걷지 않기), march(ms) 제자리 걸음. 화면들의 sprite-actor.js 를 ?v=3
+- lib/words.js — run.corridor·run.walker
+- tests/run-sprite-screen.cjs — 새 검사. docs/RUN_DESIGN.md 5절·docs/ATELIER_PIXEL_ART_PLAN.md P5 결과·AGENTS.md 탐험 줄·검사 줄
+
 ## 2026-10-21 · claude · 도트 시범 P4 — 서재 바닥의 alice
 - lib/bookshelf.js — 책장 밑 바닥 줄(.shelf-floor)에 도트 인물 하나(data/sprites.json 의 인물 중 설계표에 책이 있는 것). 누르면 그 책을 펼친다(책장에 없어도), 펼친 동안 pause('reading')·닫으면 resume, 펼침·닫힘 움직임과 초점은 인물에서. 도트를 못 받으면 바닥째 숨김
 - lib/bookshelf.css — 바닥 줄(가로 마루결, 테마마다 나무 빛). index.html — sprite-actor.js·css 를 싣고 bookshelf ?v=7·8

@@ -7,6 +7,15 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 시범 P3 — 독립 재생(sprite.html)
+- lib/sprite-actor.js·lib/sprite-actor.css — 새 재생 모듈(window.AtelierSprite). 시트 한 장의 background-position·transform 만, 대기 차례·걷기(두 자리, 가는 쪽 반전)·고르기 반응, 고르기는 바로 알리고 반응 중 누른 것은 버린다, pause/resume(이유별)·숨은 탭·화면 밖·움직임 끔·동작 줄이기, 도트 한 칸 = 실제 화소 정수배(fit 이면 낮은 공간에 맞춰 낮춘다), 그림 실패면 숨김
+- data/sprites.json — 새 자료. alice 발단 — 칸 96×128·발 기준선·배율 2·반전 허용, 정지·대기(1→4→1→3)·걷기(32/초)·반응 시트와 시간
+- sprite.html — 새 예제 화면(머리 항해에 없다). 서재 배경 바닥의 작은 공간, 대기·걷기·고르기·멈춤·1/2/3배·움직임 끔, 고른 횟수
+- lib/words.js — sprite.* 낱말. 화면들의 words.js 를 ?v=12(지난 즐겨찾기 낱말 변경에서 빠졌던 것도 함께)
+- lib/workspace-ui.js — 부제 있는 화면에 sprite. 화면들의 workspace-ui.js 를 ?v=7 로 맞춤(5·6 이 섞여 있었다)
+- tests/sprite-screen.cjs · tests/fixtures/make-sprites.py — 새 검사·가짜 시트. tests/browser-harness.cjs — 그림 저장소 sprites/ 경로, 화소비(dpr)·동작 줄이기(reducedMotion) 열기
+- docs/ATELIER_PIXEL_ART_PLAN.md — P3 결과·알려진 문제, 체크포인트 P4 대기. AGENTS.md — 화면 표·검사 줄
+
 ## 2026-10-21 · claude · 도트 시범 P2 — alice 대기·걷기·반응 시트
 - tools/sprite-sheet.py — 새 도구. 한 장에 격자로 그린 프레임을 찾아(칸 경계에 걸쳐도), 프레임마다 느슨한 격자(10~13px 로 들쭉날쭉한 생성 도트를 따라)로 칸 안쪽 최다 색을 뽑고, 정지 도트 팔레트·발 기준선·몸 중심으로 가로 시트. --fixed-pitch·--cell·--speck
 - tools/sprite_px.py — 새 공용(격자 찾기·Lab 팔레트·가까운 색·느슨한 격자). tools/sprite-grid.py 는 이것을 쓰도록 — 결과는 바이트까지 그대로

@@ -179,7 +179,7 @@ body.zoomed {overflow:hidden}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=11"></script>
+<script src="lib/words.js?v=12"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
@@ -199,7 +199,7 @@ body.zoomed {overflow:hidden}
 import { h, render, Fragment } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=7';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame, MOTION = window.AtelierMotion;
 /* 즐겨찾기 — 목록은 다른 탭(공방 모음)에서 빼도 따라온다. 알림 자리는 늘 깔아 둔다(화면 읽기 프로그램이 새로 생긴 칸의 말을 놓치기 쉽다) */

@@ -48,7 +48,8 @@ async function start() {
   async function open(page, opt) {
     opt = opt || {};
     const ctx = await browser.newContext({ viewport: opt.viewport || FOLD.cover,
-      isMobile: !!opt.mobile, hasTouch: !!opt.mobile });
+      isMobile: !!opt.mobile, hasTouch: !!opt.mobile,
+      ...(opt.dpr ? { deviceScaleFactor: opt.dpr } : {}), ...(opt.reducedMotion ? { reducedMotion: opt.reducedMotion } : {}) });
     await ctx.route('**/*', async route => {
       const url = route.request().url(), origin = new URL(url).origin;
       if (origin === new URL(base).origin) return route.continue();
@@ -82,10 +83,11 @@ async function start() {
         new URL(url).pathname.match(/^\/book-atelier-img-(\d+)\/img\/(.+)$/);
       const local = figure ? [null, 'img/figure-previews/' + figure[1]] :
         shard ? [null, 'img-' + shard[1] + '/' + shard[2]] :
-        origin === 'https://polos0117.github.io' && new URL(url).pathname.match(/\/(img\/.+)$/);
+        origin === 'https://polos0117.github.io' && (new URL(url).pathname.match(/^\/book-atelier-img\/(sprites\/.+)$/) ||
+          new URL(url).pathname.match(/\/(img\/.+)$/));
       if (local) {
         const rel = decodeURIComponent(local[1]);
-        /* opt.imgRoot — 검사가 만든 임시 그림 자리(img/ 아래 파일). 없으면 체크아웃 */
+        /* opt.imgRoot — 검사가 만든 임시 그림 자리(img/·sprites/ 아래 파일). 없으면 체크아웃 */
         const home = opt.imgRoot && !figure ? opt.imgRoot : ROOT;
         const file = path.resolve(home, rel);
         if (!file.startsWith(home + path.sep) || !fs.existsSync(file)) {

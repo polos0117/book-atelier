@@ -85,7 +85,8 @@ body.dex-page,body.lab-page {background-image:none}
 .sec {font-family:inherit;letter-spacing:.04em;font-size:12px}
 .bar-links {gap:8px;padding:0 0 24px;border-bottom:1px solid var(--line);margin-bottom:20px}
 .bar-links a,.bar-links button {min-height:44px;font-size:11px;font-weight:500;border-radius:3px;padding:8px 10px;background:transparent}
-.bar-links .hall-n {font-size:10px}
+.bar-links .hall-n {font-size:10px;border-radius:3px}
+.bar-keep a,.bar-keep button {color:var(--text)}
 .style-cell {border-radius:3px;flex-basis:92px;width:92px;background:transparent}
 .style-cell .face {height:auto;aspect-ratio:2/3;max-height:none}
 .fstrip {gap:12px}

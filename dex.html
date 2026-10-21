@@ -77,16 +77,26 @@ body {color:var(--text);font-size:15px}
 .bar .n {flex:none;font:700 11px ui-monospace,monospace;color:var(--accent);white-space:nowrap}
 .back {flex:none;min-height:40px;padding:8px 12px;background:var(--card2);color:var(--text);
   border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12px;font-weight:700}
-.bar-links {display:flex;gap:6px;flex-wrap:wrap;padding:0 0 8px}
+/* 상세의 단추 줄 — 위: 담기(즐겨찾기·진열, 수는 그 단추에 붙은 칸), 아래: 도구(움직임·틀·모자이크·생성기, 한 단 조용히) */
+.bar-links {display:flex;flex-direction:column;gap:10px;padding:0 0 8px}
+.bar-row {display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar-pair {display:inline-flex;align-items:stretch;max-width:100%}
+.bar-pair > :not(:last-child) {border-top-right-radius:0 !important;border-bottom-right-radius:0 !important}
+.bar-pair > :not(:first-child) {border-top-left-radius:0 !important;border-bottom-left-radius:0 !important;border-left:0 !important}
 .bar-links a,.bar-links button {display:inline-flex;align-items:center;min-height:40px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;
   background:var(--card);color:var(--accent);font:inherit;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer}
 .bar-links button[aria-pressed="true"] {border-color:var(--gold);color:var(--text);box-shadow:inset 0 -2px var(--gold)}
 .bar-links button:disabled {opacity:.45;cursor:default}
-.bar-links .hall-n {align-self:center;color:var(--muted);font:11px ui-monospace,monospace}
-/* 즐겨찾기 — 줄 맨 앞의 하트(지금 보이는 그림 한 장), 담은 수는 공방 모음으로 가는 작은 링크 */
+.bar-links .hall-n {display:inline-flex;align-items:center;padding:0 10px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font:11px ui-monospace,monospace;white-space:nowrap}
+.bar-tools {gap:2px 4px}
+.bar-links .bar-tools a,.bar-links .bar-tools button {color:var(--muted);border-color:transparent;background:transparent;padding-inline:8px}
+.bar-links .bar-tools button[aria-pressed="true"] {border-color:transparent;color:var(--text)}
+.bar-tools a:hover,.bar-tools button:hover {color:var(--text)}
+/* 즐겨찾기 — 담기 줄 맨 앞의 하트(지금 보이는 그림 한 장), 붙은 칸의 수는 공방 모음으로 가는 링크 */
 .bar-links .fav-heart,.bar-links .fav-count {min-height:44px}
 .bar-links .fav-heart span {font-size:15px;line-height:1;margin-right:5px}
-.bar-links .fav-count {border-color:transparent;background:transparent;color:var(--muted);font-weight:600}
+.bar-links .fav-count {color:var(--muted);font:600 12px ui-monospace,monospace;min-width:44px;justify-content:center}
+.bar-links .fav-count::after {content:"\203A";margin-left:4px;font-family:var(--sans, system-ui)}
 .bar-links .fav-count:hover {color:var(--text)}
 .bar-links .fav-heart:focus-visible,.bar-links .fav-count:focus-visible {outline:2px solid var(--gold);outline-offset:2px}
 .fav-toast {position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:90;max-width:calc(100vw - 32px);padding:9px 16px;border-radius:999px;background:var(--text);color:var(--bg);font-size:13px;font-weight:700;line-height:1.35;text-align:center;pointer-events:none}
@@ -178,7 +188,7 @@ body.zoomed {overflow:hidden}
 <link rel="stylesheet" href="lib/scene-motion.css?v=1">
 <!-- 즐겨찾기 — lib/favorites.js(공방 넷과 공방 모음이 글자 하나 다르지 않게 나눠 쓴다) -->
 <script src="lib/favorites.js?v=1"></script>
-<link rel="stylesheet" href="lib/gallery.css?v=5">
+<link rel="stylesheet" href="lib/gallery.css?v=6">
 <link rel="stylesheet" href="lib/landscape.css?v=4">
 <link rel="stylesheet" href="lib/room.css?v=3">
 </head>
@@ -520,17 +530,20 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
     <p class="sec">${W('book.persona')}</p>
     <p class="persona">${card.persona}</p>
     <div class="bar-links">
-      ${shown && html`<button type="button" class="fav-heart" id="dex-fav" aria-pressed=${faved} disabled=${!FAV} title=${W('dex.fav.note')}
-        onClick=${toggleFav}><span aria-hidden="true">${faved ? '\u2665' : '\u2661'}</span>${W('dex.fav')}</button>`}
-      ${favs.length > 0 && html`<a class="fav-count" id="dex-fav-count" href=${FAV_HUB}>${W('dex.fav.count', { n: favs.length })}</a>`}
-      <a href=${'prompt.html?book=' + encodeURIComponent(card.key)} id="dex-to-prompt">${W('dex.toPrompt')}</a>
-      <button type="button" id="dex-hall" aria-pressed=${inHall} disabled=${hallFull} title=${W('dex.hall.note')}
-        onClick=${enshrine}>${inHall ? W('dex.hall.remove', { shelf }) : hallFull ? W('dex.hall.full', { shelf, max: IMG.HALL_MAX }) : W('dex.hall.add', { shelf })}</button>
-      <span class="hall-n">${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span>
-      <button type="button" id="dex-frame" aria-pressed=${framed} title=${W('dex.frame.note')} onClick=${flipFrame}>${W('dex.frame.' + FRAME.kind(card))}</button>
-      ${shown && html`<a href=${'mosaic.html?file=' + encodeURIComponent(shown.file)} id="dex-to-mosaic">${W('dex.mosaic')}</a>`}
-      <button type="button" id="dex-motion" disabled=${motionLocked} title=${W(motionLocked ? 'motion.reduced' : 'motion.note')}
-        onClick=${() => MOTION.setEnabled(!motion)}>${W(motion ? 'motion.off' : 'motion.on')}</button>
+      <div class="bar-row bar-keep" role="group" aria-label=${W('dex.bar.keep')}>
+        ${shown && html`<span class="bar-pair"><button type="button" class="fav-heart" id="dex-fav" aria-pressed=${faved} disabled=${!FAV} title=${W('dex.fav.note')}
+          onClick=${toggleFav}><span aria-hidden="true">${faved ? '\u2665' : '\u2661'}</span>${W('dex.fav')}</button>${favs.length > 0 && html`<a class="fav-count" id="dex-fav-count" href=${FAV_HUB}
+          aria-label=${W('dex.fav.open', { n: favs.length })} title=${W('dex.fav.open', { n: favs.length })}>${W('dex.fav.count', { n: favs.length })}</a>`}</span>`}
+        <span class="bar-pair"><button type="button" id="dex-hall" aria-pressed=${inHall} disabled=${hallFull} title=${W('dex.hall.note')}
+          onClick=${enshrine}>${inHall ? W('dex.hall.remove', { shelf }) : hallFull ? W('dex.hall.full', { shelf, max: IMG.HALL_MAX }) : W('dex.hall.add', { shelf })}</button><span class="hall-n" title=${W('dex.hall.count.note')}>${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span></span>
+      </div>
+      <div class="bar-row bar-tools" role="group" aria-label=${W('dex.bar.tools')}>
+        <button type="button" id="dex-motion" disabled=${motionLocked} title=${W(motionLocked ? 'motion.reduced' : 'motion.note')}
+          onClick=${() => MOTION.setEnabled(!motion)}>${W(motion ? 'motion.off' : 'motion.on')}</button>
+        <button type="button" id="dex-frame" aria-pressed=${framed} title=${W('dex.frame.note')} onClick=${flipFrame}>${W('dex.frame.' + FRAME.kind(card))}</button>
+        ${shown && html`<a href=${'mosaic.html?file=' + encodeURIComponent(shown.file)} id="dex-to-mosaic">${W('dex.mosaic')}</a>`}
+        <a href=${'prompt.html?book=' + encodeURIComponent(card.key)} id="dex-to-prompt">${W('dex.toPrompt')}</a>
+      </div>
     </div>
     <div class="fav-toast" role="status" aria-live="polite">${favMsg}</div>
     ${keys.length > 1 && html`

@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 서가 상세 단추 줄 정리 — 담기와 도구 두 줄
+- dex.html — 단추·글자가 한 줄에 섞이던 것을 둘로: 위는 담기(♡ 즐겨찾기 + 붙은 칸의 담은 수 링크 ›, 진열 단추 + 붙은 칸의 진열 수), 아래는 도구(움직임·틀·모자이크·생성기 — 테두리 없이 조용히). 묶음마다 role=group 이름
+- lib/words.js — dex.fav.count·dex.hall.count 를 수만, 링크 이름 dex.fav.open, 묶음 이름 dex.bar.keep·dex.bar.tools, 진열 수 풀이 dex.hall.count.note
+- lib/gallery.css — 붙은 칸 모서리, 담기 줄 글자색. 화면들의 gallery.css 를 ?v=6
+
 ## 2026-10-21 · claude · 모자이크 화면 검사를 머리 탭 다섯에 맞춤
 - tests/mosaic-screen.cjs — 서고 탐험(run.html)이 머리 항해에 들어와 탭이 다섯이 됐다. 항해 넷을 기대하던 확인 셋(세로·가로·PC)을 다섯으로
 - tests/header-layout.cjs · AGENTS.md — 주석과 모자이크 줄의 "탭 넷/다섯" 말을 지금 항해에 맞춤

@@ -14,9 +14,16 @@
 - data/art-index.json — 그림 저장소 썸네일 154장의 서명·dHash·색 막대(38 KB). 그림을 더하면 다시 만든다(등록 흐름은 그대로, 색인에 없는 그림은 모자이크가 건너뛴다)
 - mosaic.html — 바탕 고르기(책 → 그림, `?file=`), 조각 밀도 거칠게·보통·촘촘하게(32·48·72칸), 휴대폰 배경 1170×2532·세로 포스터 2048×3072, 원본 겹치기 0–40%, 한 그림 반복, PNG/JPEG 받기, 다른 배치. 쓰인 조각만 받고 못 받으면 빼고 다시 맞춘다, 줄 단위로 나눠 그린다. 조각을 누르거나 방향키로 옮기면 그 책·그 그림과 서가 링크. wasm 이 없으면 낱말 표의 말. 세로·휴대폰 가로·PC 배치
 - dex.html · lib/bookshelf.js · lib/bookshelf.css · index.html — 서가 상세 틀 단추 옆 "모자이크로 만들기"(지금 큰 그림), 서재 펼친 책에도 같은 길(초상·개방 따라). 머리 항해는 344 폭에 다섯이 안 들어 그대로 넷
-- lib/words.js · lib/workspace-ui.js — 모자이크 말 전부, 모자이크 화면의 머리 소개. 낱말 표 판 `?v=7`
+- lib/words.js · lib/workspace-ui.js — 모자이크 말 전부, 모자이크 화면의 머리 소개. 낱말 표 판은 화면 다섯 모두 `?v=7`(duel.html · prompt.html 도 — 새 말이 캐시의 옛 표에 막히지 않게)
 - tests/mosaic.cjs · tests/mosaic-screen.cjs · tests/fixtures/make-art-index.py · tests/dex-screen.cjs · tests/browser-harness.cjs — 묵은 wasm(소스 셈)·같은 씨앗·최대 횟수·간격·색인 꼴, 화면 61가지, 서가·서재 단추. 검사 서버의 그림 응답에 GitHub Pages 처럼 `Access-Control-Allow-Origin: *`
 - docs/ART_INDEX.md · AGENTS.md · .gitignore — 색인 꼴·다시 만들기·다음 일 "닮은 그림" 계획(거리 = 해시 해밍 + 색 막대 카이제곱 + Lab 서명, top-k 는 따로 `data/similar.json`), `rust/target/` 은 올리지 않는다
+
+## 2026-10-21 · claude · 결투 「오늘의 판」과 오늘 기록 — 공방 지도가 읽는다
+- lib/today.js — 새 파일. 다섯 공방이 한 출처(polos0117.github.io)라 localStorage 를 같이 쓴다: 판이 끝나면 atelier_today_v1:book 에 {d, n, w, daily, at, seen} 한 칸(bump), 다녀가면 seen(visit), 날짜 씨앗(seed), ?daily(isDaily). 모양의 약속은 지도 저장소 README 「오늘 기록」절, 다섯 저장소에 같은 파일
+- duel.html — 덱 화면에 「오늘의 판」 단추(날짜가 씨앗 → 하루 동안 같은 상대 덱·같은 순서·같은 선공)와 오늘 n판 w승·끝냈나 글, ?daily 로 오면 덱이 갖춰졌을 때 바로 시작, 판이 끝나는 수에서 오늘 기록 한 칸(st.recorded 가 두 번을 막는다), 결과 머리에 「오늘의 판」 표, 열면 다녀간 자국
+- lib/words.js — duel.deck.daily · daily.note · daily.done · today, duel.result.daily
+- tests/duel-screen.cjs — 끝난 판 둘이 오늘 기록에(n 2·daily 아직·오늘 날짜), 덱 화면의 오늘 2판, 오늘의 판을 두 번 열면 상대 덱·손패 순서·선공이 같다, 끝내면 n 3·daily, 결과의 표, 덱 화면의 끝냈다 표시
+- AGENTS.md · docs/GAME_CONCEPT.md — 결투 화면 표와 11절 6번에 오늘의 판·오늘 기록
 
 ## 2026-10-20 · claude · 책 다섯 권 더 — 열 장르에 두 권씩
 

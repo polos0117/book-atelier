@@ -13,6 +13,9 @@
 - lib/words.js — dex.fav.* 낱말 여섯
 - tests/dex-favorites.cjs — 새 검사: 하트·저장된 칸의 모양·그림마다 따로·새로고침·link 로 열기·저장 막힘·다섯 크기 44px·넘침·초점, 공방 모음 원본과 같은 파일인가 · AGENTS.md — 공용 모듈 한 줄과 검사 목록
 
+## 2026-10-21 · claude · 도트 계획에 서고 탐험 자리
+- docs/ATELIER_PIXEL_ART_PLAN.md — 3절 적용안 표에 서고 탐험(복도 띠 걷기·대기·반응, 덱 첫 책 주인공, P5에서 판단) 한 줄
+
 ## 2026-10-21 · claude · 도트 캐릭터 시범 계획 편입과 P0
 - docs/ATELIER_PIXEL_ART_PLAN.md — 사용자 검토안을 들이고 검토를 반영(시트 한 장 생성·팔레트 고정 정리, 실제 화소 정수배, dialog 멈춤, P1에 서재 바닥 합성). P0: 시범 alice 발단, 정본·도트 기준 그림 경로와 해시, 파일 자리, P1 생성 지시문
 - AGENTS.md — 먼저 읽을 문서 표에 한 줄

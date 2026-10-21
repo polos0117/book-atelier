@@ -49,6 +49,10 @@ body {color:var(--text);font-size:15px}
 .cap {display:block;padding:6px 7px 7px;font-weight:700;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
 .cap i {display:block;margin-top:2px;font:400 10px ui-monospace,monospace;color:var(--muted);font-style:normal}
 .deck-act {display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 16px}
+.deck-daily {display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.deck-daily .note {margin:0;flex:1 1 200px;font-size:12px}
+.deck-daily[data-done="true"] #duel-daily {opacity:.75}
+.duel-result h3 .daily {display:inline-block;margin-left:8px;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;background:var(--accent, #d9b45a);color:#111;vertical-align:middle}
 .deck-act .n {margin-left:auto;font:700 12px ui-monospace,monospace;color:var(--accent)}
 /* ── 판 — 그리드. 세로가 기본: 위 상대 · 아래 나 · 손패 맨 아래 ── */
 .duel-board {display:grid;gap:6px;grid-template-columns:minmax(0,1fr);grid-template-areas:"bar" "hint" "foe" "me" "log" "extra" "hand"}
@@ -177,6 +181,7 @@ body {color:var(--text);font-size:15px}
 <script src="lib/workspace-theme.js?v=3"></script>
 <script src="lib/words.js?v=6"></script>
 <script src="lib/fresh.js?v=1"></script>
+<script src="lib/today.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
 <script src="lib/duel.js?v=1"></script>
@@ -192,6 +197,7 @@ import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel;
 const STORE = 'book_duel_v1', AI_DELAY = 650;
+const T = window.AtelierToday, ROOM = 'book';   /* 오늘 기록 — 공방 지도의 방 열쇠(lib/today.js) */
 const V = 'f', NO = ['①', '②', '③'];
 
 function readStore() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }
@@ -232,8 +238,8 @@ function ZoomBtn({ onZoom, label }) {
 }
 
 /* 덱 고르기 — 설계표의 책에서 여섯 */
-function Deck({ S, deck, onChange, onStart }) {
-  const data = S.data, max = D.DECK, v = D.validateDeck(data, deck);
+function Deck({ S, deck, onChange, onStart, onDaily }) {
+  const data = S.data, max = D.DECK, v = D.validateDeck(data, deck), today = T.read(ROOM);
   const toggle = key => onChange(deck.includes(key) ? deck.filter(k => k !== key) : deck.length < max ? deck.concat(key) : deck);
   return html`<section class="duel-screen" data-screen="deck">
     <p class="sec">${W('duel.deck.title')}<span>${W('duel.deck.count', { n: deck.length, max })}</span></p>
@@ -250,6 +256,10 @@ function Deck({ S, deck, onChange, onStart }) {
       <span class="n">${W('duel.deck.count', { n: deck.length, max })}</span>
     </div>
     <button type="button" class="btn primary" id="duel-start" disabled=${!v.ok} onClick=${onStart} style="width:100%">${W('duel.deck.start')}</button>
+    <div class="deck-daily" data-done=${today.daily}>
+      <button type="button" class="btn" id="duel-daily" disabled=${!v.ok} onClick=${onDaily}>${W('duel.deck.daily')}</button>
+      <p class="note">${today.daily ? W('duel.deck.daily.done') : W('duel.deck.daily.note')}${today.n > 0 ? ' · ' + W('duel.deck.today', { n: today.n, w: today.w }) : ''}</p>
+    </div>
   </section>`;
 }
 
@@ -363,7 +373,7 @@ function Match({ S, st, onMove, onAgain, onDeck, onZoom, onForfeit }) {
     <div class="duel-log" aria-live="polite">${recent.map((x, i) => html`<div key=${i}>${i === recent.length - 1 ? html`<b>${x}</b>` : x}</div>`)}</div>
     <div class="duel-extra">
     ${done && html`<div class="duel-result" data-result=${st.winner === 'me' ? 'win' : st.winner === 'foe' ? 'lose' : 'draw'}>
-      <h3>${W(st.winner === 'me' ? 'duel.result.win' : st.winner === 'foe' ? 'duel.result.lose' : 'duel.result.draw')}</h3>
+      <h3>${W(st.winner === 'me' ? 'duel.result.win' : st.winner === 'foe' ? 'duel.result.lose' : 'duel.result.draw')}${st.daily && html` <small class="daily">${W('duel.result.daily')}</small>`}</h3>
       <p class="sec">${W('duel.result.chapters')}</p>
       <ol>${st.chapters.map((c, i) => html`<li key=${i}>${W('duel.log.chapter', { stage: S.stages[i], me: c.me, foe: c.foe })}</li>`)}</ol>
       <div class="acts"><button type="button" class="btn primary" id="duel-again" onClick=${onAgain}>${W('duel.result.again')}</button><button type="button" class="btn" id="duel-deck" onClick=${onDeck}>${W('duel.result.deck')}</button></div>
@@ -489,7 +499,8 @@ function App() {
   const save = g => { writeStore({ deck: g.deck, st: g.st }); return g; };
   /* 절정이 터졌으면 장면을 보인다 — 내 것도 상대 것도 */
   const showScene = st => { if (st.last && st.last.kind === 'open') setScene({ key: st.last.key, form: st.last.form, who: st.last.who }); };
-  const commit = st => { setGame(g => save({ ...g, st })); showScene(st); };
+  /* 판이 끝나는 수에서 오늘 기록 한 칸(공방 지도가 읽는다) — st.recorded 가 두 번을 막는다 */
+  const commit = st => { if (st.phase === 'done' && !st.recorded) { st.recorded = true; T.bump(ROOM, { won: st.winner === 'me', daily: !!st.daily }); } setGame(g => save({ ...g, st })); showScene(st); };
   /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게. 절정 장면·판 접기 확인이 떠 있으면 닫을 때까지 기다린다 */
   useEffect(() => {
     if (scene || forfeit || !S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;
@@ -498,11 +509,15 @@ function App() {
     return () => clearTimeout(timer.current);
   }, [S.data, game.st, scene, forfeit]);
   useEffect(() => { if (zoom && (!game.st || !zoomKey(game.st, zoom))) setZoom(null); }, [zoom, game.st]);
-  const start = deck => {
-    const seed = (Date.now() ^ (Math.random() * 1e9)) | 0, rng = { rngState: seed };
+  /* 오늘의 판 — 날짜가 씨앗이라 상대 덱·섞인 순서가 하루 동안 같다. 끝내면 오늘 기록에 daily 가 선다 */
+  const start = (deck, daily) => {
+    const seed = daily ? T.seed(ROOM) : (Date.now() ^ (Math.random() * 1e9)) | 0, rng = { rngState: seed };
     const st = D.newMatch(S.data, { me: deck, foe: D.randomDeck(S.data, rng) }, seed);
+    if (daily) st.daily = true;
     setScene(null); setZoom(null); setForfeit(false); setGame(save({ deck, st, screen: 'match' }));
   };
+  /* 지도에서 ?daily 로 왔고 덱이 갖춰져 있으면 바로 오늘의 판. 다녀간 자국은 늘 남긴다 */
+  useEffect(() => { if (!S.data) return; T.visit(ROOM); if (T.isDaily() && !game.st && D.validateDeck(S.data, game.deck).ok) start(game.deck, true); }, [S.data]);
   const toDeck = () => { clearTimeout(timer.current); setScene(null); setZoom(null); setGame(g => save({ ...g, st: null, screen: 'deck' })); };
   const move = m => { const st = JSON.parse(JSON.stringify(game.st)); const r = D.step(S.data, st, m); if (!r.ok) return; commit(st); };
   if (S.error) return html`<${WorkspaceHeader} page="duel" /><p class="empty-msg">${W('ui.error', { message: S.error })}</p>`;
@@ -510,7 +525,7 @@ function App() {
   return html`<${WorkspaceHeader} page="duel" />
     ${game.screen === 'match' && game.st
       ? html`<${Match} S=${S} st=${game.st} onMove=${move} onZoom=${setZoom} onForfeit=${() => setForfeit(true)} onAgain=${() => start(game.deck)} onDeck=${toDeck} />`
-      : html`<${Deck} S=${S} deck=${game.deck} onChange=${deck => setGame(g => save({ ...g, deck }))} onStart=${() => start(game.deck)} />`}
+      : html`<${Deck} S=${S} deck=${game.deck} onChange=${deck => setGame(g => save({ ...g, deck }))} onStart=${() => start(game.deck)} onDaily=${() => start(game.deck, true)} />`}
     ${zoom && game.st && zoomKey(game.st, zoom) && html`<${Zoom} S=${S} st=${game.st} zoom=${zoom} onClose=${() => setZoom(null)} />`}
     ${scene && html`<${Scene} S=${S} scene=${scene} onClose=${() => setScene(null)} />`}
     ${forfeit && game.st && html`<${Forfeit} onNo=${() => setForfeit(false)} onYes=${() => { setForfeit(false); toDeck(); }} />`}`;

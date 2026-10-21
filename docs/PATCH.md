@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 결투 「오늘의 판」과 오늘 기록 — 공방 지도가 읽는다
+- lib/today.js — 새 파일. 다섯 공방이 한 출처(polos0117.github.io)라 localStorage 를 같이 쓴다: 판이 끝나면 atelier_today_v1:book 에 {d, n, w, daily, at, seen} 한 칸(bump), 다녀가면 seen(visit), 날짜 씨앗(seed), ?daily(isDaily). 모양의 약속은 지도 저장소 README 「오늘 기록」절, 다섯 저장소에 같은 파일
+- duel.html — 덱 화면에 「오늘의 판」 단추(날짜가 씨앗 → 하루 동안 같은 상대 덱·같은 순서·같은 선공)와 오늘 n판 w승·끝냈나 글, ?daily 로 오면 덱이 갖춰졌을 때 바로 시작, 판이 끝나는 수에서 오늘 기록 한 칸(st.recorded 가 두 번을 막는다), 결과 머리에 「오늘의 판」 표, 열면 다녀간 자국
+- lib/words.js — duel.deck.daily · daily.note · daily.done · today, duel.result.daily
+- tests/duel-screen.cjs — 끝난 판 둘이 오늘 기록에(n 2·daily 아직·오늘 날짜), 덱 화면의 오늘 2판, 오늘의 판을 두 번 열면 상대 덱·손패 순서·선공이 같다, 끝내면 n 3·daily, 결과의 표, 덱 화면의 끝냈다 표시
+- AGENTS.md · docs/GAME_CONCEPT.md — 결투 화면 표와 11절 6번에 오늘의 판·오늘 기록
+
 ## 2026-10-20 · claude · 책 다섯 권 더 — 열 장르에 두 권씩
 
 - data/book-design.json — 프로젝트 헤일메리(SF)·안나 카레니나(비극)·괴도 신사 아르센 뤼팽(추리)·파우스트(사상)·자산어보(과학) 설계표(앞 커밋). 결투에 맞춰 안나 발단 "(최대 3)" → "(최대 2)", 헤일메리 전개 연료에 "(최대 4)"

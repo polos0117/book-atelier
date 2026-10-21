@@ -134,6 +134,26 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
     await q.waitForSelector('.duel-result[data-result]', { timeout: 20000 });
     await q.locator('#duel-deck').tap(); await q.waitForSelector('.duel-screen[data-screen="deck"]');
     assert.equal(await q.locator('.deck-cell.in').count(), 6, '덱은 그대로');
+    /* 오늘 기록 — 끝난 판 둘이 공방 지도가 읽는 칸에 적혔다(오늘 날짜, 판 2, 오늘의 판은 아직) */
+    const TODAY = 'atelier_today_v1:book', today = await q.evaluate(k => JSON.parse(localStorage.getItem(k)), TODAY);
+    assert(today && today.n === 2 && today.w + (today.n - today.w) === 2 && today.daily === false && today.seen > 0, '오늘 기록 — 판 둘: ' + JSON.stringify(today));
+    assert.equal(today.d, await q.evaluate(() => window.AtelierToday.today()), '오늘 날짜');
+    assert.match(await q.locator('.deck-daily .note').textContent(), /2판/, '덱 화면에 오늘 2판');
+    /* 오늘의 판 — 날짜가 씨앗: 두 번 열어도 상대 덱·내 손패 순서가 같다. 끝내면 daily 가 선다 */
+    await tappable(q, '#duel-daily');
+    await q.locator('#duel-daily').tap(); await q.waitForSelector('.duel-screen[data-screen="match"]'); await myTurn(q);
+    const d1 = await saved(q); assert(d1.st.daily === true, '오늘의 판 표시');
+    const foeOf = s => s.st.foe.hand.concat(s.st.foe.deck, s.st.foe.slots.filter(Boolean).map(u => u.key)).join();
+    await q.locator('#duel-forfeit').tap(); await q.locator('#duel-forfeit-yes').tap(); await q.waitForSelector('.duel-screen[data-screen="deck"]');
+    await q.locator('#duel-daily').tap(); await q.waitForSelector('.duel-screen[data-screen="match"]'); await myTurn(q);
+    const d2 = await saved(q);
+    assert.equal(foeOf(d2), foeOf(d1), '오늘의 판 — 상대 덱이 같다'); assert.equal(d2.st.me.hand.join(), d1.st.me.hand.join(), '오늘의 판 — 내 손패 순서가 같다'); assert.equal(d2.st.first, d1.st.first, '선공도 같다');
+    for (let i = 0; i < 40; i++) { await myTurn(q); if (await q.locator('.duel-result').count()) break; await q.locator('#duel-pass').tap(); await q.waitForTimeout(50); }
+    await q.waitForSelector('.duel-result[data-result]', { timeout: 20000 });
+    assert.equal(await q.locator('.duel-result h3 .daily').count(), 1, '결과에 오늘의 판 표');
+    const today2 = await q.evaluate(k => JSON.parse(localStorage.getItem(k)), TODAY);
+    assert(today2.n === 3 && today2.daily === true, '오늘의 판을 끝내면 daily: ' + JSON.stringify(today2));
+    await q.locator('#duel-deck').tap(); await q.waitForSelector('.deck-daily[data-done="true"]');
     assert.deepEqual(b.errors, [], '화면 오류 없음');
     assert.deepEqual(await q.evaluate(() => window.AtelierWords.missing()), [], '낱말 표에 없는 열쇠');
     await b.close();

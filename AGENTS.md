@@ -23,7 +23,7 @@
 | 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·패치 기록·공간 |
 | 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
-| 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절) |
+| 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절). 「오늘의 판」은 날짜가 씨앗(`lib/today.js`), 끝난 판은 `atelier_today_v1:book` 에 적혀 공방 지도(polos0117.github.io)가 읽는다 |
 
 ## 지켜야 할 것
 
@@ -100,7 +100,7 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/header-layout.cjs   # �
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # 테마 여덟 · 대비
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/patch-screen.cjs    # 서재의 패치 기록
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/bookshelf-screen.cjs # 책장 — 진열·펼치기·개방·닫기·키보드·반응형
-ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지 · 휴대폰 가로·세로·폴드·PC 넷에서 끝까지, 돌려도 그대로
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지·오늘의 판(같은 씨앗)·오늘 기록 · 휴대폰 가로·세로·폴드·PC 넷에서 끝까지, 돌려도 그대로
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 휴대폰 가로 — 서재·서가·프롬프트 첫 화면(lib/landscape.css)
 ```
 

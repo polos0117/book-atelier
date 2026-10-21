@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 계획 — gen2 재작업 요청 문구
+- docs/ATELIER_PIXEL_ART_PLAN.md — gen2 를 만든 이어 요청(큰 화소·16색·4등신·장식 절반)을 체크포인트에 적고 P2 지시문에도 넣기로
+
 ## 2026-10-21 · claude · 도트 시범 P1 — alice 발단 정지 도트 확정
 - tools/sprite-grid.py — 새 도구. 생성 그림의 실제 도트 격자(간격·시작점)를 찾아 칸 가운데 색을 뽑고 Lab 묶음 팔레트로 96×128 셀·발 기준선에 앉힌다(면적 평균 축소는 격자가 어긋나 뭉갰다)
 - docs/ATELIER_PIXEL_ART_PLAN.md — P1 결과(gen1 안 씀·gen2 채택·정리 수치·합성 판단), 반전 허용 확정, 체크포인트를 P2 대기로. 그림은 book-atelier-img `sprites/alice/`·`records/sprites/alice/still.json`

@@ -1,5 +1,5 @@
 {
-  "_": "도트 인물 — docs/ATELIER_PIXEL_ART_PLAN.md. 그림은 그림 저장소 sprites/(img/ 밖), 만든 기록은 records/sprites/<인물>/. 시트는 칸을 가로로 잇는다. foot 은 발 기준선(칸 안 x·y), speed 는 걷는 빠르기(도트 화소/초), order·ms 는 재생 차례(칸 번호, 0부터)와 칸마다 시간",
+  "_": "도트 인물 — docs/ATELIER_PIXEL_ART_PLAN.md. 그림은 그림 저장소 sprites/(img/ 밖), 만든 기록은 records/sprites/<인물>/. 시트는 칸을 가로로 잇는다. foot 은 발 기준선(칸 안 x·y), speed 는 걷는 빠르기(도트 화소/초 — 발이 미끄러지지 않게 보폭에서 셈한다: 접지 칸(0·3)의 발 폭 ÷ 반 주기(3칸 × ms)), order·ms 는 재생 차례(칸 번호, 0부터)와 칸마다 시간, dy 는 칸마다 위아래(도트 화소, + 는 아래 — 걷기 오르내림을 다리 교차와 맞춘다, tools/sprite-bob.py)",
   "base": "https://polos0117.github.io/book-atelier-img/sprites/",
   "actors": {
     "alice": {
@@ -13,7 +13,7 @@
       "states": {
         "still": { "file": "alice/alice_begin_still.png", "frames": 1 },
         "idle": { "file": "alice/alice_begin_idle.png", "frames": 4, "order": [0, 3, 0, 2], "ms": [700, 220, 700, 140] },
-        "walk": { "file": "alice/alice_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [110, 110, 110, 110, 110, 110], "speed": 32 },
+        "walk": { "file": "alice/alice_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 55, "dy": [1, -0.33, 1, -1.33, 1.33, -2] },
         "react": { "file": "alice/alice_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
       }
     },
@@ -28,7 +28,7 @@
       "states": {
         "still": { "file": "sunzi/sunzi_begin_still.png", "frames": 1 },
         "idle": { "file": "sunzi/sunzi_begin_idle.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [700, 220, 140, 220] },
-        "walk": { "file": "sunzi/sunzi_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [110, 110, 110, 110, 110, 110], "speed": 32 },
+        "walk": { "file": "sunzi/sunzi_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 55, "dy": [-1, -1, -1, 1.33, 1.33, 0.33] },
         "react": { "file": "sunzi/sunzi_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
       }
     },
@@ -43,7 +43,7 @@
       "states": {
         "still": { "file": "chunhyang/chunhyang_begin_still.png", "frames": 1 },
         "idle": { "file": "chunhyang/chunhyang_begin_idle.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [700, 220, 140, 220] },
-        "walk": { "file": "chunhyang/chunhyang_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [110, 110, 110, 110, 110, 110], "speed": 30 },
+        "walk": { "file": "chunhyang/chunhyang_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 49, "dy": [0, 2, 0, -0.67, 0.33, -1.67] },
         "react": { "file": "chunhyang/chunhyang_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
       }
     }

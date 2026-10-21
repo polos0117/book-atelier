@@ -317,6 +317,10 @@ book의 기존 검사 후보는 tests/bookshelf-screen.cjs, tests/reading-journe
   - 진열실(`sprite.html`, 이름을 도트 시범 → 도트 진열실로): 위 무대는 고른 인물(`?who=`, 없으면 첫 인물), 아래 인물마다 정지 도트·상태별 칸 띠(원래 크기, 칸 사이 선)·무대에 세우기·서가·만든 기록. 서재 바닥이 서면 바닥 밑에 「도트 진열실」 길
   - 인물을 늘리면 `data/sprites.json` 한 칸과 `lib/words.js` 의 `sprite.name.<인물>` 만 더하면 서재 바닥·서가·진열실·탐험 복도에 다 나온다
   - 검사 `tests/dex-dot-screen.cjs` 35가지, `tests/sprite-screen.cjs` 에 진열실 6가지, `tests/shelf-sprite-screen.cjs` 에 진열실 길 2가지
+- 걷기 고침(사용자: "걷는 게 어색하다" → "더 천천히, 몸의 바운스와 다리 교차가 맞게", 2026-10-21):
+  - 미끄러짐: 접지 칸의 발 폭이 33px 인데 반 주기 0.33초(칸 110ms)에 몸은 32px/초 — 다리가 몸보다 세 배 빨랐다. 칸 200ms, 빠르기를 보폭 ÷ 반 주기로(alice·손자 55, 춘향 49). 탐험 복도 벽 흐름 0.7초 × 55 ≈ 38px
+  - 오르내림: 생성 시트의 뒤 세 칸이 위상이 어긋났다(alice 지나감 칸이 낮고, 춘향은 뒤 절반이 통째로 2줄 아래). `tools/sprite-bob.py` 가 머리 높이(위 22% 무게중심)를 접지 가운데·내려앉음 1칸 아래·지나감 1칸 위 곡선에 맞추는 칸마다 dy 를 셈 → `data/sprites.json` walk.dy, `lib/sprite-actor.js` 가 실제 화소로 옮기고 그림자는 땅에 둔다. ±2 로 잘라 발이 크게 뜨지 않는다
+  - `tests/sprites-data.py` 가 빠르기 = 보폭 ÷ 반 주기(±15%), dy 로 맞춘 높이가 곡선을 따르는지(±0.6) 본다 — 인물을 더하면 `tools/sprite-bob.py` 로 dy, 보폭 셈으로 빠르기를 정한다
   - P3 의 알려진 문제: ① 단추 판이 비치던 것(`.prompt-page button` 꼴)은 `button.sprite-actor.sprite-actor` 로 막았다 — 서재에 놓을 때도 같은 꼴이 있는지 본다 ② 휴대폰 가로에서 fit 으로 배율이 낮아져도 예제의 「2배」 단추가 눌린 채 보인다(예제 화면만) ③ 걷기 머리 오르내림 4줄·5칸 정면(P2 그대로) ④ 누르는 자리는 칸 전체(96×128 × 배율) — 투명한 곳을 눌러도 고른다(작은 화소를 맞히지 않아도 되게 일부러) ⑤ 실기기(Fold5)에서 아직 안 봤다
 - 그림 저장소: `sprites/alice/raw/`(받은 그대로 — still gen1·gen2, idle·walk·react gen1), `sprites/alice/alice_begin_{still,idle,walk,react}.png`(정리본), `records/sprites/alice/{still,idle,walk,react}.json`(프롬프트·시각·격자·팔레트·재생·반전) — 커밋 `34a3959`·`384e188`
 - 수정한 프로젝트 파일: 이 문서, `tools/sprite_px.py`·`sprite-grid.py`·`sprite-sheet.py`, `lib/sprite-actor.js`·`.css`, `data/sprites.json`, `sprite.html`, `index.html`·`lib/bookshelf.js`·`lib/bookshelf.css`, `tests/shelf-sprite-screen.cjs`, `run.html`·`docs/RUN_DESIGN.md`·`tests/run-sprite-screen.cjs`, `lib/words.js`(sprite.*), `lib/workspace-ui.js`(부제), `tests/sprite-screen.cjs`·`tests/fixtures/make-sprites.py`·`tests/browser-harness.cjs`, `AGENTS.md`, `IMAGE_RULES.md`, `docs/PATCH.md`
@@ -474,6 +478,54 @@ peeking out. Do NOT draw the swing or its ropes.
 ~~~
 
 받은 뒤 할 일(claude): 원본을 `sprites/<인물>/raw/<인물>_begin_still_gen1.png` 로 보존 → `tools/sprite-grid.py`(격자를 못 찾으면 alice P2 처럼 절반 간격 고정) → 서재 바닥 합성(alice 와 나란히) → 사용자 검토. 확정되면 P2 지시문(11절 P2 를 인물 묘사만 바꿔)으로 시트 셋.
+
+### 걷기 다시 뽑기 — alice·손자·춘향(사용자: "오른다리를 뒤로 뻗고 왼다리를 내딛는 게 없다", 2026-10-21)
+
+지난 걷기 시트는 여섯 칸 중 1·3·4·6 칸이 모두 가까운 다리가 앞이라 다리가 번갈아 나가지 않았다(속도·오르내림을 맞춰도 남는다). 인물마다 첨부 셋: ① 정지 도트 6배 ② 다리 자세 안내 `tools/walk-guide.py` 가 그린 그림(가까운 다리 남색·먼 다리 회색, 4칸은 1칸의 거울) ③ 정본. 받으면 `tools/sprite-sheet.py --rows 121 --grid 3x2` → `tools/sprite-bob.py` 로 dy → 보폭 셈으로 빠르기 → `data/sprites.json` 의 walk 를 `_walk_v2.png` 로(지난 시트는 지우지 않는다).
+
+공통 프롬프트 (세 장 모두, [인물 묘사] 자리에 아래 그 인물의 한 줄):
+
+Pixel art WALK CYCLE sprite sheet of the EXACT same character as attached image 1 — a finished pixel-art sprite.
+Copy it pixel for pixel in style: same very large chunky pixels, same 16-colour palette, same dark outline,
+same proportions (about 4 heads tall), same face. [인물 묘사]
+Keep decoration as simple as image 1 — do not add new details. Image 3 is only a colour and face reference.
+
+Sheet layout: portrait canvas 1024 x 1536, 6 frames in a 3 x 2 grid (cell 341 x 768), read left to right, top to bottom.
+In every cell the character is the same size (about 125 pixels tall on the sprite's own pixel grid, each sprite pixel
+drawn as a crisp 6 x 6 square), centred horizontally, feet on the same baseline near the bottom of the cell.
+Side three-quarter view walking toward the viewer's right, walking in place (she does not travel across the cell).
+Hard edges only: no anti-aliasing, no blur, no gradients, no dithering noise. Transparent background.
+No grid lines, no cell borders, no numbers, no labels, no text, no ground, no shadow, no motion lines, no extra characters.
+
+LEGS — follow attached image 2 exactly, cell by cell (dark navy = her NEAR leg, the one closer to the viewer;
+grey = her FAR leg). Do not copy image 2's shapes or colours, only where each leg and foot is:
+frame 1 = contact: NEAR leg reaches forward, heel down; FAR leg stretched back, only its toe touching.
+frame 2 = down: weight on the NEAR leg, knee slightly bent, body 1 pixel lower; FAR foot lifting off behind.
+frame 3 = passing: NEAR leg straight under the body; FAR leg swings forward past it with the knee lifted; body 1 pixel higher.
+frame 4 = contact, the MIRROR of frame 1: FAR leg reaches forward, heel down; NEAR leg stretched BACK, only its toe touching.
+frame 5 = down: weight on the FAR leg; NEAR foot lifting off behind; body 1 pixel lower.
+frame 6 = passing: FAR leg straight under the body; NEAR leg swings forward past it with the knee lifted; body 1 pixel higher.
+Frames 1 and 4 must look clearly different: in frame 1 the near leg is in front, in frame 4 the near leg is behind.
+Arms swing opposite to the legs (near arm back when the near leg is forward). Head height changes by at most 1 sprite pixel
+except the rise and fall above. The loop 6 -> 1 must be seamless.
+
+인물 묘사 — alice:
+
+Short dark-brown bob with the bow on the image-left side of the head, cream dress with navy trim and white apron, red and navy card-suit marks, pocket watch at the image-right hip, white stockings with suit marks (the near leg's stocking shows the suit marks most clearly), navy shoes.
+
+인물 묘사 — 손자:
+
+Black hair in a neat high top bun with a gold-and-jade pin and a jade tassel on the image-left side, ink-black layered robe with jade-green and pale gold trim, bamboo-slip shoulder guards and bracers, a dark sash with a jade disc at the image-right hip, a short paneled armour skirt, knee-high black boots.
+
+인물 묘사 — 춘향 (공통의 LEGS 대신 이 줄을 쓴다 — 치마가 다리를 가린다):
+
+Long dark-brown hair with a red flower pin, one long braid falling over the image-right shoulder, long red ribbons, a rose-pink jeogori with a big red bow tie and a jade pendant, a full layered rose and white chima skirt reaching the ankles, small red shoes.
+LEGS: her legs are hidden by the long skirt — follow attached image 2 only for where the two small red shoes are and how the skirt front moves:
+frame 1 = NEAR shoe forward peeking out in front of the hem, FAR shoe behind (only its toe showing at the back of the hem); the skirt front pushes forward;
+frame 2 = shoes close, skirt settles, body 1 pixel lower; frame 3 = FAR shoe swinging forward under the hem, body 1 pixel higher;
+frame 4 = the MIRROR of frame 1: FAR shoe forward in front of the hem, NEAR shoe behind; frame 5 = shoes close, body 1 pixel lower;
+frame 6 = NEAR shoe swinging forward under the hem, body 1 pixel higher. Frames 1 and 4 must clearly show a different shoe in front.
+The hem and braid sway opposite to the forward shoe. The loop 6 -> 1 must be seamless.
 
 ### 다음 세션용 요청문
 

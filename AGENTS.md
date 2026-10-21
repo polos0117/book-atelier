@@ -108,6 +108,7 @@ node tests/patch.cjs                 # 패치 기록 모양
 node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·책마다 고유 규칙·AI
 node tests/mosaic.cjs                # 모자이크 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 배치·최대 횟수·간격, 색인 꼴
 node tests/similar.cjs               # 닮은 그림 — 색인·등록부에 다 있다, k ≤ 8, 자기 자신 없음, 오름차순, 한 책 둘까지, 거의 같은 쌍
+python3 tests/sprites-data.py        # 도트 자료 — 칸·차례·시간·설계표·낱말, 그림 저장소가 옆에 있으면 시트 크기·걷기 빠르기 = 보폭 ÷ 반 주기(±15%)·걷기 dy 가 다리 교차를 따른다(tools/sprite-bob.py)
 (cd rust && cargo test)               # art-core(닮음 거리·top-k 포함) · art-index · mosaic-wasm 단위 검사
 node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 600판은 보고만): 책마다 40~60% · 세 폼 규칙 모두 돈다 · 선공
 node tests/run-gen.cjs               # 서고 지도 생성기 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 지도, 330 씨앗의 규칙(열·길·종류·책)

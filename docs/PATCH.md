@@ -7,6 +7,10 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 모자이크 화면 검사를 머리 탭 다섯에 맞춤
+- tests/mosaic-screen.cjs — 서고 탐험(run.html)이 머리 항해에 들어와 탭이 다섯이 됐다. 항해 넷을 기대하던 확인 셋(세로·가로·PC)을 다섯으로
+- tests/header-layout.cjs · AGENTS.md — 주석과 모자이크 줄의 "탭 넷/다섯" 말을 지금 항해에 맞춤
+
 ## 2026-10-21 · claude · 서가 즐겨찾기 — 지금 보이는 그림을 하트로 담고, 공방 모음에서 모아 본다
 - lib/favorites.js — 공방 넷과 공방 모음(polos0117.github.io)이 같이 쓰는 즐겨찾기 모듈(판 v1). 원본은 공방 모음의 favorites.js, 글자 하나 다르지 않게 복사했다. 열쇠 atelier_favorites_v1(한 출처라 공방끼리 같은 목록), 약속은 그쪽 README 「즐겨찾기」절
 - dex.html — 서가 상세의 바로가기 줄 맨 앞에 하트 「즐겨찾기」(aria-pressed) — 책이 아니라 큰 그림에 떠 있는 그 그림(폼·개방·연출·일상·특별)을 담는다. 담은 수 「즐겨찾기 n」 은 /favorites.html 로, 담았다·뺐다·저장이 막혔다는 알림(aria-live). ?book=&pic= 로 오면 그 그림의 화풍·폼·컷으로 열고, 다음 주소에는 pic 을 끌고 가지 않는다

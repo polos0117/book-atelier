@@ -182,6 +182,7 @@ body {color:var(--text);font-size:15px}
 <script src="lib/words.js?v=10"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/today.js?v=1"></script>
+<script src="lib/speech.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
 <script src="lib/duel.js?v=1"></script>
@@ -200,6 +201,16 @@ const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D = window.AtelierDuel, MOTION = window.AtelierMotion;
 const STORE = 'book_duel_v1', AI_DELAY = 650;
 const T = window.AtelierToday, ROOM = 'book';   /* 오늘 기록 — 공방 지도의 방 열쇠(lib/today.js) */
+const SP = window.AtelierSpeech;
+/* 말풍선 — 판에 들어온 책이 그 장의 말을 한다(설계표 voice: 발단·전개·결말). 판이 끝나면 이긴 쪽 첫 책이 결말의 말. 그린 뒤에 자리를 찾는다 */
+function speak(S, st) {
+  const l = st.last; if (!SP || !l) return;
+  const line = (key, stage) => ((S.books[key] || {}).voice || {})[stage];
+  setTimeout(() => {
+    if (l.kind === 'play' && l.key) { const el = document.querySelector(`.duel-unit[data-side="${l.who}"][data-key="${l.key}"] .face`); if (el) SP.say(el, line(l.key, S.stages[st.chapter]), { who: l.who }); }
+    if (st.phase === 'done' && st.winner) { const el = document.querySelector(`.duel-unit[data-side="${st.winner}"]:not(.off)`); if (el) SP.say(el.querySelector('.face') || el, line(el.dataset.key, S.stages[S.stages.length - 1]), { who: st.winner, ms: 4000 }); }
+  }, 40);
+}
 const V = 'f', NO = ['①', '②', '③'];
 
 function readStore() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }
@@ -511,7 +522,7 @@ function App() {
   /* 절정이 터졌으면 장면을 보인다 — 내 것도 상대 것도 */
   const showScene = st => { if (st.last && st.last.kind === 'open') setScene({ key: st.last.key, form: st.last.form, who: st.last.who }); };
   /* 판이 끝나는 수에서 오늘 기록 한 칸(공방 지도가 읽는다) — st.recorded 가 두 번을 막는다 */
-  const commit = st => { if (st.phase === 'done' && !st.recorded) { st.recorded = true; T.bump(ROOM, { won: st.winner === 'me', daily: !!st.daily }); } setGame(g => save({ ...g, st })); showScene(st); };
+  const commit = st => { if (st.phase === 'done' && !st.recorded) { st.recorded = true; T.bump(ROOM, { won: st.winner === 'me', daily: !!st.daily }); } setGame(g => save({ ...g, st })); showScene(st); speak(S, st); };
   /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게. 절정 장면·판 접기 확인이 떠 있으면 닫을 때까지 기다린다 */
   useEffect(() => {
     if (scene || forfeit || !S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;

@@ -17,6 +17,13 @@
 - tests/scene-motion.cjs — 새 검사: 같은 파일(판·바깥 없음)·설계표 입자 = 모듈 종류, 입자(화소 변화·숨김·화면 밖·destroy·종류마다), 켄 번스, 열리기·끊기·넘기기·사본, 스위치(저장·새로고침), 동작 줄이기, 서재·서가·크게 보기·결투, 다섯 크기 넘침·오류 없음
 - docs/SCENE_MOTION.md · AGENTS.md — API·종류·복사 규칙, 공방마다 자료를 종류로 잇는 법(pkm 타입·myth 원소·건담), 검사 목록
 
+## 2026-10-21 · claude · 말풍선 — 판에 들어온 책이 그 장의 말을 한다
+- data/book-design.json — 스무 권에 voice(발단·전개·결말 한 줄씩). 명대사 인용이 아니라 설계표의 인물로 새로 쓴 말(저작권 문제 없게). 머리말에 뜻
+- tools/book-design.py · tests/book-design.py — voice 가 있으면 셋 다 있고 70자까지(없는 책은 그냥 통과)
+- lib/speech.js — 새 파일(원본은 지도 저장소 speech.js, 다섯 저장소에 같은 파일). 요소 위에 꼬리 달린 풍선 — 둘까지, 글 길이만큼, 움직임 줄이기면 애니메이션 없이. 화면 말 없음
+- duel.html — 내기(내 것도 상대 것도)에 그 책의 그 장 voice 를 자리 위에, 판이 끝나면 이긴 쪽 첫 책이 결말의 말
+- tests/duel-screen.cjs — 춘향전을 내면 발단의 말이 풍선으로
+
 ## 2026-10-21 · claude · 서가 최근 추가 줄과 새 표 — 등록한 날(added)
 
 - tools/register-images.py — img.json 에 `added` {파일: "YYYY-MM-DD"}. 이번에 새로 적힌 그림만 오늘, 있던 날짜는 그대로, 틀린 날짜는 버린다, `--prune` 으로 빠진 그림은 날짜도. `--backfill-added <그림 저장소>` 는 날짜 없는 그림에만 git 이력의 처음 더해진 날(`git log --diff-filter=A --format=%cs` 와 같은 셈, 얕으면 `--depth` 를 늘려 받고 그래도 잘린 경계 커밋의 날짜는 안 쓴다). 날짜는 지어내지 않는다 — 이력에 없으면 날짜 없이 둔다

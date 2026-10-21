@@ -54,6 +54,14 @@ def check(doc):
             bad("key 는 영문 소문자·숫자·밑줄만 — 그림 파일 이름에 그대로 들어간다")
         if len(b.get("symbols") or []) != 3:
             bad("상징은 셋")
+        # 말풍선 — 있으면 발단·전개·결말 셋 다 있고 한 줄(70자)이다
+        v = b.get("voice")
+        if v is not None:
+            for k in STAGES:
+                if not str((v if isinstance(v, dict) else {}).get(k) or "").strip():
+                    bad("voice 의 %s 이(가) 비었다" % k)
+                elif len(v[k]) > 70:
+                    bad("voice 의 %s 이(가) 너무 길다(70자까지)" % k)
         arc = b.get("arc") or {}
         for k in ("question", "conflict", "answer"):
             if not str(arc.get(k) or "").strip():

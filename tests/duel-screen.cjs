@@ -74,6 +74,8 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
     await q.locator('.duel-hand .card[data-key="chunhyang"]').tap();
     await q.locator('.duel-row[data-side="me"] .duel-slot[data-slot="1"]').tap();
     await q.waitForSelector('.duel-row[data-side="me"] .duel-unit[data-slot="1"][data-key="chunhyang"]');
+    await q.waitForSelector('.atelier-speech[data-who="me"]');
+    assert.equal(await q.locator('.atelier-speech[data-who="me"]').textContent(), design.books.find(b => b.key === 'chunhyang').voice['발단'], '판에 들어온 책이 발단의 말을 한다(말풍선)');
     assert.equal(await q.locator('.duel-row[data-side="me"] .duel-unit[data-slot="1"] .pw').textContent(), '7', '춘향전 발단 버티기 7');
     assert.equal(await q.locator('.duel-row[data-side="foe"] .duel-unit[data-slot="1"] .pw').textContent(), '3', '들어오며 보물섬을 쳤다 4 → 3');
     assert.equal(await q.locator('.duel-hand .card').count(), 2, '손패가 줄었다');

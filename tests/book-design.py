@@ -58,4 +58,8 @@ fails(lambda d: d['books'][1].update(genre=d['books'][0]['genre']), '장르가 �
 fails(lambda d: d['books'][4].pop('anonymous'), '사망 연도')
 fails(lambda d: d['vocab']['form_key'].update(전개='begin'), 'form_key')
 fails(lambda d: d['books'][0].update(key='Don Quixote'), 'key 는')
-print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르 · 줄(lane) 말 없음 · 개방 입자' % len(doc['books']))
+# 말풍선 — voice 가 있으면 셋 다 있어야 하고 한 줄
+fails(lambda d: d['books'][0]['voice'].update(전개=''), 'voice')
+fails(lambda d: d['books'][0]['voice'].update(결말='가' * 71), 'voice')
+d = copy.deepcopy(doc); del d['books'][0]['voice']; assert B.check(d) == [], B.check(d)
+print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르 · 줄(lane) 말 없음 · 개방 입자 · 말풍선' % len(doc['books']))

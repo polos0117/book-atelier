@@ -168,6 +168,9 @@ body.dex-page,body.lab-page {background-image:none}
  .zoom-layer .zoom-nav button{min-height:44px;min-width:64px;font-size:22px}
  .zoom-footer{padding-inline:12px;font-size:10px}.viewer-keyboard{display:none}.viewer-touch{display:inline}
 }
+/* 탭 다섯(서재·서가·프롬프트·결투·탐험) — 폴드 덮개(344)에서도 글자가 안 잘리게. 위 블록과 같은 세기의 선택자로 */
+@media (max-width:379px){.workspace-nav{gap:1px;padding:3px}.workspace-nav a,.workspace-nav a[href="index.html"],.workspace-nav a[href="prompt.html"]{padding:0 3px;min-width:0;font-size:10.5px;letter-spacing:-.03em}}
+
 @media(max-height:550px) {
  .workspace-heading {display:none}.workspace-header{margin-bottom:8px}
  .dex-page main,.prompt-page .wrap{padding-top:8px}.zoom-layer .zoom-bar{padding-block:5px}.zoom-footer{min-height:32px;padding-block:6px}

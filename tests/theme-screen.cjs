@@ -32,11 +32,11 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
   await p.evaluate(()=>window.AtelierImg.setHallPicks([]));
   await p.reload();await p.waitForSelector('.room-preview');
   assert.deepEqual(await p.evaluate(()=>window.AtelierImg.hallPicks()),[],'empty new shelf must not be replaced by old picks');
-  for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.room-preview']]){
+  for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['run.html','.run-screen'],['index.html','.room-preview']]){
    await p.goto(harness.base+'/'+file);await p.waitForSelector(ready);
    assert.equal(await p.evaluate(()=>document.documentElement.dataset.background),'off','background preference persists');
    const nav=await p.locator('.workspace-nav a').evaluateAll(es=>es.map(e=>({href:e.getAttribute('href'),current:e.getAttribute('aria-current')})));
-   assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html','duel.html']);
+   assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html','duel.html','run.html']);
    assert.deepEqual(nav.filter(x=>x.current==='page').map(x=>x.href),[file]);
    const before=file==='prompt.html'?await p.locator('#prompt-output').inputValue():null;
    for(const theme of ['sunlit','moonlit','hanok']) {
@@ -68,6 +68,6 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
   }
   }
   assert.deepEqual(a.errors,[]);assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
-  await a.close();console.log('PASS room theme: AA text contrast, legacy shelf migration, no cross-atelier mutation, persisted background, 3 rooms x 4 pages x 5 viewports');
+  await a.close();console.log('PASS room theme: AA text contrast, legacy shelf migration, no cross-atelier mutation, persisted background, 3 rooms x 5 pages x 5 viewports');
  }finally{await harness.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

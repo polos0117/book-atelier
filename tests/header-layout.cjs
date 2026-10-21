@@ -1,7 +1,7 @@
 /* Tab changes must preserve the shared header's geometry, including native scrollbars. */
 const assert=require('node:assert/strict'),{start,FOLD}=require('./browser-harness.cjs'),fs=require('node:fs');
 /* 글꼴 — 화면 넷이 같은 명조·고딕을 싣는다(preconnect + display=swap). 이 검사는 바깥으로 못 나가니 글꼴을 못 받은 채로 아래가 다 돌아야 한다 */
-for(const page of ['index.html','dex.html','prompt.html','duel.html']){
+for(const page of ['index.html','dex.html','prompt.html','duel.html','run.html']){
  const src=fs.readFileSync(page,'utf8'),css=src.match(/<link rel="stylesheet" href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)">/);
  assert(css&&/family=Noto\+Serif\+KR/.test(css[1])&&/family=IBM\+Plex\+Sans\+KR/.test(css[1])&&/display=swap/.test(css[1]),page+' 글꼴 링크(명조·고딕, swap)');
  assert(src.includes('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')&&src.indexOf('preconnect')<src.indexOf(css[0]),page+' preconnect 가 먼저');
@@ -38,7 +38,7 @@ function same(actual,expected,label){
      await p.goto(h.base+'/index.html');await p.waitForSelector('.workspace-nav');
      await p.evaluate(d=>window.AtelierAppearance.set('density',d),density);
      const reference=await geometry(p);
-     for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['index.html','.room-preview']]){
+     for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['run.html','.run-screen'],['index.html','.room-preview']]){
       /* 탭 넷은 어느 크기에서나 보인다 — 서재 탭이 집으로 가는 길 */
       await p.locator(`.workspace-nav a[href="${file}"]`).click();
       await p.waitForSelector(ready);
@@ -54,12 +54,12 @@ function same(actual,expected,label){
       }
      }
     }
-    /* 어느 크기에서나 항해는 한 줄이고 탭 넷이 다 보인다(서재 탭이 집으로 가는 길). 문양 링크는 보이는 글자가 없어 접근성 이름 "서재" 와 어긋나지 않는다 */
+    /* 어느 크기에서나 항해는 한 줄이고 탭 다섯이 다 보인다(서재 탭이 집으로 가는 길). 문양 링크는 보이는 글자가 없어 접근성 이름 "서재" 와 어긋나지 않는다 */
     await p.goto(h.base+'/prompt.html');await p.waitForSelector('#prompt-output');
     const navH=(await p.locator('.workspace-nav').boundingBox()).height,narrow=viewport.width<=599;
     assert(navH<=56,viewport.width+' 항해는 한 줄: '+navH);
     assert(await p.locator('.workspace-nav a[href="index.html"]').isVisible(),viewport.width+' 서재 탭이 보인다');
-    assert.equal(await p.locator('.workspace-nav a:visible').count(),4,viewport.width+' 탭 넷이 다 보인다');
+    assert.equal(await p.locator('.workspace-nav a:visible').count(),5,viewport.width+' 탭 다섯이 다 보인다');
     assert.equal(await p.locator('.workspace-heading a').count(),1,'머리에서 링크는 문양 하나');
     assert.equal(await p.locator('.workspace-heading a').evaluate(e=>[e.getAttribute('href'),e.textContent.trim()].join('|')),'index.html|','문양 링크는 서재로, 보이는 글자 없음');
     assert.equal(await p.locator('.workspace-heading h1').evaluate(e=>!!e.closest('a')),false,'화면 제목은 링크가 아니다');
@@ -86,6 +86,6 @@ function same(actual,expected,label){
     assert.deepEqual(a.errors,[]);
    }finally{await a.close()}
   }
-  console.log('PASS header layout: 4 pages, 5 viewport sizes, both densities, stable navigation while scrolling');
+  console.log('PASS header layout: 5 pages, 5 viewport sizes, both densities, stable navigation while scrolling');
  }finally{await h.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

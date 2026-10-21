@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8f4ea">
+<title>책의 공방</title>
+<!--
+  서고 탐험 — 로그라이크(docs/RUN_DESIGN.md). 지도는 lib/shelf-gen.wasm(rust/shelf-gen)이 씨앗으로 짜고, 걷는 규칙은 lib/run.js 에만,
+  싸움은 결투 엔진(lib/duel.js)의 한 장 결투(보스만 세 장). 수치는 data/run.json. 여기는 상태를 그리고 단추를 엔진에 넘길 뿐이다.
+
+  화면: 고르기(책 셋) → 지도(층 평면도 — 열마다 방, 길이 닿는 방을 누른다) → 방마다 싸움(결투 판, lib/duel-ui.js)·전리품·독서대·장면·쉼 → 계단 → … → 바닥의 보스 → 완주 / 갇힘.
+  상태는 매 수 localStorage(book_run_v1) — 지도도 안에 있어 다시 열 때 wasm 이 필요 없다. 주소 ?daily 면 오늘의 서고(날짜 씨앗), ?seed=N 이면 그 씨앗(검사가 쓴다).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="lib/workspace.css?v=6">
+<link rel="stylesheet" href="lib/gallery.css?v=4">
+<link rel="stylesheet" href="lib/duel.css?v=1">
+<style>
+/* ── 서고 탐험 — 지도·덱·막대. 결투 판은 lib/duel.css ── */
+.run-screen {display:flex;flex-direction:column;gap:10px}
+.run-bar {display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;color:var(--muted)}
+.run-bar b {color:var(--text)}
+.run-bar .lamps i {display:inline-block;width:12px;height:12px;margin-left:3px;border-radius:50%;background:var(--line);vertical-align:-1px}
+.run-bar .lamps i.on {background:var(--accent, #d9b45a);box-shadow:0 0 8px var(--accent, #d9b45a)}
+.run-bar .daily {padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;background:var(--accent, #d9b45a);color:#111}
+/* 지도 — SVG 평면도. 열은 왼쪽→오른쪽(들어온 자리 → 계단), 방은 책장 사이 칸 */
+.run-map {position:relative;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
+.run-map svg {display:block;width:100%;height:auto}
+.run-map .edge {stroke:var(--line);stroke-width:3;fill:none}
+.run-map .edge.open {stroke:var(--accent, #d9b45a);stroke-dasharray:6 6}
+.run-map .edge.walked {stroke:var(--text);stroke-opacity:.5}
+.run-room rect {fill:var(--bg);stroke:var(--line);stroke-width:1.5;rx:10}
+.run-room text {font:600 12px var(--sans, system-ui);fill:var(--text)}
+.run-room .kind {font-size:11px;fill:var(--muted)}
+.run-room[data-state="visited"] rect {fill:var(--card);stroke-opacity:.5} .run-room[data-state="visited"] text {fill:var(--muted)}
+.run-room[data-state="here"] rect {stroke:var(--accent, #d9b45a);stroke-width:3;fill:color-mix(in srgb, var(--accent, #d9b45a) 18%, var(--bg))}
+.run-room[data-state="next"] rect {stroke:var(--accent, #d9b45a);stroke-width:2;fill:var(--bg);cursor:pointer}
+.run-room[data-state="next"]:hover rect {fill:color-mix(in srgb, var(--accent, #d9b45a) 12%, var(--bg))}
+.run-room[data-state="far"] {opacity:.55}
+.run-room[data-kind="boss"] rect, .run-room[data-kind="meet"] rect {stroke-dasharray:none}
+.run-room[data-kind="meet"][data-state="next"] rect, .run-room[data-kind="boss"][data-state="next"] rect {fill:color-mix(in srgb, #c0392b 10%, var(--bg))}
+@media (max-width: 600px) { .run-map {overflow-x:auto} .run-map svg {min-width:560px} }   /* 세로 폰 — 글자가 읽히게 옆으로 민다 */
+.run-hint {margin:0;font-size:12px;color:var(--muted)}
+.run-next {display:flex;flex-wrap:wrap;gap:8px}
+.run-next .btn {display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.2;text-align:left}
+.run-next .btn small {font-weight:500;color:var(--muted)}
+.run-next .btn[data-kind="meet"], .run-next .btn[data-kind="boss"] {border-color:#c0392b88}
+.run-last {margin:0;padding:8px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:13px}
+/* 덱 띠 — 지금 장의 폼 그림 */
+.run-deck {display:flex;gap:8px;overflow-x:auto;padding:4px 0}
+.run-deck .book {flex:0 0 64px;text-align:center;font-size:11px;color:var(--muted)}
+.run-deck .book .face {display:block;width:64px;height:88px;border-radius:8px;overflow:hidden;background:var(--card);border:1px solid var(--line)}
+.run-deck .book .face img {width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block}
+.run-deck .book .face .ph {display:flex;align-items:center;justify-content:center;height:100%;padding:4px;font-size:10px;word-break:keep-all}
+.run-deck .book b {display:block;color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 고르기 — 결투 덱 화면과 같은 칸(lib/duel.css 의 .deck-grid·.deck-cell) */
+.run-pick .deck-rec {margin-bottom:10px}
+.run-pick .acts {display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+/* 전리품·독서대·장면 — 결투 판 위에 덮이는 상자 */
+.run-offer {position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px;background:#0008}
+.run-offer .box {width:min(100%, 560px);max-height:92dvh;overflow:auto;padding:14px;border-radius:14px;background:var(--bg);border:1px solid var(--line);box-shadow:0 20px 60px #0008}
+.run-offer .box h3 {margin:0 0 4px;font:700 16px/1.3 var(--serif, serif)}
+.run-offer .note {margin:0 0 10px;font-size:12px;color:var(--muted)}
+.run-offer .books {display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:8px}
+.run-offer .books .deck-cell {min-height:0}
+.run-offer .acts {display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.run-offer .quote {margin:0 0 10px;padding:8px 12px;border-left:3px solid var(--accent, #d9b45a);font:500 14px/1.5 var(--serif, serif)}
+/* 싸움 머리와 결과 띠 */
+.run-fight-head {margin:0;font-size:13px;color:var(--muted)}
+.run-fight-result {padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600}
+.run-fight-result[data-result="win"] {border-color:var(--accent, #d9b45a)} .run-fight-result[data-result="lose"], .run-fight-result[data-result="dead"] {border-color:#c0392b88}
+/* 끝 */
+.run-end {text-align:center;padding:12px 0}
+.run-end h2 {margin:0 0 6px;font:700 24px/1.3 var(--serif, serif)}
+.run-end .note {margin:0 0 12px;color:var(--muted);font-size:13px}
+.run-end .run-deck {justify-content:center}
+.run-end .acts {display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+@media (orientation: landscape) and (min-width: 700px) {
+  .run-screen[data-screen="map"] {display:grid;grid-template-columns:minmax(0, 1fr) 240px;grid-template-areas:"bar bar" "map side" "next side" "last side";align-items:start}
+  .run-screen[data-screen="map"] .run-bar {grid-area:bar} .run-screen[data-screen="map"] .run-map {grid-area:map} .run-screen[data-screen="map"] .run-next {grid-area:next} .run-screen[data-screen="map"] .run-last {grid-area:last}
+  .run-screen[data-screen="map"] .run-side {grid-area:side;display:flex;flex-direction:column;gap:8px}
+  .run-screen[data-screen="map"] .run-deck {flex-wrap:wrap;overflow:visible}
+}
+</style>
+<script src="lib/workspace-theme.js?v=3"></script>
+<script src="lib/words.js?v=11"></script>
+<script src="lib/fresh.js?v=1"></script>
+<script src="lib/today.js?v=1"></script>
+<script src="lib/speech.js?v=1"></script>
+<script src="lib/img.js?v=2"></script>
+<script src="lib/dex-filter.js?v=2"></script>
+<script src="lib/duel.js?v=2"></script>
+<script src="lib/run.js?v=1"></script>
+<script src="lib/shelf-gen.js?v=1"></script>
+<script src="lib/scene-motion.js?v=1"></script>
+<link rel="stylesheet" href="lib/scene-motion.css?v=1">
+<link rel="stylesheet" href="lib/room.css?v=3">
+</head>
+<body class="prompt-page duel-page run-page">
+<div class="wrap"><div id="app"></div></div>
+<script type="module">
+import { h, render } from 'https://esm.sh/preact@10.24.3';
+import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
+import { useData, picOf, Pic, Match, Scene, Zoom, zoomKey, speak } from './lib/duel-ui.js?v=1';
+const html = htm.bind(h);
+const W = window.W, D = window.AtelierDuel, R = window.AtelierRun, SH = window.AtelierShelf, T = window.AtelierToday;
+const STORE = 'book_run_v1', REC = 'book_run_rec_v1', ROOM = 'book', AI_DELAY = 650, WASM = 'lib/shelf-gen.wasm?v=1';
+const KINDS = ['entry', 'meet', 'read', 'rest', 'scene', 'stairs', 'boss'];
+
+function readStore() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }
+function writeStore(o) { try { localStorage.setItem(STORE, JSON.stringify(o)); } catch (e) {} }
+/* 탐험 전적 — 몇 번 들어가 몇 번 완주했고 가장 깊이 몇 층(통산·오늘은 lib/today.js 가 쌓는다) */
+function readRec() { try { const j = JSON.parse(localStorage.getItem(REC)); return j && typeof j.runs === 'number' ? j : { runs: 0, clears: 0, best: 0 }; } catch (e) { return { runs: 0, clears: 0, best: 0 }; } }
+function recordRun(st) { const j = readRec(); j.runs += 1; if (st.phase === 'clear') j.clears += 1; j.best = Math.max(j.best, st.phase === 'clear' ? R.FLOORS : st.floor + 1); try { localStorage.setItem(REC, JSON.stringify(j)); } catch (e) {} }
+/* 씨앗 — ?seed=N(검사) · ?daily(오늘의 서고) · 아니면 아무거나 */
+function seedFor(daily) {
+  const m = /[?&]seed=(\d+)/.exec(location.search);
+  if (m) return [(+m[1]) >>> 0, ((+m[1]) ^ 0x9e3779b9) >>> 0];
+  if (daily) return SH.seedOf(T.today() + ':' + ROOM + ':run');
+  return [(Math.random() * 4294967296) >>> 0, (Date.now() ^ (Math.random() * 1e9)) >>> 0];
+}
+const kindWord = k => W('run.room.' + k);
+const bookTitle = (S, key) => (S.books[key] || {}).title || key;
+
+/* ── 고르기 — 책 셋 ── */
+function Pick({ S, picks, onChange, onStart, onDaily, resume, onResume }) {
+  const data = S.data, max = data.run.start_pick || 3, rec = readRec(), today = T.read(ROOM);
+  const toggle = key => onChange(picks.includes(key) ? picks.filter(k => k !== key) : picks.length < max ? picks.concat(key) : picks);
+  const ok = picks.length === max;
+  return html`<section class="duel-screen run-screen run-pick" data-screen="pick">
+    <div class="deck-rec"><p class="sec">${W('duel.rec.title')}</p><p class="note">${rec.runs ? W('run.rec.line', { n: rec.runs, c: rec.clears, floor: rec.best }) : W('run.rec.none')}</p></div>
+    ${resume && html`<button type="button" class="btn primary" id="run-resume" onClick=${onResume} style="width:100%">${W('run.pick.continue', { floor: resume.floor + 1 })}</button>`}
+    <p class="sec">${W('run.pick.title')}<span>${W('run.pick.count', { n: picks.length, max })}</span></p>
+    <p class="note">${W('run.pick.note')}</p>
+    <div class="deck-grid">${data.design.books.map(b => { const roles = S.stages.map(s => b.forms[s].role);
+      return html`<button key=${b.key} type="button" class=${'deck-cell' + (picks.includes(b.key) ? ' in' : '')} data-key=${b.key} aria-pressed=${picks.includes(b.key)} onClick=${() => toggle(b.key)}>
+        <span class="face"><${Pic} file=${picOf(S, b.key, 0)} alt=${b.title} /></span>
+        <span class="cap">${b.title}<i>${b.genre}</i><i>${W('duel.deck.role', { a: roles[0], b: roles[1], c: roles[2] })}</i></span></button>`; })}</div>
+    <div class="acts">
+      <button type="button" class="btn primary" id="run-start" disabled=${!ok} onClick=${onStart}>${W('run.pick.start')}</button>
+      <button type="button" class="btn" id="run-daily" disabled=${!ok} onClick=${onDaily}>${W('run.pick.daily')}</button>
+    </div>
+    <p class="note deck-daily" data-done=${today.daily}>${today.daily ? W('run.pick.daily.done') : W('run.pick.daily.note')}</p>
+  </section>`;
+}
+
+/* ── 지도 — 층 평면도. 열마다 방, 길은 이웃 열 사이. 누를 수 있는 방은 길이 닿는 다음 방 ── */
+function FloorMap({ st, S, onGo }) {
+  const f = R.floorOf(st), L = R.legal(st), cols = f.cols, CW = 150, H = 300, PAD = 16;
+  const rows = c => f.rooms.filter(r => r.col === c).length;
+  const pos = r => ({ x: PAD + r.col * CW + CW / 2, y: PAD + (r.row + 0.5) * ((H - PAD * 2) / rows(r.col)) });
+  const stateOf = r => r.id === st.room ? 'here' : L.rooms.includes(r.id) ? 'next' : st.visited.includes(r.id) ? 'visited' : 'far';
+  const walked = (a, b) => { const i = st.visited.indexOf(a); return i >= 0 && st.visited[i + 1] === b; };
+  return html`<div class="run-map"><svg viewBox=${'0 0 ' + (PAD * 2 + cols * CW) + ' ' + H} role="img" aria-label=${W('run.floor', { n: f.n, stage: S.stages[f.stage] })}>
+    ${f.edges.map(([a, b], i) => { const p = pos(f.rooms[a]), q = pos(f.rooms[b]); return html`<path key=${i} class=${'edge' + (a === st.room && L.rooms.includes(b) ? ' open' : walked(a, b) ? ' walked' : '')} d=${`M${p.x + 50},${p.y} C${p.x + 90},${p.y} ${q.x - 90},${q.y} ${q.x - 50},${q.y}`} />`; })}
+    ${f.rooms.map(r => { const p = pos(r), s = stateOf(r), title = r.book != null && ['meet', 'boss', 'scene'].includes(r.kind) ? bookTitle(S, R.keyOf(S.data, r.book)) : '';
+      return html`<g key=${r.id} class="run-room" data-id=${r.id} data-kind=${r.kind} data-state=${s} onClick=${() => s === 'next' && onGo(r.id)}>
+        <rect x=${p.x - 50} y=${p.y - 26} width="100" height="52" />
+        <text x=${p.x} y=${p.y - 5} text-anchor="middle" class="kind">${s === 'here' ? W('run.map.here') : kindWord(r.kind)}</text>
+        <text x=${p.x} y=${p.y + 13} text-anchor="middle">${title || (s === 'here' ? kindWord(r.kind) : '')}</text>
+      </g>`; })}
+  </svg></div>`;
+}
+function DeckStrip({ S, st, stage }) {
+  return html`<div class="run-deck" aria-label=${W('run.deck', { n: st.deck.length, max: R.deckMax(S.data) })}>${st.deck.map(k => html`<div key=${k} class="book" data-key=${k}><span class="face"><${Pic} file=${picOf(S, k, stage)} alt=${bookTitle(S, k)} /></span><b>${bookTitle(S, k)}</b><span>${S.books[k].forms[S.stages[stage]].role}</span></div>`)}</div>`;
+}
+function Bar({ S, st }) {
+  const f = R.floorOf(st), max = R.lampsMax(S.data);
+  return html`<div class="run-bar"><b>${W('run.floor', { n: f.n, stage: S.stages[f.stage] })}</b>
+    <span class="lamps">${W('run.lamps')}${Array.from({ length: max }, (_, i) => html`<i key=${i} class=${i < st.lamps ? 'on' : ''}></i>`)}</span>
+    <span>${W('run.deck', { n: st.deck.length, max: R.deckMax(S.data) })}</span>${st.daily && html`<span class="daily">${W('run.daily.tag')}</span>`}</div>`;
+}
+function lastText(S, st) {
+  const l = st.last; if (!l) return '';
+  if (l.kind === 'rest') return l.gained ? W('run.rest.gained') : W('run.rest.full');
+  if (l.kind === 'descend') return W('run.last.descend', { n: l.floor + 1 });
+  if (l.kind === 'lose') return W('run.result.lose', { n: l.lamps });
+  if (l.kind === 'draw') return W('run.result.draw');
+  return '';
+}
+function MapScreen({ S, st, onGo, onDescend, onChallenge }) {
+  const L = R.legal(st), f = R.floorOf(st);
+  return html`<section class="duel-screen run-screen" data-screen="map">
+    <${Bar} S=${S} st=${st} />
+    <${FloorMap} st=${st} S=${S} onGo=${onGo} />
+    <div class="run-next" aria-label=${W('run.map.next')}>
+      ${L.rooms.map(id => { const r = f.rooms[id], title = r.book != null && r.kind !== 'read' ? bookTitle(S, R.keyOf(S.data, r.book)) : ''; return html`<button key=${id} type="button" class="btn" data-id=${id} data-kind=${r.kind} onClick=${() => onGo(id)}>${kindWord(r.kind)}${title && html`<small>${title}</small>`}</button>`; })}
+      ${L.descend && html`<button type="button" class="btn primary" id="run-descend" onClick=${onDescend}>${W('run.act.descend')}</button>`}
+      ${L.boss && html`<button type="button" class="btn primary" id="run-challenge" onClick=${onChallenge}>${W('run.act.challenge')}</button>`}
+    </div>
+    ${lastText(S, st) && html`<p class="run-last" role="status">${lastText(S, st)}</p>`}
+    <div class="run-side"><p class="run-hint">${W('run.map.hint')}</p><${DeckStrip} S=${S} st=${st} stage=${f.stage} /></div>
+  </section>`;
+}
+
+/* ── 책 얻기 상자 — 전리품·독서대·장면. 덱이 가득이면 내놓을 책을 고르는 둘째 단계 ── */
+function Offer({ S, st, onTake, onSkip, onScene }) {
+  const data = S.data, full = st.deck.length >= R.deckMax(data), [want, setWant] = useState(null), stage = R.stageOf(st);
+  const scene = st.phase === 'scene', r = R.roomOf(st);
+  const title = scene ? W('run.scene.title', { book: bookTitle(S, R.keyOf(data, r.book)), card: (S.books[R.keyOf(data, r.book)].scene_cards || [])[st.floor % 3] || '' }) : st.phase === 'reward' ? W('run.offer.loot') : W('run.offer.read');
+  const cell = (k, on) => { const b = S.books[k], roles = S.stages.map(s => b.forms[s].role); return html`<button key=${k} type="button" class="deck-cell" data-key=${k} onClick=${on}>
+    <span class="face"><${Pic} file=${picOf(S, k, stage)} alt=${b.title} /></span><span class="cap">${b.title}<i>${b.genre}</i><i>${W('duel.deck.role', { a: roles[0], b: roles[1], c: roles[2] })}</i></span></button>`; };
+  return html`<div class="run-offer" role="dialog" aria-label=${title} data-phase=${st.phase}><div class="box">
+    <h3>${title}</h3>
+    ${scene && html`<p class="note">${st.offer.length ? W('run.scene.note') : W('run.scene.inDeck')}</p>`}
+    ${want ? html`<p class="note">${W('run.offer.full')}</p><div class="books drop">${st.deck.map(k => cell(k, () => onTake(want, k)))}</div>`
+      : st.offer.length ? html`<div class="books">${st.offer.map(k => cell(k, () => full ? setWant(k) : onTake(k)))}</div>` : html`<p class="note">${W('run.offer.none')}</p>`}
+    <div class="acts">
+      ${scene && html`<button type="button" class="btn" id="run-scene-rest" onClick=${() => onScene('rest')}>${W('run.act.rest')}</button>`}
+      ${want ? html`<button type="button" class="btn" id="run-offer-back" onClick=${() => setWant(null)}>${W('duel.act.cancel')}</button>`
+        : html`<button type="button" class="btn" id="run-offer-skip" onClick=${onSkip}>${W('run.act.skip')}</button>`}
+    </div>
+  </div></div>`;
+}
+
+function End({ S, st, onAgain }) {
+  const clear = st.phase === 'clear', boss = bookTitle(S, R.keyOf(S.data, st.plan.boss));
+  return html`<section class="duel-screen run-screen run-end" data-screen=${st.phase}>
+    <h2>${clear ? W('run.clear.title') : W('run.over.title')}${st.daily && html` <small class="daily">${W('run.daily.tag')}</small>`}</h2>
+    <p class="note">${clear ? W('run.clear.note', { book: boss, fights: st.stats.fights, wins: st.stats.wins, books: st.deck.length }) : W('run.over.note', { floor: st.floor + 1, fights: st.stats.fights, wins: st.stats.wins, books: st.deck.length })}</p>
+    <p class="sec">${W('run.end.deck')}</p>
+    <${DeckStrip} S=${S} st=${st} stage=${clear ? 2 : R.stageOf(st)} />
+    <div class="acts"><button type="button" class="btn primary" id="run-again" onClick=${onAgain}>${W('run.act.again')}</button></div>
+  </section>`;
+}
+
+function App() {
+  const S = useData(['run']);
+  const [wasm, setWasm] = useState(SH.loaded());
+  const [st, setSt] = useState(() => { const s = readStore(); return s.st && s.st.v === R.VERSION ? s.st : null; });
+  const [picks, setPicks] = useState(() => { const s = readStore(); return Array.isArray(s.picks) ? s.picks : []; });
+  const [screen, setScreen] = useState(() => (readStore().st ? 'run' : 'pick'));   /* 'pick' | 'run' — 하던 탐험이 있어도 고르기 화면에서 이어가기를 누른다 */
+  const [after, setAfter] = useState(false), [scene, setScene] = useState(null), [zoom, setZoom] = useState(null);
+  const timer = useRef(null);
+  const save = (next, p) => { writeStore({ st: next, picks: p === undefined ? picks : p }); return next; };
+  useEffect(() => { SH.load(WASM).then(() => setWasm(true)).catch(() => setWasm(false)); }, []);
+  /* 한 수 — 싸움이 끝나는 수면 결과 띠를 띄워 두고(after), 절정은 장면으로, 말풍선 */
+  const commit = next => {
+    const was = st && st.phase === 'fight';
+    if (was && next.phase !== 'fight') setAfter(true);
+    if (next.fight && next.phase === 'fight' && next.fight.last && next.fight.last.kind === 'open') setScene({ key: next.fight.last.key, form: next.fight.last.form, who: next.fight.last.who });
+    if (next.fight) speak(S, next.fight);
+    setSt(save(next));
+  };
+  /* 상대 차례 — 조금 쉬었다 둔다 */
+  useEffect(() => {
+    if (scene || !S.data || !st || st.phase !== 'fight' || st.fight.turn !== 'foe') return;
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => { const n = JSON.parse(JSON.stringify(st)); R.fightAi(S.data, n, 'greedy'); commit(n); }, AI_DELAY);
+    return () => clearTimeout(timer.current);
+  }, [S.data, st, scene]);
+  /* 끝 — 한 번만 적는다: 오늘 기록(공방 지도)·탐험 전적 */
+  useEffect(() => {
+    if (!st || !(st.phase === 'over' || st.phase === 'clear') || st.recorded) return;
+    const n = JSON.parse(JSON.stringify(st)); n.recorded = true; T.bump(ROOM, { won: n.phase === 'clear', daily: !!n.daily }); recordRun(n); setSt(save(n));
+  }, [st && st.phase]);
+  useEffect(() => { if (zoom && !(st && st.fight && zoomKey(st.fight, zoom))) setZoom(null); }, [zoom, st]);
+  const start = daily => {
+    if (!wasm) return;
+    const seed = seedFor(daily), plan = SH.plan(seed[0], seed[1], S.data.design.books.length);
+    const n = R.newRun(S.data, plan, picks, { daily }); if (!n) return;
+    setAfter(false); setScene(null); setZoom(null); setScreen('run'); setSt(save(n));
+  };
+  /* 지도에서 ?daily 로 왔고 하던 탐험이 없고 책 셋이 골라져 있으면 바로 오늘의 서고. 다녀간 자국은 늘 */
+  useEffect(() => { if (!S.data || !wasm) return; T.visit(ROOM); if (T.isDaily() && !st && picks.length === (S.data.run.start_pick || 3)) start(true); }, [S.data, wasm]);
+  const act = fn => { const n = JSON.parse(JSON.stringify(st)); const r = fn(n); if (r && r.ok === false) return; commit(n); };
+  const reset = () => { clearTimeout(timer.current); setAfter(false); setScene(null); setZoom(null); setScreen('pick'); setSt(save(null)); };
+  if (S.error) return html`<${WorkspaceHeader} page="run" /><p class="empty-msg">${W('ui.error', { message: S.error })}</p>`;
+  if (!S.data) return html`<${WorkspaceHeader} page="run" /><p class="empty-msg">${W('ui.loading')}</p>`;
+  const showFight = st && (st.phase === 'fight' || (after && st.fight));
+  const resultKind = st && after && st.fight ? (st.phase === 'clear' ? 'clear' : st.phase === 'over' ? 'dead' : st.last && st.last.kind === 'lose' ? 'lose' : st.last && st.last.kind === 'draw' ? 'draw' : 'win') : null;
+  const resultText = resultKind === 'lose' ? W('run.result.lose', { n: st.lamps }) : resultKind ? W('run.result.' + resultKind) : '';
+  let body;
+  if (screen === 'pick' || !st) body = html`<${Pick} S=${S} picks=${picks} onChange=${p => { setPicks(p); writeStore({ st, picks: p }); }} onStart=${() => start(false)} onDaily=${() => start(true)} resume=${st} onResume=${() => setScreen('run')} />`;
+  else if (showFight) {
+    const f = st.fight, book = bookTitle(S, f.runBook), head = f.runBoss ? W('run.fight.boss', { book }) : W('run.fight.title', { book, stage: S.stages[f.firstChapter] });
+    body = html`<section class="duel-screen run-screen" data-screen="fight"><p class="run-fight-head">${head}</p>
+      <${Match} S=${S} st=${f} onMove=${m => act(n => R.fightMove(S.data, n, m))} onZoom=${setZoom}
+        actions=${after ? html`<div class="run-fight-result" data-result=${resultKind}>${resultText}<div class="acts"><button type="button" class="btn primary" id="run-continue" onClick=${() => setAfter(false)}>${W('run.act.continue')}</button></div></div>` : null} /></section>`;
+  }
+  else if (st.phase === 'over' || st.phase === 'clear') body = html`<${End} S=${S} st=${st} onAgain=${reset} />`;
+  else body = html`<${MapScreen} S=${S} st=${st} onGo=${id => act(n => R.enter(S.data, n, id))} onDescend=${() => act(n => R.descend(S.data, n))} onChallenge=${() => act(n => R.challenge(S.data, n))} />`;
+  const offering = st && !after && (st.phase === 'reward' || st.phase === 'read' || st.phase === 'scene');
+  return html`<${WorkspaceHeader} page="run" />
+    ${!wasm && screen === 'pick' && html`<p class="note" role="status">${W('run.loading')}</p>`}
+    ${body}
+    ${offering && html`<${Offer} S=${S} st=${st}
+      onTake=${(k, drop) => act(n => st.phase === 'reward' ? R.takeLoot(S.data, n, k, drop) : st.phase === 'read' ? R.read(S.data, n, k, drop) : R.scene(S.data, n, 'read', drop))}
+      onSkip=${() => act(n => st.phase === 'reward' ? R.takeLoot(S.data, n, null) : st.phase === 'read' ? R.read(S.data, n, null) : R.scene(S.data, n, 'rest'))}
+      onScene=${c => act(n => R.scene(S.data, n, c))} />`}
+    ${st && screen === 'run' && st.phase !== 'over' && st.phase !== 'clear' && !showFight && !offering && html`<p class="note"><button type="button" class="btn quiet" id="run-leave" onClick=${() => { if (confirm(W('run.leave.note'))) reset(); }}>${W('run.act.leave')}</button></p>`}
+    ${zoom && st && st.fight && zoomKey(st.fight, zoom) && html`<${Zoom} S=${S} st=${st.fight} zoom=${zoom} onClose=${() => setZoom(null)} />`}
+    ${scene && html`<${Scene} S=${S} scene=${scene} onClose=${() => setScene(null)} />`}`;
+}
+render(html`<${App} />`, document.getElementById('app'));
+window.AtelierFresh.watch();
+</script>
+</body>
+</html>

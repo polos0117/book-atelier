@@ -27,6 +27,7 @@
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 다섯은 안 들어 항해에는 없다 |
 | 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절). 「오늘의 판」은 날짜가 씨앗(`lib/today.js`), 끝난 판은 `atelier_today_v1:book` 에 적혀 공방 지도(polos0117.github.io)가 읽는다 |
+| 탐험 | `run.html` · `lib/run.js` · `data/run.json` · `rust/shelf-gen` → `lib/shelf-gen.wasm`(싣개 `lib/shelf-gen.js`) · `lib/duel-ui.js`·`lib/duel.css`(결투와 같이 쓰는 판 조각) | 서고 탐험 — 로그라이크(docs/RUN_DESIGN.md). 씨앗 하나로 아홉 층 평면도(Rust → wasm), 깊이가 곧 장(1~3층 발단·4~6 전개·7~9 결말), 방마다 싸움(결투 엔진 한 장, 보스만 세 장)·독서대·장면·쉼, 덱 셋→여섯, 등불 셋 꺼지면 처음부터. 지도 규칙은 생성기에만, 걷는 규칙은 엔진에만, 수치는 자료에만 |
 
 ## 지켜야 할 것
 
@@ -103,6 +104,10 @@ node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치�
 node tests/mosaic.cjs                # 모자이크 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 배치·최대 횟수·간격, 색인 꼴
 (cd rust && cargo test)               # art-core · art-index · mosaic-wasm 단위 검사
 node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 600판은 보고만): 책마다 40~60% · 세 폼 규칙 모두 돈다 · 선공
+node tests/run-gen.cjs               # 서고 지도 생성기 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 지도, 330 씨앗의 규칙(열·길·종류·책)
+node tests/run.cjs                   # 서고 탐험 규칙 — 들어가기·길·독서대·싸움(한 장)·전리품·쉼·장면·계단·보스·끝·자동 완주
+node tests/run-sim.cjs [--quick]     # 서고 탐험 균형 — 400판 완주율(욕심쟁이 25~65%; 빠른 모드는 보고만). --lamps N 으로 실험
+(cd rust && cargo test -p shelf-gen)  # 생성기 단위 검사 — 3000 씨앗. 고치면 lib/shelf-gen.wasm 을 다시 지어 올린다(rust/README.md)
 
 # 브라우저 — ESM_DIR 에 preact·htm 이 든 node_modules, CHROMIUM_PATH 에 브라우저
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-screen.cjs      # 서가
@@ -113,6 +118,7 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # �
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/patch-screen.cjs    # 서재의 패치 기록
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/bookshelf-screen.cjs # 책장 — 진열·펼치기·개방·닫기·키보드·반응형
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지·오늘의 판(같은 씨앗)·오늘 기록 · 휴대폰 가로·세로·폴드·PC 넷에서 끝까지, 돌려도 그대로
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/run-screen.cjs      # 서고 탐험 — 고르기·지도·1층 끝까지·계단·새로고침·나오기·끝(오늘 기록·전적)·오늘의 서고·네 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/mosaic-screen.cjs   # 모자이크 — ?file= 로 거칠게 그리기·받기·조각 누르기·겹치기 · 세로·가로·PC · wasm 없음
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 휴대폰 가로 — 서재·서가·프롬프트 첫 화면(lib/landscape.css)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/scene-motion.cjs     # 움직임 — 입자·켄 번스·열리기·넘기기·스위치·동작 줄이기 · 서재 감상·서가 상세·결투 절정 · 다섯 크기

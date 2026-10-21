@@ -48,7 +48,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,te
 .workspace-header.folded .workspace-heading {display:none}
 .workspace-header.folded {margin-bottom:10px}
 .workspace-nav a {flex:1 1 0;display:flex;align-items:center;justify-content:center;min-width:0;min-height:44px;padding:0 2px;border:0;border-radius:12px;font-size:12px;font-weight:650;opacity:1;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}
-/* 항해는 넷(서재·서가·프롬프트·결투) — 휴대폰에서도 다 한 줄에 든다. 서재 탭이 늘 보이는 집으로 가는 길이다 */
+/* 항해는 다섯(서재·서가·프롬프트·결투·탐험) — 휴대폰에서도 다 한 줄에 든다(아주 좁은 화면은 gallery.css 끝의 규칙). 서재 탭이 늘 보이는 집으로 가는 길이다 */
 @media (max-width:599px) { .workspace-nav {gap:2px;padding:4px} .workspace-nav a {padding:0 1px;font-size:11px} .header-fold {flex-basis:40px} }
 /* 접어도 덮개에서는 제목을 아예 숨기지 않는다 — 문양(서재 링크, 44px 누르는 자리) + 제목 한 줄만 남긴다 */
 @media (max-width:599px) {

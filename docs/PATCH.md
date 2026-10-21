@@ -7,6 +7,16 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 서고 탐험 화면 — run.html, 머리 탭 다섯, 설계 문서
+
+- run.html — 새 화면. 고르기(책 셋·전적·오늘의 서고·이어가기) → 지도(층·장·등불·덱 막대, SVG 평면도 — 길 닿는 방은 금테·다녀온 방은 흐리게, 갈 수 있는 방 단추, 지난 일 한 줄, 덱 띠) → 싸움(결투 판 조각, 끝나면 결과 띠와 계속) → 전리품·독서대·장면 상자(가득이면 내놓을 책) → 계단·보스 다시 도전 → 끝(갇힘·완주, 함께 간 책). 매 수 저장(book_run_v1), ?seed= 고정 씨앗, ?daily 오늘의 서고(날짜 씨앗), 끝나면 오늘 기록·탐험 전적(book_run_rec_v1). 가로 PC 는 덱이 오른쪽, 세로 폰은 지도를 옆으로 민다
+- lib/words.js — run.*(화면 말 60여 개) · nav.run
+- lib/workspace-ui.js — PAGES 에 run(탭 다섯), 부제 있는 화면
+- lib/gallery.css · lib/workspace.css — 폴드 덮개(344)에서도 탭 다섯이 안 잘리게 아주 좁은 화면 규칙(gallery.css 의 같은 세기 선택자로)
+- docs/RUN_DESIGN.md — 새 문서: 뼈대·지도 규칙·걷는 규칙·균형(욕심쟁이 58%)·화면
+- tests/run-screen.cjs — 고르기 셋·지도(길 닿는 방만 = node 의 wasm 과 같은 지도)·1층 끝까지(독서대·장면·싸움·전리품)·계단·새로고침·나오기·끝 화면(오늘 기록·전적 한 번만)·오늘의 서고·네 크기 · tests/header-layout.cjs · theme-screen.cjs — 화면 다섯
+- AGENTS.md · README.md · rust/README.md · docs/GAME_CONCEPT.md — 탐험 화면·검사·shelf-gen 짓는 법·11절 7번
+
 ## 2026-10-21 · claude · 서고 탐험 — 지도 생성기(Rust → wasm)·탐험 엔진·시뮬레이터, 결투 판 조각 나누기 (화면은 다음 칸)
 
 - rust/shelf-gen — 새 상자. 씨앗 하나로 아홉 층의 평면도(열 4~5, 들어온 자리·가운데 방 2~3·계단/보스, 이웃 열 사이 단조 길, 방 종류 meet·read·rest·scene, 계단 앞 열은 모두 층지기, 4층부터 싸움 하나 더, 짝수 층 쉼, 독서대 하나 이상, 층 안 책 겹침 없음·윗층 책·보스 책 피함, 상대 덱 여섯·전리품 둘·독서대 다섯). 손으로 쓴 JSON, splitmix64, build.rs 소스 셈. cargo test 가 3000 씨앗을 돈다

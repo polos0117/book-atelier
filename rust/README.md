@@ -1,10 +1,11 @@
-# rust — 그림 특징 · 모자이크
+# rust — 그림 특징 · 모자이크 · 서고 지도
 
 | 상자 | 무엇 | 나오는 것 |
 |---|---|---|
 | `art-core` | 그림 특징과 맞추기 — 2×3 칸 Lab 서명, dHash 64비트, Lab 4×4×4 색 막대, 칸마다 조각 고르기(벌점·최대 횟수·간격, 씨앗). 바깥 의존 없음 | (라이브러리) |
 | `art-index` | 그림 저장소의 그림 → 색인. `data/img.json` 에 등록된 것만 | `data/art-index.json` |
 | `mosaic-wasm` | 브라우저 쪽 맞추기. `extern "C"` 내보내기 + 포인터·길이(붙임 생성기 없음) | `lib/mosaic.wasm` |
+| `shelf-gen` | 서고 탐험의 지도 생성기 — 씨앗 하나로 아홉 층 평면도(열·방·단조 길·종류·책·상대 덱). 손으로 쓴 JSON, splitmix64, 바깥 의존 없음. 규칙은 `docs/RUN_DESIGN.md` 2절, `cargo test` 가 3000 씨앗을 돈다 | `lib/shelf-gen.wasm` |
 
 화면(`mosaic.html`)과 싣개(`lib/mosaic.js`)는 빌드 없이 그대로 뜬다. 지은 `.wasm` 만 저장소에 올린다 — `rust/target/` 은 `.gitignore`.
 
@@ -18,9 +19,12 @@ cargo build -p mosaic-wasm --target wasm32-unknown-unknown --profile wasm   # �
 cp target/wasm32-unknown-unknown/wasm/mosaic_wasm.wasm ../lib/mosaic.wasm
 cargo run --release -p art-index                                            # data/art-index.json 다시 셈(그림 저장소: ../../book-atelier-img)
 cargo run --release -p art-index -- --check                                 # 색인이 그림과 같은지만(다르면 1)
+cargo test -p shelf-gen                                                     # 서고 지도 생성기 — 3000 씨앗 규칙
+cargo build -p shelf-gen --target wasm32-unknown-unknown --profile wasm      # 서고 지도 생성기 wasm
+cp target/wasm32-unknown-unknown/wasm/shelf_gen.wasm ../lib/shelf-gen.wasm
 ```
 
-그다음 저장소 뿌리에서 `node tests/mosaic.cjs` — wasm 이 소스와 맞는지, 맞추기 규칙, 색인 꼴을 본다.
+그다음 저장소 뿌리에서 `node tests/mosaic.cjs` — wasm 이 소스와 맞는지, 맞추기 규칙, 색인 꼴을 본다. 서고 지도는 `node tests/run-gen.cjs`(`shelf-gen/build.rs` 가 같은 식으로 소스 셈을 넣는다 — 파일은 `shelf-gen/Cargo.toml`, `shelf-gen/build.rs`, `shelf-gen/src/**`).
 `mosaic.html` 의 `lib/mosaic.wasm?v=` · `lib/mosaic.js?v=` 숫자도 하나 올린다(Pages 캐시).
 
 ## 묵은 wasm 막기

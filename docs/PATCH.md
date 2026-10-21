@@ -8,6 +8,12 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 <<<<<<< HEAD
+## 2026-10-21 · claude · 결투 전적 — 통산·연승·오늘의 판 연속, 책마다 판·승과 첫 승 도장
+- lib/today.js — v2(다섯 저장소 공통): bump 가 atelier_record_v1:book 에 통산 {n, w, streak, best, days, dstreak, dbest} 도 같이 쌓는다. record()·dailyAlive()
+- duel.html — 덱 화면 위에 전적 칸(통산 n판 w승·승률·연승(최고)·오늘의 판 연속 일수, 이긴 책 n/20), 책 칸마다 '{n}판 {w}승' 과 첫 승 도장(✓). 판이 끝나면 덱의 여섯 권에 판·승을 더한다(book_duel_rec_v1)
+- lib/words.js — duel.rec.title · none · line · daily · books · cell
+- tests/duel-screen.cjs — 세 판 뒤 통산 줄·책 칸의 3판·도장 수·이긴 책 수
+
 ## 2026-10-21 · claude · 말풍선 — 판에 들어온 책이 그 장의 말을 한다
 - data/book-design.json — 스무 권에 voice(발단·전개·결말 한 줄씩). 명대사 인용이 아니라 설계표의 인물로 새로 쓴 말(저작권 문제 없게). 머리말에 뜻
 - tools/book-design.py · tests/book-design.py — voice 가 있으면 셋 다 있고 70자까지(없는 책은 그냥 통과)

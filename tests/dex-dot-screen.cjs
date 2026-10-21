@@ -26,7 +26,8 @@ const ready = p => p.waitForFunction(() => { const a = document.querySelector('.
     let s = await h.open('dex.html', opt()), p = s.page;
     await p.waitForSelector('.grid > .cell'); await p.waitForSelector('.dot-badge', { timeout: 15000 });
     const badged = await p.$$eval('.grid > .cell', es => [...new Set(es.filter(e => e.querySelector('.dot-badge')).map(e => e.dataset.card))]);
-    add('「도트」 표는 도트 인물의 책에만', badged.join() === 'alice', badged.join());
+    const WANT = Object.values(JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'sprites.json'), 'utf8')).actors).map(x => x.book).sort();
+    add('「도트」 표는 도트 인물의 책에만', badged.slice().sort().join() === WANT.join(), badged.join());
     add('표에 풀이', /도트/.test(await p.locator('.dot-badge').first().getAttribute('title')));
     await s.close();
 

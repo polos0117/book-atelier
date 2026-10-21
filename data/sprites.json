@@ -16,6 +16,36 @@
         "walk": { "file": "alice/alice_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [110, 110, 110, 110, 110, 110], "speed": 32 },
         "react": { "file": "alice/alice_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
       }
+    },
+    "sunzi": {
+      "book": "sunzi",
+      "form": "begin",
+      "cell": [96, 128],
+      "foot": [48, 126],
+      "scale": 1,
+      "flip": true,
+      "facing": "right",
+      "states": {
+        "still": { "file": "sunzi/sunzi_begin_still.png", "frames": 1 },
+        "idle": { "file": "sunzi/sunzi_begin_idle.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [700, 220, 140, 220] },
+        "walk": { "file": "sunzi/sunzi_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [110, 110, 110, 110, 110, 110], "speed": 32 },
+        "react": { "file": "sunzi/sunzi_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
+      }
+    },
+    "chunhyang": {
+      "book": "chunhyang",
+      "form": "begin",
+      "cell": [96, 128],
+      "foot": [48, 126],
+      "scale": 1,
+      "flip": true,
+      "facing": "right",
+      "states": {
+        "still": { "file": "chunhyang/chunhyang_begin_still.png", "frames": 1 },
+        "idle": { "file": "chunhyang/chunhyang_begin_idle.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [700, 220, 140, 220] },
+        "walk": { "file": "chunhyang/chunhyang_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [110, 110, 110, 110, 110, 110], "speed": 30 },
+        "react": { "file": "chunhyang/chunhyang_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
+      }
     }
   }
 }

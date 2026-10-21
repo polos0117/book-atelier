@@ -16,13 +16,16 @@ execFileSync('python3', [path.join(__dirname, 'fixtures', 'make-sprites.py'), ar
 const noSprites = fs.mkdtempSync(path.join(os.tmpdir(), 'book-floor-none-'));
 execFileSync('python3', [path.join(__dirname, 'fixtures', 'make-art.py'), noSprites]);
 const wait = ms => new Promise(ok => setTimeout(ok, ms));
-const dbg = p => p.evaluate(() => { const a = document.querySelector('.shelf-floor .sprite-actor'); return a && a.sprite && a.sprite.debug(); });
-const ready = p => p.waitForFunction(() => { const a = document.querySelector('.shelf-floor:not([hidden]) .sprite-actor'); return a && a.sprite && a.sprite.debug().ready; }, null, { timeout: 30000 });
+const dbg = p => p.evaluate(() => { const a = document.querySelector('.shelf-floor .sprite-actor[data-who="alice"]'); return a && a.sprite && a.sprite.debug(); });
+const ready = p => p.waitForFunction(() => [...document.querySelectorAll('.shelf-floor:not([hidden]) .sprite-actor')].some(a => a.sprite && a.sprite.debug().ready), null, { timeout: 30000 });
 const frames = (p, ms) => p.evaluate(ms => new Promise(ok => {
-  const el = document.querySelector('.shelf-floor .sprite-actor'), seen = [el.dataset.state + ':' + el.dataset.frame], t0 = performance.now();
+  const el = document.querySelector('.shelf-floor .sprite-actor[data-who="alice"]'), seen = [el.dataset.state + ':' + el.dataset.frame], t0 = performance.now();
   (function look() { const k = el.dataset.state + ':' + el.dataset.frame; if (k !== seen[seen.length - 1]) seen.push(k); if (performance.now() - t0 < ms) requestAnimationFrame(look); else ok(seen); })();
 }), ms);
-const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, imgRoot: art, files: { 'data/img.json': img }, ...extra });
+/* 한 인물 검사는 alice 만 둔 자료로(바닥의 인물 수·차례는 폭·날짜로 바뀐다 — 6절에서 따로 본다) */
+const SPR_ALL = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'sprites.json'), 'utf8'));
+const ALICE = { ...SPR_ALL, actors: { alice: SPR_ALL.actors.alice } };
+const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, imgRoot: art, files: { 'data/img.json': img, 'data/sprites.json': ALICE }, ...extra });
 
 (async () => {
   const h = await start();
@@ -32,13 +35,13 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     /* 1. 서고 — 서고, 누르면 펼치기, 펼친 동안 쉼, 닫으면 다시 */
     let s = await h.open('index.html', opt()), p = s.page;
     await p.waitForSelector('.shelf-book'); await ready(p);
-    add('책장 밑에 바닥이 생기고 인물이 선다', await p.locator('.shelf-floor .sprite-actor').isVisible());
+    add('책장 밑에 바닥이 생기고 인물이 선다', await p.locator('.shelf-floor .sprite-actor[data-who="alice"]').isVisible());
     add('바닥은 책장 바로 밑', await p.evaluate(() => { const c = document.querySelector('.bookcase').getBoundingClientRect(), f = document.querySelector('.shelf-floor').getBoundingClientRect(); return Math.abs(f.top - c.bottom) < 4; }));
     add('바닥이 서면 진열실 길', await p.locator('.bookshelf-dots').getAttribute('href') === 'sprite.html');
-    add('인물 이름에 책 제목', /앨리스/.test(await p.locator('.shelf-floor .sprite-actor').getAttribute('aria-label')), await p.locator('.shelf-floor .sprite-actor').getAttribute('aria-label'));
+    add('인물 이름에 책 제목', /앨리스/.test(await p.locator('.shelf-floor .sprite-actor[data-who="alice"]').getAttribute('aria-label')), await p.locator('.shelf-floor .sprite-actor[data-who="alice"]').getAttribute('aria-label'));
     const len0 = await p.evaluate(() => history.length);
-    await p.evaluate(() => { document.querySelector('.shelf-floor .sprite-actor').dataset.mark = 'first'; });
-    const actor = p.locator('.shelf-floor .sprite-actor');
+    await p.evaluate(() => { document.querySelector('.shelf-floor .sprite-actor[data-who="alice"]').dataset.mark = 'first'; });
+    const actor = p.locator('.shelf-floor .sprite-actor[data-who="alice"]');
     for (let i = 0; i < 4; i++) await actor.click({ delay: 5, force: true });
     await p.waitForSelector('.reading-dialog[open]');
     add('누르면 그 인물의 책이 펼쳐진다', await p.evaluate(() => new URLSearchParams(location.search).get('open')) === 'alice', await p.evaluate(() => location.search));
@@ -55,12 +58,12 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     await wait(450);
     d = await dbg(p);
     add('닫으면 다시 돈다', d.running && !d.paused.includes('reading'), JSON.stringify(d));
-    add('같은 인물(새로 만들지 않는다)', await p.evaluate(() => document.querySelectorAll('.shelf-floor .sprite-actor').length === 1 && document.querySelector('.shelf-floor .sprite-actor').dataset.mark === 'first'));
+    add('같은 인물(새로 만들지 않는다)', await p.evaluate(() => document.querySelectorAll('.shelf-floor .sprite-actor[data-who="alice"]').length === 1 && document.querySelector('.shelf-floor .sprite-actor[data-who="alice"]').dataset.mark === 'first'));
     add('그 자리에서', Math.abs(d.x - at) < 40, `${at} → ${d.x}`);
     add('초점은 인물로', await p.evaluate(() => document.activeElement && document.activeElement.classList.contains('sprite-actor')));
     add('닫으면 주소에서 open 이 빠진다', await p.evaluate(() => !new URLSearchParams(location.search).get('open')));
     /* 키보드 */
-    await p.waitForFunction(() => document.querySelector('.shelf-floor .sprite-actor').sprite.debug().state !== 'react', null, { timeout: 5000 });
+    await p.waitForFunction(() => document.querySelector('.shelf-floor .sprite-actor[data-who="alice"]').sprite.debug().state !== 'react', null, { timeout: 5000 });
     await actor.focus(); await p.keyboard.press('Enter');
     await p.waitForSelector('.reading-dialog[open]');
     add('키보드(Enter)로도 펼친다', true);
@@ -85,7 +88,7 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     await p.waitForSelector('.shelf-book'); await ready(p);
     d = await dbg(p);
     add('동작 줄이기 → 인물은 서 있다', !d.running, JSON.stringify(d));
-    await p.locator('.shelf-floor .sprite-actor').click();
+    await p.locator('.shelf-floor .sprite-actor[data-who="alice"]').click();
     await p.waitForSelector('.reading-dialog[open]');
     add('동작 줄이기에도 펼친다', true);
     await s.close();
@@ -108,7 +111,7 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     s = await h.open('index.html', opt({ viewport: { width: 1280, height: 900 }, mobile: false, files: { 'data/img.json': img, 'data/sprites.json': two } })); p = s.page;
     await p.waitForSelector('.shelf-book'); await ready(p); await wait(1200);
     const who = await p.evaluate(() => [...document.querySelectorAll('.shelf-floor .sprite-actor')].filter(e => !e.hidden).map(e => e.dataset.who));
-    add('여럿 — 받은 인물만 선다(그림 없는 인물은 빠진다)', who.join() === 'alice,sunzi', who.join());
+    add('여럿 — 받은 인물만 선다(그림 없는 인물은 빠진다)', who.slice().sort().join() === 'alice,sunzi', who.join());
     const zones = await p.evaluate(() => [...document.querySelectorAll('.shelf-floor .sprite-actor')].filter(e => !e.hidden).map(e => e.getBoundingClientRect()).map(r => [r.left, r.right]));
     add('여럿 — 서로 겹치지 않는다', zones.length === 2 && zones[0][1] <= zones[1][0] + 1, JSON.stringify(zones));
     await p.locator('.shelf-floor .sprite-actor[data-who="sunzi"]').click({ force: true });
@@ -122,13 +125,33 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     add('여럿 — 화면 오류 없음', s.errors.length === 0, s.errors.join(' | '));
     await s.close();
 
+    /* 6. 실제 자료 — 폭에 맞춰 몇 명(휴대폰 둘, 넓은 화면 셋), 제 구역 안(겹치지 않게), 날마다 차례가 돈다 */
+    const KEYS = Object.keys(SPR_ALL.actors).filter(k => k);
+    for (const [w, hh, want] of [[344, 882, 2], [390, 844, 2], [1280, 900, Math.min(3, KEYS.length)]]) {
+      for (const dayShift of [0, 1]) {
+        s = await h.open('index.html', { viewport: { width: w, height: hh }, mobile: w < 1000, imgRoot: art, files: { 'data/img.json': img },
+          init: [d => { const now = Date.now; Date.now = () => now() + d * 864e5; }, dayShift] }); p = s.page;
+        await p.waitForSelector('.shelf-book'); await ready(p); await wait(800);
+        const r = await p.evaluate(() => {
+          const f = document.querySelector('.shelf-floor').getBoundingClientRect(), es = [...document.querySelectorAll('.shelf-floor .sprite-actor')].filter(e => !e.hidden);
+          const box = es.map(e => e.getBoundingClientRect()).sort((a, b) => a.left - b.left);
+          return { who: es.map(e => e.dataset.who), apart: box.every((b, i) => i === 0 || b.left >= box[i - 1].right - 1), inside: box.every(b => b.left >= f.left - 1 && b.right <= f.right + 1) };
+        });
+        add(`${w} 날+${dayShift} — ${want}명`, r.who.length === want && r.who.every(k => KEYS.includes(k)), r.who.join());
+        add(`${w} 날+${dayShift} — 서로 겹치지 않고 바닥 안`, r.apart && r.inside, JSON.stringify(r));
+        if (dayShift === 0) var first = r.who.join(); else add(`${w} — 다음 날엔 차례가 돈다`, KEYS.length < 2 || r.who.join() !== first, first + ' → ' + r.who.join());
+        add(`${w} 날+${dayShift} — 화면 오류 없음`, s.errors.length === 0, s.errors.join(' | '));
+        await s.close();
+      }
+    }
+
     /* 5. 다섯 크기 · 테마 셋 */
     for (const [w, hh] of [[344, 882], [390, 844], [690, 829], [844, 390], [1280, 900]]) {
       for (const theme of ['sunlit', 'moonlit', 'hanok']) {
         s = await h.open('index.html', opt({ viewport: { width: w, height: hh }, mobile: w < 1000, init: [t => { try { localStorage.setItem('book_room_v1', t); } catch (e) {} }, theme] }));
         p = s.page; await p.waitForSelector('.shelf-book'); await ready(p);
         const r = await p.evaluate(() => {
-          const f = document.querySelector('.shelf-floor').getBoundingClientRect(), a = document.querySelector('.shelf-floor .sprite-actor').getBoundingClientRect();
+          const f = document.querySelector('.shelf-floor').getBoundingClientRect(), a = document.querySelector('.shelf-floor .sprite-actor[data-who="alice"]').getBoundingClientRect();
           return { over: document.body.scrollWidth - innerWidth, inside: a.left >= f.left - 1 && a.right <= f.right + 1 && a.top >= f.top - 1 && a.bottom <= f.bottom + 8, w: a.width, h: a.height };
         });
         add(`${w}×${hh} ${theme} 옆으로 안 넘친다`, r.over <= 1, JSON.stringify(r));

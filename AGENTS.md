@@ -15,7 +15,7 @@
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
 | `docs/PORT_NOTES.md` | 어디서 무엇을 가져왔고, 무엇을 일부러 뺐나 |
 | `docs/ART_INDEX.md` · `rust/README.md` | 그림 색인(모자이크 서명·dHash·색 막대)과 닮은 그림(거리·무게·한 책 둘까지), wasm 다시 짓기 |
-| `docs/ATELIER_PIXEL_ART_PLAN.md` | 도트 캐릭터 시범 — 범위·사양·단계(P0~P5)·체크포인트·P1 생성 지시문. 시범은 alice 발단, 도트는 그림 저장소 `sprites/`, 정리는 `tools/sprite-grid.py`(정지 한 장)·`tools/sprite-sheet.py`(동작 시트 — 프레임 찾기·느슨한 격자·정지 도트 팔레트·발 기준선), 공용 `tools/sprite_px.py` |
+| `docs/ATELIER_PIXEL_ART_PLAN.md` | 도트 캐릭터 시범 — 범위·사양·단계(P0~P5)·체크포인트·P1 생성 지시문. 시범은 alice 발단, 도트는 그림 저장소 `sprites/`, 정리는 `tools/sprite-grid.py`(정지 한 장 — `--rows`·`--outline`)·`tools/sprite-sheet.py`(동작 시트 — 프레임 찾기·`--grid`·느슨한/고른 격자·`--rows`·정지 도트 팔레트·발 기준선), 공용 `tools/sprite_px.py`. 인물마다 쓴 옵션은 `records/sprites/<인물>/<상태>.json` |
 | `docs/SCENE_MOTION.md` | 움직임 — 켄 번스·입자·열리기·넘기기(`lib/scene-motion.js`·`.css`, 네 공방이 글자 그대로 나눠 쓴다), 입자 종류와 자료 잇기 |
 | `docs/PATCH.md` | 무엇을 고쳤나 — 고친 쪽이 직접 적는다 (아래 규칙 7) |
 
@@ -23,7 +23,7 @@
 
 | 화면 | 파일 | 무엇 |
 |---|---|---|
-| 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·책장 밑 바닥의 도트 인물(누르면 그 인물의 책을 펼친다, 펼친 동안 쉰다 — `lib/sprite-actor.js`·`data/sprites.json`, 도트를 못 받으면 바닥째 없다)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
+| 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·책장 밑 바닥의 도트 인물(폭에 맞춰 휴대폰 둘·넓은 화면 셋, 날마다 차례가 돈다, 누르면 그 인물의 책을 펼친다, 펼친 동안 쉰다 — `lib/sprite-actor.js`·`data/sprites.json`, 도트를 못 받으면 바닥째 없다)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
 | 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열·닮은 그림 줄(`data/art-similar.json`, 상세를 열 때만 받는다)·도트(도트 인물이 있는 책은 목록 칸에 「도트」 표, 상세에 작은 무대 한 줄 — `data/sprites.json`). 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 여섯은 안 들어 항해(서재·서가·프롬프트·결투·탐험)에는 없다 |

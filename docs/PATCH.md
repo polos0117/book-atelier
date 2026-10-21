@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 확대 P2 — 손자·춘향이 서재에, 바닥은 폭에 맞춰
+- data/sprites.json — 손자·춘향(정지·대기·걷기·반응, 대기 차례 0→1→2→3, 춘향 걷기 30/초). 서재 바닥·서가·진열실·탐험 복도에 같이 나온다
+- lib/bookshelf.js — 바닥 폭에 칸(96px × 1.25)이 드는 만큼만 세운다(휴대폰 둘, 넓은 화면 셋) — 셋이면 휴대폰에서 칸이 겹쳤다. 날마다 차례를 한 칸씩 돌려 모두 나온다. 두 자리는 제 구역 안(칸 반 폭만큼 안쪽). index.html — bookshelf.js ?v=11
+- tools/sprite-sheet.py — --rows N(시트마다 프레임 높이 중앙값을 N 줄로, 고른 격자), --grid CxR(프레임끼리 붙으면 기대 경계 가까이 가장 빈 세로줄에서 자른다), 넓은 프레임은 칸 안으로 민다. alice 시트 결과는 바이트 같음
+- tests/shelf-sprite-screen.cjs — 한 인물 검사는 alice 만 둔 자료로, 실제 자료로 폭(344·390 둘, 1280 셋)·겹침 없음·다음 날 차례 돎. tests/dex-dot-screen.cjs — 「도트」 표는 자료의 인물 책 모두
+- docs/ATELIER_PIXEL_ART_PLAN.md — 확대 P2 결과. AGENTS.md — 서재 줄·도트 정리 도구 줄
+
 ## 2026-10-21 · claude · 도트 확대 P1 — 손자·춘향 정지 도트
 - tools/sprite-grid.py — --rows N(인물 높이를 N 줄로 나눈 고른 격자, 시작점만 찾는다)·--outline(바깥 윤곽 한 칸). 격자 찾기가 빗나가는 생성 도트용, 인물끼리 키 맞추기. 기본 길은 그대로(alice 결과 바이트 같음)
 - tools/sprite_px.py — sample_fixed(고른 격자, 칸 안 최다 색, 어두운 색이 30% 넘으면 그 색)

@@ -15,14 +15,14 @@
 | 재개에 필요한 항목 | 현재 상태 |
 |---|---|
 | 완료한 일 | 검토, 저장소 편입, P0(시범 캐릭터·기준 이미지 확정), P1(정지 도트), P2(동작 시트), P3(독립 재생), P4(서재 연결), P5 서고 탐험 복도(10절) |
-| 현재 단계 | P5 서고 탐험 복도 완료 — 다음 확대(인물 더, 전투)는 사용자 결정 |
+| 현재 단계 | 확대 — 서재 바닥에 손자·춘향(P0 끝, P1 생성 대기) |
 | 아직 하지 않은 일 | 실기기(Fold5) 화면·성능 확인, 인물 늘리기·전투 적용 판단 |
 | 시범 캐릭터 | alice(이상한 나라의 앨리스), 도트 폼 발단(begin) |
 | 기준 이미지 | 정본 `img/alice_end_literary_fantasy_f.webp`, 도트 기준 `img/alice_begin_literary_fantasy_f.webp` (book-atelier-img) |
 | 도트 산출물 | `book-atelier-img/sprites/alice/` — 정지 `alice_begin_still.png`, 시트 `alice_begin_idle.png`(4칸)·`_walk.png`(6칸)·`_react.png`(4칸), 칸 96×128. 원본 `raw/`, 기록 `records/sprites/alice/` |
 | 변경한 프로젝트 코드 | 없음 |
 | 이 작업의 커밋·push·배포 | 없음 |
-| 다음 한 일 | 사용자가 실기기에서 서재·탐험을 보고 다음 범위를 정한다 |
+| 다음 한 일 | 확대 P1 — 손자·춘향 정지 도트 생성(11절 지시문) |
 | 작업 재개 기준 | 이 표와 10절 체크포인트를 실제 결과에 맞춰 갱신 |
 
 **이미 완성된 생성 이미지는 사용자의 추가 요청 없이 자의적으로 재생성하거나 대체하지 않는다.** 첫 정지 도트가 나오면 그 결과를 보여준다. 스타일·노출·디테일에 대한 어시스턴트의 선호로 두 번째 결과를 만들지 않는다. 수정이나 후속 동작 제작은 실제 요청 범위에 맞춰 진행한다.
@@ -106,6 +106,19 @@ pkm의 lib/battle-ui.js는 배우 상태와 박자별 g.log를 읽어 보여준�
 - 전투 규칙 변경과 보상·능력치 추가
 - 기존 고해상도 이미지의 도트 대체
 - 여러 공방 동시 구현
+
+### 확대 P0 — 손자·춘향 (사용자 결정 2026-10-21: 서재 바닥에 인물 더)
+
+| 항목 | 손자 `sunzi` | 춘향 `chunhyang` |
+|---|---|---|
+| 도트 폼 | 발단(`begin`) — 설계표 시범 폼 | 발단(`begin`) — 설계표 시범 폼 |
+| 정본·의상 기준 | `img/sunzi_begin_literary_fantasy_f.webp` (2026-10-19 `ba12f0d`, sha1 `b1d38fc2b839`) | `img/chunhyang_begin_literary_fantasy_f.webp` (2026-10-17 `568872d`, sha1 `d6f21af1853c`) |
+| 실루엣 | 높이 올린 머리·옥비녀, 먹색 겹옷과 죽간 어깨받이, 짧은 갑옷 치마, 긴 장화 — 다리가 보여 걷기가 쉽다 | 한 갈래 긴 땋은 머리·붉은 댕기, 분홍 저고리와 발목까지 오는 치마 — 걸음은 치맛자락 흔들림으로 |
+| 고른 까닭 | alice(밝은 크림·파랑 원피스, 단발)와 정반대인 어두운 먹·옥빛, 세로로 긴 실루엣 | 분홍·흰 한복, 땋은 머리 — 셋이 서도 머리·옷 꼴·색이 다 다르다 |
+| 반전 | 결과를 보고 정한다(어깨받이·띠가 한쪽이면 따로) | 결과를 보고 정한다(땋은 머리가 한쪽 어깨로 넘어온다 — 반전하면 반대 어깨) |
+
+차선: dracula(긴 검은 머리·핏빛 망토 — 손자와 어두운 빛이 겹친다), project_hail_mary(금발 포니테일·흰 비행복 — alice 처럼 밝다).
+P1 은 alice 의 gen2 에서 배운 네 줄(큰 화소·16색·4등신·장식 절반)을 처음부터 넣고, 확정한 alice 정지 도트를 화소 본보기로 같이 첨부한다(11절).
 
 ## 5. 도트 아트와 애니메이션 사양 초안
 
@@ -249,7 +262,7 @@ book의 기존 검사 후보는 tests/bookshelf-screen.cjs, tests/reading-journe
 
 - 마지막 갱신: 2026-10-21 · claude
 - 완료 단계: 검토, 저장소 편입, P0, P1, P2, P3, P4, P5(서고 탐험 복도)
-- 다음 단계: 사용자 결정 — 같은 바닥에 인물 더(인물마다 P1~P2 한 벌), 전투 적용, 그대로 두기
+- 다음 단계: 확대 P1 — 손자·춘향 정지 도트 생성(gpt 세션, 11절 지시문). 서재 바닥은 이미 셋까지 받는다(인물마다 제 구역, 못 받은 인물만 빠진다)
 - 시범 캐릭터와 기준 이미지: alice 발단(4절 P0 결정)
 - P1 결과:
   - gen1(11절 지시문 그대로, 16:36:48~16:37:50 KST) — 쓰지 않음. 1~2px 단위의 도트풍 일러스트(격자 없음, 약 7.5등신)라 96×128로 줄이면 얼굴 7px, 모자이크처럼 뭉갬
@@ -402,6 +415,47 @@ frame 4 = rising back halfway toward the image 1 pose, smiling. Feet stay on the
 ~~~
 
 받은 뒤 할 일(claude): 원본을 `sprites/alice/raw/alice_begin_<상태>_gen1.png` 로 보존 → 칸으로 나눠 `tools/sprite-grid.py` 를 칸마다(정지 도트 팔레트에 맞춰) → 발 기준선 y=126 정렬, 칸 사이 머리·발 위치 튐 확인 → 가로로 이은 시트 `sprites/alice/alice_begin_<상태>.png` 와 재생 미리보기(GIF) → 사용자 검토. 아쉬워도 사용자가 요청하기 전에는 다시 생성하지 않는다.
+
+### 확대 P1 — 손자·춘향 정지 도트 생성 지시
+
+인물마다 첨부: ① 그 인물의 발단 그림(정본·의상) ② 확정한 alice 정지 도트를 최근접 6배(화소 본보기 — 옷·색은 따르지 말라고 적었다). 인물마다 한 번, 따로.
+
+공통:
+
+~~~text
+Pixel art game sprite of the SAME young woman shown in attached image 1. Copy her face, hair, skin tone,
+outfit and palette from image 1. Attached image 2 is a finished sprite of a different character from the same game:
+match its pixel size, outline, shading style and body proportions exactly, but NOT its outfit or colours.
+Do not draw any background, furniture, props or scenery from image 1.
+
+Draw with very large chunky pixels (each sprite pixel a crisp 12 x 12 square), about 16 colours,
+about 4 heads tall (not chibi), and about half the decoration of image 1 — keep only the shapes that
+make her recognisable at small size. One full-body character, standing idle on flat ground,
+three-quarter view turned slightly toward the viewer's right, arms relaxed, feet close together.
+Hard edges only: no anti-aliasing, no blur, no gradients, no dithering noise. Dark selective outline,
+simple 2-3 tone shading lit from the upper left. Keep the face readable: two clear eyes, small mouth.
+Transparent background. No ground shadow, no floor, no text, no frame, no border, no second character.
+Portrait canvas 1024 x 1536.
+~~~
+
+손자:
+
+~~~text
+She is the Art of War heroine: black hair in a neat high top bun with a jade pin, sharp calm eyes,
+short angular layered robe in ink black with jade-green and pale gold trim, bamboo-slip shoulder guards,
+a dark silk sash, a short paneled armour skirt, knee-high black boots. Composed, upright stance.
+~~~
+
+춘향:
+
+~~~text
+She is the Chunhyang heroine: long black hair in one long braid over her shoulder with a red ribbon
+and a small flower pin, gentle smile, Korean hanbok — a short rose-pink jeogori with a long red ribbon tie,
+a full layered rose and white chima skirt reaching her ankles, small jade accents, small embroidered shoes
+peeking out. Do NOT draw the swing or its ropes.
+~~~
+
+받은 뒤 할 일(claude): 원본을 `sprites/<인물>/raw/<인물>_begin_still_gen1.png` 로 보존 → `tools/sprite-grid.py`(격자를 못 찾으면 alice P2 처럼 절반 간격 고정) → 서재 바닥 합성(alice 와 나란히) → 사용자 검토. 확정되면 P2 지시문(11절 P2 를 인물 묘사만 바꿔)으로 시트 셋.
 
 ### 다음 세션용 요청문
 

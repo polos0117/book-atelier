@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 확대 준비 — 서재 바닥에 셋까지, 손자·춘향 P0
+- lib/bookshelf.js — 서재 바닥이 data/sprites.json 의 인물을 셋까지 세운다. 바닥을 나눠 인물마다 제 구역의 두 자리, 처음 자리·대기 시간을 엇갈리게. 못 받은 인물만 빠지고 한 명이라도 서면 바닥이 보인다. 펼친 동안 모두 쉰다. index.html — bookshelf.js ?v=9
+- lib/words.js — sprite.name.sunzi·chunhyang
+- tests/shelf-sprite-screen.cjs — 여럿(제 구역·못 받은 인물 빠짐·그 인물의 책·모두 쉼) 6가지
+- docs/ATELIER_PIXEL_ART_PLAN.md — 확대 P0(손자·춘향, 기준 그림 경로·해시·고른 까닭), 11절 확대 P1 지시문, 체크포인트
+
 ## 2026-10-21 · claude · 도트 시범 P5 — 서고 탐험 복도의 길동무
 - run.html — 지도 위 복도 띠(Corridor). 덱에서 도트가 있는 첫 책의 주인공이 서고, 방·계단·보스를 고르면 상태는 바로 적고 0.7초 제자리 걸음·벽 흐름 뒤 그 방을 띄운다(누르면 바로). 쉼에서 등불·이긴 뒤 전리품에 반응. 움직임 끔·동작 줄이기·휴대폰 가로·새로고침·도트 없는 덱이면 바로. sprite-actor.js·css 를 싣는다
 - lib/sprite-actor.js — wander 옵션(저절로 걷지 않기), march(ms) 제자리 걸음. 화면들의 sprite-actor.js 를 ?v=3

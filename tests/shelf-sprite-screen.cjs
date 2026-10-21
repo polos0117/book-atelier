@@ -3,6 +3,7 @@
    - 인물을 누르면 그 인물의 책(alice)이 펼쳐진다 · 연달아 눌러도 한 번(기록 한 칸)
    - 펼친 동안 인물은 쉰다(reading) · 닫으면 같은 인물이 그 자리에서 다시 돌고, 초점은 인물로
    - 키보드(Enter)로도 · 동작 줄이기·움직임 끔에도 펼친다(인물은 서 있다)
+   - 여럿: 인물마다 제 구역(겹치지 않게), 그림 없는 인물만 빠진다, 누르면 그 인물의 책, 펼친 동안 모두 쉰다
    - 다섯 크기·테마 셋에서 옆으로 안 넘치고 인물이 바닥 안, 누르는 자리 44px
    ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/shelf-sprite-screen.cjs
    그림은 tests/fixtures/make-art.py(책)·make-sprites.py(도트)가 한 임시 자리에 만든다 */
@@ -96,7 +97,30 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     add('도트 없음 → 화면 오류 없음', s.errors.length === 0, s.errors.join(' | '));
     await s.close();
 
-    /* 4. 다섯 크기 · 테마 셋 */
+    /* 4. 여럿 — 인물마다 제 구역(겹치지 않게), 못 받은 인물만 빠진다, 누르면 그 인물의 책, 펼친 동안 모두 쉰다 */
+    const SPR = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'sprites.json'), 'utf8'));
+    const two = JSON.parse(JSON.stringify(SPR));
+    two.actors.sunzi = { ...JSON.parse(JSON.stringify(SPR.actors.alice)), book: 'sunzi' };
+    two.actors.chunhyang = { ...JSON.parse(JSON.stringify(SPR.actors.alice)), book: 'chunhyang' };
+    for (const st of Object.values(two.actors.chunhyang.states)) st.file = 'missing/' + st.file;   // 이 인물만 그림이 없다
+    s = await h.open('index.html', opt({ viewport: { width: 1280, height: 900 }, mobile: false, files: { 'data/img.json': img, 'data/sprites.json': two } })); p = s.page;
+    await p.waitForSelector('.shelf-book'); await ready(p); await wait(1200);
+    const who = await p.evaluate(() => [...document.querySelectorAll('.shelf-floor .sprite-actor')].filter(e => !e.hidden).map(e => e.dataset.who));
+    add('여럿 — 받은 인물만 선다(그림 없는 인물은 빠진다)', who.join() === 'alice,sunzi', who.join());
+    const zones = await p.evaluate(() => [...document.querySelectorAll('.shelf-floor .sprite-actor')].filter(e => !e.hidden).map(e => e.getBoundingClientRect()).map(r => [r.left, r.right]));
+    add('여럿 — 서로 겹치지 않는다', zones.length === 2 && zones[0][1] <= zones[1][0] + 1, JSON.stringify(zones));
+    await p.locator('.shelf-floor .sprite-actor[data-who="sunzi"]').click({ force: true });
+    await p.waitForSelector('.reading-dialog[open]');
+    add('여럿 — 누르면 그 인물의 책', await p.evaluate(() => new URLSearchParams(location.search).get('open')) === 'sunzi', await p.evaluate(() => location.search));
+    await wait(300);
+    add('여럿 — 펼친 동안 모두 쉰다', await p.evaluate(() => [...document.querySelectorAll('.shelf-floor .sprite-actor')].filter(e => !e.hidden).every(e => e.sprite.debug().paused.includes('reading'))));
+    await p.keyboard.press('Escape');
+    await p.waitForFunction(() => !document.querySelector('.reading-dialog[open]'), null, { timeout: 5000 }); await wait(450);
+    add('여럿 — 닫으면 모두 다시', await p.evaluate(() => [...document.querySelectorAll('.shelf-floor .sprite-actor')].filter(e => !e.hidden).every(e => e.sprite.debug().running)));
+    add('여럿 — 화면 오류 없음', s.errors.length === 0, s.errors.join(' | '));
+    await s.close();
+
+    /* 5. 다섯 크기 · 테마 셋 */
     for (const [w, hh] of [[344, 882], [390, 844], [690, 829], [844, 390], [1280, 900]]) {
       for (const theme of ['sunlit', 'moonlit', 'hanok']) {
         s = await h.open('index.html', opt({ viewport: { width: w, height: hh }, mobile: w < 1000, init: [t => { try { localStorage.setItem('book_room_v1', t); } catch (e) {} }, theme] }));

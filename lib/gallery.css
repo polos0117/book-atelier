@@ -188,3 +188,24 @@ body.dex-page,body.lab-page {background-image:none}
 .zoom-layer .zoom-body.actual {display:block;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom;padding:0;-webkit-overflow-scrolling:touch}
 .zoom-layer .zoom-body.actual > img {width:auto;height:auto;min-height:0;max-width:none;max-height:none;object-fit:none;margin:0 auto;cursor:auto}
 .zoom-layer .zoom-body.actual .zoom-nav {display:none}
+
+/* 최근 추가 — 목록 맨 위(공간 띠 밑) 한 줄. 이 줄 안에서만 옆으로 구르고(목록의 세로 굴림은 .collection-scroll 한 곳), 칸은 44px 넘게.
+   넓은 화면은 이름을 왼쪽에 세워 줄을 낮게, 좁은 화면은 이름이 위 — 책 칸이 첫 화면에 남게 */
+.recent-shelf {display:flex;align-items:center;gap:16px;margin:0 0 14px;min-width:0}
+.recent-head {flex:none;display:flex;flex-direction:column;margin:0;font:600 14px/1.5 var(--gallery-serif);letter-spacing:-.01em;color:var(--text)}
+.recent-head span {font:400 11px/1.5 inherit;font-family:inherit;color:var(--muted);letter-spacing:0}
+.recent-strip {flex:1 1 auto;min-width:0;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:4px 4px 8px;scrollbar-width:thin;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.recent-cell {flex:0 0 56px;width:56px;min-height:44px;padding:0;border:0;border-radius:3px;background:transparent;color:inherit;font:inherit;cursor:pointer;scroll-snap-align:start}
+.recent-cell .face {aspect-ratio:2/3;border-radius:3px;background:color-mix(in srgb,var(--card2) 45%,var(--bg))}
+.recent-cell .face img {object-fit:cover;object-position:center top}
+.recent-cell:hover .face {outline:1px solid var(--accent);outline-offset:2px}
+.recent-cell:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
+/* 새 표 — 지난번에 들른 뒤 등록된 그림. 목록 칸·최근 추가 칸 왼쪽 위 */
+.new-badge {position:absolute;left:5px;top:5px;z-index:1;padding:0 6px;border-radius:99px;background:var(--accent);color:var(--on-accent);font:700 10px/1.7 inherit;font-family:inherit;letter-spacing:0;pointer-events:none}
+.recent-cell .new-badge {left:3px;top:3px;padding:0 5px;font-size:9px}
+@media(max-width:599px) {
+ .recent-shelf {display:block;margin-bottom:8px}
+ .recent-head {flex-direction:row;align-items:baseline;gap:8px;font-size:13px}
+ .recent-strip {margin:2px -4px 0;gap:6px}
+ .recent-cell {flex-basis:52px;width:52px}
+}

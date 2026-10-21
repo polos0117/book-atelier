@@ -22,7 +22,7 @@
 | 화면 | 파일 | 무엇 |
 |---|---|---|
 | 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·패치 기록·공간 |
-| 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열 |
+| 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열. 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 다섯은 안 들어 항해에는 없다 |
 | 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절). 「오늘의 판」은 날짜가 씨앗(`lib/today.js`), 끝난 판은 `atelier_today_v1:book` 에 적혀 공방 지도(polos0117.github.io)가 읽는다 |
@@ -92,7 +92,7 @@
 ```bash
 python3 tests/book-design.py         # 책 설계표 — 실루엣·얼굴 닮음, 저작권, 한 명 개방, 대응, 폼 열쇠
 python3 tools/book-design.py check
-python3 tests/register-images.py     # 그림 등록 — 파일 이름 꼴·자리·틀린 이름은 저장 안 함
+python3 tests/register-images.py     # 그림 등록 — 파일 이름 꼴·자리·틀린 이름은 저장 안 함·등록한 날(added)·git 이력 채우기
 node tests/img-shards.cjs            # 그림 주소·등록기·워크플로·.gitignore 가 같은 저장소 차례
 node tests/prompt-book.cjs           # 프롬프트 — 다섯 권 × 폼 셋 × 갈래, 정한 말 영어
 node tests/words.cjs                 # 낱말 표
@@ -104,6 +104,7 @@ node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 
 
 # 브라우저 — ESM_DIR 에 preact·htm 이 든 node_modules, CHROMIUM_PATH 에 브라우저
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-screen.cjs      # 서가
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-recent-screen.cjs # 서가 최근 추가·새 표·새 그림만 · 다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/prompt-screen.cjs   # 생성기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/header-layout.cjs   # 머리 자리(화면 넷 · 크기 다섯)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # 테마 여덟 · 대비

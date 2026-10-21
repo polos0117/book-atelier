@@ -20,10 +20,18 @@
     python3 tools/register-images.py            # data/img.json 에 없는 것을 더한다
     python3 tools/register-images.py --check    # 쓰지 않고 무엇이 달라지는지만 본다
     python3 tools/register-images.py --prune    # 파일이 사라진 항목도 지운다
+    python3 tools/register-images.py --backfill-added ../book-atelier-img   # 날짜 없는 그림에 그림 저장소 git 이력의 날짜를(한 번)
+
+등록한 날(added): img.json 의 "added" 에 {파일: "YYYY-MM-DD"} 로 적는다. 서가의 "최근 추가"·"새" 표가 읽는다.
+이번에 새로 적힌 파일만 오늘 날짜를 받고, 이미 있는 날짜는 그대로 둔다. 날짜를 지어내지 않는다 — 처음부터 있던
+그림은 --backfill-added 가 그림 저장소의 git 이력(그 파일이 처음 더해진 커밋 날짜)에서만 채우고, 이력에서 못 찾으면
+날짜 없이 둔다(서가에 "최근" 으로 안 뜬다). 워크플로의 그림 저장소 체크아웃은 얕아서(이력 한 칸) 거기서는 채우지 않는다.
 """
 import argparse
+import datetime
 import os
 import re
+import subprocess
 
 import roster
 
@@ -42,6 +50,51 @@ EXTRA_DIRS = []
 PAT = re.compile(r"^(.+?)_(m|f|casual(\d+)|extra(\d+)|action(\d+))\.webp$", re.I)
 # 화풍 견본. 책 그림이 아니다
 SKIP = re.compile(r"^style-")
+DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+# 얕은 그림 저장소에서 이력을 더 받을 때 한 번에 받는 칸 수와 그 끝. 끝까지 받아도 얕으면 경계 커밋의 날짜는 버린다
+DEEPEN, DEEPEN_MAX = 200, 5000
+
+
+def today():
+    """오늘 날짜(YYYY-MM-DD). 검사가 갈아 끼운다."""
+    return datetime.date.today().isoformat()
+
+
+def git(repo, *args):
+    return subprocess.run(["git", "-C", repo] + list(args), check=True,
+                          capture_output=True, text=True).stdout
+
+
+def history_dates(repo, folder=IMG_DIR):
+    """그림 저장소 git 이력에서 {파일: 처음 더해진 커밋 날짜}.
+
+    파일마다 `git log --diff-filter=A --format=%cs -- img/<파일>` 의 맨 아래 줄과 같은 것을 한 번에 셈한다.
+    이름 바꾸기도 새 이름이 더해진 것으로 친다(--no-renames). 얕은 저장소면 --depth 를 늘려 가며 받고,
+    그래도 얕으면 경계 커밋(이전 이력이 잘린 자리라 모든 파일이 거기서 "더해진" 것으로 보인다)의 날짜는 쓰지 않는다."""
+    def shallow():
+        return git(repo, "rev-parse", "--is-shallow-repository").strip() == "true"
+
+    depth = DEEPEN
+    while shallow() and depth <= DEEPEN_MAX:
+        git(repo, "fetch", "--quiet", "--depth=%d" % depth)
+        depth += DEEPEN
+    edge = set()
+    if shallow():
+        p = git(repo, "rev-parse", "--git-path", "shallow").strip()
+        p = p if os.path.isabs(p) else os.path.join(repo, p)
+        if os.path.exists(p):
+            edge = set(open(p).read().split())
+    out, at = {}, None
+    log = git(repo, "log", "--no-renames", "--diff-filter=A", "--name-only", "--format=@%H %cs", "--", folder + "/")
+    for line in log.splitlines():
+        if line.startswith("@"):
+            sha, date = line[1:].split()
+            at = None if sha in edge else date
+        elif line.strip() and at:
+            name = line.strip()
+            if os.path.dirname(name) == folder:
+                out[os.path.basename(name)] = at       # 새 것부터 내려오므로 마지막에 남는 것이 처음 더해진 날
+    return out
 
 
 def split_gender(head):
@@ -155,6 +208,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--prune", action="store_true", help="파일이 없어진 항목을 지운다")
+    ap.add_argument("--backfill-added", metavar="그림저장소", help="날짜 없는 그림에 그 저장소 git 이력의 날짜를 채운다")
     a = ap.parse_args()
 
     doc = roster.read("img")
@@ -294,6 +348,21 @@ def main():
             del v["byStyle"]
 
     tidy(img, styles)
+    # 등록한 날 — 적혀 있는 그림만 남긴다(--prune 으로 빠진 그림은 날짜도 빠진다). 새로 적힌 것만 오늘
+    final = listed_files(img)
+    dates = {f: d for f, d in (doc.get("added") or {}).items()
+             if f in final and isinstance(d, str) and DATE.match(d)}
+    stamp = today()
+    for _, f in added:
+        dates.setdefault(f, stamp)
+    filled = 0
+    if a.backfill_added:
+        for f, d in history_dates(a.backfill_added).items():
+            if f in final and f not in dates:
+                dates[f] = d
+                filled += 1
+    if dates or "added" in doc:
+        doc["added"] = dict(sorted(dates.items()))
     # 저장소 자리 — 0 번이 아닌 것만. 못 받은 저장소의 그림·파일이 없어진 그림은 --prune 전에는 자리를 남긴다
     # (지우면 주소가 0 번으로 돌아가 404 가 된다). 등록 안 하는 화풍 견본(style-)도 적는다 — 생성기가 그린다
     where = {f: i for f, i in owner.items() if i > 0}
@@ -314,6 +383,8 @@ def main():
                                         for i in range(len(SHARDS)) if i == 0 or i <= len(EXTRA_DIRS))
           + " · 새 그림은 %s" % SHARDS[open_at] + (" · 못 받은 저장소 " + ", ".join(missing) if missing else ""))
     print("  등록 후보 %d%s" % (len(added), " — 오류로 저장 안 함" if unknown else ""))
+    print("  등록한 날 %d / %d%s" % (len(dates), len(final),
+                                ((" · 이력에서 채움 %d" % filled) if a.backfill_added else "")))
     for card, f in added[:20]:
         print("     %-24s %s" % (card, f))
     if ghosts:

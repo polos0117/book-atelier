@@ -161,13 +161,13 @@ body.zoomed {overflow:hidden}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=7"></script>
+<script src="lib/words.js?v=8"></script>
 <script src="lib/fresh.js?v=1"></script>
-<script src="lib/img.js?v=1"></script>
-<script src="lib/dex-filter.js?v=1"></script>
+<script src="lib/img.js?v=2"></script>
+<script src="lib/dex-filter.js?v=2"></script>
 <script src="lib/book-frame.js?v=1"></script>
-<link rel="stylesheet" href="lib/gallery.css?v=3">
-<link rel="stylesheet" href="lib/landscape.css?v=2">
+<link rel="stylesheet" href="lib/gallery.css?v=4">
+<link rel="stylesheet" href="lib/landscape.css?v=3">
 <link rel="stylesheet" href="lib/room.css?v=3">
 </head>
 <body class="dex-page">
@@ -181,6 +181,22 @@ import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame;
 const FILTER_STORE = 'book_dex_filters_v1', COMPACT_STORE = 'book_dex_compact_v1';
+/* 들른 표 — 이 브라우저에만. SEEN_STORE 는 지난번 들렀을 때의 자료 표(떠날 때 적는다), SEEN_TAB 은 이번 들름의 기준.
+   이번 들름 동안(새로고침·다른 화면에 갔다 오기 포함, 30분 넘게 비우지 않으면)은 같은 기준이라 "새" 표가 그대로 남는다 */
+const SEEN_STORE = 'book_dex_seen_v1', SEEN_TAB = 'book_dex_seen_tab_v1', VISIT_GAP = 30 * 60 * 1000;
+function localDay(t) { const d = t ? new Date(t) : new Date(), p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+function readJSON(store, key) { try { return JSON.parse(store.getItem(key)); } catch { return null; } }
+function visitBase() {
+  const tab = readJSON(sessionStorage, SEEN_TAB);
+  if (tab && typeof tab === 'object' && Date.now() - (tab.last || 0) < VISIT_GAP) return tab.base || null;
+  const base = readJSON(localStorage, SEEN_STORE);
+  try { sessionStorage.setItem(SEEN_TAB, JSON.stringify({ base, last: Date.now() })); } catch {}
+  return base;
+}
+function leaveVisit(added) {
+  try { localStorage.setItem(SEEN_STORE, JSON.stringify({ at: Date.now(), ...FILTER.visitMark(added) })); } catch {}
+  try { const tab = readJSON(sessionStorage, SEEN_TAB) || {}; sessionStorage.setItem(SEEN_TAB, JSON.stringify({ base: tab.base || null, last: Date.now() })); } catch {}
+}
 
 /* 지금 만드는 것은 여성체뿐이다. 파일 이름에는 _f 를 적어 두므로 나중에 m 을 더해도 옛 파일의 뜻이 안 바뀐다 */
 const V = 'f';
@@ -235,7 +251,10 @@ function useDex() {
       const styleName = {};
       /* 화풍 이름은 "짧은 이름 — 설명" 꼴이다. 단추·칸에는 앞쪽만 */
       for (const k of Object.keys(style.styles || {})) styleName[k] = String(style.styles[k].name || k).split(' — ')[0];
-      set({ cards, defs, styleName, img, genres: (design.vocab || {}).genre || [] });
+      /* 최근 추가·새 표 — 날짜는 img.json 의 added. 들른 기준은 이번 들름 내내 그대로다 */
+      const added = IMG.added(), fresh = FILTER.freshSince(added, visitBase());
+      const base = { cards, defs, styleName, img, genres: (design.vocab || {}).genre || [], added, fresh };
+      set({ ...base, recent: FILTER.recent(base, added, localDay()) });
     }).catch(e => set({ error: String((e && e.message) || e) }));
   }, []);
   return state;
@@ -575,6 +594,25 @@ function shotLabel(shot, defs) {
   return [form, shot.index ? W('dex.cut.number', { cut, n: shot.index }) : (shot.cut === 'portrait' || shot.cut === 'open') ? '' : cut].filter(Boolean).join(' · ') || cut;
 }
 
+/* 최근 추가 — 목록 맨 위 한 줄. 등록한 날이 7일 안인 그림, 새 날짜부터 24장. 그 안에서만 옆으로 구른다(목록은 .collection-scroll 몫).
+   누르면 그 책의 상세를 그 그림으로 연다(주소는 ?book=). 날짜 없는 그림은 안 뜬다. 하나도 없으면 줄째 숨는다 */
+function Recent({ rows, fresh, defs, onOpen }) {
+  if (!rows || !rows.length) return null;
+  return html`<section class="recent-shelf" aria-labelledby="recent-title">
+    <h3 class="recent-head" id="recent-title">${W('dex.recent.title')}<span>${W('dex.recent.note', { days: FILTER.RECENT_DAYS, n: rows.length })}</span></h3>
+    <div class="recent-strip" role="group" aria-labelledby="recent-title">
+      ${rows.map(r => {
+        const [, m, d] = r.added.split('-').map(Number), on = fresh.has(r.file);
+        const label = [r.card.name, shotLabel(r, defs), W('dex.recent.day', { m, d }), on && W('dex.new.label')].filter(Boolean).join(' · ');
+        return html`<button type="button" key=${r.file} class="recent-cell" data-card=${r.card.key} data-file=${r.file} data-added=${r.added}
+          aria-label=${label} title=${label} onClick=${() => onOpen(r)}>
+          <span class="face"><${Pic} file=${r.file} alt="" />${on && html`<span class="new-badge" aria-hidden="true">${W('dex.new.badge')}</span>`}</span>
+        </button>`;
+      })}
+    </div>
+  </section>`;
+}
+
 function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
   const f = FILTER.normalize(filters, st);
   const [filtersOpen, setFiltersOpen] = useState(() => ['style', 'form', 'art'].some(k => f[k]) || f.cut !== 'auto');
@@ -585,7 +623,8 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
     if (!r || !sc) return;
     restore.current = null;
     sc.scrollTop = r.top;
-    const trigger = [...sc.querySelectorAll('.grid > .cell')].find(x => x.dataset.card === r.card);
+    const back = r.file && r.card === r.from && [...sc.querySelectorAll('.recent-cell')].find(x => x.dataset.file === r.file);
+    const trigger = back || [...sc.querySelectorAll('.grid > .cell')].find(x => x.dataset.card === r.card);
     if (trigger) trigger.focus({ preventScroll: true });
     if (!r.card || r.card === r.from) return;
     const el = [...sc.querySelectorAll('.grid > .cell')].find(x => x.dataset.card === r.card);
@@ -594,6 +633,9 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
     if (a.top < b.top || a.bottom > b.bottom) sc.scrollTop += a.top - b.top - Math.max(0, (b.height - a.height) / 2);
   }, []);
   const shown = useMemo(() => FILTER.select(st, filters), [st, filters]);
+  /* 새 표 — 대표 그림이면 그 책에 새 그림이 하나라도, 컷을 고른 목록이면 그 그림이 새것일 때 */
+  const freshBooks = useMemo(() => new Set(st.cards.filter(c => FILTER.shots(st.img[c.key], st.defs).some(s => st.fresh.has(s.file))).map(c => c.key)), [st]);
+  const isNew = shot => !!shot.file && (f.cut === 'auto' ? freshBooks.has(shot.card.key) : st.fresh.has(shot.file));
   const update = (key, value) => onFilter(FILTER.normalize({ ...f, [key]: value }, st));
   const reset = () => onFilter(FILTER.defaults());
   const genres = st.genres.filter(g => st.cards.some(c => c.genre === g));
@@ -613,6 +655,7 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
   const done = st.cards.reduce((n, c) => n + FILTER.best(st.img[c.key], st.defs).prog.done, 0);
   return html`<${Shell} head=${head}>
     <section class="gallery-intro"><div><h2>${W('gallery.title')}</h2></div><p>${W('gallery.intro')}</p></section>
+    <${Recent} rows=${st.recent} fresh=${st.fresh} defs=${st.defs} onOpen=${shot => onOpen({ ...shot, via: 'recent' })} />
     <div class="genre-strip" role="group" aria-label=${W('dex.filter.genre')}>${['', ...genres].map(g => html`<button type="button" aria-pressed=${f.genre === g} onClick=${() => update('genre', g)}>${g || W('dex.filter.all')}</button>`)}</div>
     <details class="dex-filters" open=${filtersOpen} onToggle=${e => setFiltersOpen(e.currentTarget.open)}>
       <summary>${W('dex.filter.title')}${active > 0 && html`<span class="filter-count">${active}</span>`}</summary>
@@ -621,7 +664,7 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
         ${pick('genre', [all, ...genres.map(g => [g, g])])}
         ${pick('cut', FILTER.CUTS.map(k => [k, W('dex.cut.' + k)]))}
         ${pick('form', [all, ...FILTER.forms(st.defs).map(k => [k, formName(st.defs, k)])], ['casual', 'extra'].includes(f.cut))}
-        ${pick('art', FILTER.ARTS.map(k => [k, W('dex.art.' + (k || 'all'))]))}
+        ${pick('art', FILTER.ARTS.filter(k => k !== 'new' || st.fresh.size > 0).map(k => [k, W('dex.art.' + (k || 'all'))]))}
       </div>
       <p class="note">${W('dex.filter.note')}</p>
     </details>
@@ -638,7 +681,7 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
             onClick=${() => onOpen(shot)}>
             <span class="face">${shot.file
               ? html`<${Pic} file=${shot.file} alt=${c.name + ' · ' + shotLabel(shot, st.defs)} />`
-              : html`<span class="ph">${W('art.none')}</span>`}</span>
+              : html`<span class="ph">${W('art.none')}</span>`}${isNew(shot) && html`<span class="new-badge" title=${W('dex.new.label')}>${W('dex.new.badge')}</span>`}</span>
             <span class="cap"><span class="card-meta"><span>${c.genre}</span><span>${String(st.cards.indexOf(c) + 1).padStart(2, '0')}</span></span>
               <strong>${c.name}</strong><i class="card-author">${c.author}</i>
               <span class="card-caption">${shot.file ? shotLabel(shot, st.defs) : W('art.none')}</span>
@@ -676,6 +719,13 @@ function App() {
   /* 진열은 지금 테마의 서고 몫이다 — 테마가 바뀌면 목록의 금테를 다시 그린다 */
   const [, setTheme] = useState(0);
   useEffect(() => { const on = () => setTheme(n => n + 1); addEventListener('atelier-appearance', on); return () => removeEventListener('atelier-appearance', on); }, []);
+  /* 떠날 때(다른 화면·탭 닫기·앱 숨기기) 이번에 본 자료를 들른 표로 적는다 — 보는 동안에는 "새" 표가 안 사라진다 */
+  useEffect(() => {
+    if (!st.added) return;
+    const leave = () => leaveVisit(st.added), hide = () => { if (document.visibilityState === 'hidden') leave(); };
+    addEventListener('pagehide', leave); document.addEventListener('visibilitychange', hide);
+    return () => { removeEventListener('pagehide', leave); document.removeEventListener('visibilitychange', hide); };
+  }, [st.added]);
   const listTop = useRef(0), from = useRef(null), restore = useRef(null), openNow = useRef(null);
   openNow.current = open;
   /* 휴대폰 뒤로 가기 — 상세를 열 때 기록을 한 칸 쌓고(주소는 ?book=<열쇠>), 뒤로 가기(popstate)면 그 칸을 내리며 목록으로.
@@ -683,7 +733,7 @@ function App() {
      그래서 상세에서 새로고침·공유해도 그 책이 열리고, 앞으로 가기면 다시 열린다 */
   const pushed = useRef(false), skipPop = useRef(false), cards = useRef(null);
   cards.current = st.cards;
-  const shut = () => { restore.current = { top: listTop.current, card: openNow.current?.card?.key, from: from.current }; setOpen(null); };
+  const shut = () => { const o = openNow.current; restore.current = { top: listTop.current, card: o?.card?.key, from: from.current, file: o?.via === 'recent' ? o.file : null }; setOpen(null); };
   const openShot = shot => {
     const sc = document.querySelector('.collection-scroll');
     listTop.current = sc ? sc.scrollTop : 0; from.current = shot.card.key;

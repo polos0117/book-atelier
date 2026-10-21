@@ -15,7 +15,7 @@
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
 | `docs/PORT_NOTES.md` | 어디서 무엇을 가져왔고, 무엇을 일부러 뺐나 |
 | `docs/ART_INDEX.md` · `rust/README.md` | 그림 색인(모자이크 서명·dHash·색 막대)과 닮은 그림(거리·무게·한 책 둘까지), wasm 다시 짓기 |
-| `docs/ATELIER_PIXEL_ART_PLAN.md` | 도트 캐릭터 시범 — 범위·사양·단계(P0~P5)·체크포인트·P1 생성 지시문. 시범은 alice 발단, 도트는 그림 저장소 `sprites/` |
+| `docs/ATELIER_PIXEL_ART_PLAN.md` | 도트 캐릭터 시범 — 범위·사양·단계(P0~P5)·체크포인트·P1 생성 지시문. 시범은 alice 발단, 도트는 그림 저장소 `sprites/`, 정리는 `tools/sprite-grid.py`(생성 그림의 도트 격자를 찾아 96×128 셀로) |
 | `docs/SCENE_MOTION.md` | 움직임 — 켄 번스·입자·열리기·넘기기(`lib/scene-motion.js`·`.css`, 네 공방이 글자 그대로 나눠 쓴다), 입자 종류와 자료 잇기 |
 | `docs/PATCH.md` | 무엇을 고쳤나 — 고친 쪽이 직접 적는다 (아래 규칙 7) |
 

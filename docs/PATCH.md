@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 시범 P1 — alice 발단 정지 도트 확정
+- tools/sprite-grid.py — 새 도구. 생성 그림의 실제 도트 격자(간격·시작점)를 찾아 칸 가운데 색을 뽑고 Lab 묶음 팔레트로 96×128 셀·발 기준선에 앉힌다(면적 평균 축소는 격자가 어긋나 뭉갰다)
+- docs/ATELIER_PIXEL_ART_PLAN.md — P1 결과(gen1 안 씀·gen2 채택·정리 수치·합성 판단), 반전 허용 확정, 체크포인트를 P2 대기로. 그림은 book-atelier-img `sprites/alice/`·`records/sprites/alice/still.json`
+- AGENTS.md — 도트 줄에 정리 도구
+
 ## 2026-10-21 · claude · 서가 상세 단추 줄 정리 — 담기와 도구 두 줄
 - dex.html — 단추·글자가 한 줄에 섞이던 것을 둘로: 위는 담기(♡ 즐겨찾기 + 붙은 칸의 담은 수 링크 ›, 진열 단추 + 붙은 칸의 진열 수), 아래는 도구(움직임·틀·모자이크·생성기 — 테두리 없이 조용히). 묶음마다 role=group 이름
 - lib/words.js — dex.fav.count·dex.hall.count 를 수만, 링크 이름 dex.fav.open, 묶음 이름 dex.bar.keep·dex.bar.tools, 진열 수 풀이 dex.hall.count.note

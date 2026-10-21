@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 시범 P4 — 서재 바닥의 alice
+- lib/bookshelf.js — 책장 밑 바닥 줄(.shelf-floor)에 도트 인물 하나(data/sprites.json 의 인물 중 설계표에 책이 있는 것). 누르면 그 책을 펼친다(책장에 없어도), 펼친 동안 pause('reading')·닫으면 resume, 펼침·닫힘 움직임과 초점은 인물에서. 도트를 못 받으면 바닥째 숨김
+- lib/bookshelf.css — 바닥 줄(가로 마루결, 테마마다 나무 빛). index.html — sprite-actor.js·css 를 싣고 bookshelf ?v=7·8
+- lib/sprite-actor.js — api 를 인물 단추에 단다(el.sprite). data/sprites.json — 배율 1(사용자 결정)
+- lib/words.js — home.sprite.floor·home.sprite.actor
+- tests/shelf-sprite-screen.cjs — 새 검사. docs/ATELIER_PIXEL_ART_PLAN.md — P4 결과·알려진 문제, 체크포인트 P5 대기. AGENTS.md — 서재 줄·검사 줄
+
 ## 2026-10-21 · claude · 도트 시범 P3 — 독립 재생(sprite.html)
 - lib/sprite-actor.js·lib/sprite-actor.css — 새 재생 모듈(window.AtelierSprite). 시트 한 장의 background-position·transform 만, 대기 차례·걷기(두 자리, 가는 쪽 반전)·고르기 반응, 고르기는 바로 알리고 반응 중 누른 것은 버린다, pause/resume(이유별)·숨은 탭·화면 밖·움직임 끔·동작 줄이기, 도트 한 칸 = 실제 화소 정수배(fit 이면 낮은 공간에 맞춰 낮춘다), 그림 실패면 숨김
 - data/sprites.json — 새 자료. alice 발단 — 칸 96×128·발 기준선·배율 2·반전 허용, 정지·대기(1→4→1→3)·걷기(32/초)·반응 시트와 시간

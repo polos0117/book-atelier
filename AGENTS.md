@@ -23,7 +23,7 @@
 
 | 화면 | 파일 | 무엇 |
 |---|---|---|
-| 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
+| 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·책장 밑 바닥의 도트 인물(누르면 그 인물의 책을 펼친다, 펼친 동안 쉰다 — `lib/sprite-actor.js`·`data/sprites.json`, 도트를 못 받으면 바닥째 없다)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
 | 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열·닮은 그림 줄(`data/art-similar.json`, 상세를 열 때만 받는다). 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 여섯은 안 들어 항해(서재·서가·프롬프트·결투·탐험)에는 없다 |
@@ -131,6 +131,7 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/scene-motion.cjs     # 움직임 — 입자·켄 번스·열리기·넘기기·스위치·동작 줄이기 · 서재 감상·서가 상세·결투 절정 · 다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/reading-journey-screen.cjs # 감상 흐름 — 세 장·명장면·책갈피·이어보기·완료·책등 포커스
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/sprite-screen.cjs   # 도트 시범 — 대기 차례·걷기·고르기(한 번만·Enter·고정 단추)·멈춤·숨은 탭·움직임 끔·동작 줄이기·그림 없음·화소비 넷·다섯 크기
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/shelf-sprite-screen.cjs # 서재 바닥 도트 — 누르면 alice 펼치기(연달아도 한 번)·펼친 동안 쉼·닫으면 같은 인물이 그 자리에서·초점·Enter·움직임 끔·동작 줄이기·도트 없음·다섯 크기 × 테마 셋
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-favorites.cjs      # 서가 즐겨찾기 — 상세의 하트·저장된 칸·?pic= 로 열기·저장 막힘·다섯 크기
 ```
 

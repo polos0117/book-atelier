@@ -47,6 +47,11 @@
 .shelf-book[data-binding="hanji"] .book-spine {border-left:4px double var(--spine-gild);border-radius:0}
 .shelf-book[data-binding="bamboo"] .book-spine {background:repeating-linear-gradient(90deg,#0001 0 1px,transparent 1px 12px),var(--spine);border-radius:8px}
 .shelf-book[data-binding="bamboo"] .book-spine::before,.shelf-book[data-binding="bamboo"] .book-spine::after {left:0;right:0;height:4px;border:0;background:var(--spine-gild);box-shadow:0 1px 2px #0006}
+/* 서재 바닥 — 책장 앞 마루 한 줄, 도트 인물(lib/sprite-actor.css)이 선다. 인물이 없으면(그림 못 받음) 통째로 숨는다 */
+.shelf-floor {position:relative;height:160px;overflow:hidden;margin-top:-2px;border-radius:0 0 8px 8px;
+ background:linear-gradient(#0005,transparent 22px),repeating-linear-gradient(0deg,transparent 0 27px,#00000014 27px 28px),
+  linear-gradient(color-mix(in srgb,var(--wood-light) 34%,var(--bg)),color-mix(in srgb,var(--wood) 30%,var(--bg)))}
+.shelf-floor[hidden] {display:none}
 .bookshelf-foot {display:flex;justify-content:space-between;margin:14px 2px 0;font:11px/1.6 var(--gallery-serif);color:var(--muted);letter-spacing:.04em}
 .bookshelf-status {min-height:250px;display:grid;place-content:center;text-align:center;color:#f1dfb9;font-size:14px}
 .reading-dialog {position:fixed;inset:0;margin:0;border:0;width:100%;height:100%;max-width:none;max-height:none;background:transparent;padding:24px;color:var(--text);overflow:hidden}

@@ -2,7 +2,7 @@
 
 작성일: 2026-10-21 · 시간대: Asia/Seoul  
 문서 버전: 1.1 (저장소 편입·검토 반영·P0 완료)  
-상태: P3 완료(독립 재생 sprite.html), P4 서재 연결 대기  
+상태: P4 완료(서재 바닥의 alice), P5 확대 판단 대기  
 첫 대상: book-atelier 서재의 작은 생활 공간  
 자리: docs/ATELIER_PIXEL_ART_PLAN.md
 
@@ -14,15 +14,15 @@
 
 | 재개에 필요한 항목 | 현재 상태 |
 |---|---|
-| 완료한 일 | 검토, 저장소 편입, P0(시범 캐릭터·기준 이미지 확정), P1(정지 도트), P2(동작 시트), P3(독립 재생 — 10절) |
-| 현재 단계 | P4 서재 연결 대기 |
-| 아직 하지 않은 일 | 서재 연결(책 열기·닫기, 감상 창 뒤 멈춤), 실기기(Fold5) 화면·성능 확인 |
+| 완료한 일 | 검토, 저장소 편입, P0(시범 캐릭터·기준 이미지 확정), P1(정지 도트), P2(동작 시트), P3(독립 재생), P4(서재 연결 — 10절) |
+| 현재 단계 | P5 확대 판단 대기 — 실기기에서 서재를 써 보고 정한다 |
+| 아직 하지 않은 일 | 실기기(Fold5) 화면·성능 확인, P5(세 명·서고 탐험·전투) 판단 |
 | 시범 캐릭터 | alice(이상한 나라의 앨리스), 도트 폼 발단(begin) |
 | 기준 이미지 | 정본 `img/alice_end_literary_fantasy_f.webp`, 도트 기준 `img/alice_begin_literary_fantasy_f.webp` (book-atelier-img) |
 | 도트 산출물 | `book-atelier-img/sprites/alice/` — 정지 `alice_begin_still.png`, 시트 `alice_begin_idle.png`(4칸)·`_walk.png`(6칸)·`_react.png`(4칸), 칸 96×128. 원본 `raw/`, 기록 `records/sprites/alice/` |
 | 변경한 프로젝트 코드 | 없음 |
 | 이 작업의 커밋·push·배포 | 없음 |
-| 다음 한 일 | P4 — 서재(index.html·lib/bookshelf.js)의 작은 자리에 `AtelierSprite.create` 를 놓고, 고르면 alice 책 펼치기, `<dialog>` 열림·닫힘에 pause/resume |
+| 다음 한 일 | 사용자가 실기기에서 서재를 보고 P5 범위(같은 공간 세 명 / 서고 탐험 복도 / 그대로)를 정한다 |
 | 작업 재개 기준 | 이 표와 10절 체크포인트를 실제 결과에 맞춰 갱신 |
 
 **이미 완성된 생성 이미지는 사용자의 추가 요청 없이 자의적으로 재생성하거나 대체하지 않는다.** 첫 정지 도트가 나오면 그 결과를 보여준다. 스타일·노출·디테일에 대한 어시스턴트의 선호로 두 번째 결과를 만들지 않는다. 수정이나 후속 동작 제작은 실제 요청 범위에 맞춰 진행한다.
@@ -248,8 +248,8 @@ book의 기존 검사 후보는 tests/bookshelf-screen.cjs, tests/reading-journe
 ### 현재 체크포인트
 
 - 마지막 갱신: 2026-10-21 · claude
-- 완료 단계: 검토, 저장소 편입, P0, P1, P2, P3
-- 다음 단계: P4 — 서재 연결(사용자 요청 시). 재생 모듈은 그대로 쓰고 서재 쪽에서 자리·고르기·pause/resume 만 잇는다
+- 완료 단계: 검토, 저장소 편입, P0, P1, P2, P3, P4
+- 다음 단계: P5 — 확대 판단(사용자 결정). 후보: 같은 바닥에 두 명 더(인물마다 P1~P2 한 벌), 서고 탐험 복도 띠(3절 표), 그대로 두기
 - 시범 캐릭터와 기준 이미지: alice 발단(4절 P0 결정)
 - P1 결과:
   - gen1(11절 지시문 그대로, 16:36:48~16:37:50 KST) — 쓰지 않음. 1~2px 단위의 도트풍 일러스트(격자 없음, 약 7.5등신)라 96×128로 줄이면 얼굴 7px, 모자이크처럼 뭉갬
@@ -270,11 +270,19 @@ book의 기존 검사 후보는 tests/bookshelf-screen.cjs, tests/reading-journe
   - 크기: 도트 한 칸 = 실제 화소 정수배(scale 2 에 가장 가까운 정수 ÷ devicePixelRatio), 자리도 실제 화소에 맞춘다. `fit` 이면 낮은 공간(휴대폰 가로)에서 들어가는 정수배로 낮춘다(844×390·화소비 3 → 한 칸 5 실제 화소)
   - 그림 실패: 인물을 숨기고 알림 한 줄, 화면 오류 없음
   - 검사 `tests/sprite-screen.cjs`(가짜 시트 `tests/fixtures/make-sprites.py`) — 48가지 통과. 검사 틀(`tests/browser-harness.cjs`)에 그림 저장소 `sprites/` 경로·화소비(dpr)·동작 줄이기(reducedMotion) 열기를 더했다
-  - 알려진 문제: ① 단추 판이 비치던 것(`.prompt-page button` 꼴)은 `button.sprite-actor.sprite-actor` 로 막았다 — 서재에 놓을 때도 같은 꼴이 있는지 본다 ② 휴대폰 가로에서 fit 으로 배율이 낮아져도 예제의 「2배」 단추가 눌린 채 보인다(예제 화면만) ③ 걷기 머리 오르내림 4줄·5칸 정면(P2 그대로) ④ 누르는 자리는 칸 전체(96×128 × 배율) — 투명한 곳을 눌러도 고른다(작은 화소를 맞히지 않아도 되게 일부러) ⑤ 실기기(Fold5)에서 아직 안 봤다
+- P4 결과 — 서재(`index.html` · `lib/bookshelf.js` · `lib/bookshelf.css`):
+  - 자리: 책장 바로 밑 마루 한 줄(`.shelf-floor`, 높이 160px, 가로 마루결). 책장·책등과 겹치지 않고 감상 창과도 따로라 책 고르기를 가로지르지 않는다. 두 자리는 바닥 폭 20%·50%
+  - 크기: 1배(사용자 결정 2026-10-21) — 96×128 CSS px, 화소비 3이면 한 칸 3 실제 화소. 2.625 면 3 실제 화소(1.14 CSS px)
+  - 고르기: 인물을 누르면(Enter 도) 설계표의 그 책(alice)을 펼친다 — 책장에 꽂혀 있지 않아도. 펼침·닫힘 움직임과 닫은 뒤 초점은 인물에서(책등이 아니라). 연달아 눌러도 기록 한 칸
+  - 감상 중: `active` 가 있으면 `pause('reading')`, 닫으면 `resume('reading')` — 같은 인물이 그 자리에서 다시. 새로 만들지 않는다
+  - 실패: 도트를 못 받으면 바닥 줄째 숨는다(빈 마루를 남기지 않는다). 다른 검사(책장·감상 흐름 등)는 도트 없이 돌아 그대로 통과
+  - 검사 `tests/shelf-sprite-screen.cjs` 82가지
+  - 알려진 문제: ⑥ 바닥이 그림을 받은 뒤에 나타나 그 아래(바닥 글·패치 기록)가 한 번 밀린다 ⑦ 인물은 alice 한 명뿐 — 책장 고르기(진열)와 상관없이 늘 나온다
+  - P3 의 알려진 문제: ① 단추 판이 비치던 것(`.prompt-page button` 꼴)은 `button.sprite-actor.sprite-actor` 로 막았다 — 서재에 놓을 때도 같은 꼴이 있는지 본다 ② 휴대폰 가로에서 fit 으로 배율이 낮아져도 예제의 「2배」 단추가 눌린 채 보인다(예제 화면만) ③ 걷기 머리 오르내림 4줄·5칸 정면(P2 그대로) ④ 누르는 자리는 칸 전체(96×128 × 배율) — 투명한 곳을 눌러도 고른다(작은 화소를 맞히지 않아도 되게 일부러) ⑤ 실기기(Fold5)에서 아직 안 봤다
 - 그림 저장소: `sprites/alice/raw/`(받은 그대로 — still gen1·gen2, idle·walk·react gen1), `sprites/alice/alice_begin_{still,idle,walk,react}.png`(정리본), `records/sprites/alice/{still,idle,walk,react}.json`(프롬프트·시각·격자·팔레트·재생·반전) — 커밋 `34a3959`·`384e188`
-- 수정한 프로젝트 파일: 이 문서, `tools/sprite_px.py`·`sprite-grid.py`·`sprite-sheet.py`, `lib/sprite-actor.js`·`.css`, `data/sprites.json`, `sprite.html`, `lib/words.js`(sprite.*), `lib/workspace-ui.js`(부제), `tests/sprite-screen.cjs`·`tests/fixtures/make-sprites.py`·`tests/browser-harness.cjs`, `AGENTS.md`, `IMAGE_RULES.md`, `docs/PATCH.md`
-- 승인 범위: 저장소 편입·P0, P1 결과 업로드와 반전 허용, P2 시트 업로드와 idle 재생 순서, P3 진행(모두 2026-10-21)
-- 남은 결정: P4 착수 시점과 서재의 자리, 실제 표시 크기(예제에서 1·2·3배 비교), 도트 화풍 열쇠, 이후 제작 범위
+- 수정한 프로젝트 파일: 이 문서, `tools/sprite_px.py`·`sprite-grid.py`·`sprite-sheet.py`, `lib/sprite-actor.js`·`.css`, `data/sprites.json`, `sprite.html`, `index.html`·`lib/bookshelf.js`·`lib/bookshelf.css`, `tests/shelf-sprite-screen.cjs`, `lib/words.js`(sprite.*), `lib/workspace-ui.js`(부제), `tests/sprite-screen.cjs`·`tests/fixtures/make-sprites.py`·`tests/browser-harness.cjs`, `AGENTS.md`, `IMAGE_RULES.md`, `docs/PATCH.md`
+- 승인 범위: 저장소 편입·P0, P1 결과 업로드와 반전 허용, P2 시트 업로드와 idle 재생 순서, P3 진행, 1배·P4 진행(모두 2026-10-21)
+- 남은 결정: P5 범위, 도트 화풍 열쇠
 
 ### 작업 중 갱신 양식
 

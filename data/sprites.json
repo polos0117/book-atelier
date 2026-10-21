@@ -13,7 +13,7 @@
       "states": {
         "still": { "file": "alice/alice_begin_still.png", "frames": 1 },
         "idle": { "file": "alice/alice_begin_idle.png", "frames": 4, "order": [0, 3, 0, 2], "ms": [700, 220, 700, 140] },
-        "walk": { "file": "alice/alice_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 55, "dy": [1, -0.33, 1, -1.33, 1.33, -2] },
+        "walk": { "file": "alice/alice_begin_walk_v2.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 63, "dy": [-0.33, 0.67, -0.33, -0.33, 0.67, -0.33] },
         "react": { "file": "alice/alice_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
       }
     },
@@ -28,7 +28,7 @@
       "states": {
         "still": { "file": "sunzi/sunzi_begin_still.png", "frames": 1 },
         "idle": { "file": "sunzi/sunzi_begin_idle.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [700, 220, 140, 220] },
-        "walk": { "file": "sunzi/sunzi_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 55, "dy": [-1, -1, -1, 1.33, 1.33, 0.33] },
+        "walk": { "file": "sunzi/sunzi_begin_walk_v2.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 82, "dy": [0, 0, 0, 0, 0, 0] },
         "react": { "file": "sunzi/sunzi_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
       }
     },
@@ -43,7 +43,7 @@
       "states": {
         "still": { "file": "chunhyang/chunhyang_begin_still.png", "frames": 1 },
         "idle": { "file": "chunhyang/chunhyang_begin_idle.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [700, 220, 140, 220] },
-        "walk": { "file": "chunhyang/chunhyang_begin_walk.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 49, "dy": [0, 2, 0, -0.67, 0.33, -1.67] },
+        "walk": { "file": "chunhyang/chunhyang_begin_walk_v2.png", "frames": 6, "order": [0, 1, 2, 3, 4, 5], "ms": [200, 200, 200, 200, 200, 200], "speed": 52, "dy": [0, 2, -1.67, -0.67, 0.33, 0] },
         "react": { "file": "chunhyang/chunhyang_begin_react.png", "frames": 4, "order": [0, 1, 2, 3], "ms": [120, 180, 320, 200] }
       }
     }

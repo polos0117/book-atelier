@@ -321,6 +321,12 @@ book의 기존 검사 후보는 tests/bookshelf-screen.cjs, tests/reading-journe
   - 미끄러짐: 접지 칸의 발 폭이 33px 인데 반 주기 0.33초(칸 110ms)에 몸은 32px/초 — 다리가 몸보다 세 배 빨랐다. 칸 200ms, 빠르기를 보폭 ÷ 반 주기로(alice·손자 55, 춘향 49). 탐험 복도 벽 흐름 0.7초 × 55 ≈ 38px
   - 오르내림: 생성 시트의 뒤 세 칸이 위상이 어긋났다(alice 지나감 칸이 낮고, 춘향은 뒤 절반이 통째로 2줄 아래). `tools/sprite-bob.py` 가 머리 높이(위 22% 무게중심)를 접지 가운데·내려앉음 1칸 아래·지나감 1칸 위 곡선에 맞추는 칸마다 dy 를 셈 → `data/sprites.json` walk.dy, `lib/sprite-actor.js` 가 실제 화소로 옮기고 그림자는 땅에 둔다. ±2 로 잘라 발이 크게 뜨지 않는다
   - `tests/sprites-data.py` 가 빠르기 = 보폭 ÷ 반 주기(±15%), dy 로 맞춘 높이가 곡선을 따르는지(±0.6) 본다 — 인물을 더하면 `tools/sprite-bob.py` 로 dy, 보폭 셈으로 빠르기를 정한다
+- 걷기 v2(사용자: "오른다리를 뒤로 뻗고 왼다리를 내딛는 게 없다" → 다시 뽑기 → "잘 안 나왔다" → 1번 길 승인, 2026-10-21):
+  - 다리 안내 그림을 붙여 다시 뽑아도(gen2) 세 장 다 같은 다리만 앞 — alice·손자는 1·4칸 모두 가까운 다리가 앞, 춘향은 여섯 칸이 거의 같다. 생성기는 3/4 옆모습에서 "가까운 다리를 뒤로" 를 못 그린다고 본다. 다시 뽑지 않는다
+  - 대신 `tools/walk-swap.py`: 반 주기(접지·내려앉음·지나감) 세 칸을 고르고, 나머지 세 칸은 자세 그대로 다리 표시만 맞바꾼다 — alice 무늬 스타킹 ↔ 민 스타킹(표식은 덩어리째 같은 자리로), 손자 앞 트임의 맨 허벅지를 그늘(앞에 나간 먼 다리)로 낮추고 가까운 허벅지를 뒤 장화 쪽에 새로 그림, 춘향은 신 자리만(디딘 발이 앞 → 가운데 → 뒤, 접지 칸에 뒷발 앞코)
+  - alice·손자는 gen2 를 `tools/sprite-sheet.py --grid 3x2 --rows 121 --speck 40` 로 정리한 뒤, 춘향은 지금 시트(gen1 정리본)에서. 결과 `sprites/<인물>/<인물>_begin_walk_v2.png`, 기록 `records/sprites/<인물>/walk_v2.json`, 지시문 `records/sprites/walk-redo-instructions.md`. 지난 걷기 시트는 그대로 둔다
+  - 빠르기·dy 다시 셈: alice 63 · dy [-0.33, 0.67, -0.33, …], 손자 82(보폭이 넓어졌다) · dy 0, 춘향 52 · dy [0, 2, -1.67, -0.67, 0.33, 0]
+  - 알려진 문제: ⑩ alice·손자의 팔은 앞뒤 반 주기가 같다(팔은 다리와 엇갈리지 않는다) ⑪ 손자의 그늘진 허벅지는 크게 보면 주황빛
   - P3 의 알려진 문제: ① 단추 판이 비치던 것(`.prompt-page button` 꼴)은 `button.sprite-actor.sprite-actor` 로 막았다 — 서재에 놓을 때도 같은 꼴이 있는지 본다 ② 휴대폰 가로에서 fit 으로 배율이 낮아져도 예제의 「2배」 단추가 눌린 채 보인다(예제 화면만) ③ 걷기 머리 오르내림 4줄·5칸 정면(P2 그대로) ④ 누르는 자리는 칸 전체(96×128 × 배율) — 투명한 곳을 눌러도 고른다(작은 화소를 맞히지 않아도 되게 일부러) ⑤ 실기기(Fold5)에서 아직 안 봤다
 - 그림 저장소: `sprites/alice/raw/`(받은 그대로 — still gen1·gen2, idle·walk·react gen1), `sprites/alice/alice_begin_{still,idle,walk,react}.png`(정리본), `records/sprites/alice/{still,idle,walk,react}.json`(프롬프트·시각·격자·팔레트·재생·반전) — 커밋 `34a3959`·`384e188`
 - 수정한 프로젝트 파일: 이 문서, `tools/sprite_px.py`·`sprite-grid.py`·`sprite-sheet.py`, `lib/sprite-actor.js`·`.css`, `data/sprites.json`, `sprite.html`, `index.html`·`lib/bookshelf.js`·`lib/bookshelf.css`, `tests/shelf-sprite-screen.cjs`, `run.html`·`docs/RUN_DESIGN.md`·`tests/run-sprite-screen.cjs`, `lib/words.js`(sprite.*), `lib/workspace-ui.js`(부제), `tests/sprite-screen.cjs`·`tests/fixtures/make-sprites.py`·`tests/browser-harness.cjs`, `AGENTS.md`, `IMAGE_RULES.md`, `docs/PATCH.md`

@@ -30,6 +30,8 @@
 | 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절). 「오늘의 판」은 날짜가 씨앗(`lib/today.js`), 끝난 판은 `atelier_today_v1:book` 에 적혀 공방 지도(polos0117.github.io)가 읽는다 |
 | 탐험 | `run.html` · `lib/run.js` · `data/run.json` · `rust/shelf-gen` → `lib/shelf-gen.wasm`(싣개 `lib/shelf-gen.js`) · `lib/duel-ui.js`·`lib/duel.css`(결투와 같이 쓰는 판 조각) | 서고 탐험 — 로그라이크(docs/RUN_DESIGN.md). 씨앗 하나로 아홉 층 평면도(Rust → wasm), 깊이가 곧 장(1~3층 발단·4~6 전개·7~9 결말), 방마다 싸움(결투 엔진 한 장, 보스만 세 장)·독서대·장면·쉼, 덱 셋→여섯, 등불 셋 꺼지면 처음부터. 지도 규칙은 생성기에만, 걷는 규칙은 엔진에만, 수치는 자료에만 |
 
+서가 상세의 하트(즐겨찾기)는 `lib/favorites.js` — 공방 모음(polos0117.github.io)의 `favorites.js` 를 글자 하나 다르지 않게 복사한 공용 모듈이다(열쇠 `atelier_favorites_v1`, 약속은 그쪽 README 「즐겨찾기」절). 여기서 따로 고치지 않는다 — 고치면 다섯 저장소를 같이, `tests/dex-favorites.cjs` 가 원본과 견준다.
+
 ## 지켜야 할 것
 
 ### 1. 한 책은 하나의 전투 원리
@@ -127,6 +129,7 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/mosaic-screen.cjs   # �
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 휴대폰 가로 — 서재·서가·프롬프트 첫 화면(lib/landscape.css)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/scene-motion.cjs     # 움직임 — 입자·켄 번스·열리기·넘기기·스위치·동작 줄이기 · 서재 감상·서가 상세·결투 절정 · 다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/reading-journey-screen.cjs # 감상 흐름 — 세 장·명장면·책갈피·이어보기·완료·책등 포커스
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-favorites.cjs      # 서가 즐겨찾기 — 상세의 하트·저장된 칸·?pic= 로 열기·저장 막힘·다섯 크기
 ```
 
 브라우저 검사의 그림은 `tests/fixtures/make-art.py` 가 임시 자리에 만든다(Pillow 필요) — 실제 등록기로 img.json 을 짠다.

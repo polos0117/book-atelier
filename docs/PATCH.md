@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 말풍선 — 판에 들어온 책이 그 장의 말을 한다
+- data/book-design.json — 스무 권에 voice(발단·전개·결말 한 줄씩). 명대사 인용이 아니라 설계표의 인물로 새로 쓴 말(저작권 문제 없게). 머리말에 뜻
+- tools/book-design.py · tests/book-design.py — voice 가 있으면 셋 다 있고 70자까지(없는 책은 그냥 통과)
+- lib/speech.js — 새 파일(원본은 지도 저장소 speech.js, 다섯 저장소에 같은 파일). 요소 위에 꼬리 달린 풍선 — 둘까지, 글 길이만큼, 움직임 줄이기면 애니메이션 없이. 화면 말 없음
+- duel.html — 내기(내 것도 상대 것도)에 그 책의 그 장 voice 를 자리 위에, 판이 끝나면 이긴 쪽 첫 책이 결말의 말
+- tests/duel-screen.cjs — 춘향전을 내면 발단의 말이 풍선으로
+
 ## 2026-10-21 · claude · 결투 「오늘의 판」과 오늘 기록 — 공방 지도가 읽는다
 - lib/today.js — 새 파일. 다섯 공방이 한 출처(polos0117.github.io)라 localStorage 를 같이 쓴다: 판이 끝나면 atelier_today_v1:book 에 {d, n, w, daily, at, seen} 한 칸(bump), 다녀가면 seen(visit), 날짜 씨앗(seed), ?daily(isDaily). 모양의 약속은 지도 저장소 README 「오늘 기록」절, 다섯 저장소에 같은 파일
 - duel.html — 덱 화면에 「오늘의 판」 단추(날짜가 씨앗 → 하루 동안 같은 상대 덱·같은 순서·같은 선공)와 오늘 n판 w승·끝냈나 글, ?daily 로 오면 덱이 갖춰졌을 때 바로 시작, 판이 끝나는 수에서 오늘 기록 한 칸(st.recorded 가 두 번을 막는다), 결과 머리에 「오늘의 판」 표, 열면 다녀간 자국

@@ -299,6 +299,12 @@ book의 기존 검사 후보는 tests/bookshelf-screen.cjs, tests/reading-journe
   - `lib/sprite-actor.js`: `wander` 옵션, `march(ms)`(제자리 걸음)
   - 검사 `tests/run-sprite-screen.cjs` 31가지. 기존 `tests/run-screen.cjs` 는 도트 없이 돌아 그대로 통과
   - 알려진 문제: ⑧ 걷는 동안의 지도는 이미 새 방이 "여기" 로 보인다(상태를 먼저 적으니까) ⑨ 싸움 화면·상자 위에는 복도가 없다
+- 서가·진열실(사용자 요청 2026-10-21 — "도트 그림도 서가에 추가하거나 따로 보관"):
+  - 보관: 그림은 이미 그림 저장소 `sprites/<인물>/`(원본 `raw/`·정리본), 기록은 `records/sprites/<인물>/`. 화면에서 보는 길을 둘 더했다
+  - 서가(`dex.html`): 도트 인물이 있는 책의 목록 칸 오른쪽 위에 「도트」 표, 상세에서 닮은 그림 줄 밑에 작은 무대 한 줄(대기·걷기·반응 단추, 인물을 눌러도 반응, 「도트 진열실에서 보기」). 그림을 못 받으면 줄째 숨는다. 큰 감상 그림은 그대로
+  - 진열실(`sprite.html`, 이름을 도트 시범 → 도트 진열실로): 위 무대는 고른 인물(`?who=`, 없으면 첫 인물), 아래 인물마다 정지 도트·상태별 칸 띠(원래 크기, 칸 사이 선)·무대에 세우기·서가·만든 기록. 서재 바닥이 서면 바닥 밑에 「도트 진열실」 길
+  - 인물을 늘리면 `data/sprites.json` 한 칸과 `lib/words.js` 의 `sprite.name.<인물>` 만 더하면 서재 바닥·서가·진열실·탐험 복도에 다 나온다
+  - 검사 `tests/dex-dot-screen.cjs` 35가지, `tests/sprite-screen.cjs` 에 진열실 6가지, `tests/shelf-sprite-screen.cjs` 에 진열실 길 2가지
   - P3 의 알려진 문제: ① 단추 판이 비치던 것(`.prompt-page button` 꼴)은 `button.sprite-actor.sprite-actor` 로 막았다 — 서재에 놓을 때도 같은 꼴이 있는지 본다 ② 휴대폰 가로에서 fit 으로 배율이 낮아져도 예제의 「2배」 단추가 눌린 채 보인다(예제 화면만) ③ 걷기 머리 오르내림 4줄·5칸 정면(P2 그대로) ④ 누르는 자리는 칸 전체(96×128 × 배율) — 투명한 곳을 눌러도 고른다(작은 화소를 맞히지 않아도 되게 일부러) ⑤ 실기기(Fold5)에서 아직 안 봤다
 - 그림 저장소: `sprites/alice/raw/`(받은 그대로 — still gen1·gen2, idle·walk·react gen1), `sprites/alice/alice_begin_{still,idle,walk,react}.png`(정리본), `records/sprites/alice/{still,idle,walk,react}.json`(프롬프트·시각·격자·팔레트·재생·반전) — 커밋 `34a3959`·`384e188`
 - 수정한 프로젝트 파일: 이 문서, `tools/sprite_px.py`·`sprite-grid.py`·`sprite-sheet.py`, `lib/sprite-actor.js`·`.css`, `data/sprites.json`, `sprite.html`, `index.html`·`lib/bookshelf.js`·`lib/bookshelf.css`, `tests/shelf-sprite-screen.cjs`, `run.html`·`docs/RUN_DESIGN.md`·`tests/run-sprite-screen.cjs`, `lib/words.js`(sprite.*), `lib/workspace-ui.js`(부제), `tests/sprite-screen.cjs`·`tests/fixtures/make-sprites.py`·`tests/browser-harness.cjs`, `AGENTS.md`, `IMAGE_RULES.md`, `docs/PATCH.md`

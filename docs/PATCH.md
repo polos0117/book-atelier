@@ -7,6 +7,14 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트를 서가와 진열실에서 — 목록 「도트」 표·상세 도트 줄·sprite.html 진열실
+- dex.html — data/sprites.json 을 한 번 받아, 도트 인물이 있는 책의 목록 칸에 「도트」 표(오른쪽 위), 상세의 닮은 그림 줄 밑에 작은 무대(대기·걷기·반응 단추, 인물을 눌러도 반응, 진열실 길). 그림을 못 받으면 줄째 숨김, 자료가 틀리면 표도 줄도 없음. sprite-actor.js·css 를 싣는다
+- sprite.html — 도트 시범 → 도트 진열실. 무대는 ?who= 로 고른 인물(없으면 첫 인물), 아래에 인물마다 정지 도트·상태별 칸 띠(원래 크기)·무대에 세우기·서가·만든 기록(그림 저장소 records/sprites/)
+- lib/bookshelf.js·css — 서재 바닥이 서면 바닥 밑 글줄에 「도트 진열실」 길. index.html — bookshelf ?v=10·8
+- lib/words.js — sprite.title·subtitle(진열실), sprite.gallery·card.*, dex.dot.*, home.sprite.room
+- tests/dex-dot-screen.cjs — 새 검사. tests/sprite-screen.cjs — 진열실 6가지. tests/shelf-sprite-screen.cjs — 진열실 길 2가지
+- AGENTS.md — 서가·진열실 줄, 검사 줄. docs/ATELIER_PIXEL_ART_PLAN.md — 서가·진열실 기록
+
 ## 2026-10-21 · claude · 도트 확대 준비 — 서재 바닥에 셋까지, 손자·춘향 P0
 - lib/bookshelf.js — 서재 바닥이 data/sprites.json 의 인물을 셋까지 세운다. 바닥을 나눠 인물마다 제 구역의 두 자리, 처음 자리·대기 시간을 엇갈리게. 못 받은 인물만 빠지고 한 명이라도 서면 바닥이 보인다. 펼친 동안 모두 쉰다. index.html — bookshelf.js ?v=9
 - lib/words.js — sprite.name.sunzi·chunhyang

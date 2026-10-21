@@ -34,6 +34,7 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     await p.waitForSelector('.shelf-book'); await ready(p);
     add('책장 밑에 바닥이 생기고 인물이 선다', await p.locator('.shelf-floor .sprite-actor').isVisible());
     add('바닥은 책장 바로 밑', await p.evaluate(() => { const c = document.querySelector('.bookcase').getBoundingClientRect(), f = document.querySelector('.shelf-floor').getBoundingClientRect(); return Math.abs(f.top - c.bottom) < 4; }));
+    add('바닥이 서면 진열실 길', await p.locator('.bookshelf-dots').getAttribute('href') === 'sprite.html');
     add('인물 이름에 책 제목', /앨리스/.test(await p.locator('.shelf-floor .sprite-actor').getAttribute('aria-label')), await p.locator('.shelf-floor .sprite-actor').getAttribute('aria-label'));
     const len0 = await p.evaluate(() => history.length);
     await p.evaluate(() => { document.querySelector('.shelf-floor .sprite-actor').dataset.mark = 'first'; });
@@ -93,6 +94,7 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     s = await h.open('index.html', opt({ imgRoot: noSprites })); p = s.page;
     await p.waitForSelector('.shelf-book'); await wait(1500);
     add('도트 없음 → 바닥이 안 보인다', await p.locator('.shelf-floor').isHidden());
+    add('도트 없음 → 진열실 길도 없다', await p.locator('.bookshelf-dots').count() === 0);
     add('도트 없음 → 책장은 그대로', await p.locator('.shelf-book').count() > 0);
     add('도트 없음 → 화면 오류 없음', s.errors.length === 0, s.errors.join(' | '));
     await s.close();

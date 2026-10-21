@@ -24,11 +24,11 @@
 | 화면 | 파일 | 무엇 |
 |---|---|---|
 | 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·책장 밑 바닥의 도트 인물(누르면 그 인물의 책을 펼친다, 펼친 동안 쉰다 — `lib/sprite-actor.js`·`data/sprites.json`, 도트를 못 받으면 바닥째 없다)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
-| 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열·닮은 그림 줄(`data/art-similar.json`, 상세를 열 때만 받는다). 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
+| 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열·닮은 그림 줄(`data/art-similar.json`, 상세를 열 때만 받는다)·도트(도트 인물이 있는 책은 목록 칸에 「도트」 표, 상세에 작은 무대 한 줄 — `data/sprites.json`). 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 여섯은 안 들어 항해(서재·서가·프롬프트·결투·탐험)에는 없다 |
 | 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절). 「오늘의 판」은 날짜가 씨앗(`lib/today.js`), 끝난 판은 `atelier_today_v1:book` 에 적혀 공방 지도(polos0117.github.io)가 읽는다 |
-| 도트 시범 | `sprite.html` · `lib/sprite-actor.js`·`.css` · `data/sprites.json` | 도트 인물 한 명을 작은 공간에서 따로 움직인다(대기·걷기·고르기 반응 — docs/ATELIER_PIXEL_ART_PLAN.md P3). 시트는 그림 저장소 `sprites/`. 도트 한 칸 = 실제 화소 정수배, 움직임 끔·동작 줄이기·숨은 탭·멈춤이면 선다, 고르기는 반응을 안 기다린다. 머리 항해에는 없다(주소로만) |
+| 도트 진열실 | `sprite.html` · `lib/sprite-actor.js`·`.css` · `data/sprites.json` | 도트 인물 모두 — 위는 고른 인물(`?who=`)의 무대(대기·걷기·고르기 반응·멈춤·1/2/3배·움직임 끔), 아래는 인물마다 정지 도트·동작 시트 칸 띠(원래 크기)·서가와 만든 기록 길. 시트는 그림 저장소 `sprites/`, 기록은 `records/sprites/`. 머리 항해에는 없다 — 서가 상세의 도트 줄·서재 바닥 밑 「도트 진열실」 에서 들어온다 |
 | 탐험 | `run.html` · `lib/run.js` · `data/run.json` · `rust/shelf-gen` → `lib/shelf-gen.wasm`(싣개 `lib/shelf-gen.js`) · `lib/duel-ui.js`·`lib/duel.css`(결투와 같이 쓰는 판 조각) | 서고 탐험 — 로그라이크(docs/RUN_DESIGN.md). 씨앗 하나로 아홉 층 평면도(Rust → wasm), 깊이가 곧 장(1~3층 발단·4~6 전개·7~9 결말), 방마다 싸움(결투 엔진 한 장, 보스만 세 장)·독서대·장면·쉼, 덱 셋→여섯, 등불 셋 꺼지면 처음부터. 지도 위 복도에 덱의 도트 인물(길동무)이 서고, 방을 고르면 상태는 바로 적고 0.7초 제자리 걸음 뒤 그 방(보여주기만 — 누르면 바로, 움직임 끔·휴대폰 가로·새로고침이면 바로). 지도 규칙은 생성기에만, 걷는 규칙은 엔진에만, 수치는 자료에만 |
 
 서가 상세의 하트(즐겨찾기)는 `lib/favorites.js` — 공방 모음(polos0117.github.io)의 `favorites.js` 를 글자 하나 다르지 않게 복사한 공용 모듈이다(열쇠 `atelier_favorites_v1`, 약속은 그쪽 README 「즐겨찾기」절). 여기서 따로 고치지 않는다 — 고치면 다섯 저장소를 같이, `tests/dex-favorites.cjs` 가 원본과 견준다.
@@ -130,7 +130,8 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/mosaic-screen.cjs   # �
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 휴대폰 가로 — 서재·서가·프롬프트 첫 화면(lib/landscape.css)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/scene-motion.cjs     # 움직임 — 입자·켄 번스·열리기·넘기기·스위치·동작 줄이기 · 서재 감상·서가 상세·결투 절정 · 다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/reading-journey-screen.cjs # 감상 흐름 — 세 장·명장면·책갈피·이어보기·완료·책등 포커스
-ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/sprite-screen.cjs   # 도트 시범 — 대기 차례·걷기·고르기(한 번만·Enter·고정 단추)·멈춤·숨은 탭·움직임 끔·동작 줄이기·그림 없음·화소비 넷·다섯 크기
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/sprite-screen.cjs   # 도트 진열실 — 무대(대기 차례·걷기·고르기·멈춤·숨은 탭·움직임 끔·동작 줄이기·그림 없음·화소비 넷·다섯 크기)·인물 목록(칸 띠 원래 크기·서가·기록·?who=)
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-dot-screen.cjs  # 서가 도트 — 목록 「도트」 표·상세 도트 줄(대기·걷기·반응·진열실 길)·움직임 끔·그림 없음·자료 틀림·다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/shelf-sprite-screen.cjs # 서재 바닥 도트 — 누르면 alice 펼치기(연달아도 한 번)·펼친 동안 쉼·닫으면 같은 인물이 그 자리에서·초점·Enter·움직임 끔·동작 줄이기·도트 없음·다섯 크기 × 테마 셋
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/run-sprite-screen.cjs   # 서고 복도 도트 — 덱의 도트 책 주인공·즉시 저장·걷는 동안 지도·누르면 바로·새로고침·움직임 끔·동작 줄이기·휴대폰 가로·도트 없는 덱·크기 넷
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-favorites.cjs      # 서가 즐겨찾기 — 상세의 하트·저장된 칸·?pic= 로 열기·저장 막힘·다섯 크기

@@ -52,6 +52,7 @@
  background:linear-gradient(#0005,transparent 22px),repeating-linear-gradient(0deg,transparent 0 27px,#00000014 27px 28px),
   linear-gradient(color-mix(in srgb,var(--wood-light) 34%,var(--bg)),color-mix(in srgb,var(--wood) 30%,var(--bg)))}
 .shelf-floor[hidden] {display:none}
+.bookshelf-dots {color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;min-height:24px}
 .bookshelf-foot {display:flex;justify-content:space-between;margin:14px 2px 0;font:11px/1.6 var(--gallery-serif);color:var(--muted);letter-spacing:.04em}
 .bookshelf-status {min-height:250px;display:grid;place-content:center;text-align:center;color:#f1dfb9;font-size:14px}
 .reading-dialog {position:fixed;inset:0;margin:0;border:0;width:100%;height:100%;max-width:none;max-height:none;background:transparent;padding:24px;color:var(--text);overflow:hidden}

@@ -75,6 +75,18 @@ const frames = (p, ms) => p.evaluate(ms => new Promise(ok => {
     await p.focus('#sprite-idle'); await p.keyboard.press('Shift+Tab');
     add('초점 고리(키보드)', await p.evaluate(() => { const a = document.activeElement; return a.classList.contains('sprite-actor') && getComputedStyle(a).outlineStyle !== 'none'; }));
 
+    /* 진열실 — 인물마다 한 장, 고른 인물 표시, 칸 띠는 원래 크기, 서가·기록 길 */
+    const cards = await p.$$eval('.sprite-card', es => es.map(e => ({ who: e.dataset.who, on: e.getAttribute('aria-current'),
+      sheets: [...e.querySelectorAll('.sheet')].map(x => [x.closest('figure').dataset.state, Math.round(x.getBoundingClientRect().width)]),
+      links: [...e.querySelectorAll('.acts a')].map(a => a.getAttribute('href')), still: !!e.querySelector('.still img') })));
+    const ACTORS = Object.keys(JSON.parse(fs.readFileSync(path.join(ROOT, 'data/sprites.json'), 'utf8')).actors);
+    add('진열실 — 인물마다 한 장', cards.map(c => c.who).join() === ACTORS.join(), cards.map(c => c.who).join());
+    add('진열실 — 무대의 인물이 표시된다', cards.filter(c => c.on === 'true').map(c => c.who).join() === 'alice', JSON.stringify(cards.map(c => c.on)));
+    const ca = cards.find(c => c.who === 'alice') || { sheets: [], links: [] };
+    add('진열실 — 정지 도트', ca.still);
+    add('진열실 — 칸 띠는 원래 크기(칸 수 × 칸 폭)', ['idle', 'walk', 'react'].every(n => { const x = ca.sheets.find(s => s[0] === n); return x && Math.abs(x[1] - DEF.states[n].frames * DEF.cell[0]) <= 1; }), JSON.stringify(ca.sheets));
+    add('진열실 — 서가·기록으로', ca.links[0] === 'dex.html?book=alice' && /records\/sprites\/alice\/still\.json$/.test(ca.links[1] || ''), ca.links.join(' '));
+
     /* 멈춤·숨은 탭 */
     await p.waitForFunction(() => window.__spriteDemo.debug().state === 'idle', null, { timeout: 5000 });
     await p.click('#sprite-pause');
@@ -101,6 +113,12 @@ const frames = (p, ms) => p.evaluate(ms => new Promise(ok => {
     await p.click('#sprite-motion');
     add('움직임 켜면 다시', (await dbg(p)).running);
     add('화면 오류 없음', s.errors.length === 0, s.errors.join(' | '));
+    await s.close();
+
+    /* 1-2. ?who= — 없는 인물이면 첫 인물 */
+    s = await h.open('sprite.html?who=nobody', { viewport: { width: 390, height: 844 }, mobile: true, imgRoot: art });
+    p = s.page; await ready(p);
+    add('?who= 가 없는 인물이면 첫 인물', await p.$eval('.sprite-card[aria-current="true"]', e => e.dataset.who) === 'alice');
     await s.close();
 
     /* 2. 동작 줄이기 */

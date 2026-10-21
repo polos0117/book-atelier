@@ -77,6 +77,18 @@ body {color:var(--text);font-size:15px}
 .bar .n {flex:none;font:700 11px ui-monospace,monospace;color:var(--accent);white-space:nowrap}
 .back {flex:none;min-height:40px;padding:8px 12px;background:var(--card2);color:var(--text);
   border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12px;font-weight:700}
+/* 도트 — 목록 칸의 「도트」 표(오른쪽 위, 「새」 는 왼쪽 위), 상세의 작은 무대 한 줄 */
+.dot-badge {position:absolute;right:5px;top:5px;z-index:1;padding:0 6px;border-radius:3px;background:#1d1a26cc;color:#f3e6c4;font:700 10px/1.7 ui-monospace,monospace;letter-spacing:.04em;pointer-events:none}
+.dex-dot {margin:4px 0 16px}
+.dex-dot[hidden] {display:none}
+.dex-dot-row {display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.dex-dot-stage {position:relative;flex:1 1 220px;min-width:0;height:152px;overflow:hidden;border:1px solid var(--line);border-radius:8px;
+  background:linear-gradient(transparent 74%,color-mix(in srgb,var(--line) 60%,var(--card)) 74%),var(--card2)}
+.dex-dot-acts {display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;flex:0 1 220px}
+.dex-dot-acts button,.dex-dot-acts a {display:inline-flex;align-items:center;min-height:44px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer}
+.dex-dot-acts button[aria-pressed="true"] {color:var(--text);box-shadow:inset 0 -2px var(--gold)}
+.dex-dot-acts button:disabled {opacity:.45;cursor:default}
+.dex-dot-acts a {color:var(--accent)}
 /* 상세의 단추 줄 — 위: 담기(즐겨찾기·진열, 수는 그 단추에 붙은 칸), 아래: 도구(움직임·틀·모자이크·생성기, 한 단 조용히) */
 .bar-links {display:flex;flex-direction:column;gap:10px;padding:0 0 8px}
 .bar-row {display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -186,6 +198,9 @@ body.zoomed {overflow:hidden}
 <script src="lib/book-frame.js?v=1"></script>
 <script src="lib/scene-motion.js?v=1"></script>
 <link rel="stylesheet" href="lib/scene-motion.css?v=1">
+<!-- 도트 인물 — data/sprites.json · lib/sprite-actor.js. 그 책에 도트가 있으면 목록에 「도트」 표, 상세에 작은 무대 한 줄 -->
+<script src="lib/sprite-actor.js?v=3"></script>
+<link rel="stylesheet" href="lib/sprite-actor.css?v=2">
 <!-- 즐겨찾기 — lib/favorites.js(공방 넷과 공방 모음이 글자 하나 다르지 않게 나눠 쓴다) -->
 <script src="lib/favorites.js?v=1"></script>
 <link rel="stylesheet" href="lib/gallery.css?v=6">
@@ -378,6 +393,45 @@ function loadSimilar() {
 /* 큰 그림 아래 한 줄 — 지금 보는 그림과 색·구도가 닮은 그림(점수 차례, 한 책에서 둘까지). 그림이 바뀌면 줄도 바뀐다.
    누르면 그 책 그 그림으로(주소는 ?book=). 지금 등록부에 없는 그림은 뺀다 — 하나도 없으면 줄째 숨는다.
    이 줄 안에서만 옆으로 구른다(세로는 .collection-scroll 한 곳) */
+/* 도트 인물 — data/sprites.json(1KB 남짓)을 한 번 받는다. 못 받으면 null — 표도 줄도 없다 */
+let spritesOnce = null;
+function loadSprites() {
+  return spritesOnce || (spritesOnce = window.AtelierSprite ? window.AtelierSprite.load('data/sprites.json').then(d => d && d.actors ? d : null).catch(() => null) : Promise.resolve(null));
+}
+function useSprites() {
+  const [sp, setSp] = useState(null);
+  useEffect(() => { let alive = true; loadSprites().then(d => { if (alive) setSp(d); }); return () => { alive = false; }; }, []);
+  return sp;
+}
+const dotOf = (sp, book) => sp ? Object.keys(sp.actors).find(k => sp.actors[k].book === book) : null;
+
+/* 상세의 도트 줄 — 그 책 인물의 도트가 작은 무대에서 대기(가끔 걷는다). 단추로 대기·걷기·반응, 인물을 눌러도 반응.
+   그림을 못 받으면 줄째 숨는다. 진열실(sprite.html?who=)에서 칸 띠·기록까지 본다 */
+function DotStage({ sp, who, card }) {
+  const box = useRef(null), actor = useRef(null), [state, setState] = useState('idle'), [on, setOn] = useState(false);
+  const [motion, setMotion] = useState(() => !!MOTION && MOTION.enabled());
+  useEffect(() => MOTION ? MOTION.subscribe(setMotion) : undefined, []);
+  useEffect(() => {
+    const d = sp.actors[who];
+    const a = window.AtelierSprite.create(box.current, d, { base: sp.base, label: W('dex.dot.actor', { name: W('sprite.name.' + who) }),
+      points: [0.3, 0.7], floor: 10, seed: 5, onSelect: () => a.play('react'), onState: setState });
+    actor.current = a;
+    a.ready.then(x => setOn(!x.failed));
+    return () => { a.destroy(); actor.current = null; };
+  }, [who]);
+  const play = n => actor.current && actor.current.play(n);
+  return html`<section class="dex-dot" aria-labelledby="dex-dot-title" data-who=${who} hidden=${!on}>
+    <h3 class="similar-head" id="dex-dot-title">${W('dex.dot.title')}<span>${W('dex.dot.note', { name: W('sprite.name.' + who) })}</span></h3>
+    <div class="dex-dot-row">
+      <div class="dex-dot-stage" ref=${box}></div>
+      <div class="dex-dot-acts" role="group" aria-label=${W('sprite.states')}>
+        ${['idle', 'walk', 'react'].map(n => html`<button type="button" key=${n} data-state=${n} aria-pressed=${state === n} disabled=${!motion} onClick=${() => play(n)}>${W('sprite.state.' + n)}</button>`)}
+        <a class="dex-dot-room" href=${'sprite.html?who=' + encodeURIComponent(who)}>${W('dex.dot.room')}</a>
+      </div>
+    </div>
+  </section>`;
+}
+
 function Similar({ file, find, defs, onOpen }) {
   const [data, setData] = useState(null);
   useEffect(() => { let alive = true; loadSimilar().then(d => { if (alive) setData(d); }); return () => { alive = false; }; }, []);
@@ -407,6 +461,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
   const [focus, setFocus] = useState(selection?.file && selection.cut !== 'portrait' && selection.cut !== 'open' ? selection : null);
   const [wantForm, setForm] = useState(selection?.form || '');
   const [zoom, setZoom] = useState(false);
+  const sprites = useSprites(), dotWho = dotOf(sprites, card.key);
   const [hall, setHall] = useState(() => IMG.hallPicks());
   const [framed, setFramed] = useState(() => FRAME.on());
   const flipFrame = () => setFramed(v => { FRAME.setOn(!v); return !v; });
@@ -525,6 +580,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
     </div>`}
       </div>
       ${shown && find && html`<${Similar} file=${shown.file} find=${find} defs=${defs} onOpen=${openSimilar} />`}
+      ${dotWho && html`<${DotStage} key=${dotWho} sp=${sprites} who=${dotWho} card=${card} />`}
       <div class="story-panel">
         <p class="editorial-kicker">${card.genre} · ${card.era}</p>
     <p class="sec">${W('book.persona')}</p>
@@ -730,7 +786,7 @@ function Recent({ rows, fresh, defs, onOpen }) {
 function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
   const f = FILTER.normalize(filters, st);
   const [filtersOpen, setFiltersOpen] = useState(() => ['style', 'form', 'art'].some(k => f[k]) || f.cut !== 'auto');
-  const hall = IMG.hallPicks();
+  const hall = IMG.hallPicks(), sprites = useSprites();
   /* 상세에서 돌아오면 열기 전에 굴려 둔 자리로. 상세에서 다른 책으로 넘어갔으면 그 책 칸이 보이게 한 번 더 민다 */
   useLayoutEffect(() => {
     const r = restore && restore.current, sc = document.querySelector('.collection-scroll');
@@ -795,7 +851,7 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
             onClick=${() => onOpen(shot)}>
             <span class="face">${shot.file
               ? html`<${Pic} file=${shot.file} alt=${c.name + ' · ' + shotLabel(shot, st.defs)} />`
-              : html`<span class="ph">${W('art.none')}</span>`}${isNew(shot) && html`<span class="new-badge" title=${W('dex.new.label')}>${W('dex.new.badge')}</span>`}</span>
+              : html`<span class="ph">${W('art.none')}</span>`}${isNew(shot) && html`<span class="new-badge" title=${W('dex.new.label')}>${W('dex.new.badge')}</span>`}${dotOf(sprites, c.key) && html`<span class="dot-badge" title=${W('dex.dot.label')}>${W('dex.dot.badge')}</span>`}</span>
             <span class="cap"><span class="card-meta"><span>${c.genre}</span><span>${String(st.cards.indexOf(c) + 1).padStart(2, '0')}</span></span>
               <strong>${c.name}</strong><i class="card-author">${c.author}</i>
               <span class="card-caption">${shot.file ? shotLabel(shot, st.defs) : W('art.none')}</span>

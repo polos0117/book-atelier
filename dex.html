@@ -161,7 +161,7 @@ body.zoomed {overflow:hidden}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=6"></script>
+<script src="lib/words.js?v=7"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=1"></script>
 <script src="lib/dex-filter.js?v=1"></script>
@@ -411,6 +411,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
         onClick=${enshrine}>${inHall ? W('dex.hall.remove', { shelf }) : hallFull ? W('dex.hall.full', { shelf, max: IMG.HALL_MAX }) : W('dex.hall.add', { shelf })}</button>
       <span class="hall-n">${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span>
       <button type="button" id="dex-frame" aria-pressed=${framed} title=${W('dex.frame.note')} onClick=${flipFrame}>${W('dex.frame.' + FRAME.kind(card))}</button>
+      ${shown && html`<a href=${'mosaic.html?file=' + encodeURIComponent(shown.file)} id="dex-to-mosaic">${W('dex.mosaic')}</a>`}
     </div>
     ${keys.length > 1 && html`
       <p class="sec">${W('dex.style.compare')}<span>${W('art.count', { n: keys.length })}</span></p>

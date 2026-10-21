@@ -7,6 +7,17 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 모자이크 — 그림 한 장을 서가의 조각으로 (Rust → WebAssembly)
+
+- rust/ — 새 cargo 작업 공간. `art-core`(2×3 칸 Lab 서명·dHash 64·Lab 4×4×4 색 막대·칸마다 조각 고르기: 벌점·최대 횟수·이웃 간격·씨앗, 단위 검사), `art-index`(등록된 그림만 읽어 색인 쓰기, `--check`), `mosaic-wasm`(`extern "C"` 내보내기 + 포인터·길이, 소스 셈을 wasm 안에). 다시 짓는 법은 rust/README.md
+- lib/mosaic.wasm · lib/mosaic.js — 크기 우선 판으로 지은 wasm(31 KB, 바깥에서 받는 것 없음)과 손으로 쓴 싣개·화면 없는 셈(칸·자르기·씨앗·파일 이름)
+- data/art-index.json — 그림 저장소 썸네일 154장의 서명·dHash·색 막대(38 KB). 그림을 더하면 다시 만든다(등록 흐름은 그대로, 색인에 없는 그림은 모자이크가 건너뛴다)
+- mosaic.html — 바탕 고르기(책 → 그림, `?file=`), 조각 밀도 거칠게·보통·촘촘하게(32·48·72칸), 휴대폰 배경 1170×2532·세로 포스터 2048×3072, 원본 겹치기 0–40%, 한 그림 반복, PNG/JPEG 받기, 다른 배치. 쓰인 조각만 받고 못 받으면 빼고 다시 맞춘다, 줄 단위로 나눠 그린다. 조각을 누르거나 방향키로 옮기면 그 책·그 그림과 서가 링크. wasm 이 없으면 낱말 표의 말. 세로·휴대폰 가로·PC 배치
+- dex.html · lib/bookshelf.js · lib/bookshelf.css · index.html — 서가 상세 틀 단추 옆 "모자이크로 만들기"(지금 큰 그림), 서재 펼친 책에도 같은 길(초상·개방 따라). 머리 항해는 344 폭에 다섯이 안 들어 그대로 넷
+- lib/words.js · lib/workspace-ui.js — 모자이크 말 전부, 모자이크 화면의 머리 소개. 낱말 표 판 `?v=7`
+- tests/mosaic.cjs · tests/mosaic-screen.cjs · tests/fixtures/make-art-index.py · tests/dex-screen.cjs · tests/browser-harness.cjs — 묵은 wasm(소스 셈)·같은 씨앗·최대 횟수·간격·색인 꼴, 화면 61가지, 서가·서재 단추. 검사 서버의 그림 응답에 GitHub Pages 처럼 `Access-Control-Allow-Origin: *`
+- docs/ART_INDEX.md · AGENTS.md · .gitignore — 색인 꼴·다시 만들기·다음 일 "닮은 그림" 계획(거리 = 해시 해밍 + 색 막대 카이제곱 + Lab 서명, top-k 는 따로 `data/similar.json`), `rust/target/` 은 올리지 않는다
+
 ## 2026-10-20 · claude · 책 다섯 권 더 — 열 장르에 두 권씩
 
 - data/book-design.json — 프로젝트 헤일메리(SF)·안나 카레니나(비극)·괴도 신사 아르센 뤼팽(추리)·파우스트(사상)·자산어보(과학) 설계표(앞 커밋). 결투에 맞춰 안나 발단 "(최대 3)" → "(최대 2)", 헤일메리 전개 연료에 "(최대 4)"

@@ -57,7 +57,14 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     await p.keyboard.press('ArrowRight');
     assert.equal(await count(p), '2 / ' + total);
     assert.match(await p.$eval('.big img', e => e.getAttribute('src')), /don_quixote_middle_literary/, '두 번째는 전개 폼');
+    /* 모자이크로 만들기 — 지금 큰 그림을 바탕으로 mosaic.html 에 */
+    const mosaicHref = () => p.$eval('#dex-to-mosaic', e => e.getAttribute('href'));
+    assert.equal(await mosaicHref(), 'mosaic.html?file=' + encodeURIComponent('don_quixote_middle_literary_fantasy_f.webp'), '모자이크 단추는 지금 큰 그림으로');
+    assert.equal(await p.$eval('#dex-to-mosaic', e => e.textContent.trim()), await p.evaluate(() => W('dex.mosaic')));
+    assert(await p.$eval('#dex-to-mosaic', e => e.closest('.bar-links') && e.previousElementSibling && e.previousElementSibling.id === 'dex-frame'), '모자이크 단추는 틀 단추 옆');
+    assert((await p.locator('#dex-to-mosaic').boundingBox()).height >= 40, '모자이크 단추 높이');
     await p.click('.fcell[data-form="end_open"]');
+    assert.equal(await mosaicHref(), 'mosaic.html?file=don_quixote_end_open_literary_fantasy_f.webp', '그림을 바꾸면 모자이크 단추도');
     assert.match(await p.$eval('.note', e => e.textContent), /라만차 평원/, '개방이면 명장면 글');
     /* 사람처럼 한 번씩 — 한 칸 넘어간 것을 보고 다음을 누른다 */
     for (let i = 7; i <= total; i++) { await p.keyboard.press('ArrowRight'); await p.waitForFunction(n => (document.querySelector('.big-count') || {}).textContent === n + ' / ' + 9, i); }
@@ -113,8 +120,10 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     assert.deepEqual(await p.$$eval('.shelf-book', es => es.map(e => e.dataset.key)), ['don_quixote'], '서재 진열대에 진열한 책');
     await p.click('.shelf-book');
     await p.waitForSelector('.reading-dialog[open]');
+    assert.match(await p.$eval('.reading-mosaic', e => e.getAttribute('href')), /^mosaic\.html\?file=don_quixote_[a-z_]+_literary_fantasy_f\.webp$/, '펼친 책에서 모자이크로');
     await p.click('.reading-mode');
     assert.match(await p.$eval('.reading-art img', e => e.getAttribute('src')), /_open_/, '개방 보기 — 명장면으로');
+    assert.match(await p.$eval('.reading-mosaic', e => e.getAttribute('href')), /^mosaic\.html\?file=don_quixote_[a-z]+_open_literary_fantasy_f\.webp$/, '개방 보기면 모자이크도 명장면으로');
     assert.deepEqual(a.errors, []);
     assert.deepEqual(await p.evaluate(() => window.AtelierWords.missing()), [], '낱말 표에 없는 열쇠');
     await a.close();
@@ -128,9 +137,10 @@ const count = p => p.$eval('.big-count', e => e.textContent.trim()).catch(() => 
     assert.equal(await b.page.evaluate(() => location.search), '', '바로가기에서 뒤로 — 목록');
     await b.page.goForward(); await b.page.waitForSelector('.fstrip');
     assert.equal(await b.page.$eval('#dex-to-prompt', e => e.getAttribute('href')), 'prompt.html?book=alice');
+    assert.equal(await b.page.$eval('#dex-to-mosaic', e => e.getAttribute('href')), 'mosaic.html?file=alice_begin_literary_fantasy_f.webp', '바로가기에서도 모자이크 단추');
     assert(await b.page.evaluate(() => document.body.scrollWidth <= innerWidth), '펼친 화면에서 가로로 넘치지 않는다');
     assert.deepEqual(b.errors, []);
     await b.close();
-    console.log(`PASS 서가: 목록 ${design.books.length}권 · 그림 없음·빈 자리·개방·저자 거르기 · 여섯 칸·시범·화풍 비교 · 넘기기·책 넘기기·크게 보기 · 책 틀(양장·한지·죽간) · 뒤로 가기 · 진열·서재 진열대 · 바로가기`);
+    console.log(`PASS 서가: 목록 ${design.books.length}권 · 그림 없음·빈 자리·개방·저자 거르기 · 여섯 칸·시범·화풍 비교 · 넘기기·책 넘기기·크게 보기 · 책 틀(양장·한지·죽간) · 모자이크 단추 · 뒤로 가기 · 진열·서재 진열대 · 바로가기`);
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

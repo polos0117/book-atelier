@@ -14,6 +14,7 @@
 | `IMAGE_RULES.md` | 그림 만들기·파일 이름·기록·등록 — 그림 작업 전에 |
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
 | `docs/PORT_NOTES.md` | 어디서 무엇을 가져왔고, 무엇을 일부러 뺐나 |
+| `docs/ART_INDEX.md` · `rust/README.md` | 그림 색인(모자이크 서명·dHash·색 막대)과 wasm 다시 짓기, 다음 일 "닮은 그림" 계획 |
 | `docs/PATCH.md` | 무엇을 고쳤나 — 고친 쪽이 직접 적는다 (아래 규칙 7) |
 
 ## 화면
@@ -23,6 +24,7 @@
 | 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·패치 기록·공간 |
 | 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열 |
 | 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
+| 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 다섯은 안 들어 항해에는 없다 |
 | 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절) |
 
 ## 지켜야 할 것
@@ -76,7 +78,12 @@
 
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 맨 위로 간다. `node tests/patch.cjs` 가 모양을 본다.
 
-### 8. 올리기
+### 8. 그림 색인과 wasm 은 다시 만든다
+
+`data/art-index.json` 은 그림 저장소에서 셈한 표다 — 새 그림이 등록된 뒤 `cd rust && cargo run --release -p art-index` 로 다시 만든다(등록 흐름은 그대로, 늦어도 모자이크는 그 그림을 건너뛰며 돈다).
+`rust/art-core` · `rust/mosaic-wasm` 을 고치면 `lib/mosaic.wasm` 을 다시 지어 올린다(`rust/README.md`) — `node tests/mosaic.cjs` 가 소스 셈으로 묵은 wasm 을 잡는다. `rust/target/` 은 올리지 않는다.
+
+### 9. 올리기
 
 `main` 에 직접 올린다. 작업 브랜치·PR 은 만들지 않는다. 강제 push 와 남의 작업 지우기는 하지 않는다.
 
@@ -91,6 +98,8 @@ node tests/prompt-book.cjs           # 프롬프트 — 다섯 권 × 폼 셋 ×
 node tests/words.cjs                 # 낱말 표
 node tests/patch.cjs                 # 패치 기록 모양
 node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·책마다 고유 규칙·AI
+node tests/mosaic.cjs                # 모자이크 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 배치·최대 횟수·간격, 색인 꼴
+(cd rust && cargo test)               # art-core · art-index · mosaic-wasm 단위 검사
 node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 600판은 보고만): 책마다 40~60% · 세 폼 규칙 모두 돈다 · 선공
 
 # 브라우저 — ESM_DIR 에 preact·htm 이 든 node_modules, CHROMIUM_PATH 에 브라우저
@@ -101,7 +110,9 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # �
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/patch-screen.cjs    # 서재의 패치 기록
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/bookshelf-screen.cjs # 책장 — 진열·펼치기·개방·닫기·키보드·반응형
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지 · 휴대폰 가로·세로·폴드·PC 넷에서 끝까지, 돌려도 그대로
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/mosaic-screen.cjs   # 모자이크 — ?file= 로 거칠게 그리기·받기·조각 누르기·겹치기 · 세로·가로·PC · wasm 없음
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 휴대폰 가로 — 서재·서가·프롬프트 첫 화면(lib/landscape.css)
 ```
 
 브라우저 검사의 그림은 `tests/fixtures/make-art.py` 가 임시 자리에 만든다(Pillow 필요) — 실제 등록기로 img.json 을 짠다.
+모자이크 검사의 조각 색인은 `tests/fixtures/make-art-index.py` 가 그 가짜 그림으로 셈한다(cargo 없이).

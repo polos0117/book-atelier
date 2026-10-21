@@ -101,3 +101,29 @@ def sample_elastic(a, pal, lo=9, hi=14, pitch=None):
             v, c = np.unique(blk, return_counts=True)
             G[j, i] = v[np.argmax(c)]
     return G, p
+
+
+def sample_fixed(a, pal, p, dark=0.3):
+    """간격 p 로 고정한 고른 격자 — 시작점만 경계 세기로 고르고, 칸 안쪽에서 가장 많은 팔레트 색. 줄 수가 정확히 맞는다(인물끼리 키 맞추기).
+    dark: 어두운 색(윤곽·눈, Lab L 35 아래)이 칸의 이만큼을 넘으면 그 색 — 칸보다 잘게 그린 눈·윤곽이 살색에 먹히지 않게"""
+    rgb = a[..., :3]
+    ex = np.abs(np.diff(rgb, axis=1)).sum(-1).sum(0); ey = np.abs(np.diff(rgb, axis=0)).sum(-1).sum(1)
+    def off(e):
+        return max((e[np.round(np.arange(o, len(e) - 1, p)).astype(int)].mean(), o) for o in np.arange(0, p, 0.25))[1]
+    ox, oy = off(ex), off(ey)
+    solid = a[..., 3] >= 160
+    idx = np.full(a.shape[:2], -1); idx[solid] = nearest(rgb[solid], pal)
+    xs = np.arange(ox, a.shape[1] - 1, p); ys = np.arange(oy, a.shape[0] - 1, p)
+    G = np.full((len(ys) - 1, len(xs) - 1), -1)
+    q = p / 8
+    darkset = set(np.where(lab(pal)[:, 0] < 35)[0].tolist())
+    for j in range(len(ys) - 1):
+        for i in range(len(xs) - 1):
+            blk = idx[int(ys[j] + q):int(ys[j + 1] - q) + 1, int(xs[i] + q):int(xs[i + 1] - q) + 1].ravel()
+            v, c = np.unique(blk, return_counts=True)
+            pick = v[np.argmax(c)]
+            if pick >= 0 and dark:
+                d = [(n, k) for k, n in zip(v, c) if k in darkset]
+                if d and max(d)[0] >= dark * blk.size: pick = max(d)[1]
+            G[j, i] = pick
+    return G, (ox, oy)

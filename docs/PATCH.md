@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 확대 P1 — 손자·춘향 정지 도트
+- tools/sprite-grid.py — --rows N(인물 높이를 N 줄로 나눈 고른 격자, 시작점만 찾는다)·--outline(바깥 윤곽 한 칸). 격자 찾기가 빗나가는 생성 도트용, 인물끼리 키 맞추기. 기본 길은 그대로(alice 결과 바이트 같음)
+- tools/sprite_px.py — sample_fixed(고른 격자, 칸 안 최다 색, 어두운 색이 30% 넘으면 그 색)
+- docs/ATELIER_PIXEL_ART_PLAN.md — 확대 P1 결과, 반전 허용(손자·춘향), 체크포인트를 확대 P2 대기로. 그림은 book-atelier-img `sprites/sunzi/`·`sprites/chunhyang/`·`records/sprites/`
+
 ## 2026-10-21 · claude · 도트를 서가와 진열실에서 — 목록 「도트」 표·상세 도트 줄·sprite.html 진열실
 - dex.html — data/sprites.json 을 한 번 받아, 도트 인물이 있는 책의 목록 칸에 「도트」 표(오른쪽 위), 상세의 닮은 그림 줄 밑에 작은 무대(대기·걷기·반응 단추, 인물을 눌러도 반응, 진열실 길). 그림을 못 받으면 줄째 숨김, 자료가 틀리면 표도 줄도 없음. sprite-actor.js·css 를 싣는다
 - sprite.html — 도트 시범 → 도트 진열실. 무대는 ?who= 로 고른 인물(없으면 첫 인물), 아래에 인물마다 정지 도트·상태별 칸 띠(원래 크기)·무대에 세우기·서가·만든 기록(그림 저장소 records/sprites/)

@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-21 · claude · 도트 계획 — P2 동작 시트 생성 지시문
+- docs/ATELIER_PIXEL_ART_PLAN.md — 11절에 P2 지시문(공통 + idle 4 · walk 6 · react 4, 세로 한 장 격자 칸, 6×6 화소, 정지 도트 6배 첨부)과 받은 뒤 정리 순서
+
 ## 2026-10-21 · claude · 도트 계획 — gen2 재작업 요청 문구
 - docs/ATELIER_PIXEL_ART_PLAN.md — gen2 를 만든 이어 요청(큰 화소·16색·4등신·장식 절반)을 체크포인트에 적고 P2 지시문에도 넣기로
 

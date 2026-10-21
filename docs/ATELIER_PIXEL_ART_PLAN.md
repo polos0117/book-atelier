@@ -317,6 +317,61 @@ Portrait canvas 1024 x 1536.
 
 받은 뒤 할 일(claude): 원본을 `sprites/alice/raw/alice_begin_still_gen1.png`로 보존 → 8칸 격자 추정·최근접 축소로 96×128 → 팔레트 고정·투명 정리 → 1배·2배·실제 화소 정수배 미리보기와 서재 세 테마(sunlit-library·moonlit-archive·quiet-study) 바닥 합성 → 사용자 검토. 결과가 아쉬워도 사용자가 요청하기 전에는 다시 생성하지 않는다.
 
+### P2 — gpt 세션에 보낼 동작 시트 생성 지시
+
+첨부: ① 정지 도트 6배 확대본(`sprites/alice/alice_begin_still.png` 을 최근접 6배, 576×768) ② 정본 `img/alice_end_literary_fantasy_f.webp`. 시트 셋(idle·walk·react)을 **각각 한 번씩 따로** 생성한다. P1 gen2 에서 배운 대로 큰 화소·16색·4등신·장식 단순을 처음부터 넣었다. 칸 배치는 세로 1024×1536 한 장에 격자: idle·react 2×2(칸 512×768), walk 3×2(칸 341×768) — 스프라이트 한 화소 = 6×6 이면 125행이 750px 로 칸에 든다.
+
+공통(세 장 맨 앞):
+
+~~~text
+Pixel art sprite sheet of the EXACT same character as attached image 1 — a finished pixel-art sprite.
+Copy it pixel for pixel in style: same very large chunky pixels, same 16-colour palette, same dark outline,
+same proportions (about 4 heads tall), same face, short dark-brown bob with the bow on the image-left side of the head,
+cream dress with navy trim and white apron, red and navy card-suit marks, pocket watch at the image-right hip,
+white stockings with suit marks, navy shoes. Keep decoration as simple as image 1 — do not add new details.
+Image 2 is only a colour and face reference; do not copy its painterly style.
+
+Sheet layout: portrait canvas 1024 x 1536, frames arranged in a regular grid of equal cells,
+read left to right, top to bottom. In every cell the character is the same size (about 125 pixels tall
+on the sprite's own pixel grid, each sprite pixel drawn as a crisp 6 x 6 square), centred horizontally,
+with both feet on the same baseline near the bottom of the cell. Every frame faces the same direction
+as described below. Hard edges only: no anti-aliasing, no blur, no gradients, no dithering noise.
+Transparent background. No grid lines, no cell borders, no numbers, no labels, no text, no ground,
+no shadow, no motion lines, no extra characters.
+~~~
+
+idle 4:
+
+~~~text
+IDLE animation, 4 frames in a 2 x 2 grid (cell 512 x 768). Same standing pose as image 1, three-quarter view
+turned slightly toward the viewer's right, arms relaxed. Changes between frames are tiny (1-2 sprite pixels):
+frame 1 = exactly image 1; frame 2 = slight breath in, shoulders and hair 1 pixel up, skirt hem 1 pixel wider;
+frame 3 = same as frame 2 but eyes closed (blink); frame 4 = back between frame 2 and frame 1.
+Feet never move. The loop 4 -> 1 must be seamless.
+~~~
+
+walk 6:
+
+~~~text
+WALK cycle, 6 frames in a 3 x 2 grid (cell 341 x 768). Side three-quarter view walking toward the viewer's right,
+same body and outfit as image 1. A standard 6-frame walk: frame 1 = right foot forward contact,
+frame 2 = down (weight on right foot, body 1 pixel lower), frame 3 = passing (left leg passing, body 1 pixel higher),
+frame 4 = left foot forward contact, frame 5 = down, frame 6 = passing. Arms swing opposite to the legs,
+small steps, skirt and hair bounce 1-2 pixels. Head height changes by at most 2 sprite pixels.
+The character does not travel across the cell — she walks in place, feet on the baseline. The loop 6 -> 1 must be seamless.
+~~~
+
+react 4:
+
+~~~text
+REACT animation when selected, 4 frames in a 2 x 2 grid (cell 512 x 768). Starts and ends in the image 1 pose.
+frame 1 = image 1 pose, frame 2 = turns head and body toward the viewer with a small surprised smile,
+frame 3 = small curtsy: knees slightly bent, one hand lifting the skirt edge, head tilted, body 3 pixels lower,
+frame 4 = rising back halfway toward the image 1 pose, smiling. Feet stay on the baseline.
+~~~
+
+받은 뒤 할 일(claude): 원본을 `sprites/alice/raw/alice_begin_<상태>_gen1.png` 로 보존 → 칸으로 나눠 `tools/sprite-grid.py` 를 칸마다(정지 도트 팔레트에 맞춰) → 발 기준선 y=126 정렬, 칸 사이 머리·발 위치 튐 확인 → 가로로 이은 시트 `sprites/alice/alice_begin_<상태>.png` 와 재생 미리보기(GIF) → 사용자 검토. 아쉬워도 사용자가 요청하기 전에는 다시 생성하지 않는다.
+
 ### 다음 세션용 요청문
 
 ~~~text

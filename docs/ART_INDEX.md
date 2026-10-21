@@ -1,6 +1,6 @@
 # 그림 색인 — `data/art-index.json`
 
-그림 한 장마다 작은 특징을 미리 셈해 둔 표다. 지금은 **모자이크**(`mosaic.html`)가 쓰고, 다음 일 **닮은 그림**이 쓸 자리를 같이 만들어 둔다.
+그림 한 장마다 작은 특징을 미리 셈해 둔 표다. **모자이크**(`mosaic.html`)가 쓰고, 이 표에서 셈한 **닮은 그림**(`data/art-similar.json`)을 서가 상세가 쓴다.
 만드는 쪽은 `rust/art-index`, 셈하는 식은 `rust/art-core` 한 곳이다(브라우저의 `lib/mosaic.wasm` 도 같은 상자를 쓴다).
 
 ## 1. 무엇이 들었나
@@ -30,14 +30,18 @@
 
 ## 2. 다시 만들기 — 새 그림을 올린 뒤
 
+**그림을 등록하면 두 파일을 다 다시 만든다** — 색인이 먼저, 닮은 그림은 그 색인에서.
+
 ```bash
-cd rust && cargo run --release -p art-index        # 그림 저장소: ../../book-atelier-img (없으면 이 저장소의 img/ 이음)
-node tests/mosaic.cjs                              # 꼴 검사 + 등록됐는데 색인에 없는 장 수를 알려 준다
+cd rust && cargo run --release -p art-index                 # data/art-index.json(그림 저장소: ../../book-atelier-img, 없으면 이 저장소의 img/ 이음)
+cargo run --release -p art-index -- --similar               # data/art-similar.json(색인 + data/img.json 만 읽는다 — 그림 저장소가 없어도 된다)
+cd .. && node tests/mosaic.cjs && node tests/similar.cjs   # 꼴 검사 + 등록됐는데 색인·닮은 그림에 없는 장 수를 알려 준다
 ```
 
-- **그림 등록 흐름(`tools/register-images.py`·워크플로)은 건드리지 않는다.** 색인은 그 뒤에 따로 다시 만든다 — 등록이 앞서고 색인이 늦어도 화면은 돈다.
+- **그림 등록 흐름(`tools/register-images.py`·워크플로)은 건드리지 않는다.** 두 파일은 그 뒤에 따로 다시 만든다 — 등록이 앞서고 색인이 늦어도 화면은 돈다.
 - 색인에 없는 그림은 **모자이크 조각에서 빠진다**(건너뛴 수를 화면에 알린다). 바탕 그림으로는 고를 수 있다 — 바탕의 칸 서명은 브라우저의 wasm 이 화소에서 셈한다.
-- `--check` 는 다시 셈한 결과가 지금 파일과 같은지만 본다(그림 저장소가 있는 곳에서).
+- 닮은 그림에 없는 그림은 **그 그림에서 "닮은 그림" 줄이 안 뜨고**, 남의 줄에도 안 실린다. 줄에 실린 그림이 등록부에서 빠졌으면 화면이 뺀다.
+- `--check` 는 다시 셈한 결과가 지금 파일과 같은지만 본다 — 색인은 그림 저장소가 있는 곳에서, `--similar --check` 는 어디서나.
 
 ## 3. 모자이크가 쓰는 법
 
@@ -47,41 +51,60 @@ node tests/mosaic.cjs                              # 꼴 검사 + 등록됐는�
    같은 조각은 체비쇼프 거리 2(조각 100장 넘을 때, 30장 넘으면 1) 안에 다시 앉지 않는다.
 3. 쓰인 조각만 받는다. 못 받은 그림은 빼고 다시 맞춘다. 줄 단위로 나눠 그린 뒤(requestAnimationFrame), 바탕을 0–40% 로 옅게 얹는다.
 
-## 4. 다음 일 — 닮은 그림 (아직 만들지 않는다)
+## 4. 닮은 그림 — `data/art-similar.json` (한 것)
 
-서가 상세의 큰 그림 아래에 **"닮은 그림"** 한 줄: 이 그림과 색·구도가 닮은 그림 여섯 장(썸네일, 누르면 그 책 그 그림으로).
-처음에는 이 공방 안에서, 나중에는 다른 공방(pkm·myth·atelier)까지.
+서가 상세의 큰 그림 아래 **"닮은 그림"** 한 줄: 지금 보는 그림과 색·구도가 닮은 그림 여덟 장까지(썸네일 + 책 이름, 누르면 그 책 그 그림으로).
+지금은 이 공방 안에서만. 나중에 다른 공방(pkm·myth·atelier)까지 넓힐 자리는 아래 4-4.
 
-**거리** — 세 특징을 0..1 로 맞춰 무게를 둔다(처음 값, 실제 그림으로 손본다).
+### 4-1. 거리
+
+`rust/art-core` 의 `similarity(a, b)` — 세 특징을 저마다 0..1 로 맞춰 무게를 둔다. 합도 0..1, 0 이면 같은 그림, 차례를 바꿔도 같다.
 
 ```
-d = 0.40 · hamming(dhash) / 64              # 구도·밝기 배치
-  + 0.35 · chi_square(hist)                 # ½Σ(p−q)²/(p+q), 이미 0..1
-  + 0.25 · min(1, sig_distance(lab) / 40)   # 2×3 칸 Lab, ΔE 40 을 끝으로
+d = 0.40 · hamming(dhash) / 64                # 구도·밝기 배치. 상관없는 두 그림이면 32 언저리(0.5)
+  + 0.35 · chi_square(hist)                   # ½Σ(p−q)²/(p+q), 이미 0..1 — 색이 하나도 안 겹치면 1
+  + 0.25 · min(1, sig_distance(lab) / 40)     # 2×3 칸 Lab(평균 무게 2), ΔE 40 을 끝으로
+score = round(d × 1000)                       # 0..1000 정수로 적는다
 ```
 
-`hamming` · `chi_square` · `sig_distance` 는 이미 `art-core` 에 있다(단위 검사 포함).
-같은 책의 같은 자리(폼 초상 ↔ 그 개방)는 당연히 닮으니 한 책에서는 둘까지만 싣는다.
+무게는 상수 `SIM_W_DHASH` · `SIM_W_HIST` · `SIM_W_LAB` · `SIM_LAB_SCALE`. 처음 값 그대로 실제 154장에서 견줘 보니
+가장 가까운 쌍은 같은 책의 폼 초상 ↔ 그 개방(85~150), 다른 책끼리는 220 언저리부터, 가운데값 420 — 손보지 않았다.
 
-**미리 셈한 top-k 를 따로 둔다** — 서가가 154장 × 154장을 브라우저에서 셈하지 않게, 그리고 서가가 이 색인(38 KB)을 받지 않게.
+### 4-2. 고르기
 
-- `art-index` 에 `--similar` 를 더해 `data/similar.json` 을 함께 쓴다: `{"version":1,"k":6,"files":{"<파일>":[["<닮은 파일>", 거리×1000 정수], …]}}`.
-  그림 하나에 여섯 — 154장이면 20 KB 남짓. 열쇠를 줄 세우고 한 그림 한 줄(지금 색인과 같은 꼴).
-- 다른 공방까지 넓힐 때: 각 공방이 제 `art-index.json` 을 Pages 에 올려 두고(같은 `version`), `art-index --similar --peer <주소|자리>…` 가
-  그쪽 색인까지 읽어 `["<공방>:<파일>", 거리]` 로 적는다. 그림 주소는 그 공방의 BASES 규칙으로(`lib/img.js` 처럼) 만든다.
+`nearest(items, books, k, per_book)` — 그림마다 점수 오름차순, 같으면 파일 이름 차례. 자기 자신은 없다.
 
-**고칠 파일**
+- **k = 8**, **한 책에서는 2장까지**(`per_book`) — 같은 책의 같은 자리(폼 초상 ↔ 그 개방)는 당연히 닮아 줄을 다 먹는다. 둘까지만 두면 줄에 책이 여럿 선다.
+  책은 `data/img.json` 의 `img` 맨 위 열쇠다(파일 이름은 책 열쇠에 `_` 가 있어 가르지 않는다).
+- **거의 같은 그림** — 점수가 `near_below`(50)보다 작은 쌍을 따로 `near` 에 적는다(책을 가리지 않는다). 같은 그림을 두 번 올렸는지 살피는 표 —
+  지우지 않고 사람이 본다. 화소를 조금 흔든 사본은 50 아래(단위 검사), 실제 그림의 가장 가까운 쌍은 85 — 2026-10-21 에는 하나도 없다.
 
-| 파일 | 무엇 |
+### 4-3. 꼴
+
+```json
+{
+  "count": 154,
+  "files": {
+    "alice_begin_literary_fantasy_f.webp": [["alice_begin_open_literary_fantasy_f.webp",164],["alice_middle_literary_fantasy_f.webp",195], …]
+  },
+  "k": 8, "near": [], "near_below": 50, "note": "…", "per_book": 2, "score": "round(1000 * (0.40*…))", "version": 1
+}
+```
+
+- 열쇠는 줄 세우고 그림 하나가 한 줄(색인과 같은 꼴) — 그림을 더하면 그 줄과 그 그림이 새로 실린 줄만 바뀐다. 154장 × 8 = 약 73 KB(gzip 7 KB).
+- 서가는 이 파일만 받는다(색인 38 KB 는 안 받고, 154 × 154 를 브라우저에서 셈하지도 않는다). **상세를 처음 열 때 한 번** — 목록에서는 안 받는다.
+  못 받았거나 `version` 이 다르면 줄째 안 그린다.
+
+### 4-4. 화면
+
+| 자리 | 무엇 |
 |---|---|
-| `rust/art-core/src/lib.rs` | `similarity(a, b) -> f32`(위 무게) · top-k 고르기(같은 책 둘까지) + 단위 검사 |
-| `rust/art-index/src/main.rs` | `--similar` · `--peer`, `data/similar.json` 쓰기, `--check` 가 둘 다 본다 |
-| `data/similar.json` | 새 파일 |
-| `dex.html` | 상세 `Detail` 의 `.artwork-panel` 아래 "닮은 그림" 줄 — `similar.json` 을 처음 열 때 한 번만 받는다, 없거나 못 받으면 줄 자체를 안 그린다 |
-| `lib/words.js` | `dex.similar` · `dex.similar.note` · `dex.similar.other`(다른 공방) |
-| `lib/gallery.css` · `lib/landscape.css` | 줄 모양(가로 띠, 44px), 휴대폰 가로에서는 글 쪽 단에 |
-| `tests/mosaic.cjs`(또는 새 `tests/similar.cjs`) | `similar.json` 꼴, 자기 자신 없음, 거리 오름차순, 등록된 파일만 |
-| `tests/dex-screen.cjs` | 닮은 그림 줄이 뜨고 누르면 그 책·그 그림으로 |
-| `docs/ART_INDEX.md` · `AGENTS.md` | 이 절을 "한 것" 으로 |
+| `dex.html` | `Similar` — `.detail-spread` 안 `.artwork-panel` 다음. 보는 그림(폼·개방·연출·일상·특별)이 바뀌면 줄도 바뀐다. 다른 책 그림이면 그 책 상세를 그 그림·그 화풍으로(주소 `?book=`, 최근 추가 줄과 같은 길), 같은 책이면 그 자리에서 |
+| `lib/gallery.css` | 줄 모양 — 그 안에서만 옆으로 구르는 띠, 칸 72px(휴대폰 64px)·44px 넘게, focus-visible. 펼친 쪽(720px~)은 그림 쪽 단 밑(글 단이 두 줄을 차지한다) |
+| `lib/landscape.css` | 휴대폰 가로 — 그림 단은 그림 한 장 폭이라, 글 쪽 단 밑(나란히 보기 다음) |
+| `lib/words.js` | `dex.similar.title` · `dex.similar.note` · `dex.similar.label` |
+| `tests/similar.cjs` | 자료 — 색인·등록부에 다 있다, k ≤ 8, 자기 자신 없음, 오름차순, 한 책 per_book 장까지, 서로의 점수가 같다, near 꼴 |
+| `tests/similar-screen.cjs` | 화면 — 상세를 열 때 한 번 받기, 그림 따라 바뀜, 누르면 그 책 그 그림, 자료 없음이면 숨김, 다섯 크기 |
 
-그림을 더하면 색인과 함께 `similar.json` 도 다시 셈한다 — 모자이크처럼 늦어도 화면은 돈다(없는 그림은 줄에서 빠진다).
+다른 공방까지 넓힐 때(아직 안 했다): 각 공방이 제 `art-index.json` 을 Pages 에 올려 두고(같은 `version`), `art-index --similar --peer <주소|자리>…` 가
+그쪽 색인까지 읽어 `["<공방>:<파일>", 점수]` 로 적는다. 그림 주소는 그 공방의 BASES 규칙으로(`lib/img.js` 처럼). 낱말은 `dex.similar.other`.

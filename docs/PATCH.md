@@ -17,6 +17,18 @@
 - tests/run-screen.cjs — 고르기 셋·지도(길 닿는 방만 = node 의 wasm 과 같은 지도)·1층 끝까지(독서대·장면·싸움·전리품)·계단·새로고침·나오기·끝 화면(오늘 기록·전적 한 번만)·오늘의 서고·네 크기 · tests/header-layout.cjs · theme-screen.cjs — 화면 다섯
 - AGENTS.md · README.md · rust/README.md · docs/GAME_CONCEPT.md — 탐험 화면·검사·shelf-gen 짓는 법·11절 7번
 
+## 2026-10-21 · claude · 닮은 그림 — 서가 상세의 큰 그림 아래 한 줄, 색인에서 미리 셈한 top-8
+
+- rust/art-core/src/lib.rs — `similarity`(0.40·dHash 해밍/64 + 0.35·색 막대 카이제곱 + 0.25·min(1, Lab 서명 거리/40), 0..1, 대칭) · `similarity_score`(×1000 정수) · `nearest`(점수 오름차순·같으면 번호 차례·자기 자신 없음·한 책 per_group 장까지) · `near_duplicates`. 단위 검사: 같은 그림 0, 흔든 사본 < 0.05, 뒤집은 그림·빨강↔파랑 > 0.5, 대칭, 책 묶기·비김·거의 같은 쌍
+- rust/art-index/src/main.rs — `--similar`(`--index`·`--check` 함께): 색인 + 등록부만 읽어 data/art-similar.json 을 쓴다(그림마다 8장, 한 책 2장, near_below 50). 색인을 다시 만들면 다음 단계를 알린다. base64 되읽기·문서 만들기 단위 검사
+- data/art-similar.json — 새 파일. 154장 × 8, 73 KB(gzip 7 KB), 한 그림 한 줄. 거의 같은 쌍 없음(가장 가까운 쌍은 같은 책의 폼 ↔ 개방 85). data/art-index.json 은 다시 셈해도 그대로
+- lib/mosaic.wasm · mosaic.html — art-core 소스 셈이 바뀌어 다시 지음(맞추기는 그대로), `mosaic.wasm?v=2`
+- dex.html — `Similar`: 상세를 처음 열 때 한 번만 받고, 지금 보는 그림의 줄(그림이 바뀌면 같이), 등록부에 없는 그림은 뺀다. 다른 책이면 그 책 상세를 그 그림·그 화풍으로(?book=), 같은 책이면 그 자리에서. 자료가 없거나 틀리면 줄째 안 그린다
+- lib/gallery.css · lib/landscape.css — 줄 모양(그 안에서만 옆으로, 칸 72/64px·44px 넘게, focus-visible). 펼친 쪽은 그림 단 밑, 휴대폰 가로는 글 단 밑. `gallery.css?v=5` · `landscape.css?v=4`
+- lib/words.js — dex.similar.title · note · label, 낱말 표 `?v=11`(화면 다섯)
+- tests/similar.cjs · tests/similar-screen.cjs — 새 검사: 자료가 색인·등록부와 맞나(k ≤ 8·자기 자신 없음·오름차순·한 책 둘까지·서로 같은 점수) / 화면(열 때 받기·그림 따라 바뀜·누르면 그 책 그 그림·같은 책·Enter·자료 없음이면 숨김·다섯 크기)
+- docs/ART_INDEX.md · rust/README.md · AGENTS.md — 닮은 그림을 "한 것" 으로: 두 파일 다시 만드는 차례(그림 등록 뒤 색인 → --similar), 무게·고르기·꼴, 검사 목록
+
 ## 2026-10-21 · claude · 서고 탐험 — 지도 생성기(Rust → wasm)·탐험 엔진·시뮬레이터, 결투 판 조각 나누기 (화면은 다음 칸)
 
 - rust/shelf-gen — 새 상자. 씨앗 하나로 아홉 층의 평면도(열 4~5, 들어온 자리·가운데 방 2~3·계단/보스, 이웃 열 사이 단조 길, 방 종류 meet·read·rest·scene, 계단 앞 열은 모두 층지기, 4층부터 싸움 하나 더, 짝수 층 쉼, 독서대 하나 이상, 층 안 책 겹침 없음·윗층 책·보스 책 피함, 상대 덱 여섯·전리품 둘·독서대 다섯). 손으로 쓴 JSON, splitmix64, build.rs 소스 셈. cargo test 가 3000 씨앗을 돈다

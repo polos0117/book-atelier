@@ -161,15 +161,15 @@ body.zoomed {overflow:hidden}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=10"></script>
+<script src="lib/words.js?v=11"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
 <script src="lib/book-frame.js?v=1"></script>
 <script src="lib/scene-motion.js?v=1"></script>
 <link rel="stylesheet" href="lib/scene-motion.css?v=1">
-<link rel="stylesheet" href="lib/gallery.css?v=4">
-<link rel="stylesheet" href="lib/landscape.css?v=3">
+<link rel="stylesheet" href="lib/gallery.css?v=5">
+<link rel="stylesheet" href="lib/landscape.css?v=4">
 <link rel="stylesheet" href="lib/room.css?v=3">
 </head>
 <body class="dex-page">
@@ -333,7 +333,42 @@ function Design({ card }) {
   </details>`;
 }
 
-function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose }) {
+/* 닮은 그림 — data/art-similar.json(rust/art-index --similar 가 색인에서 셈한다, docs/ART_INDEX.md). 상세를 처음 열 때 한 번만 받는다.
+   못 받았거나 꼴이 틀리면 null — 줄째 안 그린다 */
+let similarOnce = null;
+function loadSimilar() {
+  return similarOnce || (similarOnce = fetch('data/art-similar.json', { cache: 'no-cache' })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => d && d.version === 1 && d.files && typeof d.files === 'object' ? d : null)
+    .catch(() => null));
+}
+
+/* 큰 그림 아래 한 줄 — 지금 보는 그림과 색·구도가 닮은 그림(점수 차례, 한 책에서 둘까지). 그림이 바뀌면 줄도 바뀐다.
+   누르면 그 책 그 그림으로(주소는 ?book=). 지금 등록부에 없는 그림은 뺀다 — 하나도 없으면 줄째 숨는다.
+   이 줄 안에서만 옆으로 구른다(세로는 .collection-scroll 한 곳) */
+function Similar({ file, find, defs, onOpen }) {
+  const [data, setData] = useState(null);
+  useEffect(() => { let alive = true; loadSimilar().then(d => { if (alive) setData(d); }); return () => { alive = false; }; }, []);
+  const rows = ((data && file && data.files[file]) || []).map(([f]) => find(f)).filter(Boolean);
+  const strip = useRef(null);
+  useLayoutEffect(() => { if (strip.current) strip.current.scrollLeft = 0; }, [file]);
+  if (!rows.length) return null;
+  return html`<section class="similar" aria-labelledby="similar-title" data-for=${file}>
+    <h3 class="similar-head" id="similar-title">${W('dex.similar.title')}<span>${W('dex.similar.note', { n: rows.length })}</span></h3>
+    <div class="similar-strip" role="group" aria-labelledby="similar-title" ref=${strip}>
+      ${rows.map(r => {
+        const label = W('dex.similar.label', { book: r.card.name, cut: shotLabel(r, defs) });
+        return html`<button type="button" key=${r.file} class="similar-cell" data-card=${r.card.key} data-file=${r.file}
+          aria-label=${label} title=${label} onClick=${() => onOpen(r)}>
+          <span class="face"><${Pic} file=${r.file} alt="" /></span>
+          <span class="similar-book" aria-hidden="true">${r.card.name}</span>
+        </button>`;
+      })}
+    </div>
+  </section>`;
+}
+
+function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, find, onSimilar }) {
   const want = wanted(defs);
   const keys = IMG.styleKeys(entry || {});
   const [wantStyle, setStyle] = useState(selection?.style || '');
@@ -362,6 +397,13 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
   const shown = shownFile ? (showFocus ? focus : { file: shownFile, cut: portraitCut(form), form }) : null;
   const at = shots.findIndex(x => x.file === shownFile);
   const apply = n => { if (n.cut === 'portrait' || n.cut === 'open') { setForm(n.form); setFocus(null); } else { if (n.form) setForm(n.form); setFocus(n); } };
+  /* 닮은 그림을 누르면 — 같은 책이면 이 자리에서 그 화풍·그 그림으로, 다른 책이면 그 책 상세로(App) */
+  const openSimilar = r => {
+    if (r.card.key !== card.key) return onSimilar(r);
+    setStyle(r.style); apply(r);
+    const big = document.querySelector('.big');
+    if (big) big.scrollIntoView({ block: 'nearest' });
+  };
   const prevCard = nav && nav.prev, nextCard = nav && nav.next;
   const prevShot = at < 0 ? shots.length > 0 : at > 0, nextShot = at < 0 ? shots.length > 0 : at < shots.length - 1;
   const canPrev = prevShot || !!prevCard, canNext = nextShot || !!nextCard;
@@ -440,6 +482,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose })
         onClick=${() => onGo(nextCard, 'first', '.card-nav')}><span>${nextCard ? nextCard.name : W('dex.card.next')}</span><b>›</b></button>
     </div>`}
       </div>
+      ${shown && find && html`<${Similar} file=${shown.file} find=${find} defs=${defs} onOpen=${openSimilar} />`}
       <div class="story-panel">
         <p class="editorial-kicker">${card.genre} · ${card.era}</p>
     <p class="sec">${W('book.persona')}</p>
@@ -748,6 +791,13 @@ function App() {
     addEventListener('pagehide', leave); document.addEventListener('visibilitychange', hide);
     return () => { removeEventListener('pagehide', leave); document.removeEventListener('visibilitychange', hide); };
   }, [st.added]);
+  /* 파일 → 그 책·그 그림 자리 — 닮은 그림 줄이 누른 그림을 상세로 열 때. 등록부에 없는 파일은 없다(null) */
+  const where = useMemo(() => {
+    if (!st.cards) return null;
+    const m = new Map();
+    for (const c of st.cards) for (const s of FILTER.shots(st.img[c.key], st.defs)) if (!m.has(s.file)) m.set(s.file, { card: c, ...s });
+    return f => m.get(f) || null;
+  }, [st]);
   const listTop = useRef(0), from = useRef(null), restore = useRef(null), openNow = useRef(null);
   openNow.current = open;
   /* 휴대폰 뒤로 가기 — 상세를 열 때 기록을 한 칸 쌓고(주소는 ?book=<열쇠>), 뒤로 가기(popstate)면 그 칸을 내리며 목록으로.
@@ -808,7 +858,7 @@ function App() {
       setOpen({ card: c, style: open.style, at, zoom, keep: el ? { sel, y: el.getBoundingClientRect().top } : null }); };
     return html`<${Detail} key=${card.key} card=${card} entry=${st.img[card.key] || null}
       selection=${open} nav=${nav} onGo=${go} defs=${st.defs} styleName=${st.styleName}
-      onClose=${close} />`;
+      find=${where} onSimilar=${shot => setOpen({ ...shot, via: 'similar' })} onClose=${close} />`;
   }
   return html`<${List} st=${st} filters=${filters} onFilter=${setFilters} onOpen=${openShot} restore=${restore}
     compact=${compact} onCompact=${() => setCompact(v => !v)} />`;

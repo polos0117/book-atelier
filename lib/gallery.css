@@ -212,3 +212,28 @@ body.dex-page,body.lab-page {background-image:none}
  .recent-strip {margin:2px -4px 0;gap:6px}
  .recent-cell {flex-basis:52px;width:52px}
 }
+
+/* 닮은 그림 — 상세의 큰 그림 아래 한 줄(펼친 쪽에서는 그림 쪽 단 밑). 이 줄 안에서만 옆으로 구르고, 칸은 44px 넘게.
+   칸마다 썸네일과 책 이름 — 같은 책이 둘까지라 이름이 다르게 늘어선다 */
+.similar {min-width:0;padding:0 20px}
+.similar-head {display:flex;align-items:baseline;gap:8px;margin:0 0 6px;font:600 14px/1.5 var(--gallery-serif);letter-spacing:-.01em;color:var(--text)}
+.similar-head span {font:400 11px/1.5 inherit;font-family:inherit;color:var(--muted);letter-spacing:0}
+.similar-strip {display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:4px 4px 8px;margin:0 -4px;scrollbar-width:thin;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.similar-cell {flex:0 0 72px;width:72px;min-height:44px;padding:0;border:0;border-radius:3px;background:transparent;color:var(--muted);font:inherit;text-align:left;cursor:pointer;scroll-snap-align:start}
+.similar-cell .face {aspect-ratio:2/3;border-radius:3px;background:color-mix(in srgb,var(--card2) 45%,var(--bg))}
+.similar-cell .face img {object-fit:cover;object-position:center top}
+.similar-book {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:5px;font-size:10px;line-height:1.4;word-break:keep-all;overflow-wrap:anywhere}
+.similar-cell:hover .face {outline:1px solid var(--accent);outline-offset:2px}
+.similar-cell:hover .similar-book {color:var(--text)}
+.similar-cell:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
+@media(min-width:720px) {
+ .detail-spread {row-gap:20px}
+ .detail-spread > .artwork-panel {grid-column:1;grid-row:1}
+ .detail-spread > .similar {grid-column:1;grid-row:2}
+ .detail-spread > .story-panel {grid-column:2;grid-row:1 / span 2}
+}
+@media(max-width:1000px) {.similar {padding-inline:12px}}
+@media(max-width:719px) {
+ .detail-spread > .similar {margin-top:-12px}
+ .similar-cell {flex-basis:64px;width:64px}
+}

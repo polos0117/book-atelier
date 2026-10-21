@@ -54,6 +54,12 @@
   .story-panel .fstrip {max-width:300px}
   .reading-notes {grid-template-columns:1fr 1fr;gap:20px;padding:16px 0}
   .gal {grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+  /* 닮은 그림 — 그림 쪽 단은 그림 한 장 폭이라 좁다. 글 쪽 단 밑(나란히 보기 다음)에 둔다 */
+  .detail-spread > .artwork-panel {grid-column:1;grid-row:1 / span 2}
+  .detail-spread > .story-panel {grid-column:2;grid-row:1}
+  .detail-spread > .similar {grid-column:2;grid-row:2;padding-inline:0;margin-top:0}
+  .similar-head {font-size:13px}
+  .similar-cell {flex-basis:56px;width:56px}
 
   /* ── 프롬프트: 책 고르기부터 설정까지 왼쪽 단, 결과는 오른쪽 단 맨 위부터 붙여 둔다 ──
      책 고르기(studio-source)와 결과(편집기 안)가 서로 다른 상자라, 편집기 상자를 풀어(display:contents) 한 격자에 놓는다 */

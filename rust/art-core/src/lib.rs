@@ -1,7 +1,8 @@
-//! 그림 특징 — 모자이크 조각 맞추기와 (나중의) 닮은 그림 찾기가 같이 쓴다.
+//! 그림 특징 — 모자이크 조각 맞추기와 닮은 그림 찾기가 같이 쓴다.
 //!
 //! * 모자이크 서명: 2×3 칸(조각의 2:3 비율과 같다)마다 CIE Lab 평균 + 그림 전체 평균 = Lab 일곱 개(21 수).
-//! * 닮은 그림 준비: dHash 64비트, Lab 4×4×4 거친 색 막대(합 ≈ 255 인 u8 64개).
+//! * 닮은 그림: dHash 64비트, Lab 4×4×4 거친 색 막대(합 ≈ 255 인 u8 64개), 셋을 무게 지어 더한 거리(`similarity`)와
+//!   책마다 장 수를 묶은 top-k(`nearest`), 거의 같은 쌍(`near_duplicates`).
 //! * 맞추기: 칸마다 Lab 거리가 가장 가까운 조각 — 다시 쓸수록 벌점, 한 조각의 최대 횟수, 같은 조각이
 //!   이웃(체비쇼프 거리 `spacing` 안)에 다시 앉지 않게. 칸을 도는 차례는 씨앗으로 섞는다(같은 씨앗 = 같은 결과).
 //!
@@ -272,6 +273,80 @@ pub fn chi_square(a: &[u8], b: &[u8]) -> f32 {
         }
     }
     s * 0.5
+}
+
+/// 닮은 그림 거리의 무게(docs/ART_INDEX.md 4절). 세 항은 저마다 0..1 로 맞춘 뒤 더한다 — 합도 0..1.
+/// * dHash 해밍 ÷ 64 — 구도·밝기 배치. 아무 상관 없는 두 그림이면 32 언저리(0.5)
+/// * 색 막대 카이제곱 — 이미 0..1. 색이 하나도 안 겹치면 1
+/// * 2×3 칸 Lab 서명 거리 ÷ 40(ΔE 40 을 끝으로 자른다) — 칸마다의 색 배치
+pub const SIM_W_DHASH: f32 = 0.40;
+pub const SIM_W_HIST: f32 = 0.35;
+pub const SIM_W_LAB: f32 = 0.25;
+pub const SIM_LAB_SCALE: f32 = 40.0;
+
+/// 두 그림의 닮음 거리 0..1 — 0 이면 같은 그림, 작을수록 닮았다. 차례를 바꿔도 같다.
+pub fn similarity(a: &Features, b: &Features) -> f32 {
+    let h = hamming(a.dhash, b.dhash) as f32 / 64.0;
+    let c = chi_square(&a.hist, &b.hist).clamp(0.0, 1.0);
+    let s = (sig_distance(&a.signature, &b.signature) / SIM_LAB_SCALE).min(1.0);
+    SIM_W_DHASH * h + SIM_W_HIST * c + SIM_W_LAB * s
+}
+
+/// 적는 꼴 — 거리 × 1000 을 반올림한 정수(0..1000).
+pub fn similarity_score(d: f32) -> u32 {
+    (d.clamp(0.0, 1.0) * 1000.0).round() as u32
+}
+
+/// 그림마다 가장 닮은 다른 그림 k 장 — (번호, 점수) 를 점수 오름차순으로. 점수가 같으면 번호가 작은 쪽
+/// (부르는 쪽이 파일 이름 차례로 넘기면 이름 차례). 자기 자신은 없다.
+/// `groups` 는 그림마다 책 번호 — 한 책에서는 `per_group` 장까지만 싣는다(0 이면 끝이 없다).
+pub fn nearest(items: &[Features], groups: &[u32], k: usize, per_group: usize) -> Vec<Vec<(usize, u32)>> {
+    let n = items.len();
+    let mut score = vec![0u32; n * n];
+    for i in 0..n {
+        for j in i + 1..n {
+            let s = similarity_score(similarity(&items[i], &items[j]));
+            score[i * n + j] = s;
+            score[j * n + i] = s;
+        }
+    }
+    (0..n)
+        .map(|i| {
+            let mut order: Vec<usize> = (0..n).filter(|&j| j != i).collect();
+            order.sort_by_key(|&j| (score[i * n + j], j));
+            let mut used = std::collections::HashMap::<u32, usize>::new();
+            let mut out = Vec::with_capacity(k);
+            for j in order {
+                if out.len() >= k {
+                    break;
+                }
+                let g = groups.get(j).copied().unwrap_or(u32::MAX);
+                let c = used.entry(g).or_default();
+                if per_group > 0 && *c >= per_group {
+                    continue;
+                }
+                *c += 1;
+                out.push((j, score[i * n + j]));
+            }
+            out
+        })
+        .collect()
+}
+
+/// 거의 같은 그림 쌍 — 점수가 `below` 보다 작은 (i, j, 점수), i < j. 점수 → i → j 차례.
+/// 같은 그림을 두 번 올렸는지 살피는 데 쓴다(책을 가리지 않는다).
+pub fn near_duplicates(items: &[Features], below: u32) -> Vec<(usize, usize, u32)> {
+    let mut out = Vec::new();
+    for i in 0..items.len() {
+        for j in i + 1..items.len() {
+            let s = similarity_score(similarity(&items[i], &items[j]));
+            if s < below {
+                out.push((i, j, s));
+            }
+        }
+    }
+    out.sort_by_key(|&(i, j, s)| (s, i, j));
+    out
 }
 
 /// 과녁 그림 → 모자이크 칸 cols × rows 의 서명. 칸 하나를 다시 2×3 으로 나눈다 —
@@ -609,6 +684,93 @@ mod tests {
         let tiles = vec![sig(0.0, 0.0, 0.0), sig(100.0, 0.0, 0.0)];
         let a = assign(&t, cols, &tiles, &MatchParams { max_repeat: 0, spacing: 0, penalty: 0.0, seed: 0 });
         assert_eq!(a, vec![0, 0, 1, 1, 0, 0, 1, 1]);
+    }
+
+    /// 가로·세로로 색과 밝기가 바뀌는 그림 — 칸마다 다른 색, dHash 도 0 이 아니다.
+    fn painting(w: usize, h: usize, seed: u32) -> Vec<u8> {
+        let mut v = Vec::with_capacity(w * h * 3);
+        for y in 0..h {
+            for x in 0..w {
+                let r = ((x * 255 / w) as u32 + seed * 40) % 256;
+                let g = ((y * 255 / h) as u32 + seed * 90) % 256;
+                let b = (((x + y) * 128 / (w + h)) as u32 + seed * 20 + ((x / 7 + y / 5) % 3) as u32 * 30) % 256;
+                v.extend_from_slice(&[r as u8, g as u8, b as u8]);
+            }
+        }
+        v
+    }
+
+    fn feat(v: &[u8], w: usize, h: usize) -> Features {
+        features(&Pixels::new(v, w, h, 3).unwrap())
+    }
+
+    #[test]
+    fn similarity_identical_near_and_far() {
+        let (w, h) = (60, 90);
+        let a = painting(w, h, 1);
+        let fa = feat(&a, w, h);
+        assert_eq!(similarity(&fa, &fa), 0.0);
+        assert_eq!(similarity_score(similarity(&fa, &fa)), 0);
+        // 거의 같은 그림 — 화소마다 0..2 흔들기(다시 눌러 담은 사본처럼)
+        let jitter: Vec<u8> = a.iter().enumerate().map(|(i, &c)| c.saturating_add((i % 3) as u8)).collect();
+        let near = similarity(&fa, &feat(&jitter, w, h));
+        assert!(near < 0.05, "거의 같은 그림 {near}");
+        // 아주 다른 그림 — 밝기·색·배치를 모두 뒤집는다
+        let inv: Vec<u8> = a.iter().map(|&c| 255 - c).collect();
+        let far = similarity(&fa, &feat(&inv, w, h));
+        assert!(far > 0.5, "아주 다른 그림 {far}");
+        let red = feat(&solid(w, h, (220, 30, 30)), w, h);
+        let blue = feat(&solid(w, h, (20, 40, 210)), w, h);
+        let rb = similarity(&red, &blue);
+        assert!(rb > 0.5, "빨강 ↔ 파랑 {rb}");
+        assert!(near < far && far <= 1.0);
+    }
+
+    #[test]
+    fn similarity_is_symmetric() {
+        let (w, h) = (40, 60);
+        let fs: Vec<Features> = (0..5).map(|s| feat(&painting(w, h, s), w, h)).collect();
+        for a in &fs {
+            for b in &fs {
+                assert_eq!(similarity(a, b), similarity(b, a));
+                assert!((0.0..=1.0).contains(&similarity(a, b)));
+            }
+        }
+    }
+
+    #[test]
+    fn nearest_caps_books_and_skips_self() {
+        let (w, h) = (30, 45);
+        // 책 0 에 거의 같은 그림 넷(앞 넷), 그 뒤 책 1..=4 에 한 장씩
+        let base = painting(w, h, 2);
+        let mut items: Vec<Features> = (0..4u8).map(|d| feat(&base.iter().map(|&c| c.saturating_add(d)).collect::<Vec<_>>(), w, h)).collect();
+        items.extend((3..7).map(|s| feat(&painting(w, h, s), w, h)));
+        let groups = [0, 0, 0, 0, 1, 2, 3, 4];
+        let top = nearest(&items, &groups, 4, 2);
+        assert_eq!(top.len(), items.len());
+        for (i, row) in top.iter().enumerate() {
+            assert!(row.len() <= 4);
+            assert!(row.iter().all(|&(j, _)| j != i), "자기 자신");
+            assert!(row.windows(2).all(|p| p[0].1 <= p[1].1), "오름차순");
+            let mut per = std::collections::HashMap::new();
+            for &(j, _) in row {
+                *per.entry(groups[j]).or_insert(0) += 1;
+            }
+            assert!(per.values().all(|&c| c <= 2), "한 책 둘까지 {row:?}");
+        }
+        // 그림 0 의 가장 닮은 것은 같은 책의 사본 — 그래도 둘까지만
+        assert!(groups[top[0][0].0] == 0 && groups[top[0][1].0] == 0 && groups[top[0][2].0] != 0, "{:?}", top[0]);
+        assert_eq!(top, nearest(&items, &groups, 4, 2), "같은 입력 같은 결과");
+        // 끝없음(0)이면 사본 셋이 다 든다
+        assert_eq!(nearest(&items, &groups, 3, 0)[0].iter().filter(|&&(j, _)| groups[j] == 0).count(), 3);
+        // 비기면 번호가 작은 쪽
+        let same = vec![items[4].clone(); 4];
+        assert_eq!(nearest(&same, &[0, 1, 2, 3], 3, 0)[2], vec![(0, 0), (1, 0), (3, 0)]);
+        // 거의 같은 쌍 — 사본 넷끼리 여섯 쌍, 다른 책은 안 든다
+        let dup = near_duplicates(&items, 50);
+        assert_eq!(dup.len(), 6, "{dup:?}");
+        assert!(dup.iter().all(|&(i, j, s)| i < j && s < 50 && groups[i] == 0 && groups[j] == 0), "{dup:?}");
+        assert!(dup.windows(2).all(|p| (p[0].2, p[0].0, p[0].1) <= (p[1].2, p[1].0, p[1].1)));
     }
 
     #[test]

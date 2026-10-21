@@ -156,6 +156,11 @@ const saved = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), STORE);
     const today2 = await q.evaluate(k => JSON.parse(localStorage.getItem(k)), TODAY);
     assert(today2.n === 3 && today2.daily === true, '오늘의 판을 끝내면 daily: ' + JSON.stringify(today2));
     await q.locator('#duel-deck').tap(); await q.waitForSelector('.deck-daily[data-done="true"]');
+    /* 전적 — 세 판이 통산에, 덱의 책마다 3판, 이긴 적 있는 책엔 도장 */
+    assert.match(await q.locator('.deck-rec .note').first().textContent(), new RegExp('통산 3판 ' + today2.w + '승'), '통산 전적 줄');
+    assert.match(await q.locator('.deck-cell[data-key="chunhyang"] .rec').textContent(), new RegExp('^3판 ' + today2.w + '승$'), '책마다 몇 판 몇 승');
+    assert.equal(await q.locator('.deck-cell.won').count(), today2.w > 0 ? 6 : 0, '이긴 적 있는 책에만 도장');
+    assert.match(await q.locator('.deck-rec .note').nth(1).textContent(), new RegExp('이긴 책 ' + (today2.w > 0 ? 6 : 0) + ' / ' + design.books.length), '이긴 책 수');
     assert.deepEqual(b.errors, [], '화면 오류 없음');
     assert.deepEqual(await q.evaluate(() => window.AtelierWords.missing()), [], '낱말 표에 없는 열쇠');
     await b.close();

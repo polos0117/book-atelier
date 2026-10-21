@@ -49,6 +49,12 @@ body {color:var(--text);font-size:15px}
 .cap {display:block;padding:6px 7px 7px;font-weight:700;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
 .cap i {display:block;margin-top:2px;font:400 10px ui-monospace,monospace;color:var(--muted);font-style:normal}
 .deck-act {display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 16px}
+.deck-rec {margin:4px 0 10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.deck-rec .sec {margin:0 0 2px}
+.deck-rec .note {margin:0;font-size:12px}
+.deck-cell .face {position:relative}
+.deck-cell .stamp {position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:var(--accent, #d9b45a);color:#111;font:700 12px/20px var(--sans, system-ui);text-align:center;box-shadow:0 1px 4px #0008}
+.deck-cell .rec {color:var(--accent, #d9b45a);font-style:normal}
 .deck-daily {display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
 .deck-daily .note {margin:0;flex:1 1 200px;font-size:12px}
 .deck-daily[data-done="true"] #duel-daily {opacity:.75}
@@ -202,6 +208,10 @@ const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, D
 const STORE = 'book_duel_v1', AI_DELAY = 650;
 const T = window.AtelierToday, ROOM = 'book';   /* 오늘 기록 — 공방 지도의 방 열쇠(lib/today.js) */
 const SP = window.AtelierSpeech;
+/* 전적 — 통산·연승·오늘의 판 연속은 lib/today.js 의 record(공방 지도도 읽는다), 책마다 몇 판 나가 몇 번 이겼나는 여기(book_duel_rec_v1). 첫 승이 도장 */
+const REC = 'book_duel_rec_v1';
+function readRec() { try { const j = JSON.parse(localStorage.getItem(REC)); return j && j.books ? j : { books: {} }; } catch (e) { return { books: {} }; } }
+function recordBooks(deck, won) { const j = readRec(); for (const k of deck) { const r = j.books[k] || { n: 0, w: 0 }; r.n += 1; if (won) r.w += 1; j.books[k] = r; } try { localStorage.setItem(REC, JSON.stringify(j)); } catch (e) {} }
 /* 말풍선 — 판에 들어온 책이 그 장의 말을 한다(설계표 voice: 발단·전개·결말). 판이 끝나면 이긴 쪽 첫 책이 결말의 말. 그린 뒤에 자리를 찾는다 */
 function speak(S, st) {
   const l = st.last; if (!SP || !l) return;
@@ -253,15 +263,21 @@ function ZoomBtn({ onZoom, label }) {
 /* 덱 고르기 — 설계표의 책에서 여섯 */
 function Deck({ S, deck, onChange, onStart, onDaily }) {
   const data = S.data, max = D.DECK, v = D.validateDeck(data, deck), today = T.read(ROOM);
+  const life = T.record(ROOM), rec = readRec().books, wonBooks = data.design.books.filter(b => (rec[b.key] || {}).w > 0).length;
   const toggle = key => onChange(deck.includes(key) ? deck.filter(k => k !== key) : deck.length < max ? deck.concat(key) : deck);
   return html`<section class="duel-screen" data-screen="deck">
     <p class="sec">${W('duel.deck.title')}<span>${W('duel.deck.count', { n: deck.length, max })}</span></p>
     <p class="note">${W('duel.deck.note')}</p>
+    <div class="deck-rec" data-games=${life.n}>
+      <p class="sec">${W('duel.rec.title')}</p>
+      <p class="note">${life.n ? W('duel.rec.line', { n: life.n, w: life.w, rate: Math.round(life.w / life.n * 100), streak: life.streak, best: life.best }) : W('duel.rec.none')}${life.dstreak > 0 && T.dailyAlive(ROOM) ? ' · ' + W('duel.rec.daily', { d: life.dstreak }) : ''}</p>
+      <p class="note">${W('duel.rec.books', { n: wonBooks, max: data.design.books.length })}</p>
+    </div>
     <div class="deck-grid">${data.design.books.map(b => {
-      const file = picOf(S, b.key, 0), roles = S.stages.map(s => b.forms[s].role);
-      return html`<button key=${b.key} type="button" class=${'deck-cell' + (deck.includes(b.key) ? ' in' : '')} data-key=${b.key} aria-pressed=${deck.includes(b.key)} onClick=${() => toggle(b.key)}>
-        <span class="face"><${Pic} file=${file} alt=${b.title} /></span>
-        <span class="cap">${b.title}<i>${b.genre}</i><i>${W('duel.deck.role', { a: roles[0], b: roles[1], c: roles[2] })}</i></span>
+      const file = picOf(S, b.key, 0), roles = S.stages.map(s => b.forms[s].role), r = rec[b.key] || { n: 0, w: 0 };
+      return html`<button key=${b.key} type="button" class=${'deck-cell' + (deck.includes(b.key) ? ' in' : '') + (r.w > 0 ? ' won' : '')} data-key=${b.key} aria-pressed=${deck.includes(b.key)} onClick=${() => toggle(b.key)}>
+        <span class="face"><${Pic} file=${file} alt=${b.title} />${r.w > 0 && html`<b class="stamp" aria-hidden="true">✓</b>`}</span>
+        <span class="cap">${b.title}<i>${b.genre}</i><i>${W('duel.deck.role', { a: roles[0], b: roles[1], c: roles[2] })}</i>${r.n > 0 && html`<i class="rec">${W('duel.rec.cell', { n: r.n, w: r.w })}</i>`}</span>
       </button>`; })}</div>
     <div class="deck-act">
       <button type="button" class="btn" id="duel-auto" onClick=${() => onChange(D.randomDeck(data, { rngState: (Date.now() ^ (Math.random() * 1e9)) | 0 }))}>${W('duel.deck.auto')}</button>
@@ -522,7 +538,7 @@ function App() {
   /* 절정이 터졌으면 장면을 보인다 — 내 것도 상대 것도 */
   const showScene = st => { if (st.last && st.last.kind === 'open') setScene({ key: st.last.key, form: st.last.form, who: st.last.who }); };
   /* 판이 끝나는 수에서 오늘 기록 한 칸(공방 지도가 읽는다) — st.recorded 가 두 번을 막는다 */
-  const commit = st => { if (st.phase === 'done' && !st.recorded) { st.recorded = true; T.bump(ROOM, { won: st.winner === 'me', daily: !!st.daily }); } setGame(g => save({ ...g, st })); showScene(st); speak(S, st); };
+  const commit = st => { if (st.phase === 'done' && !st.recorded) { st.recorded = true; T.bump(ROOM, { won: st.winner === 'me', daily: !!st.daily }); recordBooks(game.deck, st.winner === 'me'); } setGame(g => save({ ...g, st })); showScene(st); speak(S, st); };
   /* 상대 차례는 조금 쉬었다 둔다 — 사람이 따라 읽게. 절정 장면·판 접기 확인이 떠 있으면 닫을 때까지 기다린다 */
   useEffect(() => {
     if (scene || forfeit || !S.data || !game.st || game.st.phase !== 'play' || game.st.turn !== 'foe') return;

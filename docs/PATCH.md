@@ -24,6 +24,12 @@
 - tests/scene-motion.cjs — 새 검사: 같은 파일(판·바깥 없음)·설계표 입자 = 모듈 종류, 입자(화소 변화·숨김·화면 밖·destroy·종류마다), 켄 번스, 열리기·끊기·넘기기·사본, 스위치(저장·새로고침), 동작 줄이기, 서재·서가·크게 보기·결투, 다섯 크기 넘침·오류 없음
 - docs/SCENE_MOTION.md · AGENTS.md — API·종류·복사 규칙, 공방마다 자료를 종류로 잇는 법(pkm 타입·myth 원소·건담), 검사 목록
 
+## 2026-10-21 · claude · 결투 전적 — 통산·연승·오늘의 판 연속, 책마다 판·승과 첫 승 도장
+- lib/today.js — v2(다섯 저장소 공통): bump 가 atelier_record_v1:book 에 통산 {n, w, streak, best, days, dstreak, dbest} 도 같이 쌓는다. record()·dailyAlive()
+- duel.html — 덱 화면 위에 전적 칸(통산 n판 w승·승률·연승(최고)·오늘의 판 연속 일수, 이긴 책 n/20), 책 칸마다 '{n}판 {w}승' 과 첫 승 도장(✓). 판이 끝나면 덱의 여섯 권에 판·승을 더한다(book_duel_rec_v1)
+- lib/words.js — duel.rec.title · none · line · daily · books · cell
+- tests/duel-screen.cjs — 세 판 뒤 통산 줄·책 칸의 3판·도장 수·이긴 책 수
+
 ## 2026-10-21 · claude · 말풍선 — 판에 들어온 책이 그 장의 말을 한다
 - data/book-design.json — 스무 권에 voice(발단·전개·결말 한 줄씩). 명대사 인용이 아니라 설계표의 인물로 새로 쓴 말(저작권 문제 없게). 머리말에 뜻
 - tools/book-design.py · tests/book-design.py — voice 가 있으면 셋 다 있고 70자까지(없는 책은 그냥 통과)

@@ -250,6 +250,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "shelf-gen"
+version = "0.1.0"
+
+[[package]]
 name = "simd-adler32"
 version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -1,0 +1,159 @@
+/* 결투 판 — duel.html 과 서고 탐험(run.html)이 같이 쓴다. 자리·손패·막대·기록·크게 보기·절정 장면·가로(펼친 책)·세로 두 배치(docs/DUEL_DESIGN.md 3-8절) */
+* {box-sizing:border-box}
+html,body {margin:0;padding:0}
+body {color:var(--text);font-size:15px}
+.duel-screen {display:block;min-height:120px}
+.sec {margin:14px 0 6px;font:700 11px/1.6 ui-monospace,monospace;letter-spacing:.1em;color:var(--accent);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sec span {color:var(--muted);font-weight:400;letter-spacing:0}
+.note {margin:6px 0 10px;color:var(--muted);font-size:12px;line-height:1.6;word-break:keep-all}
+/* 껍데기(.prompt-page button)가 단추 높이를 40 으로 두므로 여기선 더 센 선택자로 44 — 누르는 자리 */
+.duel-page .btn {min-height:44px;padding:8px 14px;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.duel-page .btn.primary {background:var(--accent);color:var(--on-accent,#fff);border-color:var(--accent);min-height:46px;font-size:14px}
+.duel-page .btn[aria-pressed="true"] {border-color:var(--gold);color:var(--text);box-shadow:inset 0 -2px var(--gold)}
+.duel-page .btn:disabled {opacity:.45;cursor:default}
+.duel-page .deck-cell,.duel-page .pick {padding:0}
+/* 덱 고르기 — 설계표의 책 */
+.deck-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 12px}
+@media (min-width:600px) {.deck-grid {grid-template-columns:repeat(5,minmax(0,1fr))}}
+.deck-cell {display:flex;flex-direction:column;min-height:44px;padding:0;text-align:left;color:inherit;font:inherit;background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden;cursor:pointer}
+.deck-cell.in {outline:3px solid var(--accent);outline-offset:-3px}
+.face {display:block;position:relative;width:100%;aspect-ratio:2/3;background:var(--card2);overflow:hidden}
+.face img {display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
+.ph {display:flex;align-items:center;justify-content:center;height:100%;padding:6px;color:var(--muted);font:700 11px/1.4 var(--gallery-serif);text-align:center;word-break:keep-all}
+.cap {display:block;padding:6px 7px 7px;font-weight:700;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.cap i {display:block;margin-top:2px;font:400 10px ui-monospace,monospace;color:var(--muted);font-style:normal}
+.deck-act {display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 16px}
+.deck-rec {margin:4px 0 10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.deck-rec .sec {margin:0 0 2px}
+.deck-rec .note {margin:0;font-size:12px}
+.deck-cell .face {position:relative}
+.deck-cell .stamp {position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:var(--accent, #d9b45a);color:#111;font:700 12px/20px var(--sans, system-ui);text-align:center;box-shadow:0 1px 4px #0008}
+.deck-cell .rec {color:var(--accent, #d9b45a);font-style:normal}
+.deck-daily {display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.deck-daily .note {margin:0;flex:1 1 200px;font-size:12px}
+.deck-daily[data-done="true"] #duel-daily {opacity:.75}
+.duel-result h3 .daily {display:inline-block;margin-left:8px;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;background:var(--accent, #d9b45a);color:#111;vertical-align:middle}
+.deck-act .n {margin-left:auto;font:700 12px ui-monospace,monospace;color:var(--accent)}
+/* ── 판 — 그리드. 세로가 기본: 위 상대 · 아래 나 · 손패 맨 아래 ── */
+.duel-board {display:grid;gap:6px;grid-template-columns:minmax(0,1fr);grid-template-areas:"bar" "hint" "foe" "me" "log" "extra" "hand"}
+.duel-bar {grid-area:bar;position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:10px;background:var(--bg);font:700 12px ui-monospace,monospace;color:var(--muted)}
+.duel-bar .stages {display:flex;gap:4px}
+.duel-bar .stages b {padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-weight:700;font-size:11px}
+.duel-bar .stages b.on {background:var(--accent-soft);color:var(--text);border-color:var(--accent)}
+.duel-turn {margin-left:auto;color:var(--text)} .duel-turn[data-turn="me"] {color:var(--gold)} .duel-turn[data-turn="foe"] {color:var(--signal)}
+.duel-score {flex-basis:100%;display:flex;gap:12px;align-items:center;font-size:12px;flex-wrap:wrap}
+.duel-score b {color:var(--text);font-size:15px} .duel-score b[data-side="foe"] {color:var(--signal)}
+.duel-score .won {display:inline-flex;gap:3px;vertical-align:middle;margin-left:4px} .duel-score .won i {width:8px;height:8px;border-radius:50%;border:1px solid var(--line);display:inline-block} .duel-score .won i.on {background:var(--gold);border-color:var(--gold)}
+.duel-hint-area {grid-area:hint;min-height:0}
+.duel-mode {position:sticky;top:0;z-index:7;display:flex;align-items:center;gap:8px;margin:0;padding:6px 10px;border:1px solid var(--accent);border-radius:10px;background:var(--bg);font:700 12px ui-monospace,monospace;color:var(--text);word-break:keep-all}
+.duel-mode .btn {margin-left:auto;flex:none}
+.duel-hint {margin:0;color:var(--muted);font-size:12px;line-height:1.5;word-break:keep-all;min-height:18px}
+.duel-row {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0;align-content:start}
+.duel-row[data-side="foe"] {grid-area:foe} .duel-row[data-side="me"] {grid-area:me}
+.duel-row .who {display:none;grid-column:1/-1;font:700 10px ui-monospace,monospace;letter-spacing:.1em;color:var(--accent)}
+.duel-slot {position:relative;display:block;min-height:118px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.duel-slot .pick {display:block;width:100%;height:100%;min-height:118px;padding:0;text-align:left;color:inherit;font:inherit;background:transparent;border:0;border-radius:0;cursor:pointer}
+.duel-slot.empty .pick:disabled {cursor:default;opacity:1}
+.duel-slot .face {max-height:120px;aspect-ratio:3/4}
+.duel-slot.sel {outline:3px solid var(--accent);outline-offset:-3px}
+.duel-slot.duel-target {outline:3px dashed var(--gold);outline-offset:-3px}
+.duel-slot.duel-target[data-kind="attack"],.duel-slot.duel-target[data-kind="rule"] {outline-style:solid}
+.duel-slot.empty .face {display:flex;align-items:center;justify-content:center;color:var(--muted);font:11px ui-monospace,monospace;background:linear-gradient(160deg,var(--card2),var(--card))}
+.duel-slot.off {opacity:.75}
+.duel-row[data-side="foe"] .duel-slot {border-color:color-mix(in srgb,var(--signal) 40%,var(--line))}
+.duel-slot .no {position:absolute;left:5px;top:5px;z-index:1;width:18px;height:18px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--muted);font:700 10px/16px ui-monospace,monospace;text-align:center;font-style:normal;display:none}
+.pw {position:absolute;left:6px;bottom:6px;min-width:26px;padding:2px 6px;border-radius:7px;text-align:center;font:800 13px ui-monospace,monospace;background:#000a;color:#fff}
+.tok {position:absolute;right:6px;bottom:6px;min-width:22px;padding:2px 5px;border-radius:7px;text-align:center;font:800 11px ui-monospace,monospace;background:var(--gold);color:#221a06}
+.flags {position:absolute;left:4px;top:4px;right:46px;display:flex;flex-wrap:wrap;gap:3px}
+.flags i {padding:1px 5px;border-radius:999px;background:#000a;color:#fff;font:700 9px ui-monospace,monospace;font-style:normal}
+.unit-cap {display:block;padding:4px 6px 5px;font-size:11px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.unit-cap i {display:block;font:400 10px ui-monospace,monospace;color:var(--muted);font-style:normal}
+/* 크게 보기 단추 — 자리·손패 오른쪽 위. 누르는 자리는 44, 보이는 동그라미는 작게 */
+.duel-page .zoom {position:absolute;right:0;top:0;z-index:2;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:0;background:transparent;color:#fff;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:flex-start;justify-content:flex-end}
+.duel-page .zoom span {display:inline-grid;place-items:center;width:24px;height:24px;margin:4px;border-radius:50%;background:#000a;border:1px solid #ffffff40}
+.duel-log {grid-area:log;margin:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--muted);font-size:12px;line-height:1.6;max-height:5.2em;overflow:auto;word-break:keep-all}
+.duel-log b {color:var(--text);font-weight:600}
+.duel-extra {grid-area:extra;display:grid;gap:8px;min-height:0}
+.duel-extra:empty {display:none}
+/* 손패 — 세로에선 바닥에 붙는 칸 */
+.duel-dock {grid-area:hand;position:sticky;bottom:0;z-index:6;margin:2px 0 0;padding:2px 10px calc(6px + env(safe-area-inset-bottom));background:var(--bg);border:1px solid var(--line);border-bottom:0;border-top:2px solid var(--accent);border-radius:12px 12px 0 0;box-shadow:0 -10px 24px #0007}
+.duel-dock .sec {margin:4px 0 2px;min-height:46px}
+.duel-dock .acts {display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.duel-hand {display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scroll-snap-type:x proximity;min-height:44px}
+.duel-hand .card {position:relative;flex:none;width:84px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;scroll-snap-align:start}
+.duel-hand .card .pick {display:flex;flex-direction:column;width:100%;height:100%;min-height:44px;padding:0;text-align:left;color:inherit;font:inherit;background:transparent;border:0;border-radius:0;cursor:pointer}
+.duel-hand .card.sel {outline:3px solid var(--accent);outline-offset:-3px}
+.duel-hand .card .face {aspect-ratio:3/4}
+.duel-hand .card .cap {padding:4px 5px 5px;font-size:10px}
+.duel-hand .card .cap i {font-size:9px}
+.duel-hand .card.seen {border-color:var(--gold)}
+.duel-hand .empty {color:var(--muted);font-size:12px;padding:12px 4px}
+/* 절정 — 명장면이 판 전체에 · 크게 보기 */
+.duel-scene,.duel-zoom {position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;background:#0b0d12e6;color:#fff;animation:scene-in .4s ease-out}
+@keyframes scene-in {from {opacity:0} to {opacity:1}}
+@media (prefers-reduced-motion:reduce) {.duel-scene,.duel-zoom {animation:none}}
+.duel-scene .pic,.duel-zoom .pic {flex:none;width:min(80vw,calc(62dvh * 2 / 3));aspect-ratio:2/3;border:1px solid var(--gold);border-radius:12px;overflow:hidden;background:#000}
+.duel-scene .pic {position:relative;box-shadow:0 0 60px var(--gold)}
+.duel-scene .pic img,.duel-zoom .pic img {display:block;width:100%;height:100%;object-fit:cover}
+.duel-scene .pic .ph,.duel-zoom .pic .ph {color:#fff;font-size:16px}
+.duel-scene .text,.duel-zoom .text {display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;max-width:520px}
+.duel-scene h3,.duel-zoom h3 {margin:0;font:700 18px/1.3 var(--gallery-serif);text-align:center}
+.duel-zoom h3 small {display:block;margin-top:4px;font:400 12px ui-monospace,monospace;color:#e8e0d0}
+.duel-scene p,.duel-zoom p {margin:0;text-align:center;font-size:13px;line-height:1.6;color:#e8e0d0;word-break:keep-all}
+.duel-zoom p.rule {color:#fff}
+.duel-page .duel-scene .btn,.duel-page .duel-zoom .btn {background:#ffffff14;color:#fff;border-color:#ffffff40}
+/* 판 접기 — 조용한 단추, 확인 상자 */
+.duel-page .btn.quiet {background:transparent;color:var(--muted)}
+.duel-confirm {position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:16px;background:#0b0d12b3}
+.duel-confirm .box {width:min(360px,100%);padding:18px;border:1px solid var(--line);border-top:2px solid var(--signal);border-radius:12px;background:var(--card);box-shadow:0 18px 48px #0008}
+.duel-confirm h3 {margin:0 0 8px;font:700 18px/1.35 var(--gallery-serif)}
+.duel-confirm p {margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.6;word-break:keep-all}
+.duel-confirm .acts {display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.duel-page .duel-confirm .btn.danger {background:var(--signal);color:var(--card);border-color:var(--signal)}
+/* 결과 · 규칙 */
+.duel-result,.duel-rules {margin:0;padding:14px;border:1px solid var(--gold);border-radius:12px;background:var(--card)}
+.duel-result h3 {margin:0 0 8px;font-size:22px;letter-spacing:-.02em}
+.duel-result[data-result="win"] h3 {color:var(--gold)} .duel-result[data-result="lose"] h3 {color:var(--signal)}
+.duel-result ol {margin:0 0 10px;padding-left:20px;font-size:13px;line-height:1.7}
+.duel-result .acts,.duel-rules .acts {display:flex;gap:8px;flex-wrap:wrap}
+.duel-rules ol {margin:0 0 10px;padding-left:20px;font-size:13px;line-height:1.7;word-break:keep-all}
+.empty-msg {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
+/* ── 가로 — 펼친 책. 왼쪽 면 = 나(자리·손패), 오른쪽 면 = 상대(자리·기록). 가운데 접힌 선 ── */
+@media (orientation:landscape) and (min-width:600px) {
+  .duel-board {grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"bar bar" "hint hint" "me foe" "hand log" "extra extra";column-gap:14px}
+  .duel-board::before {content:'';grid-column:1;grid-row:3/5;justify-self:end;width:0;margin-right:-7px;border-right:1px dashed var(--line);pointer-events:none}
+  .duel-row .who {display:block}
+  .duel-row[data-side="me"] .who {text-align:left} .duel-row[data-side="foe"] .who {text-align:right;color:var(--signal)}
+  .duel-slot .no {display:block}
+  .duel-dock {position:static;margin:0;padding:2px 8px 6px;border:1px solid var(--line);border-radius:10px;box-shadow:none}
+  .duel-log {max-height:none;align-self:stretch}
+  .duel-scene,.duel-zoom {flex-direction:row;gap:20px}
+  .duel-scene .pic,.duel-zoom .pic {width:min(40vw,calc(84dvh * 2 / 3))}
+  .duel-scene .text,.duel-zoom .text {align-items:flex-start}
+  .duel-scene h3,.duel-scene p,.duel-zoom h3,.duel-zoom p {text-align:left}
+}
+/* 휴대폰 가로 — 높이 400 안팎. 머리 제목은 껍데기가 이미 숨긴다(max-height:550). 자리 그림을 낮추고 손패 그림을 숨겨 한 화면에 */
+@media (orientation:landscape) and (max-height:550px) {
+  /* 머리 자리는 건드리지 않는다(화면 넷의 머리가 같아야 — tests/header-layout.cjs). 대신 힌트 줄을 접고, 고르기 모드는 위에 띄운다 */
+  .duel-board {gap:4px}
+  .duel-hint-area {height:0;min-height:0;overflow:visible} .duel-hint {display:none}
+  .duel-mode {position:fixed;left:50%;top:8px;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 24px);z-index:40;box-shadow:0 8px 24px #0008}
+  .duel-bar {padding:4px 8px;gap:2px 8px} .duel-bar .stages b {padding:1px 6px;font-size:10px} .duel-score {flex-basis:auto;margin-left:auto;gap:8px}
+  .duel-slot,.duel-slot .pick {min-height:96px}
+  .duel-slot .face {width:60px;height:72px;max-height:72px;aspect-ratio:auto;margin:4px auto 0;border-radius:6px}
+  .flags {top:2px;left:2px;right:46px;flex-wrap:nowrap;overflow:hidden} .flags i {font-size:8px;padding:0 4px;white-space:nowrap}   /* 좁은 그림 — 한 줄만, 자세한 건 크게 보기 */
+  .pw {left:4px;bottom:3px;min-width:22px;padding:1px 5px;font-size:11px} .tok {right:4px;bottom:3px;font-size:10px}
+  .unit-cap {padding:2px 5px 3px;font-size:10px} .unit-cap i {font-size:9px}
+  .duel-hand .card .face {display:none}
+  .duel-hand .card {width:96px} .duel-hand .card .pick {min-height:44px} .duel-hand .card .cap {padding:4px 30px 4px 6px} .duel-hand .card .cap i:last-child {display:none}   /* 수치는 크게 보기에 */
+  .duel-row .who {font-size:9px;line-height:1.1}
+  .duel-hand .card .pw2 {display:inline-block;margin:0 0 2px;padding:1px 5px;border-radius:6px;font:800 11px ui-monospace,monospace;background:#000a;color:#fff}
+  .duel-hand {padding:2px 0 4px}
+  .duel-dock .sec {min-height:40px;margin:2px 0}
+  .duel-page .duel-dock .btn {min-height:40px;padding:6px 10px;font-size:12px}
+  .duel-hint {font-size:11px;min-height:0}
+  .duel-mode {padding:4px 8px}
+  /* 덱 고르기 — 다섯 칸이면 그림 하나가 화면보다 높았다(폴드 덮개 가로 882×344). 좁게 여럿 */
+  .deck-grid {grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
+}
+.pw2 {display:none}

@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "note": "서고 탐험 수치 — lib/run.js 가 읽는다(규칙은 엔진에만, 수치는 여기에만). lamps: 등불 수(싸움에 지면 하나 꺼지고 다 꺼지면 처음부터) · deck_min/deck_max: 덱 크기(셋으로 들어가 여섯까지) · start_pick: 처음 고르는 책 수 · 지도는 rust/shelf-gen(lib/shelf-gen.wasm)이 짠다 — 층·방·종류는 거기 규칙(docs/RUN_DESIGN.md 2절).",
+  "lamps": 3,
+  "deck_min": 3,
+  "deck_max": 6,
+  "start_pick": 3
+}

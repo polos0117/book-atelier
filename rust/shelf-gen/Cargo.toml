@@ -1,0 +1,11 @@
+[package]
+name = "shelf-gen"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+build = "build.rs"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]

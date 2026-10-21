@@ -19,6 +19,16 @@
 - tests/similar.cjs · tests/similar-screen.cjs — 새 검사: 자료가 색인·등록부와 맞나(k ≤ 8·자기 자신 없음·오름차순·한 책 둘까지·서로 같은 점수) / 화면(열 때 받기·그림 따라 바뀜·누르면 그 책 그 그림·같은 책·Enter·자료 없음이면 숨김·다섯 크기)
 - docs/ART_INDEX.md · rust/README.md · AGENTS.md — 닮은 그림을 "한 것" 으로: 두 파일 다시 만드는 차례(그림 등록 뒤 색인 → --similar), 무게·고르기·꼴, 검사 목록
 
+## 2026-10-21 · claude · 서고 탐험 — 지도 생성기(Rust → wasm)·탐험 엔진·시뮬레이터, 결투 판 조각 나누기 (화면은 다음 칸)
+
+- rust/shelf-gen — 새 상자. 씨앗 하나로 아홉 층의 평면도(열 4~5, 들어온 자리·가운데 방 2~3·계단/보스, 이웃 열 사이 단조 길, 방 종류 meet·read·rest·scene, 계단 앞 열은 모두 층지기, 4층부터 싸움 하나 더, 짝수 층 쉼, 독서대 하나 이상, 층 안 책 겹침 없음·윗층 책·보스 책 피함, 상대 덱 여섯·전리품 둘·독서대 다섯). 손으로 쓴 JSON, splitmix64, build.rs 소스 셈. cargo test 가 3000 씨앗을 돈다
+- lib/shelf-gen.wasm · lib/shelf-gen.js — 지은 wasm(35KB)과 싣개(load·plan·seedOf·nextOf)
+- lib/duel.js — newMatch(opts: start 시작 장·chapters 몇 장)·validateDeck(opts.loose: 셋~여섯). 첫 장의 선공 보정은 판의 첫 장에, 마지막 장은 lastChapter — 서고 탐험의 한 장 결투가 쓴다. 보통 판은 그대로
+- lib/run.js · data/run.json — 탐험 엔진: 지도 위를 걷는 규칙(enter·fightMove/fightAi·settle·takeLoot·read·scene·descend·challenge·autoPlay). 등불 셋, 덱 셋→여섯, 깊이가 곧 장, 보스는 세 장, 보스에게 지면 다시 도전. 상태는 통째로 JSON(지도 포함)
+- lib/duel-ui.js · lib/duel.css — duel.html 의 판 조각(useData·picOf·Pic·Unit·Match·대화상자·speak)과 CSS 를 따로 — 결투와 탐험이 같이 쓴다. Match 의 결과 단추는 actions 로 받고 판 접기는 onForfeit 가 있을 때만
+- duel.html — 조각을 가져다 쓴다(동작 그대로)
+- tests/duel.cjs — 한 장 결투·시작 장·느슨한 덱 · tests/run-gen.cjs — wasm 소스 셈·330 씨앗 규칙 · tests/run.cjs — 탐험 규칙 47 · tests/run-sim.cjs — 400판 완주율(욕심쟁이 58%, 25~65% 문턱) · tests/duel-sim.cjs 그대로 통과
+
 ## 2026-10-21 · claude · 감상 흐름 — 장마다 방의 빛, 명장면 앞의 한 줄, 어디까지 읽었나 리본
 
 - lib/bookshelf.js · lib/bookshelf.css — 장마다 방의 빛(`.reading-mood`): 그 책의 표지·금박 빛(book-frame COVER)을 발단 차고 어둡게·전개 세고 따뜻하게·결말 노을로, 명장면은 한층 세게. 색 변수를 @property 로 등록해 0.6초에 바뀐다. 책이 다가올 때 서고의 빛도 0.42초에 걸쳐 어두워진다(전에는 바로 떴다). 명장면을 열면 장면 글이 어두운 무대에 0.85초 먼저 뜨고 그다음 그림이 열리고 입자는 천천히 — 누르거나 Enter 면 바로 연 상태로. 동작 줄이기·움직임 끄기면 글과 그림이 함께. 책등 리본은 읽는 중이면 책갈피(없으면 마지막) 장의 첫 글자와 명장면 표, 이름 "전개 명장면까지 읽음"·"발단에 책갈피"(책등 단추 이름에도), 다 읽으면 ✓ 그대로

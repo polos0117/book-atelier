@@ -66,6 +66,10 @@ pkm-atelier 의 `IMAGE_RULES.md` 를 책의 꼴(한 책 = 폼 셋 + 개방 셋 +
    토큰이 없으면 매시 17분 시간표(자주 빠진다)나 Actions 의 Run workflow.
 4. 서가·생성기는 `data/img.json` 에 적힌 것만 그린다.
 
+등록기는 새로 적은 그림의 등록한 날을 `data/img.json` 의 `added`(`{파일: "YYYY-MM-DD"}`)에 적는다 — 서가의 "최근 추가"·"새" 표가 이것만 읽는다.
+있던 날짜는 그대로 두고 날짜를 지어내지 않는다. 날짜 없이 등록된 그림은 손으로 한 번 `python3 tools/register-images.py --backfill-added ../book-atelier-img`
+(그 파일이 그림 저장소에 처음 더해진 커밋 날짜) — 워크플로의 그림 저장소 체크아웃은 이력이 한 칸뿐이라 거기서는 채우지 않는다.
+
 이름이 틀린 파일이 하나라도 있으면 등록기는 아무것도 저장하지 않고 실패한다 — 실행 요약에 원인이 남는다.
 손으로 볼 때는 `python3 tools/register-images.py --check`(그림 저장소의 `img/` 를 코드 저장소의 `img/` 로 이어 두고).
 

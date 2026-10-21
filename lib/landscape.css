@@ -19,6 +19,11 @@
   .gallery-list .dex-view-row {grid-column:3;grid-row:1;margin:0;min-height:40px;align-self:center}
   .gallery-list .dex-view-row .sec {font-size:10px;white-space:nowrap}
   .gallery-list .grid {margin-top:8px}
+  /* 최근 추가는 검색 줄 밑 한 줄 — 칸을 낮게 해 첫 화면에 책 칸이 남게 */
+  .gallery-list .recent-shelf {gap:10px;margin:4px 0 0}
+  .gallery-list .recent-head {font-size:12px}
+  .gallery-list .recent-strip {padding-block:3px 5px}
+  .gallery-list .recent-cell {flex-basis:46px;width:46px}
   .genre-strip button {min-height:40px;padding:6px 11px}
   .dex-view-row button {min-height:40px}
   #dex-progress {display:none}

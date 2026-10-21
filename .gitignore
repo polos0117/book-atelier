@@ -3,3 +3,5 @@ __pycache__/
 # 그림은 그림 저장소(book-atelier-img)에 둔다. 브라우저 검사 때만 쓰는 임시 자리
 /img
 /img-repo
+# rust 빌드 산출물 — lib/mosaic.wasm 만 올린다(rust/README.md)
+/rust/target/

@@ -7,12 +7,44 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+<<<<<<< HEAD
 ## 2026-10-21 · claude · 말풍선 — 판에 들어온 책이 그 장의 말을 한다
 - data/book-design.json — 스무 권에 voice(발단·전개·결말 한 줄씩). 명대사 인용이 아니라 설계표의 인물로 새로 쓴 말(저작권 문제 없게). 머리말에 뜻
 - tools/book-design.py · tests/book-design.py — voice 가 있으면 셋 다 있고 70자까지(없는 책은 그냥 통과)
 - lib/speech.js — 새 파일(원본은 지도 저장소 speech.js, 다섯 저장소에 같은 파일). 요소 위에 꼬리 달린 풍선 — 둘까지, 글 길이만큼, 움직임 줄이기면 애니메이션 없이. 화면 말 없음
 - duel.html — 내기(내 것도 상대 것도)에 그 책의 그 장 voice 를 자리 위에, 판이 끝나면 이긴 쪽 첫 책이 결말의 말
 - tests/duel-screen.cjs — 춘향전을 내면 발단의 말이 풍선으로
+=======
+## 2026-10-21 · claude · 서가 최근 추가 줄과 새 표 — 등록한 날(added)
+
+- tools/register-images.py — img.json 에 `added` {파일: "YYYY-MM-DD"}. 이번에 새로 적힌 그림만 오늘, 있던 날짜는 그대로, 틀린 날짜는 버린다, `--prune` 으로 빠진 그림은 날짜도. `--backfill-added <그림 저장소>` 는 날짜 없는 그림에만 git 이력의 처음 더해진 날(`git log --diff-filter=A --format=%cs` 와 같은 셈, 얕으면 `--depth` 를 늘려 받고 그래도 잘린 경계 커밋의 날짜는 안 쓴다). 날짜는 지어내지 않는다 — 이력에 없으면 날짜 없이 둔다
+- data/img.json — 지금 등록된 154장 모두 그림 저장소(얕지 않은 로컬 체크아웃) 이력에서 한 번 채웠다(10-16 ~ 10-21). 워크플로의 그림 저장소 체크아웃은 기본 얕은 받기라 거기서는 채우지 않고 새 그림의 오늘만 적는다 — 워크플로는 안 고쳤다
+- dex.html · lib/dex-filter.js · lib/img.js — 목록 맨 위(공간 띠 밑) "최근 추가": 7일 안에 등록된 그림, 새 날짜부터 24장, 줄 안에서만 옆으로 구른다. 누르면 그 책 상세를 그 그림(화풍·폼·컷)으로 연다(`?book=`), 돌아오면 그 칸에 초점. 없으면 줄째 숨는다. 지난번에 들른 뒤 들어온 그림은 목록 칸·최근 추가 칸 왼쪽 위에 "새"(대표 그림 목록은 그 책에 새 그림이 있으면, 컷을 고른 목록은 그 그림이). 들른 표는 시계가 아니라 그때 자료의 가장 늦은 날짜와 그날의 그림으로 적어(`book_dex_seen_v1`) 등록기(UTC)와 보는 사람의 날짜가 어긋나도 빠지거나 겹치지 않는다. 처음 오면 새 표 없음, 떠날 때(pagehide·숨김) 적고 이번 들름(30분 넘게 비우지 않으면, 새로고침 포함)은 기준이 그대로. 작업 현황에 "새 그림만"(새 그림이 있을 때만)
+- lib/gallery.css · lib/landscape.css — 최근 추가 줄(넓으면 이름이 왼쪽, 좁으면 위, 휴대폰 가로는 검색 줄 밑 낮게)·새 표. 칸 44px 넘게, focus-visible
+- lib/words.js · index.html · prompt.html · duel.html · mosaic.html — dex.recent.* · dex.new.* · dex.art.new, 거르기 안내에 새 그림만. 같은 날 감상 흐름이 올린 `?v=8` 위에 낱말 표 `?v=9`, img.js·dex-filter.js `?v=2`, gallery.css `?v=4`, landscape.css `?v=3` — 화면 다섯 모두 같은 판
+- tests/register-images.py · tests/dex-recent-screen.cjs — 등록한 날 갈래와 git 이력 채우기(교체·지운 것·얕은 저장소 경계), 줄·새 표·새 그림만·다섯 크기(344×882·390×844·844×390·690×829·1280×900) 브라우저 검사
+- tests/gallery-screen.cjs — "첫 화면에 그림" 을 최근 추가 줄이 있으면 그 줄로 보고, 책 칸은 첫 화면 안에서 시작하는지 따로 본다(줄이 책 칸을 백여 px 밀어 690 폭에서 600 선을 넘었다)
+- data/art-index.json — `cargo run --release -p art-index` 로 다시 셈했다. 154장 그대로(이미 최신이라 바뀐 줄 없음)
+- AGENTS.md · IMAGE_RULES.md — 서가 표에 최근·새, 검사 목록, 등록한 날과 한 번 채우기
+
+## 2026-10-21 · gpt · 한 권을 꺼내 감상하고 서고로 돌아오는 흐름
+
+- lib/bookshelf.js — 발단·전개·결말의 초상과 명장면을 순서대로 넘긴다. 장면 책갈피·마지막 장·감상 완료를 book_reading_v1 에 저장하고 다시 열면 이어본다. 마지막 장 뒤 여운 화면에서 책을 꽂거나 책갈피로 돌아간다. 서고에 돌아오면 같은 책등에 포커스와 리본·완료 표시가 남는다. 기존 주소·뒤로 가기와 연동, 그림 없음·저장 차단에도 감상은 계속된다
+- lib/bookshelf.css — 펼친 책의 그림과 조작부는 화면에 남기고 본문만 스크롤. 작은 화면·가로 화면·폴드 대응, 장 넘김과 책 복귀 연출, 동작 줄이기·키보드 포커스 지원
+- lib/words.js · index.html · dex.html · prompt.html · duel.html · mosaic.html — 감상 안내 문구와 새 자산 버전. 동시에 추가된 모자이크 진입 링크도 현재 장면에 맞춰 보존
+- tests/reading-journey-screen.cjs — 다섯 화면 크기에서 세 장 감상·명장면·책갈피·새로고침·이어보기·완료·책등 포커스·스크롤 복귀·그림 없음·저장 차단 확인
+
+## 2026-10-21 · claude · 모자이크 — 그림 한 장을 서가의 조각으로 (Rust → WebAssembly)
+
+- rust/ — 새 cargo 작업 공간. `art-core`(2×3 칸 Lab 서명·dHash 64·Lab 4×4×4 색 막대·칸마다 조각 고르기: 벌점·최대 횟수·이웃 간격·씨앗, 단위 검사), `art-index`(등록된 그림만 읽어 색인 쓰기, `--check`), `mosaic-wasm`(`extern "C"` 내보내기 + 포인터·길이, 소스 셈을 wasm 안에). 다시 짓는 법은 rust/README.md
+- lib/mosaic.wasm · lib/mosaic.js — 크기 우선 판으로 지은 wasm(31 KB, 바깥에서 받는 것 없음)과 손으로 쓴 싣개·화면 없는 셈(칸·자르기·씨앗·파일 이름)
+- data/art-index.json — 그림 저장소 썸네일 154장의 서명·dHash·색 막대(38 KB). 그림을 더하면 다시 만든다(등록 흐름은 그대로, 색인에 없는 그림은 모자이크가 건너뛴다)
+- mosaic.html — 바탕 고르기(책 → 그림, `?file=`), 조각 밀도 거칠게·보통·촘촘하게(32·48·72칸), 휴대폰 배경 1170×2532·세로 포스터 2048×3072, 원본 겹치기 0–40%, 한 그림 반복, PNG/JPEG 받기, 다른 배치. 쓰인 조각만 받고 못 받으면 빼고 다시 맞춘다, 줄 단위로 나눠 그린다. 조각을 누르거나 방향키로 옮기면 그 책·그 그림과 서가 링크. wasm 이 없으면 낱말 표의 말. 세로·휴대폰 가로·PC 배치
+- dex.html · lib/bookshelf.js · lib/bookshelf.css · index.html — 서가 상세 틀 단추 옆 "모자이크로 만들기"(지금 큰 그림), 서재 펼친 책에도 같은 길(초상·개방 따라). 머리 항해는 344 폭에 다섯이 안 들어 그대로 넷
+- lib/words.js · lib/workspace-ui.js — 모자이크 말 전부, 모자이크 화면의 머리 소개. 낱말 표 판은 화면 다섯 모두 `?v=7`(duel.html · prompt.html 도 — 새 말이 캐시의 옛 표에 막히지 않게)
+- tests/mosaic.cjs · tests/mosaic-screen.cjs · tests/fixtures/make-art-index.py · tests/dex-screen.cjs · tests/browser-harness.cjs — 묵은 wasm(소스 셈)·같은 씨앗·최대 횟수·간격·색인 꼴, 화면 61가지, 서가·서재 단추. 검사 서버의 그림 응답에 GitHub Pages 처럼 `Access-Control-Allow-Origin: *`
+- docs/ART_INDEX.md · AGENTS.md · .gitignore — 색인 꼴·다시 만들기·다음 일 "닮은 그림" 계획(거리 = 해시 해밍 + 색 막대 카이제곱 + Lab 서명, top-k 는 따로 `data/similar.json`), `rust/target/` 은 올리지 않는다
+>>>>>>> 080e163a94acfb986625da7e1028215212d15277
 
 ## 2026-10-21 · claude · 결투 「오늘의 판」과 오늘 기록 — 공방 지도가 읽는다
 - lib/today.js — 새 파일. 다섯 공방이 한 출처(polos0117.github.io)라 localStorage 를 같이 쓴다: 판이 끝나면 atelier_today_v1:book 에 {d, n, w, daily, at, seen} 한 칸(bump), 다녀가면 seen(visit), 날짜 씨앗(seed), ?daily(isDaily). 모양의 약속은 지도 저장소 README 「오늘 기록」절, 다섯 저장소에 같은 파일

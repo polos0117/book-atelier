@@ -67,7 +67,7 @@
 .reading-persona {font:500 17px/1.85 var(--gallery-serif);margin:0 0 20px;word-break:keep-all}
 .reading-story blockquote {margin:0 0 26px;padding:0 0 0 14px;border-left:2px solid var(--line);font-size:12px;line-height:1.9;color:var(--muted)}
 .reading-actions {display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:4px}
-.reading-dialog .reading-mode,.reading-detail {display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--text);font:inherit;font-size:12px;text-decoration:none}
+.reading-dialog .reading-mode,.reading-detail,.reading-mosaic {display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--text);font:inherit;font-size:12px;text-decoration:none}
 .reading-detail {background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .reading-mode[aria-pressed="true"] {background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .reading-return {font-size:10px;color:var(--muted);margin:22px 0 0}
@@ -155,3 +155,91 @@
  .bookshelf .shelf-book {color:ButtonText}
  .reading-book {border:2px solid CanvasText}
 }
+
+/* Reading journey: artwork and controls stay in view; only the passage scrolls. */
+.shelf-artwork {position:relative;width:100%;height:100%;display:grid;place-items:center;min-height:0}
+.reading-loading {position:absolute;inset:0;display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.shelf-artwork[data-state="loading"] img {opacity:0}
+.shelf-artwork img {transition:opacity 180ms ease}
+.book-peek .shelf-artwork img {width:100%;height:100%;object-fit:cover}
+.reading-book {height:min(760px,calc(100dvh - 48px));grid-template-rows:minmax(0,1fr) auto;overflow:hidden}
+.reading-book::after {bottom:76px}
+.reading-art {overflow:hidden;padding:24px 24px 36px}
+.reading-image-page {width:100%;height:100%;min-height:0;animation:reading-turn 360ms ease both}
+.reading-art img {width:100%;height:100%;max-height:100%;object-fit:contain}
+.reading-story {justify-content:flex-start;overflow:auto;overscroll-behavior:contain;padding:54px 34px 26px}
+.reading-story h2 {font-size:clamp(24px,2.5vw,34px);line-height:1.4;margin-bottom:22px}
+.reading-genre {padding-right:28px;line-height:1.7}
+.reading-journey {display:flex;list-style:none;width:100%;padding:0;margin:0 0 28px;gap:8px}
+.reading-journey li {flex:1;border-top:2px solid var(--line);padding:10px 0 0;font-size:11px;color:var(--muted)}
+.reading-journey li span {display:block;font:12px var(--gallery-serif);margin-bottom:5px}
+.reading-journey li[aria-current] {border-color:var(--accent);color:var(--accent);font-weight:700}
+.reading-journey li[data-seen="true"] span::after {content:' ·'}
+.reading-passage {width:100%;animation:reading-ink 260ms ease both}
+.reading-eyebrow {font-size:11px;color:var(--accent);margin:0 0 12px}
+.reading-passage h3 {font:500 clamp(21px,2.2vw,29px)/1.65 var(--gallery-serif);word-break:keep-all;margin:0 0 18px}
+.reading-passage h3:focus {outline:none}
+.reading-caption {font-size:13px;line-height:1.9;color:var(--muted);word-break:keep-all;margin:0 0 22px}
+.reading-passage blockquote {font:500 22px/1.8 var(--gallery-serif);color:var(--text);margin-bottom:20px}
+.reading-dialog button {cursor:pointer}
+.reading-dialog button:focus-visible,.reading-detail:focus-visible {outline:2px solid var(--accent);outline-offset:3px}
+.reading-actions button,.reading-controls button {min-height:44px;border:1px solid var(--line);border-radius:3px;padding:10px 14px;background:var(--card);color:var(--text);font:inherit;font-size:12px}
+.reading-bookmark[aria-pressed="true"] {background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.reading-resume {font-size:10px;line-height:1.6;color:var(--muted);margin:16px 0 0}
+.reading-detail {background:none;color:var(--muted);border:0;padding:12px 0;margin-top:auto;text-decoration:underline;text-underline-offset:4px;align-self:flex-start}
+.reading-controls {grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 22px;background:var(--card);border-top:1px solid var(--line);z-index:2}
+.reading-pagination {display:flex;gap:8px}
+.reading-controls .reading-next,.reading-book[data-finished="true"] .reading-return-button {background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.reading-controls button:disabled {opacity:.35;cursor:default}
+.reading-previous {min-width:44px}
+.reading-announcement {position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.spine-ribbon {position:absolute;right:6px;top:-4px;width:17px;height:29px;padding-top:5px;background:#dcc18a;color:#352819;clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%);z-index:2;font:12px/1.3 sans-serif}
+.shelf-book[data-returned="true"] .book-volume {animation:shelf-settle 650ms ease both}
+.bookshelf-receipt {min-height:24px;margin:16px 0 4px;color:var(--muted);font-size:12px;line-height:1.8;text-align:center;word-break:keep-all}
+@keyframes reading-turn {from{opacity:.3;transform:perspective(1200px) rotateY(-9deg) translateX(12px)}to{opacity:1;transform:none}}
+@keyframes reading-ink {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes shelf-settle {0%{transform:translateY(-12px);filter:drop-shadow(0 0 14px #dec386)}100%{transform:none;filter:drop-shadow(5px 0 3px #0008)}}
+@media(max-width:599px) and (orientation:portrait) {
+ .reading-dialog {padding:8px}
+ .reading-book {height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);grid-template-columns:1fr;grid-template-rows:minmax(170px,40%) minmax(0,1fr) auto}
+ .reading-art {padding:12px 16px 22px}
+ .reading-story {padding:16px 20px 12px}
+ .reading-story h2 {font-size:23px;margin-bottom:12px}
+ .reading-journey {margin-bottom:16px}
+ .reading-journey li {padding-top:7px}
+ .reading-journey li span {display:inline;margin-right:5px}
+ .reading-passage h3 {font-size:21px;line-height:1.6;margin-bottom:10px}
+ .reading-caption {font-size:12px;margin-bottom:14px}
+ .reading-controls {padding:10px 12px;gap:8px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+ .reading-controls button {font-size:11px;padding:10px}
+ .reading-controls .reading-previous {padding-inline:8px}
+ .reading-dialog .reading-close {position:absolute;right:8px;top:8px}
+ .reading-page-number {bottom:6px;font-size:10px}
+}
+@media(orientation:landscape) and (max-height:550px) {
+ .reading-book {height:calc(100dvh - 20px);grid-template-rows:minmax(0,1fr) auto}
+ .reading-art {padding:12px 18px 22px}
+ .reading-story {padding:18px 54px 14px 24px}
+ .reading-story h2 {font-size:23px;margin-bottom:12px}
+ .reading-journey {margin-bottom:16px}
+ .reading-journey li span {display:inline;margin-right:6px}
+ .reading-passage h3 {font-size:21px}
+ .reading-controls {padding:8px 18px}
+}
+@media(prefers-reduced-motion:reduce) {
+ .reading-image-page,.reading-passage,.shelf-book[data-returned="true"] .book-volume {animation:none!important}
+ .shelf-artwork img {transition:none}
+}
+@media(forced-colors:active) {.spine-ribbon {background:Highlight;color:HighlightText}.reading-journey li[aria-current] {border-color:Highlight}}
+
+/* Explicit image bounds prevent intrinsic portrait dimensions from expanding the grid. */
+.reading-image-page {position:relative;min-width:0}
+.reading-image-page>.shelf-artwork {position:absolute;inset:0}
+.reading-image-page img {position:absolute;inset:0;width:100%;height:100%;min-height:0;object-fit:contain}
+.reading-image-page>.shelf-no-art {height:100%;min-height:0}
+
+.reading-book[data-direction="previous"] .reading-image-page {animation-name:reading-turn-back}
+@keyframes reading-turn-back {from{opacity:.3;transform:perspective(1200px) rotateY(9deg) translateX(-12px)}to{opacity:1;transform:none}}
+
+.reading-links {display:flex;flex-wrap:wrap;align-items:center;column-gap:18px;margin-top:auto}
+.reading-links a {margin:0;padding:12px 0;background:none;border:0;color:var(--muted);font-size:12px;text-decoration:underline;text-underline-offset:4px}

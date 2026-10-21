@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8f4ea">
+<title>책의 공방</title>
+<!--
+  모자이크 — 서가의 그림 한 장(바탕)을 서가의 다른 그림 썸네일 수백 조각으로 다시 짠다.
+  조각 서명(2×3 칸 Lab 평균)은 data/art-index.json(rust/art-index 가 만든다), 맞추기는 lib/mosaic.wasm(rust/mosaic-wasm).
+  바탕 그림의 칸 서명도 wasm 이 화소에서 셈한다 — 여기서는 줄인 RGBA 만 넘긴다.
+  색인에 없는 그림·못 받은 그림은 조각에서 빠진다(바탕으로는 쓸 수 있다). 자세한 것은 docs/ART_INDEX.md.
+  그림 저장소는 같은 출처(polos0117.github.io)라 캔버스 화소를 읽을 수 있다 — crossOrigin 은 그래도 붙인다(다른 곳에서 띄울 때).
+-->
+<!-- 글꼴 — 제목·책등·쪽 번호는 명조(Noto Serif KR), 본문은 고딕(IBM Plex Sans KR). 못 받으면(오프라인·막힘) 기기 글꼴로 그대로 뜬다 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="lib/workspace.css?v=6">
+<style>
+/* 한 자리만 구른다(.wrap) — 껍데기(.prompt-page)가 화면 높이로 잠근다. 그림은 왼쪽(휴대폰 세로는 위), 설정은 오른쪽(아래) */
+.mosaic-page .wrap {max-width:1440px}
+.mosaic-grid {display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.mosaic-stage {min-width:0;display:grid;gap:10px;justify-items:center}
+.mosaic-grid {--ratio:.5}
+.mosaic-frame {position:relative;width:min(100%,calc((var(--atelier-vh,100dvh) - 230px) * var(--ratio)));min-width:min(100%,220px);
+  aspect-ratio:var(--ratio);background:var(--card2);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);touch-action:manipulation}
+.mosaic-frame:focus-visible {outline:2px solid var(--accent);outline-offset:3px}
+.mosaic-frame canvas {display:block;width:100%;height:100%;cursor:crosshair}
+.mosaic-frame .mosaic-empty {position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6;word-break:keep-all}
+.mosaic-mark {position:absolute;border:2px solid #fff;outline:2px solid #000a;border-radius:2px;pointer-events:none;box-shadow:0 0 0 9999px #0003}
+.mosaic-progress {width:100%;max-width:520px;display:grid;gap:4px}
+.mosaic-progress progress {width:100%;height:8px;accent-color:var(--accent)}
+.mosaic-status {margin:0;min-height:20px;color:var(--muted);font-size:12px;line-height:1.6;text-align:center;word-break:keep-all}
+.mosaic-status.error {color:var(--warn);font-weight:700}
+.mosaic-tile {width:100%;max-width:520px;display:grid;grid-template-columns:56px minmax(0,1fr);gap:4px 12px;align-items:center;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:10px;min-height:84px}
+.mosaic-tile.empty {grid-template-columns:minmax(0,1fr);color:var(--muted);font-size:12px}
+.mosaic-tile img {grid-row:1 / span 3;width:56px;aspect-ratio:2/3;object-fit:cover;border-radius:4px;background:var(--card2)}
+.mosaic-tile b {font-size:14px;overflow-wrap:anywhere}
+.mosaic-tile small {color:var(--muted);font-size:12px}
+.mosaic-tile .mosaic-tile-links {display:flex;flex-wrap:wrap;gap:6px}
+.mosaic-panel {min-width:0;display:grid;gap:12px;align-content:start}
+.mosaic-card {padding:12px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.mosaic-card > h2 {margin:0 0 10px;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+.mosaic-pick {display:grid;grid-template-columns:44px minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:end}
+.mosaic-pick img {width:44px;aspect-ratio:2/3;object-fit:cover;border-radius:4px;background:var(--card2);align-self:center}
+.mosaic-field {display:grid;gap:5px;min-width:0;color:var(--muted);font-size:12px}
+.mosaic-field select {width:100%;min-width:0;min-height:44px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card2);color:var(--text);font:inherit;font-size:13px}
+.mosaic-seg {display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
+.mosaic-seg button {flex:1 1 0;min-width:0;min-height:44px;padding:4px 6px;border:0;border-radius:7px;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:700;line-height:1.25}
+.mosaic-seg button small {display:block;font:400 10px ui-monospace,monospace;opacity:.85}
+.mosaic-seg button[aria-pressed="true"] {background:var(--card);color:var(--text);box-shadow:inset 0 -2px var(--accent)}
+.mosaic-row {display:grid;gap:6px;margin-top:12px}
+.mosaic-row > span,.mosaic-row > label {color:var(--muted);font-size:12px}
+.mosaic-range {display:grid;grid-template-columns:minmax(0,1fr) 3.5em;gap:10px;align-items:center;min-height:44px}
+.mosaic-range input {width:100%;min-height:44px;margin:0}
+.mosaic-range output {font:700 12px ui-monospace,monospace;text-align:right;color:var(--text)}
+.mosaic-note {margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.6;word-break:keep-all}
+.mosaic-actions {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.mosaic-page .mosaic-btn,.mosaic-download {display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card2);color:var(--text);font:inherit;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}
+.mosaic-download {background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.mosaic-download[aria-disabled="true"] {opacity:.5;cursor:default;pointer-events:none}
+.mosaic-page .mosaic-link {display:inline-flex;align-items:center;min-height:44px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--card2);color:var(--accent);font:inherit;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer}
+@media (min-width:900px) {
+  .mosaic-grid {grid-template-columns:minmax(0,1fr) 340px;gap:24px}
+  .mosaic-panel {position:sticky;top:0}
+  .mosaic-frame {width:min(100%,calc((var(--atelier-vh,100dvh) - 290px) * var(--ratio)))}
+}
+/* 휴대폰 가로 — 그림은 왼쪽에 화면 높이로, 설정은 오른쪽(lib/landscape.css 와 같은 기준: 높이 550 아래 가로) */
+@media (orientation:landscape) and (max-height:550px) {
+  .mosaic-grid {grid-template-columns:max(230px,calc((var(--atelier-vh,100dvh) - 110px) * var(--ratio))) minmax(0,1fr);gap:16px}
+  .mosaic-stage {position:sticky;top:0}
+  .mosaic-frame {width:calc((var(--atelier-vh,100dvh) - 110px) * var(--ratio));min-width:120px}
+  .mosaic-tile {grid-template-columns:40px minmax(0,1fr);min-height:0;padding:6px 8px}
+  .mosaic-tile img {width:40px}
+  .mosaic-card {padding:10px}
+}
+@media (prefers-reduced-motion:reduce) {.mosaic-progress progress {transition:none}}
+</style>
+<script src="lib/workspace-theme.js?v=3"></script>
+<script src="lib/words.js?v=9"></script>
+<script src="lib/fresh.js?v=1"></script>
+<script src="lib/img.js?v=2"></script>
+<script src="lib/dex-filter.js?v=2"></script>
+<script src="lib/mosaic.js?v=1"></script>
+<link rel="stylesheet" href="lib/gallery.css?v=4">
+<link rel="stylesheet" href="lib/landscape.css?v=3">
+<link rel="stylesheet" href="lib/room.css?v=3">
+</head>
+<body class="prompt-page mosaic-page">
+<div class="wrap"><div id="app"></div></div>
+<script type="module">
+import { h, render } from 'https://esm.sh/preact@10.24.3';
+import { useState, useEffect, useMemo, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=6';
+const html = htm.bind(h);
+const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, M = window.AtelierMosaic;
+const STORE = 'book_mosaic_v1', WASM = 'lib/mosaic.wasm?v=1', INDEX = 'data/art-index.json';
+const DEFAULTS = { density: 'normal', size: 'phone', overlay: 15, repeat: 'normal', format: 'png' };
+
+/* 고른 설정은 이 브라우저에만 남는 편의다 — 막혀 있거나 비어 있어도 기본값으로 돈다 */
+function readOpts() {
+  try {
+    const o = JSON.parse(localStorage.getItem(STORE)) || {}, out = { ...DEFAULTS };
+    if (M.DENSITY[o.density]) out.density = o.density;
+    if (M.SIZES[o.size]) out.size = o.size;
+    if (M.REPEAT[o.repeat]) out.repeat = o.repeat;
+    if (o.format === 'jpeg' || o.format === 'png') out.format = o.format;
+    if (Number.isFinite(o.overlay)) out.overlay = Math.max(0, Math.min(40, Math.round(o.overlay)));
+    return out;
+  } catch { return { ...DEFAULTS }; }
+}
+const asked = () => { try { return new URLSearchParams(location.search).get('file'); } catch { return null; } };
+const canvas = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; };
+const frame = () => new Promise(ok => requestAnimationFrame(() => ok()));
+
+/* 그림 받기 — 같은 파일은 한 번만. 썸네일이 없으면 원본으로 */
+const loaded = new Map();
+function picture(url) {
+  return new Promise(ok => {
+    const im = new Image();
+    im.crossOrigin = 'anonymous'; im.decoding = 'async';
+    im.onload = () => ok(im); im.onerror = () => ok(null);
+    im.src = url;
+  });
+}
+function tileImage(file) {
+  if (!loaded.has(file)) loaded.set(file, picture(IMG.thumbURL(file)).then(im => im || picture(IMG.imgURL(file))));
+  return loaded.get(file);
+}
+/* 크게 줄일 때 반씩 여러 번 — 한 번에 줄이면 몇 화소만 집어 거칠어진다 */
+function shrink(src, sx, sy, sw, sh, w, h) {
+  let c = canvas(sw, sh); c.getContext('2d').drawImage(src, sx, sy, sw, sh, 0, 0, c.width, c.height);
+  while (c.width / 2 >= w && c.height / 2 >= h) {
+    const n = canvas(c.width / 2, c.height / 2), x = n.getContext('2d');
+    x.imageSmoothingQuality = 'high'; x.drawImage(c, 0, 0, n.width, n.height); c = n;
+  }
+  const out = canvas(w, h), x = out.getContext('2d');
+  x.imageSmoothingQuality = 'high'; x.drawImage(c, 0, 0, out.width, out.height);
+  return out;
+}
+/* 몇 개씩 나란히 받는다 */
+async function pool(items, n, work, onEach) {
+  let i = 0, done = 0;
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => {
+    while (i < items.length) { const k = i++; await work(items[k], k); onEach(++done); }
+  }));
+}
+
+function useData() {
+  const [st, set] = useState({ loading: true });
+  useEffect(() => {
+    const wasm = M.supported() ? M.load(WASM).catch(e => ({ failed: String(e && e.message || e) })) : Promise.resolve({ unsupported: true });
+    Promise.all([
+      fetch('data/book-design.json', { cache: 'no-cache' }).then(r => r.json()),
+      fetch('data/style.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => ({})),
+      IMG.load(),
+      fetch(INDEX, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null),
+      wasm,
+    ]).then(([design, style, img, index, api]) => {
+      const fk = (design.vocab || {}).form_key || {}, defs = {}, styleName = {};
+      /* 화풍 이름은 "짧은 이름 — 설명" 꼴이다. 앞쪽만(서가와 같다) */
+      for (const k of Object.keys(style.styles || {})) styleName[k] = String(style.styles[k].name || k).split(' — ')[0];
+      for (const stage of Object.keys(fk)) defs[fk[stage]] = { stage };
+      const books = [], byFile = {};
+      for (const b of design.books || []) {
+        const shots = FILTER.shots(img[b.key], defs);
+        if (!shots.length) continue;
+        const styles = new Set(shots.map(s => s.style)).size;
+        const card = { key: b.key, title: b.title, author: b.author, shots: [] };
+        for (const s of shots) {
+          if (byFile[s.file]) continue;
+          const one = { ...s, label: label(s, defs, styles > 1 && (styleName[s.style] || s.style)), card };
+          card.shots.push(one); byFile[s.file] = one;
+        }
+        books.push(card);
+      }
+      set({ books, byFile, index, api: api && api.setTiles ? api : null,
+        wasmError: !api ? 'wasm' : api.unsupported ? 'wasm' : api.failed ? 'load' : null });
+    }).catch(e => set({ error: String((e && e.message) || e) }));
+  }, []);
+  return st;
+}
+/* 서가와 같은 이름 — 발단 · 발단 개방 · 연출컷 1 · 일상컷 2. 화풍이 둘 이상이면 화풍 이름을 붙인다 */
+function label(s, defs, style) {
+  const stage = s.form ? ((defs[FILTER.baseForm(s.form)] || {}).stage || s.form) : '';
+  const form = stage ? (FILTER.isOpen(s.form) ? W('form.openOf', { form: stage }) : stage) : '';
+  const cut = s.cut === 'portrait' || s.cut === 'open' ? '' : W('dex.cut.number', { cut: W('dex.cut.' + s.cut), n: s.index });
+  return [form, cut, style || ''].filter(Boolean).join(' · ');
+}
+
+/* 그리기 — 바탕 받기 → 칸 서명(wasm) → 맞추기(wasm) → 쓰인 조각만 받기(못 받으면 빼고 다시 맞춘다) → 줄 단위로 나눠 그리기 */
+function useMosaic(st, job, out) {
+  const [state, setState] = useState({ phase: 'idle', progress: 0 });
+  const gen = useRef(0), layer = useRef(null), target = useRef(null);
+  useEffect(() => {
+    if (!st.books || !job.file) return;
+    if (!st.api) { setState({ phase: 'error', error: st.wasmError || 'wasm' }); return; }
+    if (!st.index) { setState({ phase: 'error', error: 'index' }); return; }
+    const my = ++gen.current, live = () => gen.current === my;
+    const say = s => { if (live()) setState(s); };
+    (async () => {
+      const [ow, oh] = M.SIZES[job.size], L = M.layout(ow, oh, M.DENSITY[job.density]);
+      say({ phase: 'target', progress: 2 });
+      const im = await picture(IMG.imgURL(job.file));
+      if (!live()) return;
+      if (!im) return say({ phase: 'error', error: 'target' });
+      const crop = M.cover(im.naturalWidth, im.naturalHeight, ow, oh), K = M.SAMPLE;
+      const sw = L.cols * 2 * K, sh = L.rows * 3 * K;
+      let rgba;
+      try { rgba = shrink(im, crop.sx, crop.sy, crop.sw, crop.sh, sw, sh).getContext('2d').getImageData(0, 0, sw, sh).data; }
+      catch { return say({ phase: 'error', error: 'pixels' }); }
+      say({ phase: 'match', progress: 6 });
+      await frame(); if (!live()) return;
+      const api = st.api;
+      if (api.setTarget(rgba, sw, sh, L.cols, L.rows) !== L.cells) return say({ phase: 'error', error: 'pixels' });
+      /* 조각 후보 — 등록됐고 색인에 있는 그림. 등록됐는데 색인에 없는 것은 건너뛴 수에 센다 */
+      const reg = Object.keys(st.byFile);
+      let files = M.tilesOf(st.index, f => !!st.byFile[f], api.sigLen).files;
+      const skipped = new Set(reg.filter(f => !files.includes(f)));
+      const seed = M.seedOf([job.file, job.density, job.size, job.repeat, job.shuffle].join('|'));
+      let assign, used, bitmaps = new Map();
+      const tw = Math.ceil(L.tileW), th = Math.ceil(L.tileH);
+      for (let round = 0; round < 4; round++) {
+        if (!files.length) return say({ phase: 'error', error: 'tiles' });
+        const T = M.tilesOf({ files: Object.fromEntries(files.map(f => [f, st.index.files[f]])) }, null, api.sigLen);
+        files = T.files; api.setTiles(T.sig);
+        const rep = M.repeatFor(job.repeat, L.cells, files.length);
+        assign = api.match({ maxRepeat: rep.max, spacing: M.spacingFor(files.length), penalty: rep.penalty, seed });
+        used = [...new Set(assign)].map(i => files[i]);
+        const need = used.filter(f => !bitmaps.has(f)), failed = [];
+        say({ phase: 'tiles', progress: 10, n: 0, total: need.length });
+        await pool(need, 6, async f => {
+          const t = await tileImage(f);
+          if (t) bitmaps.set(f, shrink(t, 0, 0, t.naturalWidth, t.naturalHeight, tw, th)); else failed.push(f);
+        }, n => say({ phase: 'tiles', progress: 10 + 40 * n / Math.max(1, need.length), n, total: need.length }));
+        if (!live()) return;
+        if (!failed.length) break;
+        failed.forEach(f => skipped.add(f));
+        files = files.filter(f => !failed.includes(f));
+      }
+      /* 줄 단위로 그린다 — 한 번에 12ms 쯤, 그 사이에 화면이 숨을 쉰다 */
+      const lay = canvas(ow, oh), lx = lay.getContext('2d'), view = out.current;
+      if (!view) return;
+      view.width = ow; view.height = oh;
+      const vx = view.getContext('2d');
+      vx.fillStyle = getComputedStyle(document.body).getPropertyValue('--card2') || '#ddd'; vx.fillRect(0, 0, ow, oh);
+      let r = 0;
+      while (r < L.rows) {
+        const t0 = performance.now(), from = r;
+        while (r < L.rows && performance.now() - t0 < 12) {
+          for (let c = 0; c < L.cols; c++) {
+            const q = M.rect(L, c, r), b = bitmaps.get(files[assign[r * L.cols + c]]);
+            if (b) lx.drawImage(b, q.x, q.y, q.w, q.h);
+          }
+          r++;
+        }
+        const y0 = M.rect(L, 0, from).y, y1 = r < L.rows ? M.rect(L, 0, r).y : oh;
+        vx.drawImage(lay, 0, y0, ow, y1 - y0, 0, y0, ow, y1 - y0);
+        say({ phase: 'draw', progress: 50 + 50 * r / L.rows });
+        await frame(); if (!live()) return;
+      }
+      layer.current = lay; target.current = { im, crop };
+      say({ phase: 'done', progress: 100, L, files, assign, cells: L.cells, tiles: used.length, skipped: skipped.size, key: [job.density, job.size, job.repeat].join(' '), round: job.shuffle });
+    })().catch(e => say({ phase: 'error', error: 'draw', detail: String(e && e.message || e) }));
+  }, [st.books, job.file, job.density, job.size, job.repeat, job.shuffle]);
+  return { state, layer, target };
+}
+
+function Segments({ label, value, options, onPick, id }) {
+  return html`<div class="mosaic-row"><span id=${id}>${label}</span>
+    <div class="mosaic-seg" role="group" aria-labelledby=${id}>${options.map(([k, text, small]) => html`
+      <button type="button" key=${k} data-value=${k} aria-pressed=${value === k} onClick=${() => onPick(k)}>${text}${small && html`<small>${small}</small>`}</button>`)}</div></div>`;
+}
+
+function App() {
+  const st = useData();
+  const [opts, setOpts] = useState(readOpts);
+  const [file, setFile] = useState(null), [notice, setNotice] = useState('');
+  const [shuffle, setShuffle] = useState(0), [pick, setPick] = useState(null);
+  const [url, setUrl] = useState(null);
+  const view = useRef(null);
+  const set = (k, v) => setOpts(o => ({ ...o, [k]: v }));
+  useEffect(() => { try { localStorage.setItem(STORE, JSON.stringify(opts)); } catch {} }, [opts]);
+  /* 처음 그림 — 주소의 ?file=(서가의 "모자이크로 만들기"), 없거나 모르는 파일이면 첫 책의 첫 그림 */
+  useEffect(() => {
+    if (!st.books || file) return;
+    const want = asked(), hit = want && st.byFile[want];
+    if (want && !hit) setNotice(W('mosaic.fallback'));
+    setFile(hit ? want : (st.books[0] && st.books[0].shots[0].file) || null);
+  }, [st.books]);
+  useEffect(() => {
+    if (!file) return;
+    try { const q = new URLSearchParams(location.search); q.set('file', file); history.replaceState(history.state, '', location.pathname + '?' + q + location.hash); } catch {}
+    setPick(null);
+  }, [file]);
+  const job = { file, density: opts.density, size: opts.size, repeat: opts.repeat, shuffle };
+  const { state, layer, target } = useMosaic(st, job, view);
+  const done = state.phase === 'done';
+
+  /* 겹치기 — 다시 맞추지 않고 조각 판 위에 바탕을 옅게 얹기만 한다. 끝나면 파일을 만든다 */
+  useEffect(() => {
+    if (!done || !layer.current || !view.current) return;
+    const c = view.current, x = c.getContext('2d'), t = target.current;
+    x.globalAlpha = 1; x.drawImage(layer.current, 0, 0);
+    if (opts.overlay > 0 && t) { x.globalAlpha = opts.overlay / 100; x.drawImage(t.im, t.crop.sx, t.crop.sy, t.crop.sw, t.crop.sh, 0, 0, c.width, c.height); x.globalAlpha = 1; }
+    setUrl(null);
+    let alive = true;
+    const timer = setTimeout(() => c.toBlob(b => { if (alive && b) setUrl(URL.createObjectURL(b)); },
+      opts.format === 'jpeg' ? 'image/jpeg' : 'image/png', 0.92), 180);
+    return () => { alive = false; clearTimeout(timer); };
+  }, [done, state, opts.overlay, opts.format]);
+  useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
+
+  if (st.error) return html`<div><${WorkspaceHeader} page="mosaic" /><p class="mosaic-status error">${W('ui.error', { message: st.error })}</p></div>`;
+  if (!st.books) return html`<div><${WorkspaceHeader} page="mosaic" /><p class="mosaic-status">${W('ui.loading')}</p></div>`;
+
+  const shot = file && st.byFile[file], book = shot && shot.card;
+  const [ow, oh] = M.SIZES[opts.size], L = M.layout(ow, oh, M.DENSITY[opts.density]);
+  const tileCount = st.index ? M.tilesOf(st.index, f => !!st.byFile[f]).files.length : 0;
+  const repeatText = k => { const r = M.repeatFor(k, L.cells, tileCount); return r.max ? W('mosaic.repeat.max', { n: r.max }) : W('mosaic.repeat.none'); };
+  /* 조각 누르기·방향키 — 그 칸의 그림이 어느 책 어느 그림인지 */
+  const res = done ? state : null;
+  const cellAt = e => {
+    const b = e.currentTarget.getBoundingClientRect();
+    const c = Math.floor((e.clientX - b.left) / b.width * res.L.cols), r = Math.floor((e.clientY - b.top) / b.height * res.L.rows);
+    return { c: Math.max(0, Math.min(res.L.cols - 1, c)), r: Math.max(0, Math.min(res.L.rows - 1, r)) };
+  };
+  const onTap = e => { if (res) setPick(cellAt(e)); };
+  const onKey = e => {
+    if (!res) return;
+    const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (!d) { if (e.key === 'Escape') setPick(null); return; }
+    e.preventDefault();
+    setPick(p => { const q = p || { c: Math.floor(res.L.cols / 2), r: Math.floor(res.L.rows / 2) };
+      return p ? { c: Math.max(0, Math.min(res.L.cols - 1, q.c + d[0])), r: Math.max(0, Math.min(res.L.rows - 1, q.r + d[1])) } : q; });
+  };
+  const tileFile = res && pick ? res.files[res.assign[pick.r * res.L.cols + pick.c]] : null, tile = tileFile && st.byFile[tileFile];
+  const mark = res && pick ? (() => { const q = M.rect(res.L, pick.c, pick.r); return `left:${q.x / ow * 100}%;top:${q.y / oh * 100}%;width:${q.w / ow * 100}%;height:${q.h / oh * 100}%`; })() : null;
+  const error = state.phase === 'error' ? W('mosaic.error.' + state.error) : '';
+  const status = error || (state.phase === 'tiles' ? W('mosaic.status.tiles', { n: state.n, total: state.total })
+    : state.phase === 'draw' ? W('mosaic.status.draw', { n: Math.round(state.progress) })
+    : done ? W('mosaic.status.done', { cells: state.cells.toLocaleString('ko-KR'), tiles: state.tiles }) + (state.skipped ? ' ' + W('mosaic.status.skipped', { n: state.skipped }) : '')
+    : state.phase === 'idle' ? '' : W('mosaic.status.' + state.phase));
+  const name = file ? M.fileName(file, opts.size, L.cols, opts.format) : 'mosaic.png';
+  const fmt = W('mosaic.format.' + opts.format);
+
+  return html`<div>
+    <${WorkspaceHeader} page="mosaic" />
+    <main class="mosaic-grid" style=${'--ratio:' + ow + '/' + oh}>
+      <section class="mosaic-stage" aria-label=${W('mosaic.preview.title')}>
+        <div class="mosaic-frame" tabindex="0" role="group"
+          aria-label=${W('mosaic.preview')} aria-busy=${!done && !error} data-phase=${state.phase} data-done=${done ? state.key : ''} data-round=${done ? state.round : ''} onClick=${onTap} onKeyDown=${onKey}>
+          <canvas ref=${view} id="mosaic-canvas" width=${ow} height=${oh} aria-hidden="true"></canvas>
+          ${!done && state.phase !== 'draw' && html`<p class="mosaic-empty">${error || W('mosaic.status.loading')}</p>`}
+          ${mark && html`<span class="mosaic-mark" style=${mark}></span>`}
+        </div>
+        <div class="mosaic-progress">
+          <progress max="100" value=${Math.round(state.progress || 0)} aria-label=${W('mosaic.progress')}></progress>
+          <p id="mosaic-status" class=${'mosaic-status' + (error ? ' error' : '')} role="status" aria-live="polite">${status}</p>
+          ${notice && html`<p class="mosaic-status">${notice}</p>`}
+        </div>
+        <div class=${'mosaic-tile' + (tile ? '' : ' empty')} aria-live="polite" id="mosaic-tile">
+          ${tile ? html`<img src=${IMG.thumbURL(tile.file)} alt="" width="56" height="84" onError=${e => { const t = e.currentTarget; if (!t.dataset.full) { t.dataset.full = '1'; t.src = IMG.imgURL(tile.file); } }} />
+            <b>${tile.card.title}</b><small>${tile.label} · ${W('mosaic.tile.cell', { col: pick.c + 1, row: pick.r + 1 })}</small>
+            <span class="mosaic-tile-links"><a class="mosaic-link" id="mosaic-tile-dex" href=${'dex.html?book=' + encodeURIComponent(tile.card.key)}>${W('mosaic.tile.dex')}</a>
+              <button type="button" class="mosaic-link" onClick=${() => setFile(tile.file)}>${W('mosaic.tile.use')}</button></span>`
+            : W(done ? 'mosaic.tile.hint' : 'mosaic.tile.wait')}
+        </div>
+      </section>
+      <aside class="mosaic-panel">
+        <section class="mosaic-card">
+          <h2>${W('mosaic.pick')}</h2>
+          <div class="mosaic-pick">
+            ${shot ? html`<img src=${IMG.thumbURL(shot.file)} alt="" width="44" height="66" />` : html`<span></span>`}
+            <label class="mosaic-field" for="mosaic-book">${W('mosaic.pick.book')}
+              <select id="mosaic-book" value=${book ? book.key : ''} onChange=${e => { const b = st.books.find(x => x.key === e.currentTarget.value); if (b) setFile(b.shots[0].file); }}>
+                ${st.books.map(b => html`<option key=${b.key} value=${b.key}>${b.title}</option>`)}
+              </select></label>
+            <label class="mosaic-field" for="mosaic-cut">${W('mosaic.pick.cut')}
+              <select id="mosaic-cut" value=${file || ''} onChange=${e => setFile(e.currentTarget.value)}>
+                ${(book ? book.shots : []).map(s => html`<option key=${s.file} value=${s.file}>${s.label}</option>`)}
+              </select></label>
+          </div>
+        </section>
+        <section class="mosaic-card">
+          <h2>${W('mosaic.options')}</h2>
+          <${Segments} id="mosaic-density-label" label=${W('mosaic.density')} value=${opts.density} onPick=${k => set('density', k)}
+            options=${Object.keys(M.DENSITY).map(k => [k, W('mosaic.density.' + k), W('mosaic.density.cols', { n: M.DENSITY[k] })])} />
+          <${Segments} id="mosaic-size-label" label=${W('mosaic.size')} value=${opts.size} onPick=${k => set('size', k)}
+            options=${Object.keys(M.SIZES).map(k => [k, W('mosaic.size.' + k), M.SIZES[k].join('×')])} />
+          <div class="mosaic-row"><label for="mosaic-overlay">${W('mosaic.overlay')}</label>
+            <div class="mosaic-range"><input id="mosaic-overlay" type="range" min="0" max="40" step="1" value=${opts.overlay}
+              onInput=${e => set('overlay', +e.currentTarget.value)} /><output for="mosaic-overlay">${W('mosaic.overlay.value', { n: opts.overlay })}</output></div>
+            <p class="mosaic-note">${W('mosaic.overlay.note')}</p></div>
+          <div class="mosaic-row"><label class="mosaic-field" for="mosaic-repeat">${W('mosaic.repeat')}
+            <select id="mosaic-repeat" value=${opts.repeat} onChange=${e => set('repeat', e.currentTarget.value)}>
+              ${Object.keys(M.REPEAT).map(k => html`<option key=${k} value=${k}>${W('mosaic.repeat.' + k)} · ${repeatText(k)}</option>`)}
+            </select></label>
+            <p class="mosaic-note">${W('mosaic.repeat.note', { tiles: tileCount, cells: L.cells.toLocaleString('ko-KR') })}</p></div>
+          <${Segments} id="mosaic-format-label" label=${W('mosaic.format')} value=${opts.format} onPick=${k => set('format', k)}
+            options=${[['png', W('mosaic.format.png'), ''], ['jpeg', W('mosaic.format.jpeg'), '']]} />
+        </section>
+        <div class="mosaic-actions">
+          <a class="mosaic-download" id="mosaic-download" href=${url || undefined} download=${name} aria-disabled=${!url}
+            title=${name}>${url ? W('mosaic.download', { format: fmt }) : W('mosaic.download.wait')}</a>
+          <button type="button" class="mosaic-btn" id="mosaic-shuffle" disabled=${!done} onClick=${() => setShuffle(n => n + 1)}>${W('mosaic.shuffle')}</button>
+        </div>
+        ${book && html`<a class="mosaic-link" href=${'dex.html?book=' + encodeURIComponent(book.key)}>${W('mosaic.toDex', { title: book.title })}</a>`}
+      </aside>
+    </main>
+  </div>`;
+}
+
+render(html`<${App} />`, document.getElementById('app'));
+window.AtelierFresh.watch();
+</script>
+</body>
+</html>

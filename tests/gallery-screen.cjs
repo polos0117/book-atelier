@@ -23,7 +23,10 @@ const svg = (wide = false) => '<svg xmlns="http://www.w3.org/2000/svg" width="' 
         await p.waitForFunction(() => { const i = document.querySelector('.grid img'); return i.complete && i.naturalWidth > 0; });
         const after = await p.locator('.grid>.cell').first().boundingBox();
         assert.deepEqual(after, before, 'image loading must not move card geometry');
-        assert(after.y < (width < 720 ? 600 : 600), 'artwork is visible on entry');
+        /* 최근 추가 줄이 있으면 그 줄이 첫 그림이다 — 책 칸은 그 밑에서 첫 화면 안에 시작한다 */
+        const recent = await p.locator('.recent-shelf').count() ? await p.locator('.recent-shelf').boundingBox() : null;
+        assert((recent || after).y < 600, 'artwork is visible on entry');
+        assert(after.y < (width === 1440 ? 1000 : 844) - 120, 'first card starts on the first screen: ' + Math.round(after.y));
         assert(await p.evaluate(() => document.body.scrollWidth <= innerWidth), 'no horizontal page overflow');
         await p.locator('.genre-strip button').nth(1).click();
         assert.equal(await p.locator('.genre-strip button').nth(1).getAttribute('aria-pressed'), 'true');

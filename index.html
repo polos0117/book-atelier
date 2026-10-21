@@ -12,16 +12,16 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="lib/workspace.css?v=6">
 <script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=6"></script>
+<script src="lib/words.js?v=9"></script>
 <script src="lib/patch.js?v=1"></script>
 <script src="lib/fresh.js?v=1"></script>
-<script src="lib/img.js?v=1"></script>
-<script src="lib/dex-filter.js?v=1"></script>
+<script src="lib/img.js?v=2"></script>
+<script src="lib/dex-filter.js?v=2"></script>
 <script src="lib/book-frame.js?v=1"></script>
-<link rel="stylesheet" href="lib/gallery.css?v=3">
-<link rel="stylesheet" href="lib/landscape.css?v=2">
+<link rel="stylesheet" href="lib/gallery.css?v=4">
+<link rel="stylesheet" href="lib/landscape.css?v=3">
 <link rel="stylesheet" href="lib/room.css?v=3">
-<link rel="stylesheet" href="lib/bookshelf.css?v=3">
+<link rel="stylesheet" href="lib/bookshelf.css?v=5">
 </head>
 <body class="prompt-page lab-page">
 <div class="wrap"><div id="app"></div></div>
@@ -29,7 +29,7 @@
 import {h,render} from 'https://esm.sh/preact@10.24.3';
 import {useState,useEffect} from 'https://esm.sh/preact@10.24.3/hooks';
 import {WorkspaceHeader,ThemeGallery} from './lib/workspace-ui.js?v=5';
-import {Bookshelf} from './lib/bookshelf.js?v=4';
+import {Bookshelf} from './lib/bookshelf.js?v=6';
 const W=window.W;
 /* 패치 기록 — docs/PATCH.md 를 그대로 읽는다. 열 때 한 번만 받아 온다.
    닫혀 있으면 단추만 그려 집 화면의 자리를 건드리지 않는다. */

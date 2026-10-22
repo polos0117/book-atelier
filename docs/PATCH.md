@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-22 · gpt · 숲속 서재 공간 테마 추가
+- lib/workspace-theme.js · lib/workspace.css · lib/words.js — 숲속 서재 선택지와 안내, 초록 잉크·밝은 종이 팔레트. 기존 저장값과 기본 공간을 유지하고 새 선택을 모든 화면에 저장
+- lib/room.css · lib/bookshelf.css — 숲이 보이는 창가 배경과 초록 책장. 그림 저장소 backgrounds/forest-study.webp 및 800px 축소본, 배경 끄기와 모바일 구도 지원
+- index.html · dex.html · prompt.html · duel.html · run.html · mosaic.html · sprite.html — 일곱 화면의 테마 자산·낱말 표 캐시 버전 일치
+- tests/theme-screen.cjs — 네 공간의 글자 대비·선택 저장·배경 끄기·다섯 화면 크기, 모자이크와 도트 진열실의 테마 유지 확인
+
 ## 2026-10-21 · claude · 책 다섯 권 더 — 해저 2만 리·천일야화·구운몽·크툴루의 부름·한여름 밤의 꿈
 - data/book-design.json — 다섯 번째 다섯 권 설계표: 모험·동화·판타지·로맨스·공포·희극·풍자에 세 번째 책(지역 처음 셋 — 아라비아·당나라 꿈·미국 바다). 정한 말 열셋(재료 logbook_brass·clippings·petal_script, 자세 porthole_gaze·tale_gesture·cloud_recline·recoil_reach·mischief_leap, 팔레트 deep_pearl·lamp_indigo·lotus_cloud·drowned_green·moon_moss). 천일야화는 작자 미상(anonymous), 구운몽은 한지 틀
 - lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯

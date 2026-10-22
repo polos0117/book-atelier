@@ -2,6 +2,7 @@
 .bookshelf {--wood:#816445;--wood-light:#b0926d;--wood-dark:#473827;--wood-back:#5b4935;margin:16px 0 20px}
 :root[data-theme="moonlit"] .bookshelf {--wood:#433529;--wood-light:#775b3f;--wood-dark:#241e19;--wood-back:#302923}
 :root[data-theme="hanok"] .bookshelf {--wood:#79664d;--wood-light:#9d8869;--wood-dark:#463d2e;--wood-back:#655943}
+:root[data-theme="forest"] .bookshelf {--wood:#3c543d;--wood-light:#6d8056;--wood-dark:#253727;--wood-back:#314632}
 .bookshelf-head {display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 24px}
 .bookshelf-head h2 {font:500 clamp(26px,3vw,38px)/1.4 var(--gallery-serif);letter-spacing:-.04em;margin:0 0 8px;word-break:keep-all}
 .bookshelf-intro {margin:0;color:var(--muted);font-size:13px;line-height:1.8}

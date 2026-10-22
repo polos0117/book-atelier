@@ -25,6 +25,13 @@
   --signal:#6a5840;--gold:#7e6038;--ok:#3b6349;--warn:#805721;--pattern:#435f4c10;
   --shadow:0 8px 26px #29342a12;
 }
+:root[data-theme="forest"] {
+  color-scheme:light;
+  --bg:#edf3e8;--deck:#f1f6ed;--card:#fafcf6;--card2:#dce7d5;--text:#26382b;
+  --muted:#4c604b;--line:#b6c8ab;--accent:#2d6246;--accent-soft:#dbe9d5;--on-accent:#ffffff;
+  --signal:#536d38;--gold:#80612d;--ok:#346344;--warn:#80551f;--pattern:#2d624610;
+  --shadow:0 8px 26px #213d2614;
+}
 :root[data-density="relaxed"] {
   --ui-font:15px;--ui-small:13px;--ui-height:46px;--ui-pad:12px;--ui-gap:10px;--gap:14px;
 }

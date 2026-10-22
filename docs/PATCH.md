@@ -9,6 +9,13 @@
 
 
 
+
+## 2026-10-22 · claude · 책을 펼치면 그 책의 도트가 뛰쳐나와 화면을 거닌다
+- lib/bookshelf.js — 펼친 책(reading-dialog)이 열리고 0.56초 뒤, 그 책의 도트 인물이 있으면 그림 장에서 튀어나와 화면 바닥에 내려앉고 가로질러 걷는다(공용 재생기 popOut — dialog 안 맨 위 층, 휴대폰 1배·넓은 화면 2배). 누르면 반응, 책을 닫으면 책으로 뛰어 들어간다. 움직임 끔이면 뛰지 않고 서 있다, 도트 그림을 못 받으면 아무것도 없다. bookshelf.js ?v=12
+- lib/words.js — home.sprite.out(뛰쳐나온 도트의 이름). 일곱 화면 words.js ?v=15
+- lib/sprite-actor.js — 공방 모음 원본 그대로(뛰쳐나오기 닫는 시간 · 그림 못 받으면 판째 치우기)
+- tests/shelf-sprite-screen.cjs — 뛰쳐나오기: 책에서 나온다·바닥에 내려앉는다·이름·거닌다·판은 누름을 지나 보낸다·닫으면 들어간다·동작 줄이기면 서 있다·그림 없음이면 없다
+
 ## 2026-10-22 · claude · 도트 재생기 v2 — 여러 인물의 바닥·뛰쳐나오기·카드 열쇠로 찾기
 - lib/sprite-actor.js · lib/sprite-actor.css — 공방 모음 원본 v2 를 그대로 복사: floor(공방 메인의 바닥)·popOut(요소에서 튀어나와 화면을 걷는다)·actorFor/forCard(카드 열쇠로 인물). 한 명 재생(create)은 그대로. 화면들의 ?v=6 · .css ?v=4
 - tests/sprite-actor-copy.cjs — v2 의 내보내기 일곱

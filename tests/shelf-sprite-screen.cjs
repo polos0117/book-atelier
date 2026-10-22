@@ -47,6 +47,15 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     add('누르면 그 인물의 책이 펼쳐진다', await p.evaluate(() => new URLSearchParams(location.search).get('open')) === 'alice', await p.evaluate(() => location.search));
     add('연달아 눌러도 기록은 한 칸', await p.evaluate(() => history.length) - len0 === 1, await p.evaluate(() => history.length) - len0);
     add('펼친 책은 하나', await p.locator('.reading-dialog[open]').count() === 1);
+    /* 뛰쳐나오기 — 책이 펼쳐지면 그 책의 도트가 그림 장에서 튀어나와 화면 바닥을 거닌다(펼친 dialog 안, 맨 위 층) */
+    const popped = await p.waitForFunction(() => { const a = document.querySelector('.reading-dialog[open] .sprite-popout[data-book="alice"] .sprite-actor'); return a && a.sprite.debug().ready && !a.hidden; }, null, { timeout: 8000 }).then(() => true, () => false);
+    add('책에서 도트가 뛰쳐나온다', popped);
+    await wait(800);
+    const land = await p.evaluate(() => { const r = document.querySelector('.sprite-popout .sprite-actor').getBoundingClientRect(); return { bottom: Math.round(r.bottom), vh: innerHeight, label: document.querySelector('.sprite-popout .sprite-actor').getAttribute('aria-label') }; });
+    add('화면 바닥에 내려앉는다', land.bottom > land.vh - 70 && land.bottom <= land.vh + 30, JSON.stringify(land));
+    add('이름에 책 제목', /앨리스/.test(land.label), land.label);
+    add('뛰쳐나온 도트가 거닌다', await p.waitForFunction(() => document.querySelector('.sprite-popout .sprite-actor').sprite.debug().state === 'walk', null, { timeout: 8000 }).then(() => true, () => false));
+    add('뒤의 판은 누름을 지나 보낸다', await p.evaluate(() => getComputedStyle(document.querySelector('.sprite-popout')).pointerEvents === 'none'));
     await wait(300);
     let d = await dbg(p);
     add('펼친 동안 인물은 쉰다', !d.running && d.paused.includes('reading'), JSON.stringify(d));
@@ -58,6 +67,7 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     await wait(450);
     d = await dbg(p);
     add('닫으면 다시 돈다', d.running && !d.paused.includes('reading'), JSON.stringify(d));
+    add('닫으면 뛰쳐나온 도트도 들어간다', await p.locator('.sprite-popout').count() === 0);
     add('같은 인물(새로 만들지 않는다)', await p.evaluate(() => document.querySelectorAll('.shelf-floor .sprite-actor[data-who="alice"]').length === 1 && document.querySelector('.shelf-floor .sprite-actor[data-who="alice"]').dataset.mark === 'first'));
     add('그 자리에서', Math.abs(d.x - at) < 40, `${at} → ${d.x}`);
     add('초점은 인물로', await p.evaluate(() => document.activeElement && document.activeElement.classList.contains('sprite-actor')));
@@ -91,6 +101,8 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     await p.locator('.shelf-floor .sprite-actor[data-who="alice"]').click();
     await p.waitForSelector('.reading-dialog[open]');
     add('동작 줄이기에도 펼친다', true);
+    await p.waitForSelector('.reading-dialog[open] .sprite-popout .sprite-actor:not([hidden])', { timeout: 8000 });
+    add('동작 줄이기 → 뛰쳐나온 도트는 뛰지 않고 서 있다', await p.evaluate(() => { const a = document.querySelector('.sprite-popout .sprite-actor'); return !a.sprite.running && document.querySelector('.sprite-popout-stage').getAnimations().length === 0; }));
     await s.close();
 
     /* 3. 도트 그림 없음 — 바닥째 없다 */
@@ -98,6 +110,8 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     await p.waitForSelector('.shelf-book'); await wait(1500);
     add('도트 없음 → 바닥이 안 보인다', await p.locator('.shelf-floor').isHidden());
     add('도트 없음 → 진열실 길도 없다', await p.locator('.bookshelf-dots').count() === 0);
+    await p.locator('.shelf-book[data-key="alice"]').click(); await p.waitForSelector('.reading-dialog[open]'); await wait(1500);
+    add('도트 그림 없음 → 펼쳐도 뛰쳐나오지 않는다(화면은 그대로)', await p.locator('.sprite-popout .sprite-actor:not([hidden])').count() === 0);
     add('도트 없음 → 책장은 그대로', await p.locator('.shelf-book').count() > 0);
     add('도트 없음 → 화면 오류 없음', s.errors.length === 0, s.errors.join(' | '));
     await s.close();

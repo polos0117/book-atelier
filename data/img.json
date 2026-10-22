@@ -2,6 +2,7 @@
  "img": {
   "alice": {"byStyle": {"literary_fantasy": {"casual": {"f": ["alice_literary_fantasy_f_casual1.webp", "alice_literary_fantasy_f_casual2.webp", "alice_literary_fantasy_f_casual3.webp"]}, "byForm": {"end": {"f": "alice_end_literary_fantasy_f.webp"}, "end_open": {"f": "alice_end_open_literary_fantasy_f.webp"}, "begin": {"f": "alice_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "alice_begin_open_literary_fantasy_f.webp"}, "middle": {"f": "alice_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "alice_middle_open_literary_fantasy_f.webp"}}}}},
   "anna_karenina": {"byStyle": {"literary_fantasy": {"casual": {"f": ["anna_karenina_literary_fantasy_f_casual1.webp", "anna_karenina_literary_fantasy_f_casual2.webp", "anna_karenina_literary_fantasy_f_casual3.webp", "anna_karenina_literary_fantasy_f_casual4.webp"]}, "byForm": {"begin": {"f": "anna_karenina_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "anna_karenina_begin_open_literary_fantasy_f.webp"}, "end": {"f": "anna_karenina_end_literary_fantasy_f.webp"}, "end_open": {"f": "anna_karenina_end_open_literary_fantasy_f.webp"}, "middle": {"f": "anna_karenina_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "anna_karenina_middle_open_literary_fantasy_f.webp"}}}}},
+  "arabian_nights": {"byStyle": {"literary_fantasy": {"casual": {"f": ["arabian_nights_literary_fantasy_f_casual1.webp", "arabian_nights_literary_fantasy_f_casual2.webp", "arabian_nights_literary_fantasy_f_casual3.webp", "arabian_nights_literary_fantasy_f_casual4.webp"]}, "byForm": {"begin": {"f": "arabian_nights_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "arabian_nights_begin_open_literary_fantasy_f.webp"}, "end": {"f": "arabian_nights_end_literary_fantasy_f.webp"}, "end_open": {"f": "arabian_nights_end_open_literary_fantasy_f.webp"}, "middle": {"f": "arabian_nights_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "arabian_nights_middle_open_literary_fantasy_f.webp"}}}}},
   "arsene_lupin": {"byStyle": {"literary_fantasy": {"casual": {"f": ["arsene_lupin_literary_fantasy_f_casual1.webp", "arsene_lupin_literary_fantasy_f_casual2.webp", "arsene_lupin_literary_fantasy_f_casual3.webp", "arsene_lupin_literary_fantasy_f_casual4.webp"]}, "byForm": {"begin": {"f": "arsene_lupin_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "arsene_lupin_begin_open_literary_fantasy_f.webp"}, "end": {"f": "arsene_lupin_end_literary_fantasy_f.webp"}, "end_open": {"f": "arsene_lupin_end_open_literary_fantasy_f.webp"}, "middle": {"f": "arsene_lupin_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "arsene_lupin_middle_open_literary_fantasy_f.webp"}}}}},
   "baskervilles": {"byStyle": {"literary_fantasy": {"casual": {"f": ["baskervilles_literary_fantasy_f_casual1.webp", "baskervilles_literary_fantasy_f_casual2.webp", "baskervilles_literary_fantasy_f_casual3.webp"]}, "byForm": {"begin": {"f": "baskervilles_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "baskervilles_begin_open_literary_fantasy_f.webp"}, "end": {"f": "baskervilles_end_literary_fantasy_f.webp"}, "end_open": {"f": "baskervilles_end_open_literary_fantasy_f.webp"}, "middle": {"f": "baskervilles_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "baskervilles_middle_open_literary_fantasy_f.webp"}}}}},
   "chunhyang": {"byStyle": {"literary_fantasy": {"casual": {"f": ["chunhyang_literary_fantasy_f_casual1.webp", "chunhyang_literary_fantasy_f_casual2.webp", "chunhyang_literary_fantasy_f_casual3.webp"]}, "byForm": {"begin": {"f": "chunhyang_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "chunhyang_begin_open_literary_fantasy_f.webp"}, "end": {"f": "chunhyang_end_literary_fantasy_f.webp"}, "end_open": {"f": "chunhyang_end_open_literary_fantasy_f.webp"}, "middle": {"f": "chunhyang_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "chunhyang_middle_open_literary_fantasy_f.webp"}}}}},
@@ -22,7 +23,7 @@
   "treasure_island": {"byStyle": {"literary_fantasy": {"casual": {"f": ["treasure_island_literary_fantasy_f_casual1.webp", "treasure_island_literary_fantasy_f_casual2.webp", "treasure_island_literary_fantasy_f_casual3.webp", "treasure_island_literary_fantasy_f_casual4.webp"]}, "byForm": {"begin": {"f": "treasure_island_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "treasure_island_begin_open_literary_fantasy_f.webp"}, "end": {"f": "treasure_island_end_literary_fantasy_f.webp"}, "end_open": {"f": "treasure_island_end_open_literary_fantasy_f.webp"}, "middle": {"f": "treasure_island_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "treasure_island_middle_open_literary_fantasy_f.webp"}}}}},
   "twenty_thousand_leagues": {"byStyle": {"literary_fantasy": {"casual": {"f": ["twenty_thousand_leagues_literary_fantasy_f_casual1.webp", "twenty_thousand_leagues_literary_fantasy_f_casual2.webp", "twenty_thousand_leagues_literary_fantasy_f_casual3.webp", "twenty_thousand_leagues_literary_fantasy_f_casual4.webp", "twenty_thousand_leagues_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "twenty_thousand_leagues_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "twenty_thousand_leagues_begin_open_literary_fantasy_f.webp"}, "end": {"f": "twenty_thousand_leagues_end_literary_fantasy_f.webp"}, "end_open": {"f": "twenty_thousand_leagues_end_open_literary_fantasy_f.webp"}, "middle": {"f": "twenty_thousand_leagues_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "twenty_thousand_leagues_middle_open_literary_fantasy_f.webp"}}}}}
  },
- "count": 21,
+ "count": 22,
  "added": {
   "alice_begin_literary_fantasy_f.webp": "2026-10-17",
   "alice_begin_open_literary_fantasy_f.webp": "2026-10-17",
@@ -43,6 +44,16 @@
   "anna_karenina_literary_fantasy_f_casual4.webp": "2026-10-21",
   "anna_karenina_middle_literary_fantasy_f.webp": "2026-10-21",
   "anna_karenina_middle_open_literary_fantasy_f.webp": "2026-10-21",
+  "arabian_nights_begin_literary_fantasy_f.webp": "2026-10-22",
+  "arabian_nights_begin_open_literary_fantasy_f.webp": "2026-10-22",
+  "arabian_nights_end_literary_fantasy_f.webp": "2026-10-22",
+  "arabian_nights_end_open_literary_fantasy_f.webp": "2026-10-22",
+  "arabian_nights_literary_fantasy_f_casual1.webp": "2026-10-22",
+  "arabian_nights_literary_fantasy_f_casual2.webp": "2026-10-22",
+  "arabian_nights_literary_fantasy_f_casual3.webp": "2026-10-22",
+  "arabian_nights_literary_fantasy_f_casual4.webp": "2026-10-22",
+  "arabian_nights_middle_literary_fantasy_f.webp": "2026-10-22",
+  "arabian_nights_middle_open_literary_fantasy_f.webp": "2026-10-22",
   "arsene_lupin_begin_literary_fantasy_f.webp": "2026-10-21",
   "arsene_lupin_begin_open_literary_fantasy_f.webp": "2026-10-21",
   "arsene_lupin_end_literary_fantasy_f.webp": "2026-10-21",

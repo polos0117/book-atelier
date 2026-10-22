@@ -8,6 +8,11 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+
+## 2026-10-22 · claude · 도트 재생기 v2 — 여러 인물의 바닥·뛰쳐나오기·카드 열쇠로 찾기
+- lib/sprite-actor.js · lib/sprite-actor.css — 공방 모음 원본 v2 를 그대로 복사: floor(공방 메인의 바닥)·popOut(요소에서 튀어나와 화면을 걷는다)·actorFor/forCard(카드 열쇠로 인물). 한 명 재생(create)은 그대로. 화면들의 ?v=6 · .css ?v=4
+- tests/sprite-actor-copy.cjs — v2 의 내보내기 일곱
+
 ## 2026-10-22 · claude · 도트 재생기를 다섯 공방이 같이 쓰는 모듈로 — 원본은 공방 모음
 - lib/sprite-actor.js · lib/sprite-actor.css — 원본을 공방 모음(polos0117.github.io)의 sprite-actor.js·.css 로 옮기고(판 v1) 그대로 복사했다. 셈은 그대로, 대기 시트가 없는 인물도 정지 도트로 서 있다가 걷는다(세 인물은 대기가 있어 달라지는 것 없음). 설명의 book 문서 길을 공방 모음 README 「도트 재생기」로
 - index.html · dex.html · run.html · sprite.html — sprite-actor.js ?v=5 · .css ?v=3

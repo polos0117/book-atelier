@@ -33,6 +33,8 @@
 
 서가 상세의 하트(즐겨찾기)는 `lib/favorites.js` — 공방 모음(polos0117.github.io)의 `favorites.js` 를 글자 하나 다르지 않게 복사한 공용 모듈이다(열쇠 `atelier_favorites_v1`, 약속은 그쪽 README 「즐겨찾기」절). 여기서 따로 고치지 않는다 — 고치면 다섯 저장소를 같이, `tests/dex-favorites.cjs` 가 원본과 견준다.
 
+도트 인물의 재생기 `lib/sprite-actor.js`·`lib/sprite-actor.css` 는 공방 모음의 `sprite-actor.js`·`.css` 를 글자 하나 다르지 않게 복사한 공용 모듈이다(판 v1, 약속은 그쪽 README 「도트 재생기」절). 여기서 따로 고치지 않는다 — 고치면 원본과 다섯 저장소를 같이, `node tests/sprite-actor-copy.cjs` 가 원본과 견준다. 새 인물의 도트는 공방 모음의 도트 공방(`dot.html` — 지시문·정리기, 정리 셈은 여기 `tools/sprite-*.py` 와 화소 하나 다르지 않다)에서 만든다.
+
 ## 지켜야 할 것
 
 ### 1. 한 책은 하나의 전투 원리
@@ -109,6 +111,7 @@ node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치�
 node tests/mosaic.cjs                # 모자이크 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 배치·최대 횟수·간격, 색인 꼴
 node tests/similar.cjs               # 닮은 그림 — 색인·등록부에 다 있다, k ≤ 8, 자기 자신 없음, 오름차순, 한 책 둘까지, 거의 같은 쌍
 python3 tests/sprites-data.py        # 도트 자료 — 칸·차례·시간·설계표·낱말, 그림 저장소가 옆에 있으면 시트 크기·걷기 빠르기 = 보폭 ÷ 반 주기(±15%)·걷기 dy 가 다리 교차를 따른다(tools/sprite-bob.py)
+node tests/sprite-actor-copy.cjs     # 도트 재생기 — lib/sprite-actor.js·.css 가 공방 모음 원본과 같다
 (cd rust && cargo test)               # art-core(닮음 거리·top-k 포함) · art-index · mosaic-wasm 단위 검사
 node tests/duel-sim.cjs [--quick]    # 결투 균형 — 3,000판(빠른 모드 600판은 보고만): 책마다 40~60% · 세 폼 규칙 모두 돈다 · 선공
 node tests/run-gen.cjs               # 서고 지도 생성기 — 올린 wasm 이 소스와 맞나(소스 셈), 같은 씨앗 같은 지도, 330 씨앗의 규칙(열·길·종류·책)

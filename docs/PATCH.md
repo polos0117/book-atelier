@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+
+## 2026-10-22 · claude · 도트 재생기를 다섯 공방이 같이 쓰는 모듈로 — 원본은 공방 모음
+- lib/sprite-actor.js · lib/sprite-actor.css — 원본을 공방 모음(polos0117.github.io)의 sprite-actor.js·.css 로 옮기고(판 v1) 그대로 복사했다. 셈은 그대로, 대기 시트가 없는 인물도 정지 도트로 서 있다가 걷는다(세 인물은 대기가 있어 달라지는 것 없음). 설명의 book 문서 길을 공방 모음 README 「도트 재생기」로
+- index.html · dex.html · run.html · sprite.html — sprite-actor.js ?v=5 · .css ?v=3
+- tests/sprite-actor-copy.cjs — 새 검사: 복사본이 원본과 글자 하나 다르지 않다(다섯 저장소 같은 파일) · AGENTS.md — 공용 모듈 한 줄과 검사 목록, 새 인물은 공방 모음의 도트 공방(dot.html)에서
+
 ## 2026-10-22 · gpt · 숲속 서재 공간 테마 추가
 - lib/workspace-theme.js · lib/workspace.css · lib/words.js — 숲속 서재 선택지와 안내, 초록 잉크·밝은 종이 팔레트. 기존 저장값과 기본 공간을 유지하고 새 선택을 모든 화면에 저장
 - lib/room.css · lib/bookshelf.css — 숲이 보이는 창가 배경과 초록 책장. 그림 저장소 backgrounds/forest-study.webp 및 800px 축소본, 배경 끄기와 모바일 구도 지원

@@ -1,5 +1,5 @@
-/* sprite-actor.css — 도트 인물(lib/sprite-actor.js). 크기·자리는 스크립트가 실제 화소에 맞춰 넣는다 — 여기서는 모양만.
-   --sprite-px: 도트 한 칸의 CSS 크기(스크립트가 단다) */
+/* 도트 재생기 v1 (2026-10-22) — sprite-actor.js 의 모양. 원본은 polos0117.github.io/sprite-actor.css — 다섯 공방 저장소의 lib/ 에 글자 하나 다르지 않게.
+   크기·자리는 스크립트가 실제 화소에 맞춰 넣는다 — 여기서는 모양만. --sprite-px: 도트 한 칸의 CSS 크기(스크립트가 단다) */
 /* 화면들의 단추 꼴(.prompt-page button 같은 것)을 이기도록 button.sprite-actor 와 :where 없는 두 겹 — 인물 뒤에 판이 비치면 안 된다 */
 button.sprite-actor.sprite-actor {position:absolute;left:0;min-height:0;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;color:inherit;font:inherit;cursor:pointer;
   touch-action:manipulation;-webkit-tap-highlight-color:transparent;will-change:transform;z-index:1}

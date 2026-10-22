@@ -137,6 +137,14 @@ const stepBtn = p => p.locator('.run-next .btn[data-id], #run-descend').first();
       add(`${w}×${hh} 화면 오류 없음`, s.errors.length === 0, s.errors.join(' | '));
       await s.close();
     }
+    /* ── 화소 배율이 정수가 아닌 화면 — 폴드(2.625: 도트 한 칸 3화소 = 1.14배) · 노트북 150%(1.5: 2화소 = 1.33배). 공간이 도트만큼 늘어 머리가 안 잘린다(재생기 grow) ── */
+    for (const [dpr, vp, mobile] of [[2.625, { width: 344, height: 882 }, true], [2.625, { width: 690, height: 829 }, true], [1.5, { width: 1280, height: 800 }, false]]) {
+      const f = await h.open('run.html?seed=' + SEED, opt({ viewport: vp, mobile, dpr })), q = f.page;
+      await begin(q, MINE); await readyWalker(q);
+      add('복도에서 머리가 안 잘린다 — 배율 ' + dpr + ' · 폭 ' + vp.width, await q.evaluate(([host, sel]) => { const r = document.querySelector(host).getBoundingClientRect(), as = [...document.querySelectorAll(sel)];
+        return as.length > 0 && as.every(a => { const u = a.sprite.debug().unit, b = a.getBoundingClientRect(); return b.top - 2 * u >= r.top - 0.5 && b.bottom <= r.bottom + 0.5; }); }, ['.run-corridor', '.run-corridor .sprite-actor']));
+      await f.close();
+    }
   } catch (err) {
     T.push(['검사가 끝까지 못 갔다', false, String(err && err.stack || err).slice(0, 400)]);
   } finally {

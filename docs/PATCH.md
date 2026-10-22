@@ -10,6 +10,11 @@
 
 
 
+## 2026-10-22 · claude · 폴드·150% 화면에서 도트 머리가 잘리던 것
+- lib/sprite-actor.js — 공방 모음 원본 그대로(grow: 공간이 실제 도트 크기만큼 늘어난다 — 화소 배율 2.625 면 도트가 1.14배, 1.5 면 1.33배로 커진다). 쓰는 화면 넷의 ?v=7
+- lib/bookshelf.js · dex.html · run.html — 서재 바닥·서가 상세 무대·서고 복도가 grow 를 쓴다
+- tests/shelf-sprite-screen.cjs · tests/dex-dot-screen.cjs · tests/run-sprite-screen.cjs — 폴드 겉·속(2.625)·150% 노트북(1.5)에서 머리가 안 잘리는지
+
 ## 2026-10-22 · claude · 책을 펼치면 그 책의 도트가 뛰쳐나와 화면을 거닌다
 - lib/bookshelf.js — 펼친 책(reading-dialog)이 열리고 0.56초 뒤, 그 책의 도트 인물이 있으면 그림 장에서 튀어나와 화면 바닥에 내려앉고 가로질러 걷는다(공용 재생기 popOut — dialog 안 맨 위 층, 휴대폰 1배·넓은 화면 2배). 누르면 반응, 책을 닫으면 책으로 뛰어 들어간다. 움직임 끔이면 뛰지 않고 서 있다, 도트 그림을 못 받으면 아무것도 없다. bookshelf.js ?v=12
 - lib/words.js — home.sprite.out(뛰쳐나온 도트의 이름). 일곱 화면 words.js ?v=15

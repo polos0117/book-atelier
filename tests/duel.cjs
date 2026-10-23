@@ -197,13 +197,15 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   ok(st.me.slots[0] === null && hm.power === 6 + 6 + 2 && st.me.grave.includes('frankenstein') && st.me.lost === 1, '결말에 들면 지닌 힘(6) + 조각마다 2 를 가장 센 아군(햄릿)에게 넘기고 떠난다 — 떠난 것은 패배로 세지 않는다');
 }
 { /* 춘향전 — 절개 */
-  const st = rig(['chunhyang'], ['dracula', 'hamlet'], { chapter: 1 });
+  const st = rig(['chunhyang'], ['dracula', 'hamlet', 'kosmos'], { chapter: 1 });
   const ch = put(st, 'me', 'chunhyang', 0); const dr = put(st, 'foe', 'dracula', 0);   /* 드라큘라 전개 공격 3 + 공포 → 로맨스 2 − 방패 1 = 4 */
   ok(ch.power === 3 && ch.tok === 1, '전개 — 맞으면 절개 +1');
   const MAX = data.duel.books.chunhyang.max;
   hit(st, 'foe', 0, 0); ok(ch.power === 1 && ch.flags.endured && ch.tok === Math.min(2, MAX), '닫힐 피해에 한 번 힘 1 로 버틴다 — 절개는 books.chunhyang.max 까지');
   st.chapter = 2; ch.power = 6; ch.tok = 2; const hm = put(st, 'foe', 'hamlet', 1); dr.power = 6; hm.power = 6;
-  hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 - 1 - 1) && hm.power === 6 - 2, '결말 — 공격(3, 로맨스 → 공포 −1, 드라큘라 결말 방패 1)하면 다른 상대 책 모두에게 절개(2)만큼 반격 — 맞은편은 빼고');
+  hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 - 1 - 1) && hm.power === 6 - 2, '결말 — 공격(3, 로맨스 → 공포 −1, 드라큘라 결말 방패 1)하면 다른 상대 책에게 절개(2)만큼 반격 — 맞은편은 빼고');
+  const ko = put(st, 'foe', 'kosmos', 2); dr.power = 6; hm.power = 6; ko.power = 4;
+  hit(st, 'me', 0, 0); ok(hm.power === 6 - 2 && ko.power === 4, '반격은 다른 상대 가운데 가장 센 하나에게만(서른 권에서 60.5% → 하나로)');
 }
 { /* 햄릿 — 의심 */
   const st = rig(['hamlet'], ['dracula', 'kosmos']);
@@ -444,6 +446,74 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   st.chapter = 2; const ko = put(st, 'me', 'kosmos', 2); md.power = 6; ko.power = 3;
   md.flags.entered = {}; D.BOOK.midsummer_dream.form({ data, st }, md, 2);
   ok(ko.power === 3 + 2 && md.power === 6 && !ti.flags.juice, '결말 — 모두 제짝으로: 꽃즙을 풀고, 푼 꽃즙마다 가장 약한 아군 +2');
+}
+{ /* 위대한 개츠비 — 손님 */
+  const st = rig(['great_gatsby'], ['sunzi', 'dracula']);
+  const gg = put(st, 'me', 'great_gatsby', 0);
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(gg.tok === 3, '발단 — 내 턴마다 파티, 손님 셋까지');
+  st.chapter = 1; gg.power = 7; D.BOOK.great_gatsby.chapterEnd({ data, st }, gg);
+  ok(gg.power === 7 + 3 && gg.tok === 3, '전개 — 장이 끝나 합을 셀 때 손님마다 힘 +1, 손님은 남는다');
+  st.chapter = 2; const sz = put(st, 'foe', 'sunzi', 1), dr = put(st, 'foe', 'dracula', 2);
+  gg.tok = 1; gg.flags.entered = {}; D.BOOK.great_gatsby.form({ data, st }, gg, 2);
+  ok(st.me.slots[0] === gg && D.formOf(st, dr) === 2, '손님이 하나면 결말에 아무 일도 없다');
+  gg.tok = 2; gg.flags.entered = {}; D.BOOK.great_gatsby.form({ data, st }, gg, 2);
+  ok(D.formOf(st, dr) === 0 && dr.power === D.base(data, st, dr) && D.roleOf(data, st, dr) === R('dracula', 0) && D.formOf(st, sz) === 2, '결말 — 손님 둘이면 상대의 가장 센 책(드라큘라)을 발단 폼으로 되돌린다');
+  ok(st.me.slots[0] === null && st.me.lost === 1, '자신은 닫힌다');
+}
+{ /* 모르그 가의 살인 — 흔적 */
+  const st = rig(['rue_morgue'], ['dracula', 'sunzi']);
+  const dr = put(st, 'foe', 'dracula', 0), rm = put(st, 'me', 'rue_morgue', 0);
+  ok(dr.power === 5 - (2 + 2) && dr.flags.trace, '발단 — 들어오며 친 책(정찰 2, 추리 → 공포 2)에 흔적');
+  const sz = put(st, 'foe', 'sunzi', 1); ok(!sz.flags.trace, '치지 않은 책엔 흔적이 없다');
+  st.chapter = 1; dr.power = 9; sz.power = 9; hit(st, 'me', 0, 0);
+  ok(dr.power === 9 - (2 + 2 + 1) && sz.power === 9 - 1, '전개 — 칠 때 흔적 붙은 상대 책 수만큼 +1(교란 2, 추리 → 공포 2, 흔적 1 · 옆 책에 교란 1)');
+  sz.flags.trace = true; dr.power = 9; hit(st, 'me', 0, 0); ok(dr.power === 9 - (2 + 2 + 2), '흔적이 둘이면 +2');
+  st.chapter = 2; dr.power = 6; sz.power = 4; rm.flags.entered = {}; D.BOOK.rue_morgue.form({ data, st }, rm, 2);
+  ok(st.foe.slots[0] === null && st.foe.slots[1] === sz && st.foe.lost === 1, '결말 — 흔적 붙은 상대 가운데 가장 센 책(드라큘라)을 싸우지 않고 닫는다');
+}
+{ /* 로봇(R.U.R.) — 부품 */
+  const st = rig(['rur', 'hamlet', 'kosmos'], ['treasure_island', 'sunzi']);
+  const ru = put(st, 'me', 'rur', 0), ti = put(st, 'foe', 'treasure_island', 0);
+  ok(ru.power === 7 - (2 - 1), '들어오며 맞는다(정찰 2, 모험 → SF 0, 버티기 방패 1)');
+  const hm = put(st, 'me', 'hamlet', 1); ti.power = 1; hit(st, 'me', 1, 0);
+  ok(st.foe.slots[0] === null && ru.tok === 1, '발단 — 상대 책이 닫히면 부품 +1');
+  hm.power = 1; put(st, 'foe', 'sunzi', 1);
+  ok(st.me.slots[1] === null && st.me.grave.includes('hamlet') && ru.tok === 2, '아군이 닫혀도 부품 +1');
+  st.chapter = 1; start(st, 'me');
+  ok(st.me.hand.includes('hamlet') && !st.me.grave.includes('hamlet') && ru.tok === 0, '전개 — 부품 둘로 내 서가의 닫힌 책을 손패로');
+  ru.tok = 2; st.me.grave.push('alice'); start(st, 'me'); ok(ru.tok === 2 && st.me.grave.includes('alice'), '조립은 장마다 한 번');
+  st.chapter = 2; st.me.grave = ['alice', 'dracula']; ru.flags.entered = {}; D.BOOK.rur.form({ data, st }, ru, 2);
+  ok(ru.flags.revolt === 2, '결말 — 봉기: 내 서가의 닫힌 책 수(2)');
+  const sz = u(st, 'foe', 1); sz.power = 9; put(st, 'me', 'kosmos', 1);
+  ok(sz.power === 9 - (1 - 1 + 2), '다른 아군이 칠 때 닫힌 책마다 +1(지원 1, 과학 → 사상 −1, 봉기 2)');
+}
+{ /* 군주론 — 두려움 */
+  const st = rig(['the_prince', 'don_quixote'], ['hamlet', 'alice', 'dracula']);
+  const pr = put(st, 'me', 'the_prince', 0), hm = put(st, 'foe', 'hamlet', 0), al = put(st, 'foe', 'alice', 1);
+  start(st, 'me'); ok(hm.flags.fear && !al.flags.fear, '발단 — 가장 약한 상대 책(햄릿 4)에 두려움');
+  start(st, 'me'); ok(al.flags.fear, '다음 턴엔 아직 두려움이 없는 가장 약한 책');
+  st.chapter = 1; pr.power = 7; hm.power = 9; al.power = 9; hit(st, 'foe', 0, 0);
+  ok(pr.power === 7, '전개 — 두려움 붙은 책이 치면 피해 −1(교란 2, 비극 → 사상 0 − 방패 1 − 1 = 0)');
+  const dq = put(st, 'me', 'don_quixote', 1); hit(st, 'foe', 1, 1);
+  ok(dq.power === 5 - (2 - 1) && pr.power === 7, '아군을 칠 때도 −1(교란 2, 동화 → 희극 0) — 옆으로 튄 교란 1 도 −1');
+  const dr = put(st, 'foe', 'dracula', 2);
+  st.chapter = 2; pr.flags.entered = {}; D.BOOK.the_prince.form({ data, st }, pr, 2);
+  ok(hm.flags.bound && al.flags.bound && !dr.flags.bound && D.targets({ data, st }, hm).length === 0, '결말 — 두려움 붙은 상대 책 둘 모두 이 장 동안 묶인다');
+}
+{ /* 종의 기원 — 적응 */
+  const st = rig(['origin_of_species'], ['dracula', 'hamlet', 'alice']);
+  const dr = put(st, 'foe', 'dracula', 0), os = put(st, 'me', 'origin_of_species', 0);
+  ok(dr.power === 5 - (2 + 2), '들어오며 친다(정찰 2, 과학 → 공포 2)');
+  const hm = put(st, 'foe', 'hamlet', 1);
+  start(st, 'me'); start(st, 'me'); start(st, 'me'); start(st, 'me');
+  ok(os.flags.adapt.join() === '공포,비극', '발단 — 내 턴마다 상대 장르 하나를 익힌다(맞은편 먼저, 판에 없는 장르는 못 익힌다)');
+  st.chapter = 1; os.power = 7; dr.power = 9; hit(st, 'foe', 0, 0);
+  ok(os.power === 7, '전개 — 익힌 장르(공포)에게 받는 피해 −2(공격 3, 공포 → 과학 −1, 방패 1)');
+  st.chapter = 2; dr.power = 7; hm.power = 6; const al = put(st, 'foe', 'alice', 2); al.power = 3;
+  os.flags.entered = {}; D.BOOK.origin_of_species.form({ data, st }, os, 2);
+  ok(st.foe.slots[2] === null && st.foe.slots[0] === dr && st.foe.slots[1] === hm, '결말 — 익힌 장르가 둘이면 자연선택: 가장 약한 상대 책이 닫힌다');
+  os.flags.adapt = ['공포']; os.flags.entered = {}; D.BOOK.origin_of_species.form({ data, st }, os, 2);
+  ok(st.foe.slots[1] === hm, '익힌 장르가 하나면 도태가 없다');
 }
 /* ── 자동 넘기기 — 할 수 있는 것이 없으면 넘긴다 ── */
 {

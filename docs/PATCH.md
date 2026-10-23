@@ -10,6 +10,17 @@
 
 
 
+## 2026-10-23 · claude · 책 다섯 권 더 — 위대한 개츠비·모르그 가의 살인·로봇(R.U.R.)·군주론·종의 기원
+- data/book-design.json — 여섯 번째 다섯 권 설계표: 비극·추리·SF·사상·과학에 세 번째 책(이제 열 장르에 세 권씩, 서른 권). 지역 처음 넷 — 롱아일랜드·외딴섬 공장·르네상스 피렌체·갈라파고스. 정한 말 열다섯(재료 gilt_invitations·gazette_columns·blueprint_sheets·sealed_dispatches·specimen_plates, 자세 dock_reach·candle_deduce·assembly_rise·throne_lean·specimen_sketch, 팔레트 champagne_green·gaslight_umber·factory_steel·medici_crimson·volcanic_teal). 다섯 권 모두 한국·해외 보호가 끝난 책
+- lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯
+- lib/duel.js — `BOOK` 에 효과 다섯: 개츠비 손님(파티)·장 끝 손님마다 +1·결말에 센 상대를 발단으로 되돌리고 스러짐, 모르그 가 흔적·흔적마다 +1·결말에 흔적 붙은 가장 센 책을 닫음, 로봇 부품(닫힐 때마다)·서가의 닫힌 책을 손패로·봉기(닫힌 책마다 아군 +1), 군주론 두려움(가장 약한 책부터)·두려운 책의 피해 −1·결말에 두려운 책 모두 묶음, 종의 기원 장르 익히기·익힌 장르 피해 −2·결말 자연선택. 새 갈고리는 없다
+- lib/duel.js · data/book-design.json — 춘향전 결말 반격을 다른 상대 모두 → 가장 센 하나로(서른 권에서 60.5% → 59.4%)
+- data/duel.json — 새 다섯 권의 수. 3,000판에서 서른 권 모두 42~60%, 선공 47.2%(보정 +5 그대로). 모르그 가 결말이 0회라 흔적은 발단·전개 내내·문턱 하나, 군주론·종의 기원도 발단·전개 내내 모은다
+- lib/words.js · lib/duel-ui.js — 규칙 기록 말 열다섯, 판 위 깃발 「흔적」·「두려움」. 화면들의 words.js ?v=16, duel.js ?v=4, duel-ui.js ?v=3, book-frame.js ?v=3, prompt-spec.js ?v=3
+- tests/duel.cjs — 새 다섯 권 규칙 확인 27가지, 춘향전 반격이 하나에게만
+- tests/run.cjs — 「이기면 전리품 둘」 이 씨앗 하나의 전리품 둘이 덱 밖이라고 가정했다(서른 권에서 하나가 덱 안) — 덱에 있는 책을 뺀 전리품과 견준다
+- docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md — 4절 표에 다섯 줄, 5절 균형을 서른 권으로 다시, 9-5절 여섯 번째 다섯 권, "스물다섯 권" → "서른 권"
+
 ## 2026-10-22 · claude · 폴드·150% 화면에서 도트 머리가 잘리던 것
 - lib/sprite-actor.js — 공방 모음 원본 그대로(grow: 공간이 실제 도트 크기만큼 늘어난다 — 화소 배율 2.625 면 도트가 1.14배, 1.5 면 1.33배로 커진다). 쓰는 화면 넷의 ?v=7
 - lib/bookshelf.js · dex.html · run.html — 서재 바닥·서가 상세 무대·서고 복도가 grow 를 쓴다

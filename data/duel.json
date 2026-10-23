@@ -55,6 +55,11 @@
   "arabian_nights": {"max": 3},
   "guunmong": {"max": 3, "glory": 1},
   "call_of_cthulhu": {"max": 3, "need": 2},
-  "midsummer_dream": {"feast": 2}
+  "midsummer_dream": {"feast": 2},
+  "great_gatsby": {"max": 3, "gala": 1, "need": 2},
+  "rue_morgue": {"max": 3, "analyze": 1, "need": 1},
+  "rur": {"max": 3, "build": 2, "revolt": 1},
+  "the_prince": {"dread": 1, "need": 2},
+  "origin_of_species": {"max": 3, "adapt": 2, "need": 2}
  }
 }

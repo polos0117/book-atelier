@@ -10,6 +10,11 @@
 
 
 
+## 2026-10-24 · claude · 일상컷 얼굴이 첫 그림의 각도를 따라 하던 것
+- lib/prompt-spec.js · lib/prompt-book.js — 일상컷 프롬프트에 ANGLE 줄: 첨부한 첫 그림은 누구인지만 정하고, 고개 각도·기울기·시선·화면 속 얼굴 크기·카메라 높이·자르기는 따르지 않는다 — 장면 설정의 방향대로 고개를 돌리고(옆얼굴·3/4·내려다보기·딴 데 보기) 그 각도에서 자연스럽게, 생김새는 그대로. 첫 그림의 정면 3/4 얼굴이 일상컷마다 되풀이돼 부자연스러웠다. 줄 이름을 "POSE AND CAMERA" 로 했다가 "CAMERA:" 가 시대 줄(ERA:) 검사에 걸려 ANGLE 로. prompt.html 의 prompt-spec.js ?v=4 · prompt-book.js ?v=2
+- IMAGE_RULES.md — 2절 표의 일상컷 칸
+- tests/prompt-book.cjs — 일상컷에만 ANGLE 줄, 장면 설정 앞
+
 ## 2026-10-23 · claude · 책 다섯 권 더 — 위대한 개츠비·모르그 가의 살인·로봇(R.U.R.)·군주론·종의 기원
 - data/book-design.json — 여섯 번째 다섯 권 설계표: 비극·추리·SF·사상·과학에 세 번째 책(이제 열 장르에 세 권씩, 서른 권). 지역 처음 넷 — 롱아일랜드·외딴섬 공장·르네상스 피렌체·갈라파고스. 정한 말 열다섯(재료 gilt_invitations·gazette_columns·blueprint_sheets·sealed_dispatches·specimen_plates, 자세 dock_reach·candle_deduce·assembly_rise·throne_lean·specimen_sketch, 팔레트 champagne_green·gaslight_umber·factory_steel·medici_crimson·volcanic_teal). 다섯 권 모두 한국·해외 보호가 끝난 책
 - lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯

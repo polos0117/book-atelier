@@ -48,6 +48,7 @@ assert(!off.includes('FACE (') && !off.includes('SILHOUETTE:'), '끄면 빠진�
 /* 4. 일상컷 — 갈래·예시·세 축, 서고의 일상 */
 const cas = P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', axes: { overall_intensity: 'strong', skin_exposure: 'bold' } });
 assert(cas.includes(S.BOOK_LINES.casualWardrobe), '일상컷은 첨부 그림의 옷을 버리고 장면의 옷을 입는다');
+assert(cas.includes(S.BOOK_LINES.casualPose) && cas.indexOf(S.BOOK_LINES.casualPose) < cas.indexOf('SCENE (chosen)'), '일상컷은 첨부 그림의 고개 각도·시선·카메라를 따르지 않는다 — 장면 설정 앞에');
 assert(cas.includes('Stitching a book block') && cas.includes('overall_intensity: strong') && cas.startsWith('INPUT: the attached image'), '일상컷 조립');
 assert(!/Pok[eé]mon|포켓몬/.test(JSON.stringify(S)), '표에 포켓몬 말이 남았다');
 for (const r of S.CATS) if (r[0] !== 'auto_random' && r[0] !== '__custom__') assert((S.EXAMPLE_MAP[r[0]] || []).length, r[0] + ' 예시가 없다');
@@ -108,6 +109,7 @@ assert(P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMod
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, pose: 'standing' }).includes('STANCE'), '자세를 고르면 기본 자세 줄이 빠진다');
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, action: { category: S.ACTION_CATEGORIES[0].key } }).includes('STANCE'), '연출을 고르면 기본 자세 줄이 빠진다');
 for (const m of ['open', 'casual']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes('PRESENTATION:'), m + ' 은 첨부 그림 그대로 — 연출 줄 없음');
+for (const m of ['form', 'open']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes(S.BOOK_LINES.casualPose), m + ' 에는 얼굴 각도 줄이 없다');
 assert(!/Default stance follows the SILHOUETTE/.test(S.BOOK_LINES.createOutput) && pf.join('\n').includes('attitude: '), '실루엣 자세는 태도로만');
 // 폼마다 자세 — 설계표 pose 가 기본 STANCE. 고른 자세가 있으면 빠지고, 손 줄은 "빈손" 대신 자세를 따른다
 for (const bk of design.books) for (const stage of Object.keys(V.form_key)) {

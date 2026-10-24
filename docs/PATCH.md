@@ -10,6 +10,16 @@
 
 
 
+## 2026-10-24 · claude · 책 다섯 권 더 — 삼총사·오즈의 마법사·제인 에어·지킬 박사와 하이드·허생전
+- data/book-design.json — 일곱 번째 다섯 권 설계표: 모험·동화·로맨스·공포·희극에 네 번째 책(서른다섯 권). 지역 처음 둘 — 캔자스(와 오즈)·잉글랜드 북부 황야. 정한 말 열다섯(재료 challenge_letters·brick_storybook·governess_diary·split_casebook·ledger_coins, 자세 lunge_salute·road_skip·wind_shawl·potion_toast·coin_toss, 팔레트 musketeer_azure·emerald_brick·heather_slate·fog_violet·brine_brass). 다섯 권 모두 한국·해외 보호가 끝난 책 — 오즈는 1939년 영화(루비 구두)를 `adaptations` 에 적고 원작의 은 구두로
+- lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯
+- lib/duel.js — `BOOK` 에 효과 다섯: 삼총사 맹세(발단·전개, 동료 둘)·동료 피해 반을 대신 받기·결말에 셋이 함께 친다, 오즈 소원(발단에 만난 아군, 셋까지)·커튼(가장 큰 덧힘을 걷기)·결말 은 구두(떠나며 소원마다 +3), 제인 에어 인내(힘 1 되찾기)·동등(센 표적에 차이의 반)·결말 가장 센 상대만큼, 지킬 약(셋까지)·전개 하이드(약마다 +2)·결말 폭주(맞은편을 약만큼, 자신 −1), 허생전 만 냥(돈 셋)·사재기(공격 대신 묶고 힘 2 옮기기)·결말 바다에 던지기(돈마다 +2). 새 갈고리는 없다
+- lib/duel.js · data/book-design.json — 춘향전 결말 반격은 공격할 때만(들어오며 친 것·절정 빼고). 서른다섯 권에서 60.2% → 59.3%
+- data/duel.json — 새 다섯 권의 수. 3,000판에서 서른다섯 권 모두 44~60%, 선공 47.5%(보정 +5 그대로). 삼총사 결말이 600판에서 0회라 맹세는 발단·전개 내내
+- lib/words.js · lib/duel-ui.js — 규칙 기록 말 열다섯, 판 위 깃발 「동료」·「소원」. 화면들의 words.js ?v=17, duel.js ?v=5, duel-ui.js ?v=4, book-frame.js ?v=4, prompt-spec.js ?v=5
+- tests/duel.cjs — 새 다섯 권 규칙 확인 27가지, 춘향전 반격이 절정엔 없다
+- docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md — 4절 표에 다섯 줄, 5절 균형을 서른다섯 권으로 다시, 9-6절 일곱 번째 다섯 권, "서른 권" → "서른다섯 권"
+
 ## 2026-10-24 · claude · 일상컷 얼굴이 첫 그림의 각도를 따라 하던 것
 - lib/prompt-spec.js · lib/prompt-book.js — 일상컷 프롬프트에 ANGLE 줄: 첨부한 첫 그림은 누구인지만 정하고, 고개 각도·기울기·시선·화면 속 얼굴 크기·카메라 높이·자르기는 따르지 않는다 — 장면 설정의 방향대로 고개를 돌리고(옆얼굴·3/4·내려다보기·딴 데 보기) 그 각도에서 자연스럽게, 생김새는 그대로. 첫 그림의 정면 3/4 얼굴이 일상컷마다 되풀이돼 부자연스러웠다. 줄 이름을 "POSE AND CAMERA" 로 했다가 "CAMERA:" 가 시대 줄(ERA:) 검사에 걸려 ANGLE 로. prompt.html 의 prompt-spec.js ?v=4 · prompt-book.js ?v=2
 - IMAGE_RULES.md — 2절 표의 일상컷 칸

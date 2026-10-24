@@ -101,13 +101,13 @@
 }
 </style>
 <script src="lib/workspace-theme.js?v=4"></script>
-<script src="lib/words.js?v=16"></script>
+<script src="lib/words.js?v=17"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/today.js?v=1"></script>
 <script src="lib/speech.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
-<script src="lib/duel.js?v=4"></script>
+<script src="lib/duel.js?v=5"></script>
 <script src="lib/run.js?v=1"></script>
 <script src="lib/shelf-gen.js?v=1"></script>
 <script src="lib/scene-motion.js?v=1"></script>
@@ -123,7 +123,7 @@ import { h, render } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
 import { WorkspaceHeader } from './lib/workspace-ui.js?v=7';
-import { useData, picOf, Pic, Match, Scene, Zoom, zoomKey, speak } from './lib/duel-ui.js?v=3';
+import { useData, picOf, Pic, Match, Scene, Zoom, zoomKey, speak } from './lib/duel-ui.js?v=4';
 const html = htm.bind(h);
 const W = window.W, D = window.AtelierDuel, R = window.AtelierRun, SH = window.AtelierShelf, T = window.AtelierToday;
 const STORE = 'book_run_v1', REC = 'book_run_rec_v1', ROOM = 'book', AI_DELAY = 650, WASM = 'lib/shelf-gen.wasm?v=1';

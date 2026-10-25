@@ -47,6 +47,11 @@ assert(!off.includes('FACE (') && !off.includes('SILHOUETTE:'), '끄면 빠진�
 
 /* 4. 일상컷 — 갈래·예시·세 축, 서고의 일상 */
 const cas = P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', axes: { overall_intensity: 'strong', skin_exposure: 'bold' } });
+/* 뒤돌아보기 — 등이 카메라를 보는 각도·돌아보는 자세에만 LOOK-BACK 줄(pkm 2026-10-25 같은 문제) */
+for (const x of [{ orient: 'rear_3q' }, { orient: 'three_quarter_back' }, { orient: 'over_shoulder' }, { orient: 'back' }, { pose: 'turning_back' }])
+  assert(P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes(S.BOOK_LINES.casualLookBack), '뒤돌아보기 줄 ' + JSON.stringify(x));
+for (const x of [{ orient: 'front_3q' }, { pose: 'walking' }, {}])
+  assert(!P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes('LOOK-BACK:'), '뒤돌아보기 줄 없음 ' + JSON.stringify(x));
 assert(cas.includes(S.BOOK_LINES.casualWardrobe), '일상컷은 첨부 그림의 옷을 버리고 장면의 옷을 입는다');
 assert(cas.includes(S.BOOK_LINES.casualPose) && cas.indexOf(S.BOOK_LINES.casualPose) < cas.indexOf('SCENE (chosen)'), '일상컷은 첨부 그림의 고개 각도·시선·카메라를 따르지 않는다 — 장면 설정 앞에');
 assert(cas.includes('Stitching a book block') && cas.includes('overall_intensity: strong') && cas.startsWith('INPUT: the attached image'), '일상컷 조립');

@@ -10,6 +10,9 @@
 
 
 
+## 2026-10-25 · claude · 바닥에 앉는 자세 — 다리·발이 뭉개지던 것
+- lib/prompt-spec.js · prompt.html — prompt-spec.js ?v=6. 일상컷의 바닥에 앉는 자세 다섯(바닥에 앉기·무릎 대기·한쪽 무릎 세우기·옆으로 앉기·책상다리) 문장에 무릎이 향하는 쪽·정강이가 놓이는 곳·두 발의 자리를 적었다. "다리를 한쪽으로 접어 앉는다" 처럼 접는다는 말만 있으면 뒤에서 본 각도에서 다리가 몸에 가려 모델이 짐작해 그렸고, 다리가 방석에 섞이거나 발이 무릎 옆에 튀어나왔다(pkm 공방과 같은 문장)
+
 ## 2026-10-24 · claude · 책 다섯 권 더 — 삼총사·오즈의 마법사·제인 에어·지킬 박사와 하이드·허생전
 - data/book-design.json — 일곱 번째 다섯 권 설계표: 모험·동화·로맨스·공포·희극에 네 번째 책(서른다섯 권). 지역 처음 둘 — 캔자스(와 오즈)·잉글랜드 북부 황야. 정한 말 열다섯(재료 challenge_letters·brick_storybook·governess_diary·split_casebook·ledger_coins, 자세 lunge_salute·road_skip·wind_shawl·potion_toast·coin_toss, 팔레트 musketeer_azure·emerald_brick·heather_slate·fog_violet·brine_brass). 다섯 권 모두 한국·해외 보호가 끝난 책 — 오즈는 1939년 영화(루비 구두)를 `adaptations` 에 적고 원작의 은 구두로
 - lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯

@@ -28,7 +28,7 @@ KOREA_LAST_EXPIRED_DEATH = 1962   # 1962년 이전 사망은 옛 사후 50년으
 SIL_MIN, FACE_MIN = 3, 2
 # 옛 3줄(lane) 엔진 전제의 말 — 새 결투(docs/DUEL_DESIGN.md)에는 줄이 없다. "줄기·줄어든다" 는 걸리지 않게 조사까지 본다
 LANE_WORDS = re.compile(r"(이|다른|같은|뒷|앞|결말|발단|전개|한) ?줄|줄(을|에|로|마다| 전체| 안| 하나)")
-TEXT = ["source_scope", "persona", "desire", "conflict", "era", "region", "form_material", "title", "key"]
+TEXT = ["source_scope", "persona", "desire", "conflict", "era", "region", "place", "form_material", "title", "key"]   # place — 일상컷 「이야기 속 장소」 의 영어 한 줄(2026-10-26)
 
 
 def check(doc):

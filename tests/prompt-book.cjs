@@ -52,6 +52,12 @@ for (const x of [{ orient: 'rear_3q' }, { orient: 'three_quarter_back' }, { orie
   assert(P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes(S.BOOK_LINES.casualLookBack), '뒤돌아보기 줄 ' + JSON.stringify(x));
 for (const x of [{ orient: 'front_3q' }, { pose: 'walking' }, {}])
   assert(!P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes('LOOK-BACK:'), '뒤돌아보기 줄 없음 ' + JSON.stringify(x));
+/* 이야기 속 장소는 설계표 place, 각색은 책의 시대·지역 한 줄(2026-10-26) — 다른 갈래에는 안 싣는다 */
+const sp = P.buildCasual({ book: b, styleText: text, cat: 'story_place', ex: 'sp_walk' });
+assert(b.place && sp.includes('STORY PLACE: the setting of «' + b.title + '» — ' + b.place + '.') && !sp.includes('ADAPTATION:'), '이야기 속 장소 줄');
+const ad = P.buildCasual({ book: b, styleText: text, cat: 'stage_adaptation', ex: 'ad_fitting' });
+assert(ad.includes('ADAPTATION: the production adapts «' + b.title + '»') && ad.includes(b.era) && !ad.includes('STORY PLACE:'), '각색 줄');
+assert(!cas.includes('STORY PLACE:') && !cas.includes('ADAPTATION:') && !P.buildCasual({ book: b, styleText: text, cat: 'literary_salon', ex: 'ls_reading' }).match(/STORY PLACE:|ADAPTATION:/), '다른 갈래엔 없다');
 assert(cas.includes(S.BOOK_LINES.casualWardrobe), '일상컷은 첨부 그림의 옷을 버리고 장면의 옷을 입는다');
 assert(cas.includes(S.BOOK_LINES.casualPose) && cas.indexOf(S.BOOK_LINES.casualPose) < cas.indexOf('SCENE (chosen)'), '일상컷은 첨부 그림의 고개 각도·시선·카메라를 따르지 않는다 — 장면 설정 앞에');
 assert(cas.includes('Stitching a book block') && cas.includes('overall_intensity: strong') && cas.startsWith('INPUT: the attached image'), '일상컷 조립');

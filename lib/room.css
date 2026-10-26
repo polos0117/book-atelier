@@ -18,6 +18,11 @@
   --room-rgb:237 243 232;
   --room-position:center 47%;--room-mobile-position:68% 38%;
 }
+:root[data-theme="candlelit"] {
+  --room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/candlelit-study.webp');
+  --room-rgb:25 21 29;
+  --room-position:center 48%;--room-mobile-position:72% 43%;
+}
 :root[data-background="off"] {--room-image:none}
 body.dex-page,body.prompt-page {
   background-color:var(--room-paper);
@@ -71,6 +76,7 @@ html[data-background="off"] .room-preview {grid-template-columns:1fr}
  :root[data-theme="moonlit"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/moonlit-archive-small.webp')}
  :root[data-theme="hanok"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/quiet-study-small.webp')}
  :root[data-theme="forest"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/forest-study-small.webp')}
+ :root[data-theme="candlelit"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/candlelit-study-small.webp')}
  .gallery-intro {display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:156px;margin:12px 0 14px;padding:38px 18px 14px;gap:0;
   background-image:linear-gradient(0deg,rgb(var(--room-rgb)) 0%,rgb(var(--room-rgb) / .96) 24%,rgb(var(--room-rgb) / .73) 48%,rgb(var(--room-rgb) / 0) 85%),var(--room-image);
   background-position:center,var(--room-mobile-position);}

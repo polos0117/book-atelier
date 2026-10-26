@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="lib/workspace.css?v=7">
+<link rel="stylesheet" href="lib/workspace.css?v=8">
 <link rel="stylesheet" href="lib/gallery.css?v=4">
 <link rel="stylesheet" href="lib/duel.css?v=1">
 <style>
@@ -100,8 +100,8 @@
   .run-screen[data-screen="map"] .run-deck {flex-wrap:wrap;overflow:visible}
 }
 </style>
-<script src="lib/workspace-theme.js?v=4"></script>
-<script src="lib/words.js?v=17"></script>
+<script src="lib/workspace-theme.js?v=5"></script>
+<script src="lib/words.js?v=18"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/today.js?v=1"></script>
 <script src="lib/speech.js?v=1"></script>
@@ -114,7 +114,7 @@
 <script src="lib/sprite-actor.js?v=7"></script>
 <link rel="stylesheet" href="lib/sprite-actor.css?v=4">
 <link rel="stylesheet" href="lib/scene-motion.css?v=1">
-<link rel="stylesheet" href="lib/room.css?v=4">
+<link rel="stylesheet" href="lib/room.css?v=5">
 </head>
 <body class="prompt-page duel-page run-page">
 <div class="wrap"><div id="app"></div></div>
@@ -122,7 +122,7 @@
 import { h, render } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=7';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=8';
 import { useData, picOf, Pic, Match, Scene, Zoom, zoomKey, speak } from './lib/duel-ui.js?v=4';
 const html = htm.bind(h);
 const W = window.W, D = window.AtelierDuel, R = window.AtelierRun, SH = window.AtelierShelf, T = window.AtelierToday;

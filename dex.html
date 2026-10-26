@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="lib/workspace.css?v=7">
+<link rel="stylesheet" href="lib/workspace.css?v=8">
 <link rel="stylesheet" href="lib/book-frame.css?v=1">
 <style>
 /* 색·밀도 토막은 lib/workspace.css 한 곳에 있다. 여기는 뼈대만 — pkm 도감과 같다 */
@@ -190,8 +190,8 @@ body.zoomed {overflow:hidden}
 .gal img {display:block;width:100%;border:1px solid var(--line);border-radius:8px}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
-<script src="lib/workspace-theme.js?v=4"></script>
-<script src="lib/words.js?v=17"></script>
+<script src="lib/workspace-theme.js?v=5"></script>
+<script src="lib/words.js?v=18"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
@@ -205,7 +205,7 @@ body.zoomed {overflow:hidden}
 <script src="lib/favorites.js?v=1"></script>
 <link rel="stylesheet" href="lib/gallery.css?v=6">
 <link rel="stylesheet" href="lib/landscape.css?v=4">
-<link rel="stylesheet" href="lib/room.css?v=4">
+<link rel="stylesheet" href="lib/room.css?v=5">
 </head>
 <body class="dex-page">
 <div id="app"></div>
@@ -214,7 +214,7 @@ body.zoomed {overflow:hidden}
 import { h, render, Fragment } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=7';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=8';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame, MOTION = window.AtelierMotion;
 /* 즐겨찾기 — 목록은 다른 탭(공방 모음)에서 빼도 따라온다. 알림 자리는 늘 깔아 둔다(화면 읽기 프로그램이 새로 생긴 칸의 말을 놓치기 쉽다) */

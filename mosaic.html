@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="lib/workspace.css?v=7">
+<link rel="stylesheet" href="lib/workspace.css?v=8">
 <style>
 /* 한 자리만 구른다(.wrap) — 껍데기(.prompt-page)가 화면 높이로 잠근다. 그림은 왼쪽(휴대폰 세로는 위), 설정은 오른쪽(아래) */
 .mosaic-page .wrap {max-width:1440px}
@@ -78,15 +78,15 @@
 }
 @media (prefers-reduced-motion:reduce) {.mosaic-progress progress {transition:none}}
 </style>
-<script src="lib/workspace-theme.js?v=4"></script>
-<script src="lib/words.js?v=17"></script>
+<script src="lib/workspace-theme.js?v=5"></script>
+<script src="lib/words.js?v=18"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
 <script src="lib/mosaic.js?v=1"></script>
 <link rel="stylesheet" href="lib/gallery.css?v=6">
 <link rel="stylesheet" href="lib/landscape.css?v=4">
-<link rel="stylesheet" href="lib/room.css?v=4">
+<link rel="stylesheet" href="lib/room.css?v=5">
 </head>
 <body class="prompt-page mosaic-page">
 <div class="wrap"><div id="app"></div></div>
@@ -94,7 +94,7 @@
 import { h, render } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useMemo, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=7';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=8';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, M = window.AtelierMosaic;
 const STORE = 'book_mosaic_v1', WASM = 'lib/mosaic.wasm?v=2', INDEX = 'data/art-index.json';

@@ -35,7 +35,8 @@ for (const b of design.books) for (const stage of Object.keys(V.form_key)) {
     longest = Math.max(longest, P.words(t)); n++;
   }
 }
-assert(longest <= 760, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 760 낱말을 넘는다: ' + longest);
+// 몸 개수 줄 BODY 와 일상컷 HAND TASK 로 40낱말쯤 늘었다(2026-10-27)
+assert(longest <= 800, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 800 낱말을 넘는다: ' + longest);
 
 /* 3. 직접 고른 얼굴·체형은 설계표 묶음을 이긴다(그 묶음이 FACE·SILHOUETTE 줄에서 빠진다) */
 const b = design.books[0];
@@ -135,7 +136,9 @@ assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: 
   .match(/hair color: #1B2A6B \(dark blue\)[\s\S]*both eyes are #D4A017 \(vivid medium golden amber\)/), '머리·눈 RGB');
 assert.equal(P.hexName('#ffffff'), 'white');
 // 손 — 엄지가 반대쪽에 붙은 손이 나왔다(햄릿 일상컷, 탁자 짚은 오른손). 손 줄은 엄지 자리와 손가락 차례까지
-assert(S.BOOK_LINES.hands.includes('thumb on its inner side') && S.BOOK_LINES.handsKeep.includes('mirrored'), '손 줄에 엄지 방향');
+// 손 줄은 짧은 긍정형 — 손가락 개수·금지 나열이 손에 주의를 끌었다(2026-10-27). 몸 줄은 팔·다리 개수만
+assert(!/thumb|fingers|never|mirrored|thrust/.test(S.BOOK_LINES.hands + S.BOOK_LINES.handsKeep + S.BOOK_LINES.handsDefault + S.BOOK_LINES.handsPose), '손 줄에 손가락 개수·금지어');
+assert(S.BOOK_LINES.body.includes('two arms and two legs') && S.BOOK_LINES.handsCasual.startsWith('HAND TASK:'), '몸 줄·일상컷 손 줄');
 // 경찰·간호사 — 금지어만 있어 부품이 없었다. 옷 부품 + 동작, 극장 말 없이(햄릿이 무대 의상으로 끌려갔다)
 for (const ex of ['adult_police', 'adult_nurse']) {
   const t = P.buildCasual({ book: design.books.find(x => x.key === 'hamlet'), styleText: text, cat: 'adult_roleplay', ex });
@@ -169,7 +172,7 @@ assert(ao.includes('wins over her book') && ao.includes('mandarin collar') && ao
 for (const [cat, rows] of Object.entries(S.EXAMPLE_MAP)) for (const r of rows) if (r[0] && r[0] !== '__custom__') {
   assert(r[5] || S.EXAMPLE_DETAIL[r[0]], cat + ' · ' + r[0] + ' 장면 문장이 없다 — 이름만 실린다(lib/prompt-spec.js EXAMPLE_DETAIL)');
   const t = P.buildCasual({ book: b, styleText: text, cat, ex: r[0] });
-  assert(P.words(t) <= 760, cat + ' · ' + r[0] + ' 일상컷이 760 낱말을 넘는다');
+  assert(P.words(t) <= 800, cat + ' · ' + r[0] + ' 일상컷이 800 낱말을 넘는다');
 }
 assert(!/thruster|cockpit|Gundam|Pok[eé]mon/i.test(Object.values(S.EXAMPLE_DETAIL).join(' ')), '예시 풀이에 건담·포켓몬 말이 없다');
 // 한복 — 한 낱말로는 한푸로 갔다(춘향전). 새 인물은 실루엣에, 이어가기는 GARMENT 줄에 구조를 싣는다

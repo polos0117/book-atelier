@@ -10,6 +10,10 @@
 
 
 
+## 2026-10-27 · claude · 생성 프롬프트 — 몸 개수 줄, 손 줄은 짧은 긍정형, 일상컷 손 규칙
+- lib/prompt-spec.js · lib/prompt-book.js — pkm 과 같게. 폼·이어가기·개방·일상컷 모두에 BODY 줄(머리 하나·팔 둘·다리 둘, 제 관절에 붙고 사람처럼 굽음, 손·발은 가려져도 된다). 손가락 개수는 적지 않는다 — 쥐거나 가려져야 할 구도에서도 다섯을 다 보이려 한다. HANDS 줄은 "natural human hands." — "엄지 하나와 손가락 넷, 엄지는 안쪽, 합쳐지거나 … 더 생기지 않게" 는 금지를 늘어놓아 손에 주의를 끌었다(pkm 그림 저장소의 팔·다리·손 고침이 10-21 부터 늘었다). 손 기본 자세·자세 있는 손·개방의 손 줄에서도 금지어를 뺐다(빈손은 empty 로). 일상컷에 HAND TASK 줄(자세·장면대로, 쉬는 손은 편하게, 가려져도 된다 — 사용자 문장).
+- tests/prompt-book.cjs — 손 줄에 손가락 개수·금지어가 없는지, 몸 줄·HAND TASK, 길이 한도 760 → 800. prompt.html 판 올림.
+
 ## 2026-10-26 · gpt · 어두운 공간 테마 촛불 서재 추가
 - lib/workspace-theme.js · lib/workspace.css — 다섯 번째 공간 candlelit. 짙은 자주빛 바탕·호박빛 강조색·어두운 기본 컨트롤을 적용하고 선택값과 모바일 브라우저 상단 색을 저장한다.
 - lib/room.css — 새 촛불 서재 배경과 휴대폰 축소본을 연결했다. 배경은 그림 저장소 backgrounds/, 생성·변환 기록은 records/backgrounds/candlelit-study.json에 둔다.

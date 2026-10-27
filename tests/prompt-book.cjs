@@ -122,7 +122,9 @@ assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText:
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, action: { category: S.ACTION_CATEGORIES[0].key } }).includes('STANCE'), '연출을 고르면 기본 자세 줄이 빠진다');
 for (const m of ['open', 'casual']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes('PRESENTATION:'), m + ' 은 첨부 그림 그대로 — 연출 줄 없음');
 for (const m of ['form', 'open']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes(S.BOOK_LINES.casualPose), m + ' 에는 얼굴 각도 줄이 없다');
-assert(!/Default stance follows the SILHOUETTE/.test(S.BOOK_LINES.createOutput) && pf.join('\n').includes('attitude: '), '실루엣 자세는 태도로만');
+// 실루엣 자세 축은 폼 자세(STANCE)가 있으면 빠진다 — 두 자세가 겹치면 팔이 하나 더 생기려 했다(game 마리오 엔딩, 2026-10-27)
+assert(!/Default stance follows the SILHOUETTE/.test(S.BOOK_LINES.createOutput) && !pf.join('\n').includes('attitude: '), '폼 자세가 있으면 실루엣 자세는 빠진다');
+assert(pf.join('\n').includes('nothing in front of her but what she holds') && pf.join('\n').includes('An object named in FORM or in her pose stays.'), '쥔 것은 앞을 가려도 되고, 폼·자세가 쥔 물건은 HOLD BACK 에서 빠지지 않는다');
 // 폼마다 자세 — 설계표 pose 가 기본 STANCE. 고른 자세가 있으면 빠지고, 손 줄은 "빈손" 대신 자세를 따른다
 for (const bk of design.books) for (const stage of Object.keys(V.form_key)) {
   const t = P.buildPrompt({ outputMode: 'form', book: bk, stage, styleText: text });

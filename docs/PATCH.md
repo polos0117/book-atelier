@@ -10,6 +10,10 @@
 
 
 
+## 2026-10-27 · claude · 가벼운 조깅 자세 — 옷차림은 그대로
+- lib/prompt-spec.js — 자세 「가벼운 조깅」 영어 문장 "Jog lightly with compact arm movement and a believable running step." 이 의상까지 조깅복으로 바꿨다(사용자). "Move at a light, quick jog … ; her outfit stays exactly as described." 로 — 금지어 대신 옷은 고른 그대로라고 적는다. 한국어 설명도 맞췄다. 걷기·스트레칭·댄스 스텝 문장에는 운동복을 부르는 말이 없어 그대로. prompt.html 판 올림.
+- tests/prompt-screen.cjs — 개방 단추를 누른 뒤 주소가 바뀔 때까지 기다린다(화면이 그린 뒤에 주소를 적어 세 번에 두 번 앞 모드를 읽었다 — game 과 같은 고침).
+
 ## 2026-10-27 · claude · 폼 초상 — 폼 자세와 부딪히던 줄 셋
 - lib/prompt-book.js · lib/prompt-spec.js — 마리오 엔딩("깃대를 두 손으로 잡고 미끄러져 내려오는 자세")에서 팔이 하나 더 생기려 했다. game 마리오 엔딩에서 찾은 것과 같은 줄이 여기도 있다. ① 새 인물의 SILHOUETTE 에 실루엣 자세 축("springing upward, one fist raised")이 STANCE 와 같이 들어갔다 — 폼 자세·고른 자세·연출이 있으면 빠진다(설계표 폼마다 자세가 있어 폼 초상에서는 사실상 빠진다). ② 카드 출력 줄의 "no foreground occlusion" 이 몸 앞을 지나는 깃대와 부딪혔다 — "nothing in front of her but what she holds". ③ HOLD BACK 이 개방 장면의 "핵심 물건" 을 빼라 해 엔딩 개방의 깃발과 STANCE 의 깃대가 부딪혔다 — 개방의 사건만 빼고 "An object named in FORM or in her pose stays."
 - tests/prompt-book.cjs — 폼 초상에 실루엣 자세가 없고, 쥔 것은 앞을 가려도 되며, 폼·자세가 쥔 물건은 남는지. prompt.html 판 올림.

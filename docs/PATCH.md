@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-28 · claude · 서재 바닥 — 책마다 한 명, 재생기 복사(floor 도 카드마다 한 명)
+- lib/bookshelf.js — 바닥에 세울 인물을 책마다 하나만(alice 와 alice_classic 이 같이 서지 않는다 — 자료에서 앞선 4K 가 선다)
+- lib/sprite-actor.js — 공방 모음 원본 복사(floor 가 카드마다 한 명만 세운다). index·dex·run·sprite.html 의 ?v=9
+- tests/shelf-sprite-screen.cjs — 실제 자료에서 바닥의 인물이 책마다 하나인지 본다
+
 ## 2026-10-28 · claude · 4K 가 기본 — 앨리스·손자·춘향 4K 한 벌, 처음 도트는 *_classic
 - data/sprites.json — alice·sunzi·chunhyang 이 4K 한 벌(칸 192×256 · dot 0.5 · 발 96,254)로 기본이 되고, 121줄 도트는 alice_classic·sunzi_classic·chunhyang_classic 으로 그대로 남긴다(alice_4k 열쇠는 없앴다). 손자·춘향 4K 는 앨리스와 같은 길(도트 공방 지시문 · 2160×3840 · 원본 격자 그대로)로 뽑아 그림 저장소 sprites/ 에 올렸다
 - lib/words.js — sprite.name.alice_4k 대신 *_classic 셋의 이름 「… (처음 도트)」

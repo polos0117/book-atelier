@@ -153,6 +153,8 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
           return { who: es.map(e => e.dataset.who), apart: box.every((b, i) => i === 0 || b.left >= box[i - 1].right - 1), inside: box.every(b => b.left >= f.left - 1 && b.right <= f.right + 1) };
         });
         add(`${w} 날+${dayShift} — ${want}명`, r.who.length === want && r.who.every(k => KEYS.includes(k)), r.who.join());
+        const books = r.who.map(k => SPR_ALL.actors[k].book);
+        add(`${w} 날+${dayShift} — 책마다 한 명(alice 와 alice_classic 이 같이 서지 않는다)`, new Set(books).size === books.length, r.who.join());
         add(`${w} 날+${dayShift} — 서로 겹치지 않고 바닥 안`, r.apart && r.inside, JSON.stringify(r));
         if (dayShift === 0) var first = r.who.join(); else add(`${w} — 다음 날엔 차례가 돈다`, KEYS.length < 2 || r.who.join() !== first, first + ' → ' + r.who.join());
         add(`${w} 날+${dayShift} — 화면 오류 없음`, s.errors.length === 0, s.errors.join(' | '));

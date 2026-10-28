@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-28 · claude · 일상컷 화면비 — FRAME 줄을 늘 싣기
+- lib/prompt-spec.js · lib/prompt-book.js — 일상컷 지시문에 화면비가 빠졌다. 2:3 이 아닐 때만 "Aspect ratio" 를 실어 기본 2:3 에서는 비율 말이 하나도 없었다(사용자, game 에서 먼저 찾음). 일상컷은 이제 OUTPUT 바로 뒤에 FRAME 줄(2:3 이면 "a vertical 2:3 (1024×1536)")을 늘 싣고, SCENE 에는 겹쳐 싣지 않는다. 폼은 그대로(card 줄이 2:3 을 말한다).
+- prompt.html — prompt-spec v=17, prompt-book v=7.
+- tests/prompt-book.cjs — 기본 2:3 과 다른 비율 넷의 FRAME 줄, SCENE 에 겹치지 않음.
+
 ## 2026-10-28 · claude · 뤼팽(귀환) 도트 — 공방 그림 중 골라 4K 한 벌
 - data/sprites.json — arsene_lupin(책 arsene_lupin · 결말 폼 · 4K 칸 192×256 · dot 0.5 · 걷기 115). 사용자 「마음에 드는 그림 하나 골라 도트로」 — 뤼팽 결말(귀환) 그림을 골랐다. 앨리스·손자·춘향 4K 와 같은 길로 뽑아 그림 저장소 sprites/arsene_lupin/ 에 올렸다(원본 gen1, 기록 records/sprites/arsene_lupin/*_4k.json). 서재 바닥·도감 상세·서고 복도에 저절로 선다
 - lib/words.js — sprite.name.arsene_lupin 「뤼팽 (귀환)」

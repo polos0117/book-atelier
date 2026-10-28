@@ -25,6 +25,20 @@
   --signal:#6a5840;--gold:#7e6038;--ok:#3b6349;--warn:#805721;--pattern:#435f4c10;
   --shadow:0 8px 26px #29342a12;
 }
+:root[data-theme="forest"] {
+  color-scheme:light;
+  --bg:#edf3e8;--deck:#f1f6ed;--card:#fafcf6;--card2:#dce7d5;--text:#26382b;
+  --muted:#4c604b;--line:#b6c8ab;--accent:#2d6246;--accent-soft:#dbe9d5;--on-accent:#ffffff;
+  --signal:#536d38;--gold:#80612d;--ok:#346344;--warn:#80551f;--pattern:#2d624610;
+  --shadow:0 8px 26px #213d2614;
+}
+:root[data-theme="candlelit"] {
+  color-scheme:dark;
+  --bg:#19151d;--deck:#211b25;--card:#29212d;--card2:#382c3b;--text:#f5ece1;
+  --muted:#c8b9c5;--line:#68536a;--accent:#e8b875;--accent-soft:#44303c;--on-accent:#261b21;
+  --signal:#d6a6b8;--gold:#e8b875;--ok:#b1c8a0;--warn:#efbd85;--pattern:#e8b87510;
+  --shadow:0 8px 26px #00000045;
+}
 :root[data-density="relaxed"] {
   --ui-font:15px;--ui-small:13px;--ui-height:46px;--ui-pad:12px;--ui-gap:10px;--gap:14px;
 }

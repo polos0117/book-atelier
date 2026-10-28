@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8f4ea">
+<title>책의 공방</title>
+<!--
+  도트 진열실 — 도트 인물 모두(data/sprites.json). 위는 고른 인물(?who=) 한 명을 작은 공간에서 움직여 보는 무대, 아래는 인물마다
+  정지 도트·동작 시트의 칸 띠(원래 크기)·서가와 만든 기록으로 가는 길. 움직이는 것은 lib/sprite-actor.js(docs/ATELIER_PIXEL_ART_PLAN.md).
+  머리 항해에는 없다(탭 자리가 없다) — 서가 상세의 도트 줄·서재 바닥 밑에서 들어온다.
+  공간 바닥은 서재와 같은 배경(lib/room.css 의 --room-image). 그림을 못 받으면 알림 한 줄만 남는다.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="lib/workspace.css?v=8">
+<style>
+.sprite-page .wrap {max-width:960px}
+.sprite-main {display:grid;gap:14px}
+/* 작은 공간 — 서재 배경의 바닥 쪽을 잘라 보이고, 인물은 바닥선에 선다 */
+.sprite-room {position:relative;height:clamp(300px,calc(var(--atelier-vh,100dvh) - 330px),440px);min-height:300px;overflow:hidden;border:1px solid var(--line);border-radius:12px;
+  background:var(--card2) var(--room-image) center 62% / cover no-repeat;box-shadow:var(--shadow)}
+.sprite-room::after {content:"";position:absolute;left:0;right:0;bottom:0;height:22%;background:linear-gradient(rgb(0 0 0 / 0),rgb(0 0 0 / .12));pointer-events:none}
+.sprite-room .sprite-note {position:absolute;inset:auto 12px 12px;margin:0;padding:8px 12px;border-radius:8px;background:var(--card);color:var(--muted);font-size:13px;line-height:1.5;text-align:center}
+.sprite-controls {display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sprite-controls .grp {display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
+.sprite-page .sprite-controls button {min-height:44px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.sprite-page .sprite-controls .grp button {border-color:transparent;background:transparent;color:var(--muted)}
+.sprite-page .sprite-controls button[aria-pressed="true"] {color:var(--text);box-shadow:inset 0 -2px var(--gold, #c9a54a)}
+.sprite-page .sprite-controls button:disabled {opacity:.45;cursor:default}
+.sprite-status {margin:0;min-height:22px;color:var(--muted);font-size:13px;line-height:1.6}
+.sprite-status b {color:var(--text)}
+.sprite-gallery {display:grid;gap:12px;margin-top:6px}
+.sprite-gallery > h2 {margin:8px 0 0;font:600 13px/1.4 inherit;color:var(--accent);letter-spacing:.04em}
+.sprite-gallery > h2 span {margin-left:8px;color:var(--muted);font-weight:400}
+.sprite-card {display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 16px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.sprite-card[aria-current="true"] {border-color:var(--gold, #c9a54a);box-shadow:inset 0 0 0 1px var(--gold, #c9a54a)}
+.sprite-card header {grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.sprite-card header b {font-size:16px}
+.sprite-card header span {color:var(--muted);font-size:12px}
+.sprite-card .still {display:grid;place-items:end center;width:96px;height:128px;padding:4px;border-radius:8px;background:var(--card2)}
+.sprite-card .still img {display:block;width:96px;height:128px;image-rendering:pixelated}
+.sprite-card .sheets {display:grid;gap:8px;min-width:0}
+.sprite-card figure {margin:0;min-width:0}
+.sprite-card figcaption {margin:0 0 3px;color:var(--muted);font-size:11px}
+.sprite-card .strip {width:fit-content;max-width:100%;overflow-x:auto;border-radius:6px;background:var(--card2)}
+/* 칸 띠 — 시트를 원래 크기(도트 한 칸 = CSS 1px)로, 칸 사이에 선 */
+.sprite-card .sheet {position:relative;background-repeat:no-repeat;image-rendering:pixelated}
+.sprite-card .sheet::after {content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(var(--cw) - 1px),var(--line) calc(var(--cw) - 1px) var(--cw))}
+.sprite-card .acts {grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px}
+.sprite-page .sprite-card .acts button,.sprite-card .acts a {display:inline-flex;align-items:center;min-height:44px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--accent);font:inherit;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer}
+.sprite-page .sprite-card .acts button[aria-pressed="true"] {color:var(--text);box-shadow:inset 0 -2px var(--gold, #c9a54a)}
+@media (max-width:420px) {.sprite-card {grid-template-columns:minmax(0,1fr)} .sprite-card .still {justify-self:start}}
+@media (orientation:landscape) and (max-height:550px) {
+  .sprite-main {grid-template-columns:minmax(0,1fr) 260px;align-items:start}
+  .sprite-gallery {grid-column:1 / -1}
+  .sprite-room {height:calc(var(--atelier-vh,100dvh) - 120px);min-height:220px}
+}
+</style>
+<script src="lib/workspace-theme.js?v=5"></script>
+<script src="lib/words.js?v=18"></script>
+<script src="lib/fresh.js?v=1"></script>
+<script src="lib/scene-motion.js?v=1"></script>
+<script src="lib/sprite-actor.js?v=7"></script>
+<link rel="stylesheet" href="lib/sprite-actor.css?v=4">
+<link rel="stylesheet" href="lib/gallery.css?v=6">
+<link rel="stylesheet" href="lib/landscape.css?v=4">
+<link rel="stylesheet" href="lib/room.css?v=5">
+</head>
+<body class="prompt-page sprite-page">
+<div class="wrap"><div id="app"></div></div>
+<script type="module">
+import { h, render } from 'https://esm.sh/preact@10.24.3';
+import { useState, useEffect, useRef } from 'https://esm.sh/preact@10.24.3/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=8';
+const html = htm.bind(h);
+const W = window.W, SP = window.AtelierSprite, MOTION = window.AtelierMotion;
+const askedWho = () => { try { return new URLSearchParams(location.search).get('who'); } catch (e) { return null; } };
+const recordsOf = (base, who) => base.replace(/sprites\/$/, 'records/sprites/') + who + '/';
+
+/* 인물 한 장 — 정지 도트, 상태마다 칸 띠(원래 크기, 칸 사이 선), 무대에 세우기·서가·만든 기록 */
+function Card({ sp, who, books, stages, on, onPick }) {
+  const d = sp.actors[who], book = books[d.book] || {}, cw = d.cell[0], ch = d.cell[1];
+  const states = ['idle', 'walk', 'react'].filter(n => d.states[n]);
+  return html`<article class="sprite-card" data-who=${who} aria-current=${on ? 'true' : undefined} aria-labelledby=${'card-' + who}>
+    <header><b id=${'card-' + who}>${W('sprite.name.' + who)}</b><span>${W('sprite.card.book', { title: book.title || d.book, form: stages[d.form] || d.form })}</span></header>
+    <div class="still">${d.states.still && html`<img src=${sp.base + d.states.still.file} alt=${W('sprite.card.still')} width=${cw} height=${ch} loading="lazy" />`}</div>
+    <div class="sheets">${states.map(n => { const st = d.states[n]; return html`<figure key=${n} data-state=${n}>
+      <figcaption>${W('sprite.state.' + n)} · ${W('sprite.card.frames', { n: st.frames })}</figcaption>
+      <div class="strip"><div class="sheet" role="img" aria-label=${W('sprite.state.' + n) + ' · ' + W('sprite.card.frames', { n: st.frames })}
+        style=${{ width: st.frames * cw + 'px', height: ch + 'px', backgroundImage: 'url("' + sp.base + st.file + '")', '--cw': cw + 'px' }}></div></div>
+    </figure>`; })}</div>
+    <div class="acts">
+      <button type="button" data-pick=${who} aria-pressed=${on} onClick=${() => onPick(who)}>${W(on ? 'sprite.card.on' : 'sprite.card.pick')}</button>
+      <a href=${'dex.html?book=' + encodeURIComponent(d.book)}>${W('sprite.card.dex')}</a>
+      <a href=${recordsOf(sp.base, who) + 'still.json'} rel="noopener">${W('sprite.card.record')}</a>
+    </div>
+  </article>`;
+}
+
+function App() {
+  const room = useRef(null), actor = useRef(null);
+  const [phase, setPhase] = useState('loading');           // loading · ready · missing
+  const [state, setState] = useState('idle'), [picked, setPicked] = useState(0);
+  const [paused, setPaused] = useState(false), [scale, setScale] = useState(null), [def, setDef] = useState(null);
+  const [motion, setMotion] = useState(() => !!MOTION && MOTION.enabled());
+  useEffect(() => MOTION ? MOTION.subscribe(setMotion) : undefined, []);
+  const motionLocked = !MOTION || MOTION.reduced();
+  const [sp, setSp] = useState(null), [books, setBooks] = useState({}), [stages, setStages] = useState({}), [who, setWho] = useState(askedWho);
+  useEffect(() => {
+    SP.load('data/sprites.json').then(d => { setSp(d); setWho(w => (w && d.actors[w]) ? w : Object.keys(d.actors)[0]); }, () => setPhase('missing'));
+    fetch('data/book-design.json').then(r => r.ok ? r.json() : {}).then(j => {   // 폼 이름(발단·전개·결말)은 설계표의 form_key 에서
+      setBooks(Object.fromEntries((j.books || []).map(b => [b.key, b])));
+      setStages(Object.fromEntries(Object.entries((j.vocab && j.vocab.form_key) || {}).map(([stage, key]) => [key, stage])));
+    }).catch(() => {});
+  }, []);
+  const pick = k => {
+    setPaused(false); setScale(null); setPhase('loading'); setWho(k);
+    try { history.replaceState(history.state, '', '?who=' + encodeURIComponent(k)); } catch (e) {}
+    room.current && room.current.scrollIntoView({ block: 'nearest' });
+  };
+
+  useEffect(() => {
+    if (!sp || !who) return;
+    let a = null, gone = false;
+    Promise.resolve(sp).then(data => {
+      const d = data.actors[who]; if (gone || !d) { if (!d) setPhase('missing'); return; }
+      setDef(d);
+      a = SP.create(room.current, d, { base: data.base, label: W('sprite.actor', { name: W('sprite.name.' + who) }), scale: scale || d.scale,
+        points: [0.28, 0.72], floor: Math.round(room.current.clientHeight * 0.1), fit: true, seed: 11,
+        onSelect: () => setPicked(n => n + 1), onState: setState, onError: () => setPhase('missing') });
+      actor.current = a; window.__spriteDemo = a;
+      a.ready.then(x => { if (!gone && !x.failed) setPhase('ready'); });
+    }).catch(() => { if (!gone) setPhase('missing'); });
+    return () => { gone = true; if (a) a.destroy(); actor.current = null; };
+  }, [scale, sp, who]);
+
+  const A = actor.current, live = phase === 'ready' && motion;
+  const togglePause = () => { if (!A) return; if (paused) A.resume(); else A.pause(); setPaused(!paused); };
+  const scales = def ? [1, 2, 3] : [];
+  return html`<div>
+    <${WorkspaceHeader} page="sprite" />
+    <main class="sprite-main">
+      <section class="sprite-room" ref=${room} aria-label=${W('sprite.stage')}>
+        ${phase !== 'ready' && html`<p class="sprite-note" role="status">${W(phase === 'missing' ? 'sprite.missing' : 'sprite.loading')}</p>`}
+      </section>
+      <div>
+        <div class="sprite-controls">
+          <div class="grp" role="group" aria-label=${W('sprite.states')}>
+            <button type="button" id="sprite-idle" disabled=${!live || paused} aria-pressed=${state === 'idle'} onClick=${() => A && A.play('idle')}>${W('sprite.state.idle')}</button>
+            <button type="button" id="sprite-walk" disabled=${!live || paused} aria-pressed=${state === 'walk'} onClick=${() => A && A.play('walk')}>${W('sprite.state.walk')}</button>
+          </div>
+          <button type="button" id="sprite-pick" disabled=${phase !== 'ready'} onClick=${() => A && A.select()}>${W('sprite.pick', { name: W('sprite.name.' + who) })}</button>
+          <button type="button" id="sprite-pause" disabled=${!live} aria-pressed=${paused} onClick=${togglePause}>${W(paused ? 'sprite.play' : 'sprite.pause')}</button>
+          <div class="grp" role="group" aria-label=${W('sprite.scale')}>
+            ${scales.map(n => html`<button type="button" key=${n} data-scale=${n} aria-pressed=${(scale || def.scale) === n} onClick=${() => { setPaused(false); setScale(n); }}>${W('sprite.scale.n', { n })}</button>`)}
+          </div>
+          <button type="button" id="sprite-motion" disabled=${motionLocked} title=${W(motionLocked ? 'motion.reduced' : 'motion.note')}
+            onClick=${() => MOTION.setEnabled(!motion)}>${W(motion ? 'motion.off' : 'motion.on')}</button>
+        </div>
+        <p class="sprite-status" role="status" aria-live="polite">
+          ${W('sprite.now', { state: W('sprite.state.' + state) })}${picked > 0 && html` · <b id="sprite-picked">${W('sprite.picked', { name: W('sprite.name.' + who), n: picked })}</b>`}
+        </p>
+      </div>
+      ${sp && html`<section class="sprite-gallery" aria-labelledby="sprite-gallery-title">
+        <h2 id="sprite-gallery-title">${W('sprite.gallery')}<span>${W('sprite.gallery.note', { n: Object.keys(sp.actors).length })}</span></h2>
+        ${Object.keys(sp.actors).map(k => html`<${Card} key=${k} sp=${sp} who=${k} books=${books} stages=${stages} on=${k === who} onPick=${pick} />`)}
+      </section>`}
+    </main>
+  </div>`;
+}
+
+render(html`<${App} />`, document.getElementById('app'));
+window.AtelierFresh.watch();
+</script>
+</body>
+</html>

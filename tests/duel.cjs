@@ -197,13 +197,15 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   ok(st.me.slots[0] === null && hm.power === 6 + 6 + 2 && st.me.grave.includes('frankenstein') && st.me.lost === 1, '결말에 들면 지닌 힘(6) + 조각마다 2 를 가장 센 아군(햄릿)에게 넘기고 떠난다 — 떠난 것은 패배로 세지 않는다');
 }
 { /* 춘향전 — 절개 */
-  const st = rig(['chunhyang'], ['dracula', 'hamlet'], { chapter: 1 });
+  const st = rig(['chunhyang'], ['dracula', 'hamlet', 'kosmos'], { chapter: 1 });
   const ch = put(st, 'me', 'chunhyang', 0); const dr = put(st, 'foe', 'dracula', 0);   /* 드라큘라 전개 공격 3 + 공포 → 로맨스 2 − 방패 1 = 4 */
   ok(ch.power === 3 && ch.tok === 1, '전개 — 맞으면 절개 +1');
   const MAX = data.duel.books.chunhyang.max;
   hit(st, 'foe', 0, 0); ok(ch.power === 1 && ch.flags.endured && ch.tok === Math.min(2, MAX), '닫힐 피해에 한 번 힘 1 로 버틴다 — 절개는 books.chunhyang.max 까지');
   st.chapter = 2; ch.power = 6; ch.tok = 2; const hm = put(st, 'foe', 'hamlet', 1); dr.power = 6; hm.power = 6;
-  hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 - 1 - 1) && hm.power === 6 - 2, '결말 — 공격(3, 로맨스 → 공포 −1, 드라큘라 결말 방패 1)하면 다른 상대 책 모두에게 절개(2)만큼 반격 — 맞은편은 빼고');
+  hit(st, 'me', 0, 0); ok(dr.power === 6 - (3 - 1 - 1) && hm.power === 6 - 2, '결말 — 공격(3, 로맨스 → 공포 −1, 드라큘라 결말 방패 1)하면 다른 상대 책에게 절개(2)만큼 반격 — 맞은편은 빼고');
+  const ko = put(st, 'foe', 'kosmos', 2); dr.power = 6; hm.power = 6; ko.power = 4;
+  hit(st, 'me', 0, 0); ok(hm.power === 6 - 2 && ko.power === 4, '반격은 다른 상대 가운데 가장 센 하나에게만(서른 권에서 60.5% → 하나로)');
 }
 { /* 햄릿 — 의심 */
   const st = rig(['hamlet'], ['dracula', 'kosmos']);
@@ -380,6 +382,226 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   const ti = put(st, 'me', 'treasure_island', 1); ok(dq.power === 5 - (3 + 1), '아군도 표식 붙은 책을 칠 때 +1(보물섬 돌파 3)');
   st.chapter = 2; js.power = 7; ti.power = 4; js.flags.entered = {}; D.BOOK.jasan_eobo.form({ data, st }, js, 2);
   ok(js.power === 7 + 2 && ti.power === 4 + 2, '결말 — 표식 붙은 상대 책 수(2)만큼 아군 모두 힘 +1');
+}
+{ /* 해저 2만 리 — 깊이 */
+  const st = rig(['twenty_thousand_leagues', 'treasure_island'], ['hamlet', 'sunzi']);
+  const hm = put(st, 'foe', 'hamlet', 0), tw = put(st, 'me', 'twenty_thousand_leagues', 0);
+  ok(hm.power === 4, '들어오며 친다(버티기 1, 모험 → 비극 −1 = 0)');
+  start(st, 'me'); start(st, 'me'); start(st, 'me'); ok(tw.tok === 2, '발단 — 내 턴마다 깊이 하나, 둘까지');
+  hit(st, 'foe', 0, 0); ok(tw.power === 7 - (2 + 2 - 1 - 1), '깊이가 있으면 받는 피해 −1(정찰 2 + 비극 → 모험 2 − 방패 1 − 깊이 1)');
+  st.chapter = 1; tw.power = 6; hm.power = 9;
+  hit(st, 'me', 0, 0); ok(hm.power === 9 - (3 - 1 + 2 * 2) && tw.tok === 0, '전개 — 충각: 깊이를 모두 태워 깊이마다 +2(공격 3, 모험 → 비극 −1)');
+  hm.power = 2; tw.tok = 0; hit(st, 'me', 0, 0); ok(st.foe.slots[0] === null && tw.tok === 0, '깊이를 태우지 않은 타격으로 닫으면 되찾지 않는다');
+  st.foe.slots[0] = hm; hm.power = 2; tw.tok = 1; hit(st, 'me', 0, 0); ok(st.foe.slots[0] === null && tw.tok === 1, '친 책이 닫히면 깊이 하나를 되찾는다');
+  st.chapter = 2; const sz = put(st, 'foe', 'sunzi', 1), ti = put(st, 'me', 'treasure_island', 2);
+  tw.power = 5; sz.power = 5; ti.power = 5; tw.flags.entered = {}; D.BOOK.twenty_thousand_leagues.form({ data, st }, tw, 2);
+  ok(tw.power === 5 && sz.power === 5 - 2 && ti.power === 5 - 2 && tw.tok === 0, '결말 — 소용돌이: 판 위 다른 모든 책(아군도)에 1 + 남은 깊이 1');
+}
+{ /* 천일야화 — 이야기 */
+  const st = rig(['arabian_nights', 'treasure_island'], ['hamlet', 'lord_of_the_rings']);
+  const hm = put(st, 'foe', 'hamlet', 0), an = put(st, 'me', 'arabian_nights', 0);
+  ok(hm.power === 4 - 2, '들어오며 친다(교란 2, 동화 → 비극 0)');
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(an.tok === 3, '발단 — 내 턴마다 밤 이야기 하나, 셋까지');
+  st.chapter = 1; an.power = 1; hm.power = 9;
+  hit(st, 'foe', 0, 0); ok(st.me.slots[0] === an && an.power === 1 && an.tok === 2, '전개 — 닫힐 피해를 받으면 이야기 하나로 하룻밤 미룬다(힘 1)');
+  an.power = 5; hit(st, 'foe', 0, 0); ok(an.power === 5 - (2 - 1) && an.tok === 2, '닫히지 않을 피해에는 이야기를 쓰지 않는다(교란 2 − 방패 1)');
+  st.chapter = 2; const ti = put(st, 'me', 'treasure_island', 1); ti.power = 2;
+  put(st, 'foe', 'lord_of_the_rings', 1);
+  ok(st.me.slots[1] === ti && ti.power === 4 && an.tok === 1, '결말 — 아군이 닫히려 하면 이야기 하나로 되살린다(지원 기본 4, 반지 돌파 3)');
+  an.tok = 0; ti.power = 1; hit(st, 'foe', 1, 1); ok(st.me.slots[1] === null, '이야기가 없으면 되살리지 못한다');
+}
+{ /* 구운몽 — 인연 */
+  const st = rig(['guunmong', 'treasure_island'], ['sunzi', 'dracula', 'kosmos']);
+  const gm = put(st, 'me', 'guunmong', 0); ok(gm.tok === 0, '자신이 들어올 때는 인연이 없다');
+  const sz = put(st, 'foe', 'sunzi', 1); ok(gm.tok === 1, '발단 — 상대 책이 들어오면 인연 하나');
+  put(st, 'me', 'treasure_island', 2); ok(gm.tok === 2, '아군이 들어와도 인연 하나');
+  const dr = put(st, 'foe', 'dracula', 2); put(st, 'foe', 'kosmos', 0); ok(gm.tok === 3, '인연은 셋까지');
+  st.chapter = 1; gm.power = 6; st.foe.slots[0] = sz; st.foe.slots[1] = null; sz.power = 9;
+  hit(st, 'me', 0, 0); ok(sz.power === 9 - (3 + 2 + 3) && gm.tok === 3, '전개 — 칠 때 인연마다 +1, 인연은 남는다(공격 3, 로맨스 → 사상 2)');
+  st.chapter = 2; sz.power = 9; dr.power = 3; gm.tok = 1; gm.flags.entered = {}; D.BOOK.guunmong.form({ data, st }, gm, 2);
+  ok(sz.flags.silenced && !dr.flags.silenced && !D.live(sz) && gm.tok === 0, '결말 — 꿈에서 깬다: 인연 하나마다 센 상대 책 하나의 규칙을 잠재운다');
+}
+{ /* 크툴루의 부름 — 조각 */
+  const st = rig(['call_of_cthulhu'], ['sunzi', 'treasure_island']);
+  const sz = put(st, 'foe', 'sunzi', 0), ct = put(st, 'me', 'call_of_cthulhu', 0);
+  ok(sz.power === 4 - 2, '들어오며 친다(정찰 2, 공포 → 사상 0)');
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(ct.tok === 3, '발단 — 내 턴마다 조각 하나, 셋까지');
+  st.chapter = 1; sz.power = 5; start(st, 'me');
+  ok(sz.flags.bound && ct.tok === 2 && D.targets({ data, st }, sz).length === 0, '전개 — 조각 하나로 맞은편을 광기에: 이 장엔 못 친다');
+  start(st, 'me'); ok(ct.tok === 3, '장마다 한 번 — 전개에도 조각을 모은다');
+  st.chapter = 2; const ti = put(st, 'foe', 'treasure_island', 1); sz.power = 4; ti.power = 7; ct.tok = 2;
+  ct.flags.entered = {}; D.BOOK.call_of_cthulhu.form({ data, st }, ct, 2);
+  ok(sz.power === 2 && ti.power === 3 && ct.tok === 0, '결말 — 조각 둘이면 깨어난다: 상대 책 모두 힘이 반으로(내림)');
+  sz.power = 4; ct.tok = 1; ct.flags.entered = {}; D.BOOK.call_of_cthulhu.form({ data, st }, ct, 2); ok(sz.power === 4, '조각이 모자라면 깨어나지 않는다');
+}
+{ /* 한여름 밤의 꿈 — 꽃즙 */
+  const st = rig(['midsummer_dream', 'kosmos'], ['treasure_island', 'dracula']);
+  const ti = put(st, 'foe', 'treasure_island', 0), dr = put(st, 'foe', 'dracula', 1), md = put(st, 'me', 'midsummer_dream', 0);
+  ok(ti.power === 4 - 2, '들어오며 친다(교란 2, 희극 → 모험 0)');
+  start(st, 'me');
+  ok(ti.flags.juice && ti.flags.truce === md.id && D.targets({ data, st }, ti).length === 0 && D.targets({ data, st }, md).length === 0, '발단 — 맞은편에 꽃즙: 반해서 이 장 동안 서로 치지 않는다');
+  st.chapter = 1; ti.flags.truce = null; md.flags.truce = null; ti.power = 5; dr.power = 9;
+  start(st, 'me'); ok(dr.power === 9 - 3 && md.flags.prank === 1, '전개 — 꽃즙 묻은 상대 책이 제 편 다른 책을 친다(보물섬 돌파 3, 모험 → 공포 0)');
+  start(st, 'me'); ok(dr.power === 6, '장마다 한 번');
+  st.chapter = 2; const ko = put(st, 'me', 'kosmos', 2); md.power = 6; ko.power = 3;
+  md.flags.entered = {}; D.BOOK.midsummer_dream.form({ data, st }, md, 2);
+  ok(ko.power === 3 + 2 && md.power === 6 && !ti.flags.juice, '결말 — 모두 제짝으로: 꽃즙을 풀고, 푼 꽃즙마다 가장 약한 아군 +2');
+}
+{ /* 위대한 개츠비 — 손님 */
+  const st = rig(['great_gatsby'], ['sunzi', 'dracula']);
+  const gg = put(st, 'me', 'great_gatsby', 0);
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(gg.tok === 3, '발단 — 내 턴마다 파티, 손님 셋까지');
+  st.chapter = 1; gg.power = 7; D.BOOK.great_gatsby.chapterEnd({ data, st }, gg);
+  ok(gg.power === 7 + 3 && gg.tok === 3, '전개 — 장이 끝나 합을 셀 때 손님마다 힘 +1, 손님은 남는다');
+  st.chapter = 2; const sz = put(st, 'foe', 'sunzi', 1), dr = put(st, 'foe', 'dracula', 2);
+  gg.tok = 1; gg.flags.entered = {}; D.BOOK.great_gatsby.form({ data, st }, gg, 2);
+  ok(st.me.slots[0] === gg && D.formOf(st, dr) === 2, '손님이 하나면 결말에 아무 일도 없다');
+  gg.tok = 2; gg.flags.entered = {}; D.BOOK.great_gatsby.form({ data, st }, gg, 2);
+  ok(D.formOf(st, dr) === 0 && dr.power === D.base(data, st, dr) && D.roleOf(data, st, dr) === R('dracula', 0) && D.formOf(st, sz) === 2, '결말 — 손님 둘이면 상대의 가장 센 책(드라큘라)을 발단 폼으로 되돌린다');
+  ok(st.me.slots[0] === null && st.me.lost === 1, '자신은 닫힌다');
+}
+{ /* 모르그 가의 살인 — 흔적 */
+  const st = rig(['rue_morgue'], ['dracula', 'sunzi']);
+  const dr = put(st, 'foe', 'dracula', 0), rm = put(st, 'me', 'rue_morgue', 0);
+  ok(dr.power === 5 - (2 + 2) && dr.flags.trace, '발단 — 들어오며 친 책(정찰 2, 추리 → 공포 2)에 흔적');
+  const sz = put(st, 'foe', 'sunzi', 1); ok(!sz.flags.trace, '치지 않은 책엔 흔적이 없다');
+  st.chapter = 1; dr.power = 9; sz.power = 9; hit(st, 'me', 0, 0);
+  ok(dr.power === 9 - (2 + 2 + 1) && sz.power === 9 - 1, '전개 — 칠 때 흔적 붙은 상대 책 수만큼 +1(교란 2, 추리 → 공포 2, 흔적 1 · 옆 책에 교란 1)');
+  sz.flags.trace = true; dr.power = 9; hit(st, 'me', 0, 0); ok(dr.power === 9 - (2 + 2 + 2), '흔적이 둘이면 +2');
+  st.chapter = 2; dr.power = 6; sz.power = 4; rm.flags.entered = {}; D.BOOK.rue_morgue.form({ data, st }, rm, 2);
+  ok(st.foe.slots[0] === null && st.foe.slots[1] === sz && st.foe.lost === 1, '결말 — 흔적 붙은 상대 가운데 가장 센 책(드라큘라)을 싸우지 않고 닫는다');
+}
+{ /* 로봇(R.U.R.) — 부품 */
+  const st = rig(['rur', 'hamlet', 'kosmos'], ['treasure_island', 'sunzi']);
+  const ru = put(st, 'me', 'rur', 0), ti = put(st, 'foe', 'treasure_island', 0);
+  ok(ru.power === 7 - (2 - 1), '들어오며 맞는다(정찰 2, 모험 → SF 0, 버티기 방패 1)');
+  const hm = put(st, 'me', 'hamlet', 1); ti.power = 1; hit(st, 'me', 1, 0);
+  ok(st.foe.slots[0] === null && ru.tok === 1, '발단 — 상대 책이 닫히면 부품 +1');
+  hm.power = 1; put(st, 'foe', 'sunzi', 1);
+  ok(st.me.slots[1] === null && st.me.grave.includes('hamlet') && ru.tok === 2, '아군이 닫혀도 부품 +1');
+  st.chapter = 1; start(st, 'me');
+  ok(st.me.hand.includes('hamlet') && !st.me.grave.includes('hamlet') && ru.tok === 0, '전개 — 부품 둘로 내 서가의 닫힌 책을 손패로');
+  ru.tok = 2; st.me.grave.push('alice'); start(st, 'me'); ok(ru.tok === 2 && st.me.grave.includes('alice'), '조립은 장마다 한 번');
+  st.chapter = 2; st.me.grave = ['alice', 'dracula']; ru.flags.entered = {}; D.BOOK.rur.form({ data, st }, ru, 2);
+  ok(ru.flags.revolt === 2, '결말 — 봉기: 내 서가의 닫힌 책 수(2)');
+  const sz = u(st, 'foe', 1); sz.power = 9; put(st, 'me', 'kosmos', 1);
+  ok(sz.power === 9 - (1 - 1 + 2), '다른 아군이 칠 때 닫힌 책마다 +1(지원 1, 과학 → 사상 −1, 봉기 2)');
+}
+{ /* 군주론 — 두려움 */
+  const st = rig(['the_prince', 'don_quixote'], ['hamlet', 'alice', 'dracula']);
+  const pr = put(st, 'me', 'the_prince', 0), hm = put(st, 'foe', 'hamlet', 0), al = put(st, 'foe', 'alice', 1);
+  start(st, 'me'); ok(hm.flags.fear && !al.flags.fear, '발단 — 가장 약한 상대 책(햄릿 4)에 두려움');
+  start(st, 'me'); ok(al.flags.fear, '다음 턴엔 아직 두려움이 없는 가장 약한 책');
+  st.chapter = 1; pr.power = 7; hm.power = 9; al.power = 9; hit(st, 'foe', 0, 0);
+  ok(pr.power === 7, '전개 — 두려움 붙은 책이 치면 피해 −1(교란 2, 비극 → 사상 0 − 방패 1 − 1 = 0)');
+  const dq = put(st, 'me', 'don_quixote', 1); hit(st, 'foe', 1, 1);
+  ok(dq.power === 5 - (2 - 1) && pr.power === 7, '아군을 칠 때도 −1(교란 2, 동화 → 희극 0) — 옆으로 튄 교란 1 도 −1');
+  const dr = put(st, 'foe', 'dracula', 2);
+  st.chapter = 2; pr.flags.entered = {}; D.BOOK.the_prince.form({ data, st }, pr, 2);
+  ok(hm.flags.bound && al.flags.bound && !dr.flags.bound && D.targets({ data, st }, hm).length === 0, '결말 — 두려움 붙은 상대 책 둘 모두 이 장 동안 묶인다');
+}
+{ /* 종의 기원 — 적응 */
+  const st = rig(['origin_of_species'], ['dracula', 'hamlet', 'alice']);
+  const dr = put(st, 'foe', 'dracula', 0), os = put(st, 'me', 'origin_of_species', 0);
+  ok(dr.power === 5 - (2 + 2), '들어오며 친다(정찰 2, 과학 → 공포 2)');
+  const hm = put(st, 'foe', 'hamlet', 1);
+  start(st, 'me'); start(st, 'me'); start(st, 'me'); start(st, 'me');
+  ok(os.flags.adapt.join() === '공포,비극', '발단 — 내 턴마다 상대 장르 하나를 익힌다(맞은편 먼저, 판에 없는 장르는 못 익힌다)');
+  st.chapter = 1; os.power = 7; dr.power = 9; hit(st, 'foe', 0, 0);
+  ok(os.power === 7, '전개 — 익힌 장르(공포)에게 받는 피해 −2(공격 3, 공포 → 과학 −1, 방패 1)');
+  st.chapter = 2; dr.power = 7; hm.power = 6; const al = put(st, 'foe', 'alice', 2); al.power = 3;
+  os.flags.entered = {}; D.BOOK.origin_of_species.form({ data, st }, os, 2);
+  ok(st.foe.slots[2] === null && st.foe.slots[0] === dr && st.foe.slots[1] === hm, '결말 — 익힌 장르가 둘이면 자연선택: 가장 약한 상대 책이 닫힌다');
+  os.flags.adapt = ['공포']; os.flags.entered = {}; D.BOOK.origin_of_species.form({ data, st }, os, 2);
+  ok(st.foe.slots[1] === hm, '익힌 장르가 하나면 도태가 없다');
+}
+{ /* 춘향전 — 결말 반격은 공격할 때만(서른다섯 권에서 60.2%) */
+  const st = rig(['chunhyang'], ['dracula', 'hamlet'], { chapter: 2 });
+  const dr = put(st, 'foe', 'dracula', 0), hm = put(st, 'foe', 'hamlet', 1), ch = put(st, 'me', 'chunhyang', 0);
+  ch.tok = 1; dr.power = 9; hm.power = 6; st.turn = 'me';
+  ok(D.act(data, st, { kind: 'open', slot: 0 }).ok && dr.power < 9 && hm.power === 6, '절정으로 친 것엔 반격이 없다');
+}
+{ /* 삼총사 — 동료 */
+  const st = rig(['three_musketeers', 'don_quixote', 'treasure_island'], ['dracula']);
+  const tm = put(st, 'me', 'three_musketeers', 0), dq = put(st, 'me', 'don_quixote', 1), ti = put(st, 'me', 'treasure_island', 2);
+  start(st, 'me'); ok(dq.flags.comrade === tm.id && !ti.flags.comrade, '발단 — 내 턴마다 먼저 온 다른 아군 하나와 맹세');
+  start(st, 'me'); start(st, 'me'); ok(ti.flags.comrade === tm.id && !tm.flags.comrade && D.units(st, 'me').filter(v => v.flags.comrade).length === 2, '동료는 둘까지, 자신은 동료가 아니다');
+}
+{
+  const st = rig(['three_musketeers', 'don_quixote'], ['dracula', 'sunzi'], { chapter: 1 });
+  const dr = put(st, 'foe', 'dracula', 1), tm = put(st, 'me', 'three_musketeers', 0), dq = put(st, 'me', 'don_quixote', 1);
+  dq.flags.comrade = tm.id; tm.power = 7; dq.power = 9; dr.power = 9; hit(st, 'foe', 1, 1);
+  ok(dq.power === 9 - 3 && tm.power === 7 - 2, '전개 — 동료가 맞으면(공격 3, 공포 → 희극 2) 반(2)을 대신 받는다 — 나눠 받은 몫엔 방패가 없다');
+  dq.power = 9; tm.power = 7; dr.power = 2; hit(st, 'me', 1, 1); put(st, 'foe', 'sunzi', 0); ok(tm.power === 7 && dq.power === 9 - 1, '자신이 맞을 땐 나누지 않는다(교란 2, 사상 → 모험 −1, 버티기 방패 1) · 피해 1 은 나누지 않는다(동료에게 튄 교란 1)');
+}
+{
+  const st = rig(['three_musketeers', 'don_quixote', 'treasure_island'], ['dracula', 'hamlet', 'sunzi'], { chapter: 2 });
+  const dr = put(st, 'foe', 'dracula', 0), hm = put(st, 'foe', 'hamlet', 1), sz = put(st, 'foe', 'sunzi', 2);
+  const tm = put(st, 'me', 'three_musketeers', 0), dq = put(st, 'me', 'don_quixote', 1), ti = put(st, 'me', 'treasure_island', 2);
+  dq.flags.comrade = tm.id; dr.power = 9; hm.power = 9; sz.power = 9;
+  tm.flags.entered = {}; D.BOOK.three_musketeers.form({ data, st }, tm, 2); ok(dr.power === 9 && hm.power === 9, '동료가 하나면 결말에 함께 치지 않는다');
+  ti.flags.comrade = tm.id; tm.flags.entered = {}; D.BOOK.three_musketeers.form({ data, st }, tm, 2);
+  ok(dr.power === 9 - (3 - 1) && hm.power === 9 - (1 + 2) && sz.power === 9 - (1 + 2), '결말 — 동료 둘이면 셋이 각자 맞은편을 친다(공격 3 − 방패 1 · 지원 1 + 상성 2 · 지원 1 + 상성 2)');
+}
+{ /* 오즈의 마법사 — 소원 */
+  const st = rig(['don_quixote', 'wizard_of_oz', 'treasure_island'], ['dracula', 'sunzi']);
+  const dq = put(st, 'me', 'don_quixote', 0), oz = put(st, 'me', 'wizard_of_oz', 1);
+  ok(dq.flags.wish && oz.tok === 1 && !oz.flags.wish, '발단 — 들어올 때 이미 있던 아군에게 소원');
+  const ti = put(st, 'me', 'treasure_island', 2); ok(ti.flags.wish && oz.tok === 2, '그 뒤 들어오는 아군에게도');
+  st.chapter = 1; const dr = put(st, 'foe', 'dracula', 0), sz = put(st, 'foe', 'sunzi', 2);
+  dr.power = D.base(data, st, dr) + 4; sz.power = D.base(data, st, sz) + 1; start(st, 'me');
+  ok(dr.power === D.base(data, st, dr) && sz.power === D.base(data, st, sz) + 1, '전개 — 내 턴마다 덧힘이 가장 큰 상대 책을 기본 힘으로');
+  st.chapter = 2; dq.power = 4; ti.power = 4; const lost = st.me.lost;
+  oz.flags.entered = {}; D.BOOK.wizard_of_oz.form({ data, st }, oz, 2);
+  ok(dq.power === 7 && ti.power === 7 && st.me.slots[1] === null && st.me.lost === lost, '결말 — 소원 둘이면 은 구두로 집에 가고(떠남 — 패배가 아니다) 소원 붙은 아군마다 +3');
+}
+{
+  const st = rig(['don_quixote', 'wizard_of_oz'], [], { chapter: 2 });
+  const dq = put(st, 'me', 'don_quixote', 0), oz = put(st, 'me', 'wizard_of_oz', 1);
+  ok(!dq.flags.wish && st.me.slots[1] === oz, '결말에 낸 오즈는 소원이 없어 떠나지 않는다');
+}
+{ /* 제인 에어 — 동등 */
+  const st = rig(['jane_eyre'], ['dracula', 'sunzi']);
+  const je = put(st, 'me', 'jane_eyre', 0);
+  je.power = 5; start(st, 'me'); ok(je.power === 6, '발단 — 맞아서 줄어든 힘을 내 턴마다 1 되찾는다');
+  je.power = 7; start(st, 'me'); ok(je.power === 7, '기본(버티기 7)까지만');
+  st.chapter = 1; const dr = put(st, 'foe', 'dracula', 0); je.power = 4; dr.power = 10; hit(st, 'me', 0, 0);
+  ok(dr.power === 10 - (2 - 1 + 3), '전개 — 센 표적을 칠 때 차이의 반(6 → 3, 셋까지)을 더한다(정찰 2, 로맨스 → 공포 −1)');
+  dr.power = 3; hit(st, 'me', 0, 0); ok(dr.power === 3 - 1, '약한 표적엔 더하지 않는다');
+  st.chapter = 2; const sz = put(st, 'foe', 'sunzi', 1); dr.power = 7; sz.power = 4; je.power = 4;
+  je.flags.entered = {}; D.BOOK.jane_eyre.form({ data, st }, je, 2);
+  ok(D.cur(data, st, je) === D.cur(data, st, dr) && D.cur(data, st, dr) === 8, '결말 — 가장 센 상대 책(드라큘라 7 + 손자 지원 1)과 같은 힘으로');
+}
+{ /* 지킬 박사와 하이드 — 약 */
+  const st = rig(['jekyll_hyde'], ['dracula']);
+  const jh = put(st, 'me', 'jekyll_hyde', 1);
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(jh.tok === 3, '발단 — 내 턴마다 약 +1, 셋까지');
+  st.chapter = 1; jh.power = D.base(data, st, jh); jh.flags.entered = {}; D.BOOK.jekyll_hyde.form({ data, st }, jh, 1);
+  ok(jh.power === 6 + 3 * 2, '전개에 들 때 약마다 힘 +2(공격 6)');
+  st.chapter = 2; const dr = put(st, 'foe', 'dracula', 1); jh.power = 5; dr.power = 9; start(st, 'me');
+  ok(dr.power === 9 - 3 && jh.power === 5 - 1, '결말 — 내 턴마다 약(셋)만큼 맞은편을 치고(방패 무시) 자신도 1 잃는다');
+}
+{
+  const st = rig(['jekyll_hyde'], ['sunzi'], { chapter: 2 });
+  const sz = put(st, 'foe', 'sunzi', 0), jh = put(st, 'me', 'jekyll_hyde', 1); jh.tok = 2; sz.power = 6; jh.power = 5; start(st, 'me');
+  ok(sz.power === 6 - 2 && jh.power === 4, '맞은편이 비면 가장 센 상대 책을 친다');
+  jh.tok = 0; jh.power = 5; start(st, 'me'); ok(jh.power === 5 && sz.power === 4, '약이 없으면 폭주도 없다');
+}
+{ /* 허생전 — 돈 */
+  const st = rig(['heo_saeng'], ['dracula']);
+  const hs = put(st, 'me', 'heo_saeng', 0); ok(hs.tok === 3, '발단에 들면 만 냥 — 돈 셋');
+  st.chapter = 1; hs.power = 9; const dr = put(st, 'foe', 'dracula', 0); hs.power = 5; dr.power = 6;   /* 들어오며 친다 — 미리 버텨 둔다 */
+  ok(LG(st, 'me').rule.some(m => m.slot === 0 && m.target === 0), '전개 — 공격 대신 사재기를 고를 수 있다');
+  st.turn = 'me'; const r = D.act(data, st, { kind: 'rule', slot: 0, target: 0 });
+  ok(r.ok && dr.flags.bound && dr.power === 4 && hs.power === 7 && hs.tok === 2, '사재기 — 돈 하나로 상대 책을 묶고 힘 2 를 가져온다');
+  ok(D.targets({ data, st }, dr).length === 0 && !LG(st, 'me').rule.some(m => m.target === 0), '묶인 책은 못 치고, 다시 사재기하지 않는다');
+  st.chapter = 2; hs.power = 6; hs.flags.entered = {}; D.BOOK.heo_saeng.form({ data, st }, hs, 2);
+  ok(hs.power === 6 + 2 * 2 && hs.tok === 0, '결말 — 남은 돈(둘)을 바다에 던지고 돈마다 +2');
+}
+{
+  const st = rig(['heo_saeng'], ['dracula'], { chapter: 1 });
+  const hs = put(st, 'me', 'heo_saeng', 0); put(st, 'foe', 'dracula', 1);
+  ok(hs.tok === 0 && LG(st, 'me').rule.length === 0, '전개에 낸 허생은 빈손 — 사재기가 없다');
 }
 /* ── 자동 넘기기 — 할 수 있는 것이 없으면 넘긴다 ── */
 {

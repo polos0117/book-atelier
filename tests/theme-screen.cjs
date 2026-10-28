@@ -17,8 +17,8 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
   assert.deepEqual(await p.evaluate(()=>window.AtelierImg.hallPicks()),['alice','kosmos']);
   assert.deepEqual(await p.evaluate(()=>JSON.parse(localStorage.getItem('book_hall_v1'))),{moss:['alice','kosmos'],ember:['hamlet'],sunlit:['alice','kosmos']});
   assert.equal(await p.evaluate(()=>localStorage.getItem('atelier_theme_v1')),'moss','other ateliers retain their theme');
-  assert.deepEqual(await p.evaluate(()=>window.AtelierAppearance.themes),['sunlit','moonlit','hanok']);
-  for(const theme of ['sunlit','moonlit','hanok']) {
+  assert.deepEqual(await p.evaluate(()=>window.AtelierAppearance.themes),['sunlit','moonlit','hanok','forest','candlelit']);
+  for(const theme of ['sunlit','moonlit','hanok','forest','candlelit']) {
   await p.locator('.room-choice').filter({hasText:await p.evaluate(t=>W('theme.'+t),theme)}).click();
   assert.equal(await p.locator('.room-choice[aria-pressed="true"]').innerText(),await p.evaluate(t=>W('theme.'+t),theme));
   const colors=await p.evaluate(()=>{const s=getComputedStyle(document.documentElement),out={};for(const k of ['bg','card','card2','text','muted','accent','accent-soft','on-accent','deck'])out[k]=s.getPropertyValue('--'+k).trim();return out;});
@@ -39,7 +39,7 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
    assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html','duel.html','run.html']);
    assert.deepEqual(nav.filter(x=>x.current==='page').map(x=>x.href),[file]);
    const before=file==='prompt.html'?await p.locator('#prompt-output').inputValue():null;
-   for(const theme of ['sunlit','moonlit','hanok']) {
+   for(const theme of ['sunlit','moonlit','hanok','forest','candlelit']) {
    await p.evaluate(t=>window.AtelierAppearance.set('theme',t),theme);
    await p.reload();await p.waitForSelector(ready);
    assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),theme,'room persists after reload');
@@ -51,8 +51,9 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
      assert.equal(await p.evaluate(()=>document.documentElement.dataset.background),setting);
      if(setting==='on') {
       const bg=await p.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--room-image'));
-      const slug={sunlit:'sunlit-library',moonlit:'moonlit-archive',hanok:'quiet-study'}[theme];
+      const slug={sunlit:'sunlit-library',moonlit:'moonlit-archive',hanok:'quiet-study',forest:'forest-study',candlelit:'candlelit-study'}[theme];
       assert(bg.includes(slug+(viewport.width<=599?'-small':'')+'.webp'),'correct responsive room image');
+      if(theme==='candlelit'&&process.env.BACKGROUND_DIR)assert(await p.evaluate(src=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img.naturalWidth>0);img.onerror=()=>resolve(false);img.src=src.match(/url\(["']?([^"')]+)/)[1];}),bg),'candlelit background loads');
      }
      if(setting==='off')assert.equal(await p.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--room-image').trim()),'none');
     }
@@ -67,7 +68,17 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
    }
   }
   }
+  assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
+  // Auxiliary screens share the room even though they have no dedicated header tab.
+  const actor=await p.evaluate(async()=>Object.keys((await (await fetch('data/sprites.json')).json()).actors)[0]);
+  for(const file of ['mosaic.html','sprite.html?who='+encodeURIComponent(actor)]){
+   await p.goto(harness.base+'/'+file);await p.waitForSelector('.workspace-header');
+   assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),'candlelit');
+   assert.equal(await p.locator('.crest-name').innerText(),await p.evaluate(()=>W('theme.candlelit')));
+   assert(await p.evaluate(()=>document.body.scrollWidth<=innerWidth));
+   assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
+  }
   assert.deepEqual(a.errors,[]);assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
-  await a.close();console.log('PASS room theme: AA text contrast, legacy shelf migration, no cross-atelier mutation, persisted background, 3 rooms x 5 pages x 5 viewports');
+  await a.close();console.log('PASS room theme: AA text contrast, legacy shelf migration, no cross-atelier mutation, persisted background, 5 rooms x 5 pages x 5 viewports + 2 auxiliary pages');
  }finally{await harness.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

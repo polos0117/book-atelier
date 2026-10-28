@@ -104,9 +104,9 @@ const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
       const small = await p.$$eval('.mosaic-panel button, .mosaic-panel select, .mosaic-panel a, .mosaic-panel input[type=range], .mosaic-tile a, .mosaic-tile button',
         es => es.filter(e => e.getClientRects().length).map(e => [e.id || e.className || e.tagName, Math.round(e.getBoundingClientRect().height)]).filter(([, h]) => h < 44));
       rows.push([name + ' 누르는 자리는 44px 이상', small.length === 0, JSON.stringify(small)]);
-      /* 머리 — 다른 화면과 같은 항해 넷, 이 화면은 탭에 없다(344 폭에 다섯은 안 든다) */
+      /* 머리 — 다른 화면과 같은 항해 다섯(서고 탐험까지), 이 화면은 탭에 없다(344 폭에 여섯은 안 든다) */
       const nav = await p.$$eval('.workspace-nav a', es => es.map(e => [e.getAttribute('href'), e.getAttribute('aria-current')]));
-      rows.push([name + ' 머리 항해 넷 그대로', nav.map(x => x[0]).join() === 'index.html,dex.html,prompt.html,duel.html' && nav.every(x => !x[1]), JSON.stringify(nav)]);
+      rows.push([name + ' 머리 항해 다섯 그대로', nav.map(x => x[0]).join() === 'index.html,dex.html,prompt.html,duel.html,run.html' && nav.every(x => !x[1]), JSON.stringify(nav)]);
       rows.push([name + ' 화면 오류 없음', a.errors.length === 0, a.errors.join(' | ')]);
       rows.push([name + ' 낱말 표에 없는 열쇠 없음', (await p.evaluate(() => window.AtelierWords.missing())).length === 0, String(await p.evaluate(() => window.AtelierWords.missing()))]);
       await a.close();

@@ -54,8 +54,9 @@ function walkTo(st, kind) {
     ok(!R.enter(data, s, 0).ok && !R.read(data, s, 'x').ok, '싸우는 중엔 다른 일을 못 한다');
     /* 결말을 손으로 — 이기면 전리품, 지면 등불 */
     const win = JSON.parse(JSON.stringify(s)); win.fight.phase = 'done'; win.fight.winner = 'me'; R.settle(data, win);
-    ok(win.phase === 'reward' && win.offer.length === 2 && win.stats.wins === 1 && win.lamps === 3, '이기면 전리품 둘');
-    ok(R.takeLoot(data, win, win.offer[1]).ok && win.deck.length === 4 && win.phase === 'map', '전리품 하나');
+    const loot = r.loot.map(i => R.keyOf(data, i)).filter(k => !s.deck.includes(k));   /* 전리품 둘 가운데 덱에 이미 있는 책은 빠진다 — 책 수가 바뀌면 씨앗의 전리품도 바뀐다 */
+    ok(r.loot.length === 2 && win.phase === 'reward' && win.offer.join() === loot.join() && win.offer.length >= 1 && win.stats.wins === 1 && win.lamps === 3, '이기면 전리품 둘(덱에 있는 책은 빼고)');
+    ok(R.takeLoot(data, win, win.offer[win.offer.length - 1]).ok && win.deck.length === 4 && win.phase === 'map', '전리품 하나');
     const lose = JSON.parse(JSON.stringify(s)); lose.fight.phase = 'done'; lose.fight.winner = 'foe'; R.settle(data, lose);
     ok(lose.phase === 'map' && lose.lamps === 2 && lose.stats.losses === 1, '지면 등불 하나');
     const draw = JSON.parse(JSON.stringify(s)); draw.fight.phase = 'done'; draw.fight.winner = 'draw'; R.settle(data, draw);

@@ -6,6 +6,7 @@
 const assert = require('node:assert/strict'), os = require('node:os'), fs = require('node:fs'), path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { start, FOLD } = require('./browser-harness.cjs');
+const BOOKS = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'book-design.json'), 'utf8')).books.length;
 const art = fs.mkdtempSync(path.join(os.tmpdir(), 'book-art-'));
 const base = JSON.parse(execFileSync('python3', [path.join(__dirname, 'fixtures', 'make-art.py'), art]).toString());
 const S = 'literary_fantasy';
@@ -105,7 +106,7 @@ const wide = p => p.evaluate(() => document.documentElement.scrollWidth <= inner
     await a.close();
     a = await h.open('dex.html', opt(DATED, { store: ['book_dex_filters_v1', JSON.stringify({ art: 'new' })] })); p = a.page;
     await p.waitForSelector('.grid > .cell');
-    assert.equal(await p.$$eval('.grid > .cell', x => x.length), 20, '새 그림이 없으면 "새 그림만" 은 풀린다');
+    assert.equal(await p.$$eval('.grid > .cell', x => x.length), BOOKS, '새 그림이 없으면 "새 그림만" 은 풀린다 — 설계표의 책 모두');
     await a.close();
 
     /* 3. 7일 안에 든 것이 없거나 날짜가 아예 없으면 줄째 숨는다 */

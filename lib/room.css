@@ -1,4 +1,4 @@
-/* Three library rooms: scenery belongs to the room, plates sit on an opaque paper surface.
+/* Library rooms: scenery belongs to the room, plates sit on an opaque paper surface.
    Fixed-size CSS backgrounds never participate in layout; no parallax or image-dependent height. */
 :root {
   --room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/sunlit-library.webp');
@@ -12,6 +12,16 @@
 :root[data-theme="hanok"] {
   --room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/quiet-study.webp');
   --room-rgb:239 238 230;
+}
+:root[data-theme="forest"] {
+  --room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/forest-study.webp');
+  --room-rgb:237 243 232;
+  --room-position:center 47%;--room-mobile-position:68% 38%;
+}
+:root[data-theme="candlelit"] {
+  --room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/candlelit-study.webp');
+  --room-rgb:25 21 29;
+  --room-position:center 48%;--room-mobile-position:72% 43%;
 }
 :root[data-background="off"] {--room-image:none}
 body.dex-page,body.prompt-page {
@@ -65,9 +75,14 @@ html[data-background="off"] .room-preview {grid-template-columns:1fr}
  :root {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/sunlit-library-small.webp')}
  :root[data-theme="moonlit"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/moonlit-archive-small.webp')}
  :root[data-theme="hanok"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/quiet-study-small.webp')}
+ :root[data-theme="forest"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/forest-study-small.webp')}
+ :root[data-theme="candlelit"] {--room-image:url('https://polos0117.github.io/book-atelier-img/backgrounds/candlelit-study-small.webp')}
  .gallery-intro {display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:156px;margin:12px 0 14px;padding:38px 18px 14px;gap:0;
   background-image:linear-gradient(0deg,rgb(var(--room-rgb)) 0%,rgb(var(--room-rgb) / .96) 24%,rgb(var(--room-rgb) / .73) 48%,rgb(var(--room-rgb) / 0) 85%),var(--room-image);
   background-position:center,var(--room-mobile-position);}
+ html[data-theme="forest"][data-background="on"] .gallery-intro {
+  background-image:linear-gradient(0deg,rgb(var(--room-rgb)) 0%,rgb(var(--room-rgb) / .98) 30%,rgb(var(--room-rgb) / .90) 55%,rgb(var(--room-rgb) / .45) 100%),var(--room-image);
+ }
  .gallery-intro>div {max-width:100%}
  .gallery-intro h2 {font-size:26px}
  .gallery-intro>p {align-self:auto;max-width:100%;padding:0;margin:6px 0 0;border:0;background:none;font-size:11px;line-height:1.6}

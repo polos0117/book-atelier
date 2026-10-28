@@ -35,7 +35,8 @@ for (const b of design.books) for (const stage of Object.keys(V.form_key)) {
     longest = Math.max(longest, P.words(t)); n++;
   }
 }
-assert(longest <= 760, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 760 낱말을 넘는다: ' + longest);
+// 몸 개수 줄 BODY 와 일상컷 HAND TASK 로 40낱말쯤 늘었다(2026-10-27)
+assert(longest <= 800, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 800 낱말을 넘는다: ' + longest);
 
 /* 3. 직접 고른 얼굴·체형은 설계표 묶음을 이긴다(그 묶음이 FACE·SILHOUETTE 줄에서 빠진다) */
 const b = design.books[0];
@@ -47,7 +48,19 @@ assert(!off.includes('FACE (') && !off.includes('SILHOUETTE:'), '끄면 빠진�
 
 /* 4. 일상컷 — 갈래·예시·세 축, 서고의 일상 */
 const cas = P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', axes: { overall_intensity: 'strong', skin_exposure: 'bold' } });
+/* 뒤돌아보기 — 등이 카메라를 보는 각도·돌아보는 자세에만 LOOK-BACK 줄(pkm 2026-10-25 같은 문제) */
+for (const x of [{ orient: 'rear_3q' }, { orient: 'three_quarter_back' }, { orient: 'over_shoulder' }, { orient: 'back' }, { pose: 'turning_back' }])
+  assert(P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes(S.BOOK_LINES.casualLookBack), '뒤돌아보기 줄 ' + JSON.stringify(x));
+for (const x of [{ orient: 'front_3q' }, { pose: 'walking' }, {}])
+  assert(!P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes('LOOK-BACK:'), '뒤돌아보기 줄 없음 ' + JSON.stringify(x));
+/* 이야기 속 장소는 설계표 place, 각색은 책의 시대·지역 한 줄(2026-10-26) — 다른 갈래에는 안 싣는다 */
+const sp = P.buildCasual({ book: b, styleText: text, cat: 'story_place', ex: 'sp_walk' });
+assert(b.place && sp.includes('STORY PLACE: the setting of «' + b.title + '» — ' + b.place + '.') && !sp.includes('ADAPTATION:'), '이야기 속 장소 줄');
+const ad = P.buildCasual({ book: b, styleText: text, cat: 'stage_adaptation', ex: 'ad_fitting' });
+assert(ad.includes('ADAPTATION: the production adapts «' + b.title + '»') && ad.includes(b.era) && !ad.includes('STORY PLACE:'), '각색 줄');
+assert(!cas.includes('STORY PLACE:') && !cas.includes('ADAPTATION:') && !P.buildCasual({ book: b, styleText: text, cat: 'literary_salon', ex: 'ls_reading' }).match(/STORY PLACE:|ADAPTATION:/), '다른 갈래엔 없다');
 assert(cas.includes(S.BOOK_LINES.casualWardrobe), '일상컷은 첨부 그림의 옷을 버리고 장면의 옷을 입는다');
+assert(cas.includes(S.BOOK_LINES.casualPose) && cas.indexOf(S.BOOK_LINES.casualPose) < cas.indexOf('SCENE (chosen)'), '일상컷은 첨부 그림의 고개 각도·시선·카메라를 따르지 않는다 — 장면 설정 앞에');
 assert(cas.includes('Stitching a book block') && cas.includes('overall_intensity: strong') && cas.startsWith('INPUT: the attached image'), '일상컷 조립');
 assert(!/Pok[eé]mon|포켓몬/.test(JSON.stringify(S)), '표에 포켓몬 말이 남았다');
 for (const r of S.CATS) if (r[0] !== 'auto_random' && r[0] !== '__custom__') assert((S.EXAMPLE_MAP[r[0]] || []).length, r[0] + ' 예시가 없다');
@@ -108,7 +121,10 @@ assert(P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMod
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, pose: 'standing' }).includes('STANCE'), '자세를 고르면 기본 자세 줄이 빠진다');
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, action: { category: S.ACTION_CATEGORIES[0].key } }).includes('STANCE'), '연출을 고르면 기본 자세 줄이 빠진다');
 for (const m of ['open', 'casual']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes('PRESENTATION:'), m + ' 은 첨부 그림 그대로 — 연출 줄 없음');
-assert(!/Default stance follows the SILHOUETTE/.test(S.BOOK_LINES.createOutput) && pf.join('\n').includes('attitude: '), '실루엣 자세는 태도로만');
+for (const m of ['form', 'open']) assert(!P.buildPrompt({ ...full, outputMode: m }).includes(S.BOOK_LINES.casualPose), m + ' 에는 얼굴 각도 줄이 없다');
+// 실루엣 자세 축은 폼 자세(STANCE)가 있으면 빠진다 — 두 자세가 겹치면 팔이 하나 더 생기려 했다(game 마리오 엔딩, 2026-10-27)
+assert(!/Default stance follows the SILHOUETTE/.test(S.BOOK_LINES.createOutput) && !pf.join('\n').includes('attitude: '), '폼 자세가 있으면 실루엣 자세는 빠진다');
+assert(pf.join('\n').includes('nothing in front of her but what she holds') && pf.join('\n').includes('An object named in FORM or in her pose stays.'), '쥔 것은 앞을 가려도 되고, 폼·자세가 쥔 물건은 HOLD BACK 에서 빠지지 않는다');
 // 폼마다 자세 — 설계표 pose 가 기본 STANCE. 고른 자세가 있으면 빠지고, 손 줄은 "빈손" 대신 자세를 따른다
 for (const bk of design.books) for (const stage of Object.keys(V.form_key)) {
   const t = P.buildPrompt({ outputMode: 'form', book: bk, stage, styleText: text });
@@ -122,7 +138,9 @@ assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: 
   .match(/hair color: #1B2A6B \(dark blue\)[\s\S]*both eyes are #D4A017 \(vivid medium golden amber\)/), '머리·눈 RGB');
 assert.equal(P.hexName('#ffffff'), 'white');
 // 손 — 엄지가 반대쪽에 붙은 손이 나왔다(햄릿 일상컷, 탁자 짚은 오른손). 손 줄은 엄지 자리와 손가락 차례까지
-assert(S.BOOK_LINES.hands.includes('thumb on its inner side') && S.BOOK_LINES.handsKeep.includes('mirrored'), '손 줄에 엄지 방향');
+// 손 줄은 짧은 긍정형 — 손가락 개수·금지 나열이 손에 주의를 끌었다(2026-10-27). 몸 줄은 팔·다리 개수만
+assert(!/thumb|fingers|never|mirrored|thrust/.test(S.BOOK_LINES.hands + S.BOOK_LINES.handsKeep + S.BOOK_LINES.handsDefault + S.BOOK_LINES.handsPose), '손 줄에 손가락 개수·금지어');
+assert(S.BOOK_LINES.body.includes('two arms and two legs') && S.BOOK_LINES.handsCasual.startsWith('HAND TASK:'), '몸 줄·일상컷 손 줄');
 // 경찰·간호사 — 금지어만 있어 부품이 없었다. 옷 부품 + 동작, 극장 말 없이(햄릿이 무대 의상으로 끌려갔다)
 for (const ex of ['adult_police', 'adult_nurse']) {
   const t = P.buildCasual({ book: design.books.find(x => x.key === 'hamlet'), styleText: text, cat: 'adult_roleplay', ex });
@@ -156,7 +174,7 @@ assert(ao.includes('wins over her book') && ao.includes('mandarin collar') && ao
 for (const [cat, rows] of Object.entries(S.EXAMPLE_MAP)) for (const r of rows) if (r[0] && r[0] !== '__custom__') {
   assert(r[5] || S.EXAMPLE_DETAIL[r[0]], cat + ' · ' + r[0] + ' 장면 문장이 없다 — 이름만 실린다(lib/prompt-spec.js EXAMPLE_DETAIL)');
   const t = P.buildCasual({ book: b, styleText: text, cat, ex: r[0] });
-  assert(P.words(t) <= 760, cat + ' · ' + r[0] + ' 일상컷이 760 낱말을 넘는다');
+  assert(P.words(t) <= 800, cat + ' · ' + r[0] + ' 일상컷이 800 낱말을 넘는다');
 }
 assert(!/thruster|cockpit|Gundam|Pok[eé]mon/i.test(Object.values(S.EXAMPLE_DETAIL).join(' ')), '예시 풀이에 건담·포켓몬 말이 없다');
 // 한복 — 한 낱말로는 한푸로 갔다(춘향전). 새 인물은 실루엣에, 이어가기는 GARMENT 줄에 구조를 싣는다

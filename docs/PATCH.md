@@ -8,11 +8,231 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 ## 2026-10-28 · claude · 지도 생성기를 규칙 표로 — 다른 공방이 제 표로 평면도를 짠다
-
 - rust/shelf-gen/src/lib.rs — 아홉 층 책 규칙이 코드에 박혀 있던 것을 규칙 표(JSON — 층·열·가운데 방·들어온/나가는 자리·층지기·급한 차례·채움·아이템·뽑기)를 읽어 짜는 꼴로 다시 썼다. 책 규칙은 BOOK_SPEC 한 장(plan 은 그대로), plan_spec(seed, 표) 로 아무 표든 받는다(틀리면 0 과 {error}). 손으로 쓴 JSON 읽기. API 2. 검사 여섯 — 책 표 3000 씨앗 규칙 그대로 · 책이 모자라면(열 권) None · 신화 꼴 표 · 틀린 표
 - lib/shelf-gen.wasm — 다시 지음(73KB) · lib/shelf-gen.js — API 2, planSpec·bookSpec·lastError·loaded. 신화 공방(myth-atelier lib/)에 둘을 글자 그대로 복사해 던전이 두 층 평면도를 짠다
 - tests/run-gen.cjs — v 2 · 책 모자람 null 과 까닭 · bookSpec · planSpec(책 표) == plan · 신화 꼴 표(두 층·9열·계단 앞 열 전부 싸움) · 틀린 표 null
 - docs/RUN_DESIGN.md · rust/README.md — 규칙 표 절
+
+## 2026-10-27 · claude · 헤어스타일 — 여성 머리 여섯 더하기
+- lib/prompt-spec.js — 생성기 헤어스타일에 아프로 · 아프로 퍼프 · 박스 브레이드 · 콘로 · 피시테일 땋기 · 비치 웨이브를 더했다(라벨·설명·견본 그림 수치). pkm 과 같은 말이다 — 아프로·브레이드 계열이 표에 없었다(사용자). prompt.html 판 올림.
+
+## 2026-10-27 · claude · 가벼운 조깅 — 자세에서 빼고 액티브 갈래 예시로
+- lib/prompt-spec.js — 자세 「가벼운 조깅」(small_jog)을 뺐다. 자세로 고르면 어느 갈래에서든 옷까지 조깅복으로 바뀌었다(사용자). 대신 일상 갈래 「액티브 / 무브먼트 패션」에 예시 「가벼운 아침 조깅」(light_jog — 공원 길을 러닝웨어 차림으로 가볍게 뛴다)을 더했다. 조깅복은 그 갈래에서만 나온다. 옛 기록의 small_jog 값은 그대로 둔다(읽기만 한다). prompt.html 판 올림.
+
+## 2026-10-27 · claude · 가벼운 조깅 자세 — 옷차림은 그대로
+- lib/prompt-spec.js — 자세 「가벼운 조깅」 영어 문장 "Jog lightly with compact arm movement and a believable running step." 이 의상까지 조깅복으로 바꿨다(사용자). "Move at a light, quick jog … ; her outfit stays exactly as described." 로 — 금지어 대신 옷은 고른 그대로라고 적는다. 한국어 설명도 맞췄다. 걷기·스트레칭·댄스 스텝 문장에는 운동복을 부르는 말이 없어 그대로. prompt.html 판 올림.
+- tests/prompt-screen.cjs — 개방 단추를 누른 뒤 주소가 바뀔 때까지 기다린다(화면이 그린 뒤에 주소를 적어 세 번에 두 번 앞 모드를 읽었다 — game 과 같은 고침).
+
+## 2026-10-27 · claude · 폼 초상 — 폼 자세와 부딪히던 줄 셋
+- lib/prompt-book.js · lib/prompt-spec.js — 마리오 엔딩("깃대를 두 손으로 잡고 미끄러져 내려오는 자세")에서 팔이 하나 더 생기려 했다. game 마리오 엔딩에서 찾은 것과 같은 줄이 여기도 있다. ① 새 인물의 SILHOUETTE 에 실루엣 자세 축("springing upward, one fist raised")이 STANCE 와 같이 들어갔다 — 폼 자세·고른 자세·연출이 있으면 빠진다(설계표 폼마다 자세가 있어 폼 초상에서는 사실상 빠진다). ② 카드 출력 줄의 "no foreground occlusion" 이 몸 앞을 지나는 깃대와 부딪혔다 — "nothing in front of her but what she holds". ③ HOLD BACK 이 개방 장면의 "핵심 물건" 을 빼라 해 엔딩 개방의 깃발과 STANCE 의 깃대가 부딪혔다 — 개방의 사건만 빼고 "An object named in FORM or in her pose stays."
+- tests/prompt-book.cjs — 폼 초상에 실루엣 자세가 없고, 쥔 것은 앞을 가려도 되며, 폼·자세가 쥔 물건은 남는지. prompt.html 판 올림.
+
+## 2026-10-27 · claude · 그림 규칙 — 배경 속 사람은 괜찮다
+- IMAGE_RULES.md — "인물은 그녀 한 명" 을 "주인공은 그녀 한 명" 으로. 배경 속 사람(흐릿한 손님·행인·객석)은 나와도 괜찮다(사용자). 다시 만드는 것은 주인공을 다투는 사람·몸에 닿은 사람·같은 얼굴 하나 더. pkm·game 과 같은 기준 — 개방 명장면은 설계표대로 한 명.
+
+## 2026-10-27 · claude · 생성 프롬프트 — 몸 개수 줄, 손 줄은 짧은 긍정형, 일상컷 손 규칙
+- lib/prompt-spec.js · lib/prompt-book.js — pkm 과 같게. 폼·이어가기·개방·일상컷 모두에 BODY 줄(머리 하나·팔 둘·다리 둘, 제 관절에 붙고 사람처럼 굽음, 손·발은 가려져도 된다). 손가락 개수는 적지 않는다 — 쥐거나 가려져야 할 구도에서도 다섯을 다 보이려 한다. HANDS 줄은 "natural human hands." — "엄지 하나와 손가락 넷, 엄지는 안쪽, 합쳐지거나 … 더 생기지 않게" 는 금지를 늘어놓아 손에 주의를 끌었다(pkm 그림 저장소의 팔·다리·손 고침이 10-21 부터 늘었다). 손 기본 자세·자세 있는 손·개방의 손 줄에서도 금지어를 뺐다(빈손은 empty 로). 일상컷에 HAND TASK 줄(자세·장면대로, 쉬는 손은 편하게, 가려져도 된다 — 사용자 문장).
+- tests/prompt-book.cjs — 손 줄에 손가락 개수·금지어가 없는지, 몸 줄·HAND TASK, 길이 한도 760 → 800. prompt.html 판 올림.
+
+## 2026-10-26 · gpt · 어두운 공간 테마 촛불 서재 추가
+- lib/workspace-theme.js · lib/workspace.css — 다섯 번째 공간 candlelit. 짙은 자주빛 바탕·호박빛 강조색·어두운 기본 컨트롤을 적용하고 선택값과 모바일 브라우저 상단 색을 저장한다.
+- lib/room.css — 새 촛불 서재 배경과 휴대폰 축소본을 연결했다. 배경은 그림 저장소 backgrounds/, 생성·변환 기록은 records/backgrounds/candlelit-study.json에 둔다.
+- lib/bookshelf.css · lib/workspace-ui.js — 마호가니 책장 색과 촛불 문양을 더했다. 공간 선택 목록은 기존 공통 목록을 그대로 따른다.
+- lib/words.js — 촛불 서재 이름과 공간 설명을 낱말 표에 더했다.
+- index.html · dex.html · prompt.html · duel.html · run.html · mosaic.html · sprite.html — 테마 관련 공통 파일의 판을 올려 기존 방문자에게도 새 선택지가 뜨게 했다.
+- tests/theme-screen.cjs — 다섯 공간의 글자 대비·저장·다섯 화면·다섯 크기·보조 화면 검사에 새 테마와 배경 실제 읽기를 포함했다.
+
+## 2026-10-26 · claude · 일상컷 갈래 여덟 — 레트로 글래머·서브컬처 패션과 세부 갈래 여섯
+- lib/prompt-spec.js — 일상컷 갈래 여덟을 더했다. 큰 갈래 둘은 레트로 글래머(18 — 20년대 플래퍼부터 50년대 핀업·70년대 디스코·80년대 에어로빅·Y2K까지)·서브컬처 패션(17 — 고스·펑크·록·갸루·데코라·사이버고스·그런지·스팀펑크·고딕 로리타·비주얼계 …)이다. 세부 갈래 여섯은 나이트라이프(10)·댄스 무대(12)·스파·온천·사우나(9)·판타지 코스튬(10)·웨딩·브라이덜(10)·레드카펫·갈라(9)다. 갈래마다 영어 지시·한국어 설명, 예시마다 한국어 설명을 달았고 생성기의 선(불투명·가슴과 골반 가림·한 명)은 그대로다. 오늘 넣은 예시 가운데 아직 안 쓴 열 개(50년대 비키니·핀업 란제리·옥상 파티·재즈 바·인어 쇼·발레·카바레 쇼걸·사우나 라운지·뱀파이어·브라이덜 레이스)를 새 갈래로 옮겼다 — 핼러윈 마녀는 pkm 엘레이드 일상2가 이미 써서 역할극에 둔다. 그 전부터 있던 예시는 기록·장부가 「갈래/예시」 짝으로 쥐고 있어 옮기지 않는다. prompt.html 판 spec 11.
+
+## 2026-10-26 · claude · 수영복·역할극·란제리·홈웨어·이브닝 예시 더하기
+- lib/prompt-spec.js — 수위 높은 갈래에 예시 33개를 더했다(한국어 설명 포함). 수영복 10(컷아웃·딥 플런지·50년대 하이웨이스트·링 장식·크로셰·요트 갑판·폭포 웅덩이·비치발리볼·패들보드·튜브), 역할극 10(카바레 쇼걸·핼러윈 마녀·뱀파이어 백작 부인·마조렛·세일러 무대·라이프가드·고양이 카페·크리스마스 파티·인어 쇼·발레 무대), 란제리 8(브라이덜 레이스·새틴 테디·레트로 핀업·벨벳·스트랩 등판·스포티 코튼·실크 슈미즈·앞 끈 코르셋), 홈웨어 3(사우나 라운지·발코니 해먹·침대 위 아침), 프라이빗 이브닝 2(옥상 파티·재즈 바 피아노)다. 생성기의 기존 선(안감 댄 불투명 소재, 가슴·골반 가림)은 그대로다. 역할극 문구에서 'corset' 은 빼고 'bodice'·'cinched waist' 로 썼다 — pkm 계획기의 옷 종류 셈이 란제리로 읽는다. prompt.html 판 spec 10.
+
+## 2026-10-26 · claude · 일상컷 예시가 적은 갈래 늘리기
+- lib/prompt-spec.js — 예시를 20개 더했다(한국어 설명 포함). 여행은 6개에서 11개(페리·산장·케이블카·온천 족욕·사막 나침반), 축제는 6개에서 11개(꽃차 퍼레이드·고리 던지기·겨울 조명·꽃관·춤판), 취미는 6개에서 12개(보드게임·낚시·탐조·종이접기·뜨개질·별 보기)로 늘었다. 서고의 일상은 8개에서 12개(이야기 시간 준비·이동 도서관·폐관 순찰·지도실)가 됐다. 여행·축제·취미는 pkm 에 넣은 것을 옮겼다. prompt.html 판 spec 9.
+
+## 2026-10-26 · claude · 일상컷 갈래 셋 — 이야기 속 장소, 무대·영화 각색, 낭독회·북클럽
+- lib/prompt-spec.js — 일상컷 갈래 셋과 예시 여섯씩(한국어 설명 포함)을 더했다. 이야기 속 장소는 전망대·옛길·돌계단·스케치·새벽·숙소 창가다. 무대·영화 각색은 의상 피팅·대본 리딩·촬영 대기·리허설·분장실·시사회로, 의상은 책의 시대를 따라 새로 짓고 이미 있는 영화·무대 디자인을 베끼지 않는다. 낭독회·북클럽은 카페 낭독회·북클럽·작가와의 대화·시 낭송·정원 독서 모임·문학 살롱이다. 그동안 책 세계관에서만 나오는 갈래는 「서고의 일상」 하나였다. 문장 둘(`casualStoryPlace`·`casualAdaptation`)도 두었다. prompt.html 판 spec 8·book 4.
+- lib/prompt-book.js — 이야기 속 장소이면 그 책의 STORY PLACE 줄을, 각색이면 책의 시대·지역을 담은 ADAPTATION 줄을 싣는다.
+- data/book-design.json · tools/book-design.py · docs/GAME_CONCEPT.md — 서른다섯 권에 `place`(이야기 속 장소, 영어 한 줄)를 더하고, 설계표 검사가 빈칸을 막는다.
+- tests/prompt-book.cjs — 두 줄이 맞는 갈래에만 실리는지 본다.
+
+## 2026-10-25 · claude · 뒤돌아보는 일상컷 — 등 위에 정면 얼굴이 붙던 것
+- lib/prompt-spec.js · lib/prompt-book.js · prompt.html — prompt-spec.js ?v=7, prompt-book.js ?v=3. 등이 카메라를 보는 각도 넷(뒤 3/4·뒤 강조·어깨 너머·뒷태)과 돌아보는 자세의 문장에 "고개는 어깨 너머로 4분의 1까지, 얼굴은 옆얼굴이나 3/4" 를 적고, 그 각도·자세를 골랐을 때만 일상컷에 LOOK-BACK 줄을 싣는다 — 턱은 가까운 어깨 위, 목 옆선이 돌아간 것이 보이고, 카메라 쪽으로 오는 것은 얼굴이 아니라 눈. pkm 공방에서 등과 날개뼈가 보이는데 얼굴은 정면인 그림이 되풀이된 것과 같은 문장이다
+- tests — 네 각도·자세에는 LOOK-BACK 줄이 있고, 다른 각도·자세에는 없다
+
+## 2026-10-25 · claude · 바닥에 앉는 자세 — 다리·발이 뭉개지던 것
+- lib/prompt-spec.js · prompt.html — prompt-spec.js ?v=6. 일상컷의 바닥에 앉는 자세 다섯(바닥에 앉기·무릎 대기·한쪽 무릎 세우기·옆으로 앉기·책상다리) 문장에 무릎이 향하는 쪽·정강이가 놓이는 곳·두 발의 자리를 적었다. "다리를 한쪽으로 접어 앉는다" 처럼 접는다는 말만 있으면 뒤에서 본 각도에서 다리가 몸에 가려 모델이 짐작해 그렸고, 다리가 방석에 섞이거나 발이 무릎 옆에 튀어나왔다(pkm 공방과 같은 문장)
+
+## 2026-10-24 · claude · 책 다섯 권 더 — 삼총사·오즈의 마법사·제인 에어·지킬 박사와 하이드·허생전
+- data/book-design.json — 일곱 번째 다섯 권 설계표: 모험·동화·로맨스·공포·희극에 네 번째 책(서른다섯 권). 지역 처음 둘 — 캔자스(와 오즈)·잉글랜드 북부 황야. 정한 말 열다섯(재료 challenge_letters·brick_storybook·governess_diary·split_casebook·ledger_coins, 자세 lunge_salute·road_skip·wind_shawl·potion_toast·coin_toss, 팔레트 musketeer_azure·emerald_brick·heather_slate·fog_violet·brine_brass). 다섯 권 모두 한국·해외 보호가 끝난 책 — 오즈는 1939년 영화(루비 구두)를 `adaptations` 에 적고 원작의 은 구두로
+- lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯
+- lib/duel.js — `BOOK` 에 효과 다섯: 삼총사 맹세(발단·전개, 동료 둘)·동료 피해 반을 대신 받기·결말에 셋이 함께 친다, 오즈 소원(발단에 만난 아군, 셋까지)·커튼(가장 큰 덧힘을 걷기)·결말 은 구두(떠나며 소원마다 +3), 제인 에어 인내(힘 1 되찾기)·동등(센 표적에 차이의 반)·결말 가장 센 상대만큼, 지킬 약(셋까지)·전개 하이드(약마다 +2)·결말 폭주(맞은편을 약만큼, 자신 −1), 허생전 만 냥(돈 셋)·사재기(공격 대신 묶고 힘 2 옮기기)·결말 바다에 던지기(돈마다 +2). 새 갈고리는 없다
+- lib/duel.js · data/book-design.json — 춘향전 결말 반격은 공격할 때만(들어오며 친 것·절정 빼고). 서른다섯 권에서 60.2% → 59.3%
+- data/duel.json — 새 다섯 권의 수. 3,000판에서 서른다섯 권 모두 44~60%, 선공 47.5%(보정 +5 그대로). 삼총사 결말이 600판에서 0회라 맹세는 발단·전개 내내
+- lib/words.js · lib/duel-ui.js — 규칙 기록 말 열다섯, 판 위 깃발 「동료」·「소원」. 화면들의 words.js ?v=17, duel.js ?v=5, duel-ui.js ?v=4, book-frame.js ?v=4, prompt-spec.js ?v=5
+- tests/duel.cjs — 새 다섯 권 규칙 확인 27가지, 춘향전 반격이 절정엔 없다
+- docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md — 4절 표에 다섯 줄, 5절 균형을 서른다섯 권으로 다시, 9-6절 일곱 번째 다섯 권, "서른 권" → "서른다섯 권"
+
+## 2026-10-24 · claude · 일상컷 얼굴이 첫 그림의 각도를 따라 하던 것
+- lib/prompt-spec.js · lib/prompt-book.js — 일상컷 프롬프트에 ANGLE 줄: 첨부한 첫 그림은 누구인지만 정하고, 고개 각도·기울기·시선·화면 속 얼굴 크기·카메라 높이·자르기는 따르지 않는다 — 장면 설정의 방향대로 고개를 돌리고(옆얼굴·3/4·내려다보기·딴 데 보기) 그 각도에서 자연스럽게, 생김새는 그대로. 첫 그림의 정면 3/4 얼굴이 일상컷마다 되풀이돼 부자연스러웠다. 줄 이름을 "POSE AND CAMERA" 로 했다가 "CAMERA:" 가 시대 줄(ERA:) 검사에 걸려 ANGLE 로. prompt.html 의 prompt-spec.js ?v=4 · prompt-book.js ?v=2
+- IMAGE_RULES.md — 2절 표의 일상컷 칸
+- tests/prompt-book.cjs — 일상컷에만 ANGLE 줄, 장면 설정 앞
+
+## 2026-10-23 · claude · 책 다섯 권 더 — 위대한 개츠비·모르그 가의 살인·로봇(R.U.R.)·군주론·종의 기원
+- data/book-design.json — 여섯 번째 다섯 권 설계표: 비극·추리·SF·사상·과학에 세 번째 책(이제 열 장르에 세 권씩, 서른 권). 지역 처음 넷 — 롱아일랜드·외딴섬 공장·르네상스 피렌체·갈라파고스. 정한 말 열다섯(재료 gilt_invitations·gazette_columns·blueprint_sheets·sealed_dispatches·specimen_plates, 자세 dock_reach·candle_deduce·assembly_rise·throne_lean·specimen_sketch, 팔레트 champagne_green·gaslight_umber·factory_steel·medici_crimson·volcanic_teal). 다섯 권 모두 한국·해외 보호가 끝난 책
+- lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯
+- lib/duel.js — `BOOK` 에 효과 다섯: 개츠비 손님(파티)·장 끝 손님마다 +1·결말에 센 상대를 발단으로 되돌리고 스러짐, 모르그 가 흔적·흔적마다 +1·결말에 흔적 붙은 가장 센 책을 닫음, 로봇 부품(닫힐 때마다)·서가의 닫힌 책을 손패로·봉기(닫힌 책마다 아군 +1), 군주론 두려움(가장 약한 책부터)·두려운 책의 피해 −1·결말에 두려운 책 모두 묶음, 종의 기원 장르 익히기·익힌 장르 피해 −2·결말 자연선택. 새 갈고리는 없다
+- lib/duel.js · data/book-design.json — 춘향전 결말 반격을 다른 상대 모두 → 가장 센 하나로(서른 권에서 60.5% → 59.4%)
+- data/duel.json — 새 다섯 권의 수. 3,000판에서 서른 권 모두 42~60%, 선공 47.2%(보정 +5 그대로). 모르그 가 결말이 0회라 흔적은 발단·전개 내내·문턱 하나, 군주론·종의 기원도 발단·전개 내내 모은다
+- lib/words.js · lib/duel-ui.js — 규칙 기록 말 열다섯, 판 위 깃발 「흔적」·「두려움」. 화면들의 words.js ?v=16, duel.js ?v=4, duel-ui.js ?v=3, book-frame.js ?v=3, prompt-spec.js ?v=3
+- tests/duel.cjs — 새 다섯 권 규칙 확인 27가지, 춘향전 반격이 하나에게만
+- tests/run.cjs — 「이기면 전리품 둘」 이 씨앗 하나의 전리품 둘이 덱 밖이라고 가정했다(서른 권에서 하나가 덱 안) — 덱에 있는 책을 뺀 전리품과 견준다
+- docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md — 4절 표에 다섯 줄, 5절 균형을 서른 권으로 다시, 9-5절 여섯 번째 다섯 권, "스물다섯 권" → "서른 권"
+
+## 2026-10-22 · claude · 폴드·150% 화면에서 도트 머리가 잘리던 것
+- lib/sprite-actor.js — 공방 모음 원본 그대로(grow: 공간이 실제 도트 크기만큼 늘어난다 — 화소 배율 2.625 면 도트가 1.14배, 1.5 면 1.33배로 커진다). 쓰는 화면 넷의 ?v=7
+- lib/bookshelf.js · dex.html · run.html — 서재 바닥·서가 상세 무대·서고 복도가 grow 를 쓴다
+- tests/shelf-sprite-screen.cjs · tests/dex-dot-screen.cjs · tests/run-sprite-screen.cjs — 폴드 겉·속(2.625)·150% 노트북(1.5)에서 머리가 안 잘리는지
+
+## 2026-10-22 · claude · 책을 펼치면 그 책의 도트가 뛰쳐나와 화면을 거닌다
+- lib/bookshelf.js — 펼친 책(reading-dialog)이 열리고 0.56초 뒤, 그 책의 도트 인물이 있으면 그림 장에서 튀어나와 화면 바닥에 내려앉고 가로질러 걷는다(공용 재생기 popOut — dialog 안 맨 위 층, 휴대폰 1배·넓은 화면 2배). 누르면 반응, 책을 닫으면 책으로 뛰어 들어간다. 움직임 끔이면 뛰지 않고 서 있다, 도트 그림을 못 받으면 아무것도 없다. bookshelf.js ?v=12
+- lib/words.js — home.sprite.out(뛰쳐나온 도트의 이름). 일곱 화면 words.js ?v=15
+- lib/sprite-actor.js — 공방 모음 원본 그대로(뛰쳐나오기 닫는 시간 · 그림 못 받으면 판째 치우기)
+- tests/shelf-sprite-screen.cjs — 뛰쳐나오기: 책에서 나온다·바닥에 내려앉는다·이름·거닌다·판은 누름을 지나 보낸다·닫으면 들어간다·동작 줄이기면 서 있다·그림 없음이면 없다
+
+## 2026-10-22 · claude · 도트 재생기 v2 — 여러 인물의 바닥·뛰쳐나오기·카드 열쇠로 찾기
+- lib/sprite-actor.js · lib/sprite-actor.css — 공방 모음 원본 v2 를 그대로 복사: floor(공방 메인의 바닥)·popOut(요소에서 튀어나와 화면을 걷는다)·actorFor/forCard(카드 열쇠로 인물). 한 명 재생(create)은 그대로. 화면들의 ?v=6 · .css ?v=4
+- tests/sprite-actor-copy.cjs — v2 의 내보내기 일곱
+
+## 2026-10-22 · claude · 도트 재생기를 다섯 공방이 같이 쓰는 모듈로 — 원본은 공방 모음
+- lib/sprite-actor.js · lib/sprite-actor.css — 원본을 공방 모음(polos0117.github.io)의 sprite-actor.js·.css 로 옮기고(판 v1) 그대로 복사했다. 셈은 그대로, 대기 시트가 없는 인물도 정지 도트로 서 있다가 걷는다(세 인물은 대기가 있어 달라지는 것 없음). 설명의 book 문서 길을 공방 모음 README 「도트 재생기」로
+- index.html · dex.html · run.html · sprite.html — sprite-actor.js ?v=5 · .css ?v=3
+- tests/sprite-actor-copy.cjs — 새 검사: 복사본이 원본과 글자 하나 다르지 않다(다섯 저장소 같은 파일) · AGENTS.md — 공용 모듈 한 줄과 검사 목록, 새 인물은 공방 모음의 도트 공방(dot.html)에서
+
+## 2026-10-22 · gpt · 숲속 서재 공간 테마 추가
+- lib/workspace-theme.js · lib/workspace.css · lib/words.js — 숲속 서재 선택지와 안내, 초록 잉크·밝은 종이 팔레트. 기존 저장값과 기본 공간을 유지하고 새 선택을 모든 화면에 저장
+- lib/room.css · lib/bookshelf.css — 숲이 보이는 창가 배경과 초록 책장. 그림 저장소 backgrounds/forest-study.webp 및 800px 축소본, 배경 끄기와 모바일 구도 지원
+- index.html · dex.html · prompt.html · duel.html · run.html · mosaic.html · sprite.html — 일곱 화면의 테마 자산·낱말 표 캐시 버전 일치
+- tests/theme-screen.cjs — 네 공간의 글자 대비·선택 저장·배경 끄기·다섯 화면 크기, 모자이크와 도트 진열실의 테마 유지 확인
+
+## 2026-10-21 · claude · 책 다섯 권 더 — 해저 2만 리·천일야화·구운몽·크툴루의 부름·한여름 밤의 꿈
+- data/book-design.json — 다섯 번째 다섯 권 설계표: 모험·동화·판타지·로맨스·공포·희극·풍자에 세 번째 책(지역 처음 셋 — 아라비아·당나라 꿈·미국 바다). 정한 말 열셋(재료 logbook_brass·clippings·petal_script, 자세 porthole_gaze·tale_gesture·cloud_recline·recoil_reach·mischief_leap, 팔레트 deep_pearl·lamp_indigo·lotus_cloud·drowned_green·moon_moss). 천일야화는 작자 미상(anonymous), 구운몽은 한지 틀
+- lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯
+- lib/duel.js — `BOOK` 에 효과 다섯: 해저 2만 리 깊이(받는 피해 −1)·충각(깊이마다 +2, 닫으면 하나 되찾음)·소용돌이(아군도), 천일야화 이야기·하룻밤 미루기·되살리기(이야기 수만큼), 구운몽 인연(양편이 들어올 때)·영화(+1)·깨어남(센 상대 규칙을 잠재움), 크툴루 조각(전개에도)·광기(묶음)·깨어남(상대 힘 반), 한여름 밤의 꿈 꽃즙(휴전)·장난(제 편을 친다)·잔치(약한 아군 +2). 새 갈고리는 없다
+- data/duel.json — 새 다섯 권의 수. 3,000판에서 스물다섯 권 모두 45~59%, 선공 45.2%(보정 +5 그대로). 크툴루 결말이 3회라 조각을 전개에도 모은다
+- lib/words.js · lib/duel-ui.js — 규칙 기록 말 열일곱, 판 위 깃발 「꽃즙」. 화면들의 words.js ?v=13, duel.js ?v=3, duel-ui.js ?v=2, book-frame.js ?v=2, prompt-spec.js ?v=2
+- tests/duel.cjs — 새 다섯 권 규칙 확인 30가지
+- tests/dex-recent-screen.cjs — 「새 그림만」 이 풀린 서가 칸 수를 20 고정에서 설계표의 책 수로
+- docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md — 4절 표에 다섯 줄, 5절 균형을 스물다섯 권으로 다시, 9-4절 다섯 번째 다섯 권, "스무 권" → "스물다섯 권"
+
+## 2026-10-21 · claude · 도트 걷기 v2 — 다리가 번갈아 나가게
+- tools/walk-swap.py — 새 도구: 걷기 반 주기 세 칸 + 다리 표시를 맞바꾼 세 칸. 다리 안내를 붙여 다시 뽑은 시트도 같은 다리만 앞이라(1·4칸이 같다) 뒤 세 칸을 만든다 — alice 스타킹 무늬, 손자 맨 허벅지(그늘·새로 그림), 춘향 신 자리
+- data/sprites.json — 세 인물 walk 를 `_walk_v2.png` 로(지난 시트는 그대로), 빠르기 alice 55 → 63·손자 55 → 82·춘향 49 → 52, dy 다시 셈(tools/sprite-bob.py)
+- docs/ATELIER_PIXEL_ART_PLAN.md — 10절 걷기 v2 기록, AGENTS.md 도구 줄
+
+## 2026-10-21 · claude · 도트 걷기 다시 뽑기 준비 — 다리 자세 안내
+- tools/walk-guide.py — 새 도구: 걷기 다리 자세 안내 그림(3×2 칸, 가까운 다리 남색·먼 다리 회색, 4칸은 1칸의 거울, 두 마디 IK). 생성 시트가 1·3·4·6 칸을 다 "가까운 다리 앞" 으로 그려 다리가 번갈아 나가지 않았다
+- docs/ATELIER_PIXEL_ART_PLAN.md — 11절에 걷기 다시 뽑기 지시문(세 인물, 칸마다 다리 자리)과 받은 뒤 정리 순서
+
+## 2026-10-21 · claude · 도트 걷기 — 발이 미끄러지고 오르내림이 다리와 어긋나던 것
+- data/sprites.json — 걷기 칸 110 → 200ms(사용자: 더 천천히), 빠르기를 보폭에서 셈(접지 칸의 발 폭 ÷ 반 주기): alice·손자 32 → 55, 춘향 30 → 49. 다리가 몸보다 세 배 빨라 제자리에서 미끄러지듯 걸었다
+- data/sprites.json — 걷기 칸마다 dy: 생성 시트의 뒤 세 칸이 오르내림 위상이 어긋나(alice 지나감 칸이 낮다, 춘향은 뒤 절반이 통째로 2줄 아래) 몸이 다리와 따로 출렁였다 → 머리 높이를 접지 가운데·내려앉음 1칸 아래·지나감 1칸 위 곡선에 맞추는 만큼 칸을 옮긴다(±2, 1/3 도트까지)
+- tools/sprite-bob.py — 새 도구: 걷기 시트에서 그 dy 를 셈. lib/sprite-actor.js — 칸의 dy 를 실제 화소에 맞춰 옮기고 발밑 그림자는 반대로(땅에 둔다). 화면들의 sprite-actor.js ?v=4
+- run.html — 탐험 복도 벽 흐름 120 → 38px(0.7초 × 걷기 빠르기)
+- tests/sprites-data.py — 새 검사: 도트 자료 꼴, 그림 저장소가 옆에 있으면 시트 크기·걷기 빠르기 = 보폭 ÷ 반 주기(±15%)·dy 로 맞춘 머리 높이가 다리 교차를 따른다. AGENTS.md 검사 줄, docs/ATELIER_PIXEL_ART_PLAN.md 기록
+
+## 2026-10-21 · claude · 생성기 — 상징 "들지 않는다" 와 손에 쥔 소품이 부딪히던 것, 안나 발단 자세
+- lib/prompt-spec.js — SUBJECT 줄의 "Symbols worn as costume motifs, never carried" 에 "폼 글이나 자세가 손에 쥐어 준 한 가지는 예외" 를 더했다. 안나(손가방)·오만과 편견(편지)·걸리버(컴퍼스)·파우스트(플라스크·계약서)·자산어보(공책)는 폼이 소품을 손에 쥐는데 같은 프롬프트가 "들지 말라" 해서, 손이 소품을 어정쩡하게 걸치고 자세가 꼬였다
+- data/book-design.json — 안나 발단 자세: "기차 계단을 한 칸 내려서며 … 어깨 너머를 돌아보는" 은 등을 보이라는 말이라 출력 줄(뒷모습 금지)·HOLD BACK(기차는 개방 장면)과 부딪혔다 → 승강장에 몸을 카메라 쪽 3/4으로, 한 손은 모피 깃, 다른 손은 손목에 빨간 손가방(두 손 할 일을 정했다)
+
+## 2026-10-21 · claude · 도트 확대 P2 — 손자·춘향이 서재에, 바닥은 폭에 맞춰
+- data/sprites.json — 손자·춘향(정지·대기·걷기·반응, 대기 차례 0→1→2→3, 춘향 걷기 30/초). 서재 바닥·서가·진열실·탐험 복도에 같이 나온다
+- lib/bookshelf.js — 바닥 폭에 칸(96px × 1.25)이 드는 만큼만 세운다(휴대폰 둘, 넓은 화면 셋) — 셋이면 휴대폰에서 칸이 겹쳤다. 날마다 차례를 한 칸씩 돌려 모두 나온다. 두 자리는 제 구역 안(칸 반 폭만큼 안쪽). index.html — bookshelf.js ?v=11
+- tools/sprite-sheet.py — --rows N(시트마다 프레임 높이 중앙값을 N 줄로, 고른 격자), --grid CxR(프레임끼리 붙으면 기대 경계 가까이 가장 빈 세로줄에서 자른다), 넓은 프레임은 칸 안으로 민다. alice 시트 결과는 바이트 같음
+- tests/shelf-sprite-screen.cjs — 한 인물 검사는 alice 만 둔 자료로, 실제 자료로 폭(344·390 둘, 1280 셋)·겹침 없음·다음 날 차례 돎. tests/dex-dot-screen.cjs — 「도트」 표는 자료의 인물 책 모두
+- docs/ATELIER_PIXEL_ART_PLAN.md — 확대 P2 결과. AGENTS.md — 서재 줄·도트 정리 도구 줄
+
+## 2026-10-21 · claude · 도트 확대 P1 — 손자·춘향 정지 도트
+- tools/sprite-grid.py — --rows N(인물 높이를 N 줄로 나눈 고른 격자, 시작점만 찾는다)·--outline(바깥 윤곽 한 칸). 격자 찾기가 빗나가는 생성 도트용, 인물끼리 키 맞추기. 기본 길은 그대로(alice 결과 바이트 같음)
+- tools/sprite_px.py — sample_fixed(고른 격자, 칸 안 최다 색, 어두운 색이 30% 넘으면 그 색)
+- docs/ATELIER_PIXEL_ART_PLAN.md — 확대 P1 결과, 반전 허용(손자·춘향), 체크포인트를 확대 P2 대기로. 그림은 book-atelier-img `sprites/sunzi/`·`sprites/chunhyang/`·`records/sprites/`
+
+## 2026-10-21 · claude · 도트를 서가와 진열실에서 — 목록 「도트」 표·상세 도트 줄·sprite.html 진열실
+- dex.html — data/sprites.json 을 한 번 받아, 도트 인물이 있는 책의 목록 칸에 「도트」 표(오른쪽 위), 상세의 닮은 그림 줄 밑에 작은 무대(대기·걷기·반응 단추, 인물을 눌러도 반응, 진열실 길). 그림을 못 받으면 줄째 숨김, 자료가 틀리면 표도 줄도 없음. sprite-actor.js·css 를 싣는다
+- sprite.html — 도트 시범 → 도트 진열실. 무대는 ?who= 로 고른 인물(없으면 첫 인물), 아래에 인물마다 정지 도트·상태별 칸 띠(원래 크기)·무대에 세우기·서가·만든 기록(그림 저장소 records/sprites/)
+- lib/bookshelf.js·css — 서재 바닥이 서면 바닥 밑 글줄에 「도트 진열실」 길. index.html — bookshelf ?v=10·8
+- lib/words.js — sprite.title·subtitle(진열실), sprite.gallery·card.*, dex.dot.*, home.sprite.room
+- tests/dex-dot-screen.cjs — 새 검사. tests/sprite-screen.cjs — 진열실 6가지. tests/shelf-sprite-screen.cjs — 진열실 길 2가지
+- AGENTS.md — 서가·진열실 줄, 검사 줄. docs/ATELIER_PIXEL_ART_PLAN.md — 서가·진열실 기록
+
+## 2026-10-21 · claude · 도트 확대 준비 — 서재 바닥에 셋까지, 손자·춘향 P0
+- lib/bookshelf.js — 서재 바닥이 data/sprites.json 의 인물을 셋까지 세운다. 바닥을 나눠 인물마다 제 구역의 두 자리, 처음 자리·대기 시간을 엇갈리게. 못 받은 인물만 빠지고 한 명이라도 서면 바닥이 보인다. 펼친 동안 모두 쉰다. index.html — bookshelf.js ?v=9
+- lib/words.js — sprite.name.sunzi·chunhyang
+- tests/shelf-sprite-screen.cjs — 여럿(제 구역·못 받은 인물 빠짐·그 인물의 책·모두 쉼) 6가지
+- docs/ATELIER_PIXEL_ART_PLAN.md — 확대 P0(손자·춘향, 기준 그림 경로·해시·고른 까닭), 11절 확대 P1 지시문, 체크포인트
+
+## 2026-10-21 · claude · 도트 시범 P5 — 서고 탐험 복도의 길동무
+- run.html — 지도 위 복도 띠(Corridor). 덱에서 도트가 있는 첫 책의 주인공이 서고, 방·계단·보스를 고르면 상태는 바로 적고 0.7초 제자리 걸음·벽 흐름 뒤 그 방을 띄운다(누르면 바로). 쉼에서 등불·이긴 뒤 전리품에 반응. 움직임 끔·동작 줄이기·휴대폰 가로·새로고침·도트 없는 덱이면 바로. sprite-actor.js·css 를 싣는다
+- lib/sprite-actor.js — wander 옵션(저절로 걷지 않기), march(ms) 제자리 걸음. 화면들의 sprite-actor.js 를 ?v=3
+- lib/words.js — run.corridor·run.walker
+- tests/run-sprite-screen.cjs — 새 검사. docs/RUN_DESIGN.md 5절·docs/ATELIER_PIXEL_ART_PLAN.md P5 결과·AGENTS.md 탐험 줄·검사 줄
+
+## 2026-10-21 · claude · 도트 시범 P4 — 서재 바닥의 alice
+- lib/bookshelf.js — 책장 밑 바닥 줄(.shelf-floor)에 도트 인물 하나(data/sprites.json 의 인물 중 설계표에 책이 있는 것). 누르면 그 책을 펼친다(책장에 없어도), 펼친 동안 pause('reading')·닫으면 resume, 펼침·닫힘 움직임과 초점은 인물에서. 도트를 못 받으면 바닥째 숨김
+- lib/bookshelf.css — 바닥 줄(가로 마루결, 테마마다 나무 빛). index.html — sprite-actor.js·css 를 싣고 bookshelf ?v=7·8
+- lib/sprite-actor.js — api 를 인물 단추에 단다(el.sprite). data/sprites.json — 배율 1(사용자 결정)
+- lib/words.js — home.sprite.floor·home.sprite.actor
+- tests/shelf-sprite-screen.cjs — 새 검사. docs/ATELIER_PIXEL_ART_PLAN.md — P4 결과·알려진 문제, 체크포인트 P5 대기. AGENTS.md — 서재 줄·검사 줄
+
+## 2026-10-21 · claude · 도트 시범 P3 — 독립 재생(sprite.html)
+- lib/sprite-actor.js·lib/sprite-actor.css — 새 재생 모듈(window.AtelierSprite). 시트 한 장의 background-position·transform 만, 대기 차례·걷기(두 자리, 가는 쪽 반전)·고르기 반응, 고르기는 바로 알리고 반응 중 누른 것은 버린다, pause/resume(이유별)·숨은 탭·화면 밖·움직임 끔·동작 줄이기, 도트 한 칸 = 실제 화소 정수배(fit 이면 낮은 공간에 맞춰 낮춘다), 그림 실패면 숨김
+- data/sprites.json — 새 자료. alice 발단 — 칸 96×128·발 기준선·배율 2·반전 허용, 정지·대기(1→4→1→3)·걷기(32/초)·반응 시트와 시간
+- sprite.html — 새 예제 화면(머리 항해에 없다). 서재 배경 바닥의 작은 공간, 대기·걷기·고르기·멈춤·1/2/3배·움직임 끔, 고른 횟수
+- lib/words.js — sprite.* 낱말. 화면들의 words.js 를 ?v=12(지난 즐겨찾기 낱말 변경에서 빠졌던 것도 함께)
+- lib/workspace-ui.js — 부제 있는 화면에 sprite. 화면들의 workspace-ui.js 를 ?v=7 로 맞춤(5·6 이 섞여 있었다)
+- tests/sprite-screen.cjs · tests/fixtures/make-sprites.py — 새 검사·가짜 시트. tests/browser-harness.cjs — 그림 저장소 sprites/ 경로, 화소비(dpr)·동작 줄이기(reducedMotion) 열기
+- docs/ATELIER_PIXEL_ART_PLAN.md — P3 결과·알려진 문제, 체크포인트 P4 대기. AGENTS.md — 화면 표·검사 줄
+
+## 2026-10-21 · claude · 도트 시범 P2 — alice 대기·걷기·반응 시트
+- tools/sprite-sheet.py — 새 도구. 한 장에 격자로 그린 프레임을 찾아(칸 경계에 걸쳐도), 프레임마다 느슨한 격자(10~13px 로 들쭉날쭉한 생성 도트를 따라)로 칸 안쪽 최다 색을 뽑고, 정지 도트 팔레트·발 기준선·몸 중심으로 가로 시트. --fixed-pitch·--cell·--speck
+- tools/sprite_px.py — 새 공용(격자 찾기·Lab 팔레트·가까운 색·느슨한 격자). tools/sprite-grid.py 는 이것을 쓰도록 — 결과는 바이트까지 그대로
+- docs/ATELIER_PIXEL_ART_PLAN.md — P2 결과(블록 11.6px → 절반 간격 6.0 으로 정리한 까닭, idle 재생 1→4→1→3, walk 오르내림), 체크포인트를 P3 대기로. 그림은 book-atelier-img `sprites/alice/`·`records/sprites/alice/`
+- AGENTS.md — 도트 줄에 시트 도구
+
+## 2026-10-21 · claude · 도트 계획 — P2 동작 시트 생성 지시문
+- docs/ATELIER_PIXEL_ART_PLAN.md — 11절에 P2 지시문(공통 + idle 4 · walk 6 · react 4, 세로 한 장 격자 칸, 6×6 화소, 정지 도트 6배 첨부)과 받은 뒤 정리 순서
+
+## 2026-10-21 · claude · 도트 계획 — gen2 재작업 요청 문구
+- docs/ATELIER_PIXEL_ART_PLAN.md — gen2 를 만든 이어 요청(큰 화소·16색·4등신·장식 절반)을 체크포인트에 적고 P2 지시문에도 넣기로
+
+## 2026-10-21 · claude · 도트 시범 P1 — alice 발단 정지 도트 확정
+- tools/sprite-grid.py — 새 도구. 생성 그림의 실제 도트 격자(간격·시작점)를 찾아 칸 가운데 색을 뽑고 Lab 묶음 팔레트로 96×128 셀·발 기준선에 앉힌다(면적 평균 축소는 격자가 어긋나 뭉갰다)
+- docs/ATELIER_PIXEL_ART_PLAN.md — P1 결과(gen1 안 씀·gen2 채택·정리 수치·합성 판단), 반전 허용 확정, 체크포인트를 P2 대기로. 그림은 book-atelier-img `sprites/alice/`·`records/sprites/alice/still.json`
+- AGENTS.md — 도트 줄에 정리 도구
+
+## 2026-10-21 · claude · 서가 상세 단추 줄 정리 — 담기와 도구 두 줄
+- dex.html — 단추·글자가 한 줄에 섞이던 것을 둘로: 위는 담기(♡ 즐겨찾기 + 붙은 칸의 담은 수 링크 ›, 진열 단추 + 붙은 칸의 진열 수), 아래는 도구(움직임·틀·모자이크·생성기 — 테두리 없이 조용히). 묶음마다 role=group 이름
+- lib/words.js — dex.fav.count·dex.hall.count 를 수만, 링크 이름 dex.fav.open, 묶음 이름 dex.bar.keep·dex.bar.tools, 진열 수 풀이 dex.hall.count.note
+- lib/gallery.css — 붙은 칸 모서리, 담기 줄 글자색. 화면들의 gallery.css 를 ?v=6
+
+## 2026-10-21 · claude · 모자이크 화면 검사를 머리 탭 다섯에 맞춤
+- tests/mosaic-screen.cjs — 서고 탐험(run.html)이 머리 항해에 들어와 탭이 다섯이 됐다. 항해 넷을 기대하던 확인 셋(세로·가로·PC)을 다섯으로
+- tests/header-layout.cjs · AGENTS.md — 주석과 모자이크 줄의 "탭 넷/다섯" 말을 지금 항해에 맞춤
+
+## 2026-10-21 · claude · 서가 즐겨찾기 — 지금 보이는 그림을 하트로 담고, 공방 모음에서 모아 본다
+- lib/favorites.js — 공방 넷과 공방 모음(polos0117.github.io)이 같이 쓰는 즐겨찾기 모듈(판 v1). 원본은 공방 모음의 favorites.js, 글자 하나 다르지 않게 복사했다. 열쇠 atelier_favorites_v1(한 출처라 공방끼리 같은 목록), 약속은 그쪽 README 「즐겨찾기」절
+- dex.html — 서가 상세의 바로가기 줄 맨 앞에 하트 「즐겨찾기」(aria-pressed) — 책이 아니라 큰 그림에 떠 있는 그 그림(폼·개방·연출·일상·특별)을 담는다. 담은 수 「즐겨찾기 n」 은 /favorites.html 로, 담았다·뺐다·저장이 막혔다는 알림(aria-live). ?book=&pic= 로 오면 그 그림의 화풍·폼·컷으로 열고, 다음 주소에는 pic 을 끌고 가지 않는다
+- lib/words.js — dex.fav.* 낱말 여섯
+- tests/dex-favorites.cjs — 새 검사: 하트·저장된 칸의 모양·그림마다 따로·새로고침·link 로 열기·저장 막힘·다섯 크기 44px·넘침·초점, 공방 모음 원본과 같은 파일인가 · AGENTS.md — 공용 모듈 한 줄과 검사 목록
+
+## 2026-10-21 · claude · 도트 계획에 서고 탐험 자리
+- docs/ATELIER_PIXEL_ART_PLAN.md — 3절 적용안 표에 서고 탐험(복도 띠 걷기·대기·반응, 덱 첫 책 주인공, P5에서 판단) 한 줄
+
+## 2026-10-21 · claude · 도트 캐릭터 시범 계획 편입과 P0
+- docs/ATELIER_PIXEL_ART_PLAN.md — 사용자 검토안을 들이고 검토를 반영(시트 한 장 생성·팔레트 고정 정리, 실제 화소 정수배, dialog 멈춤, P1에 서재 바닥 합성). P0: 시범 alice 발단, 정본·도트 기준 그림 경로와 해시, 파일 자리, P1 생성 지시문
+- AGENTS.md — 먼저 읽을 문서 표에 한 줄
+- IMAGE_RULES.md — 7절 도트 스프라이트 자리(sprites/, img/ 밖)
 
 ## 2026-10-21 · claude · 서고 탐험 화면 — run.html, 머리 탭 다섯, 설계 문서
 

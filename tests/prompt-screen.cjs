@@ -71,6 +71,8 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     /* 5. 개방 — 그 폼 그림 첨부, 명장면, 파일 이름에 _open */
     await p.click('#mode-open');
     const q = () => p.evaluate(() => Object.fromEntries(new URLSearchParams(location.search)));
+    /* 주소는 화면이 그린 뒤(useEffect) 적는다 — 바로 읽으면 앞 모드가 보일 수 있다(game 과 같은 고침, 2026-10-27) */
+    await p.waitForFunction(() => new URLSearchParams(location.search).get('mode') === 'open');
     assert.deepEqual(await q(), { book: 'don_quixote', mode: 'open' }, '고른 책·모드가 주소에');
     t = await out(p);
     assert(t.includes('풍차 앞으로 돌진하는 순간') && t.startsWith("INPUT: attach this book's development form card image"));

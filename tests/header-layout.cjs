@@ -39,7 +39,7 @@ function same(actual,expected,label){
      await p.evaluate(d=>window.AtelierAppearance.set('density',d),density);
      const reference=await geometry(p);
      for(const [file,ready] of [['dex.html','.grid .cell'],['prompt.html','#prompt-output'],['duel.html','.duel-screen'],['run.html','.run-screen'],['index.html','.room-preview']]){
-      /* 탭 넷은 어느 크기에서나 보인다 — 서재 탭이 집으로 가는 길 */
+      /* 탭 다섯은 어느 크기에서나 보인다 — 서재 탭이 집으로 가는 길 */
       await p.locator(`.workspace-nav a[href="${file}"]`).click();
       await p.waitForSelector(ready);
       same(await geometry(p),reference,`${viewport.width} ${density} ${file}`);

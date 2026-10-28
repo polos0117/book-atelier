@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="lib/workspace.css?v=6">
+<link rel="stylesheet" href="lib/workspace.css?v=8">
 <link rel="stylesheet" href="lib/book-frame.css?v=1">
 <style>
 /* 색·밀도 토막은 lib/workspace.css 한 곳에 있다. 여기는 뼈대만 — pkm 도감과 같다 */
@@ -77,12 +77,42 @@ body {color:var(--text);font-size:15px}
 .bar .n {flex:none;font:700 11px ui-monospace,monospace;color:var(--accent);white-space:nowrap}
 .back {flex:none;min-height:40px;padding:8px 12px;background:var(--card2);color:var(--text);
   border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12px;font-weight:700}
-.bar-links {display:flex;gap:6px;flex-wrap:wrap;padding:0 0 8px}
+/* 도트 — 목록 칸의 「도트」 표(오른쪽 위, 「새」 는 왼쪽 위), 상세의 작은 무대 한 줄 */
+.dot-badge {position:absolute;right:5px;top:5px;z-index:1;padding:0 6px;border-radius:3px;background:#1d1a26cc;color:#f3e6c4;font:700 10px/1.7 ui-monospace,monospace;letter-spacing:.04em;pointer-events:none}
+.dex-dot {margin:4px 0 16px}
+.dex-dot[hidden] {display:none}
+.dex-dot-row {display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.dex-dot-stage {position:relative;flex:1 1 220px;min-width:0;height:152px;overflow:hidden;border:1px solid var(--line);border-radius:8px;
+  background:linear-gradient(transparent 74%,color-mix(in srgb,var(--line) 60%,var(--card)) 74%),var(--card2)}
+.dex-dot-acts {display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;flex:0 1 220px}
+.dex-dot-acts button,.dex-dot-acts a {display:inline-flex;align-items:center;min-height:44px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer}
+.dex-dot-acts button[aria-pressed="true"] {color:var(--text);box-shadow:inset 0 -2px var(--gold)}
+.dex-dot-acts button:disabled {opacity:.45;cursor:default}
+.dex-dot-acts a {color:var(--accent)}
+/* 상세의 단추 줄 — 위: 담기(즐겨찾기·진열, 수는 그 단추에 붙은 칸), 아래: 도구(움직임·틀·모자이크·생성기, 한 단 조용히) */
+.bar-links {display:flex;flex-direction:column;gap:10px;padding:0 0 8px}
+.bar-row {display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar-pair {display:inline-flex;align-items:stretch;max-width:100%}
+.bar-pair > :not(:last-child) {border-top-right-radius:0 !important;border-bottom-right-radius:0 !important}
+.bar-pair > :not(:first-child) {border-top-left-radius:0 !important;border-bottom-left-radius:0 !important;border-left:0 !important}
 .bar-links a,.bar-links button {display:inline-flex;align-items:center;min-height:40px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;
   background:var(--card);color:var(--accent);font:inherit;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer}
 .bar-links button[aria-pressed="true"] {border-color:var(--gold);color:var(--text);box-shadow:inset 0 -2px var(--gold)}
 .bar-links button:disabled {opacity:.45;cursor:default}
-.bar-links .hall-n {align-self:center;color:var(--muted);font:11px ui-monospace,monospace}
+.bar-links .hall-n {display:inline-flex;align-items:center;padding:0 10px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font:11px ui-monospace,monospace;white-space:nowrap}
+.bar-tools {gap:2px 4px}
+.bar-links .bar-tools a,.bar-links .bar-tools button {color:var(--muted);border-color:transparent;background:transparent;padding-inline:8px}
+.bar-links .bar-tools button[aria-pressed="true"] {border-color:transparent;color:var(--text)}
+.bar-tools a:hover,.bar-tools button:hover {color:var(--text)}
+/* 즐겨찾기 — 담기 줄 맨 앞의 하트(지금 보이는 그림 한 장), 붙은 칸의 수는 공방 모음으로 가는 링크 */
+.bar-links .fav-heart,.bar-links .fav-count {min-height:44px}
+.bar-links .fav-heart span {font-size:15px;line-height:1;margin-right:5px}
+.bar-links .fav-count {color:var(--muted);font:600 12px ui-monospace,monospace;min-width:44px;justify-content:center}
+.bar-links .fav-count::after {content:"\203A";margin-left:4px;font-family:var(--sans, system-ui)}
+.bar-links .fav-count:hover {color:var(--text)}
+.bar-links .fav-heart:focus-visible,.bar-links .fav-count:focus-visible {outline:2px solid var(--gold);outline-offset:2px}
+.fav-toast {position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:90;max-width:calc(100vw - 32px);padding:9px 16px;border-radius:999px;background:var(--text);color:var(--bg);font-size:13px;font-weight:700;line-height:1.35;text-align:center;pointer-events:none}
+.fav-toast:empty {display:none}
 /* 화풍 비교 띠 — myth 도감에서 왔다. 화풍마다 대표 한 장(같은 폼)을 옆으로 늘어놓는다 */
 .style-strip {display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:2px 2px 10px;scrollbar-width:thin;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
 .style-cell {flex:0 0 108px;width:108px;padding:0;overflow:hidden;text-align:center;background:var(--card2);color:var(--muted);border:1px solid var(--line);border-radius:10px;font:inherit;scroll-snap-align:start}
@@ -160,17 +190,22 @@ body.zoomed {overflow:hidden}
 .gal img {display:block;width:100%;border:1px solid var(--line);border-radius:8px}
 .empty {padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
 </style>
-<script src="lib/workspace-theme.js?v=3"></script>
-<script src="lib/words.js?v=11"></script>
+<script src="lib/workspace-theme.js?v=5"></script>
+<script src="lib/words.js?v=18"></script>
 <script src="lib/fresh.js?v=1"></script>
 <script src="lib/img.js?v=2"></script>
 <script src="lib/dex-filter.js?v=2"></script>
-<script src="lib/book-frame.js?v=1"></script>
+<script src="lib/book-frame.js?v=4"></script>
 <script src="lib/scene-motion.js?v=1"></script>
 <link rel="stylesheet" href="lib/scene-motion.css?v=1">
-<link rel="stylesheet" href="lib/gallery.css?v=5">
+<!-- 도트 인물 — data/sprites.json · lib/sprite-actor.js. 그 책에 도트가 있으면 목록에 「도트」 표, 상세에 작은 무대 한 줄 -->
+<script src="lib/sprite-actor.js?v=7"></script>
+<link rel="stylesheet" href="lib/sprite-actor.css?v=4">
+<!-- 즐겨찾기 — lib/favorites.js(공방 넷과 공방 모음이 글자 하나 다르지 않게 나눠 쓴다) -->
+<script src="lib/favorites.js?v=1"></script>
+<link rel="stylesheet" href="lib/gallery.css?v=6">
 <link rel="stylesheet" href="lib/landscape.css?v=4">
-<link rel="stylesheet" href="lib/room.css?v=3">
+<link rel="stylesheet" href="lib/room.css?v=5">
 </head>
 <body class="dex-page">
 <div id="app"></div>
@@ -179,9 +214,21 @@ body.zoomed {overflow:hidden}
 import { h, render, Fragment } from 'https://esm.sh/preact@10.24.3';
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'https://esm.sh/preact@10.24.3/hooks';
 import htm from 'https://esm.sh/htm@3.1.1';
-import { WorkspaceHeader } from './lib/workspace-ui.js?v=5';
+import { WorkspaceHeader } from './lib/workspace-ui.js?v=8';
 const html = htm.bind(h);
 const W = window.W, IMG = window.AtelierImg, FILTER = window.AtelierDexFilter, FRAME = window.AtelierFrame, MOTION = window.AtelierMotion;
+/* 즐겨찾기 — 목록은 다른 탭(공방 모음)에서 빼도 따라온다. 알림 자리는 늘 깔아 둔다(화면 읽기 프로그램이 새로 생긴 칸의 말을 놓치기 쉽다) */
+const FAV = window.AtelierFavorites, FAV_HUB = '/favorites.html';
+function useFavorites() {
+  const [list, setList] = useState(() => (FAV ? FAV.list() : []));
+  useEffect(() => (FAV ? FAV.onChange(setList) : undefined), []);
+  return list;
+}
+function useNote() {
+  const [msg, setMsg] = useState(''), t = useRef(0);
+  useEffect(() => () => clearTimeout(t.current), []);
+  return [msg, s => { setMsg(s); clearTimeout(t.current); t.current = setTimeout(() => setMsg(''), 2000); }];
+}
 const FILTER_STORE = 'book_dex_filters_v1', COMPACT_STORE = 'book_dex_compact_v1';
 /* 들른 표 — 이 브라우저에만. SEEN_STORE 는 지난번 들렀을 때의 자료 표(떠날 때 적는다), SEEN_TAB 은 이번 들름의 기준.
    이번 들름 동안(새로고침·다른 화면에 갔다 오기 포함, 30분 넘게 비우지 않으면)은 같은 기준이라 "새" 표가 그대로 남는다 */
@@ -346,6 +393,45 @@ function loadSimilar() {
 /* 큰 그림 아래 한 줄 — 지금 보는 그림과 색·구도가 닮은 그림(점수 차례, 한 책에서 둘까지). 그림이 바뀌면 줄도 바뀐다.
    누르면 그 책 그 그림으로(주소는 ?book=). 지금 등록부에 없는 그림은 뺀다 — 하나도 없으면 줄째 숨는다.
    이 줄 안에서만 옆으로 구른다(세로는 .collection-scroll 한 곳) */
+/* 도트 인물 — data/sprites.json(1KB 남짓)을 한 번 받는다. 못 받으면 null — 표도 줄도 없다 */
+let spritesOnce = null;
+function loadSprites() {
+  return spritesOnce || (spritesOnce = window.AtelierSprite ? window.AtelierSprite.load('data/sprites.json').then(d => d && d.actors ? d : null).catch(() => null) : Promise.resolve(null));
+}
+function useSprites() {
+  const [sp, setSp] = useState(null);
+  useEffect(() => { let alive = true; loadSprites().then(d => { if (alive) setSp(d); }); return () => { alive = false; }; }, []);
+  return sp;
+}
+const dotOf = (sp, book) => sp ? Object.keys(sp.actors).find(k => sp.actors[k].book === book) : null;
+
+/* 상세의 도트 줄 — 그 책 인물의 도트가 작은 무대에서 대기(가끔 걷는다). 단추로 대기·걷기·반응, 인물을 눌러도 반응.
+   그림을 못 받으면 줄째 숨는다. 진열실(sprite.html?who=)에서 칸 띠·기록까지 본다 */
+function DotStage({ sp, who, card }) {
+  const box = useRef(null), actor = useRef(null), [state, setState] = useState('idle'), [on, setOn] = useState(false);
+  const [motion, setMotion] = useState(() => !!MOTION && MOTION.enabled());
+  useEffect(() => MOTION ? MOTION.subscribe(setMotion) : undefined, []);
+  useEffect(() => {
+    const d = sp.actors[who];
+    const a = window.AtelierSprite.create(box.current, d, { base: sp.base, label: W('dex.dot.actor', { name: W('sprite.name.' + who) }),
+      points: [0.3, 0.7], floor: 10, grow: true, seed: 5, onSelect: () => a.play('react'), onState: setState });
+    actor.current = a;
+    a.ready.then(x => setOn(!x.failed));
+    return () => { a.destroy(); actor.current = null; };
+  }, [who]);
+  const play = n => actor.current && actor.current.play(n);
+  return html`<section class="dex-dot" aria-labelledby="dex-dot-title" data-who=${who} hidden=${!on}>
+    <h3 class="similar-head" id="dex-dot-title">${W('dex.dot.title')}<span>${W('dex.dot.note', { name: W('sprite.name.' + who) })}</span></h3>
+    <div class="dex-dot-row">
+      <div class="dex-dot-stage" ref=${box}></div>
+      <div class="dex-dot-acts" role="group" aria-label=${W('sprite.states')}>
+        ${['idle', 'walk', 'react'].map(n => html`<button type="button" key=${n} data-state=${n} aria-pressed=${state === n} disabled=${!motion} onClick=${() => play(n)}>${W('sprite.state.' + n)}</button>`)}
+        <a class="dex-dot-room" href=${'sprite.html?who=' + encodeURIComponent(who)}>${W('dex.dot.room')}</a>
+      </div>
+    </div>
+  </section>`;
+}
+
 function Similar({ file, find, defs, onOpen }) {
   const [data, setData] = useState(null);
   useEffect(() => { let alive = true; loadSimilar().then(d => { if (alive) setData(d); }); return () => { alive = false; }; }, []);
@@ -375,6 +461,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
   const [focus, setFocus] = useState(selection?.file && selection.cut !== 'portrait' && selection.cut !== 'open' ? selection : null);
   const [wantForm, setForm] = useState(selection?.form || '');
   const [zoom, setZoom] = useState(false);
+  const sprites = useSprites(), dotWho = dotOf(sprites, card.key);
   const [hall, setHall] = useState(() => IMG.hallPicks());
   const [framed, setFramed] = useState(() => FRAME.on());
   const flipFrame = () => setFramed(v => { FRAME.setOn(!v); return !v; });
@@ -458,6 +545,16 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
     MOTION.reveal(MOTION.ghost(img, IMG.imgURL(prev.file), { fit: 'contain' }), img, { kind, removeFrom: true, key: 'dex-big', seed: now.file });
   }, [card.key, shown && shown.file]);
   useEffect(() => () => MOTION && MOTION.cancel('dex-big'), []);
+  /* 즐겨찾기 — 큰 그림에 떠 있는 바로 그 그림(폼·개방·연출·일상·특별). link 에 ?book=&pic= 를 적어 공방 모음에서 누르면 이 그림으로 다시 연다 */
+  const favs = useFavorites(), [favMsg, sayFav] = useNote();
+  const faved = !!shown && favs.some(x => x.a === 'book' && x.file === shown.file);
+  const toggleFav = () => {
+    if (!FAV || !shown) return;
+    const q = new URLSearchParams(); q.set('book', card.key); q.set('pic', shown.file);
+    const on = FAV.toggle({ a: 'book', key: card.key, file: shown.file, title: card.name, sub: shotLabel(shown, defs),
+      thumb: IMG.thumbURL(shown.file), full: IMG.imgURL(shown.file), link: new URL('dex.html', location.href).pathname + '?' + q.toString() });
+    sayFav(W(on ? 'dex.fav.added' : faved ? 'dex.fav.removed' : 'dex.fav.blocked'));
+  };
 
   const head = html`
     <div class="bar">
@@ -483,20 +580,28 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
     </div>`}
       </div>
       ${shown && find && html`<${Similar} file=${shown.file} find=${find} defs=${defs} onOpen=${openSimilar} />`}
+      ${dotWho && html`<${DotStage} key=${dotWho} sp=${sprites} who=${dotWho} card=${card} />`}
       <div class="story-panel">
         <p class="editorial-kicker">${card.genre} · ${card.era}</p>
     <p class="sec">${W('book.persona')}</p>
     <p class="persona">${card.persona}</p>
     <div class="bar-links">
-      <a href=${'prompt.html?book=' + encodeURIComponent(card.key)} id="dex-to-prompt">${W('dex.toPrompt')}</a>
-      <button type="button" id="dex-hall" aria-pressed=${inHall} disabled=${hallFull} title=${W('dex.hall.note')}
-        onClick=${enshrine}>${inHall ? W('dex.hall.remove', { shelf }) : hallFull ? W('dex.hall.full', { shelf, max: IMG.HALL_MAX }) : W('dex.hall.add', { shelf })}</button>
-      <span class="hall-n">${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span>
-      <button type="button" id="dex-frame" aria-pressed=${framed} title=${W('dex.frame.note')} onClick=${flipFrame}>${W('dex.frame.' + FRAME.kind(card))}</button>
-      ${shown && html`<a href=${'mosaic.html?file=' + encodeURIComponent(shown.file)} id="dex-to-mosaic">${W('dex.mosaic')}</a>`}
-      <button type="button" id="dex-motion" disabled=${motionLocked} title=${W(motionLocked ? 'motion.reduced' : 'motion.note')}
-        onClick=${() => MOTION.setEnabled(!motion)}>${W(motion ? 'motion.off' : 'motion.on')}</button>
+      <div class="bar-row bar-keep" role="group" aria-label=${W('dex.bar.keep')}>
+        ${shown && html`<span class="bar-pair"><button type="button" class="fav-heart" id="dex-fav" aria-pressed=${faved} disabled=${!FAV} title=${W('dex.fav.note')}
+          onClick=${toggleFav}><span aria-hidden="true">${faved ? '\u2665' : '\u2661'}</span>${W('dex.fav')}</button>${favs.length > 0 && html`<a class="fav-count" id="dex-fav-count" href=${FAV_HUB}
+          aria-label=${W('dex.fav.open', { n: favs.length })} title=${W('dex.fav.open', { n: favs.length })}>${W('dex.fav.count', { n: favs.length })}</a>`}</span>`}
+        <span class="bar-pair"><button type="button" id="dex-hall" aria-pressed=${inHall} disabled=${hallFull} title=${W('dex.hall.note')}
+          onClick=${enshrine}>${inHall ? W('dex.hall.remove', { shelf }) : hallFull ? W('dex.hall.full', { shelf, max: IMG.HALL_MAX }) : W('dex.hall.add', { shelf })}</button><span class="hall-n" title=${W('dex.hall.count.note')}>${W('dex.hall.count', { n: hall.length, max: IMG.HALL_MAX })}</span></span>
+      </div>
+      <div class="bar-row bar-tools" role="group" aria-label=${W('dex.bar.tools')}>
+        <button type="button" id="dex-motion" disabled=${motionLocked} title=${W(motionLocked ? 'motion.reduced' : 'motion.note')}
+          onClick=${() => MOTION.setEnabled(!motion)}>${W(motion ? 'motion.off' : 'motion.on')}</button>
+        <button type="button" id="dex-frame" aria-pressed=${framed} title=${W('dex.frame.note')} onClick=${flipFrame}>${W('dex.frame.' + FRAME.kind(card))}</button>
+        ${shown && html`<a href=${'mosaic.html?file=' + encodeURIComponent(shown.file)} id="dex-to-mosaic">${W('dex.mosaic')}</a>`}
+        <a href=${'prompt.html?book=' + encodeURIComponent(card.key)} id="dex-to-prompt">${W('dex.toPrompt')}</a>
+      </div>
     </div>
+    <div class="fav-toast" role="status" aria-live="polite">${favMsg}</div>
     ${keys.length > 1 && html`
       <p class="sec">${W('dex.style.compare')}<span>${W('art.count', { n: keys.length })}</span></p>
       <div class="style-strip" role="group" aria-label=${W('dex.style.compare')}>
@@ -681,7 +786,7 @@ function Recent({ rows, fresh, defs, onOpen }) {
 function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
   const f = FILTER.normalize(filters, st);
   const [filtersOpen, setFiltersOpen] = useState(() => ['style', 'form', 'art'].some(k => f[k]) || f.cut !== 'auto');
-  const hall = IMG.hallPicks();
+  const hall = IMG.hallPicks(), sprites = useSprites();
   /* 상세에서 돌아오면 열기 전에 굴려 둔 자리로. 상세에서 다른 책으로 넘어갔으면 그 책 칸이 보이게 한 번 더 민다 */
   useLayoutEffect(() => {
     const r = restore && restore.current, sc = document.querySelector('.collection-scroll');
@@ -746,7 +851,7 @@ function List({ st, filters, onFilter, onOpen, compact, onCompact, restore }) {
             onClick=${() => onOpen(shot)}>
             <span class="face">${shot.file
               ? html`<${Pic} file=${shot.file} alt=${c.name + ' · ' + shotLabel(shot, st.defs)} />`
-              : html`<span class="ph">${W('art.none')}</span>`}${isNew(shot) && html`<span class="new-badge" title=${W('dex.new.label')}>${W('dex.new.badge')}</span>`}</span>
+              : html`<span class="ph">${W('art.none')}</span>`}${isNew(shot) && html`<span class="new-badge" title=${W('dex.new.label')}>${W('dex.new.badge')}</span>`}${dotOf(sprites, c.key) && html`<span class="dot-badge" title=${W('dex.dot.label')}>${W('dex.dot.badge')}</span>`}</span>
             <span class="cap"><span class="card-meta"><span>${c.genre}</span><span>${String(st.cards.indexOf(c) + 1).padStart(2, '0')}</span></span>
               <strong>${c.name}</strong><i class="card-author">${c.author}</i>
               <span class="card-caption">${shot.file ? shotLabel(shot, st.defs) : W('art.none')}</span>
@@ -761,6 +866,7 @@ function askedBook() { try { return new URLSearchParams(location.search).get('bo
 function bookURL(key) {
   const q = new URLSearchParams(location.search);
   if (key) q.set('book', key); else q.delete('book');
+  q.delete('pic');   /* ?pic= 는 들어올 때 한 번만 읽는다(즐겨찾기에서 온 그림) — 다음 주소에 끌고 가지 않는다 */
   const s = q.toString();
   return location.pathname + (s ? '?' + s : '') + location.hash;
 }
@@ -830,13 +936,16 @@ function App() {
   /* dex.html?book=<열쇠> — 서재 진열대·생성기가 그 책의 상세로 바로 연다 */
   /* 바로 온 주소의 칸은 목록 주소로 바꾸고 그 위에 상세 칸을 쌓는다 — 뒤로 가기면 목록으로 */
   const [asked] = useState(askedBook);
+  /* ?pic= — 즐겨찾기(공방 모음)에서 온 주소의 그림. 그 그림의 화풍·폼·컷으로 연다 */
+  const [askedPic] = useState(() => { try { return new URLSearchParams(location.search).get('pic'); } catch { return null; } });
   useEffect(() => {
     if (!asked || !st.cards) return;
     const c = st.cards.find(x => x.key === asked); if (!c) return;
     /* 상세에서 새로고침했으면 이미 상세 칸이다 — 칸을 더 쌓지 않는다 */
     if (history.state && history.state.dex === 'card') { pushed.current = true; setOpen({ card: c }); return; }
     try { history.replaceState(history.state, '', bookURL(null)); } catch {}
-    openShot({ card: c });
+    const shot = askedPic && FILTER.shots(st.img[c.key], st.defs).find(s => s.file === askedPic);
+    openShot(shot ? { ...shot, card: c } : { card: c });
   }, [st.cards]);
   /* 상세 안에서 책을 넘기면 주소도 그 책으로 */
   useEffect(() => { const k = open?.card?.key; if (k && pushed.current && askedBook() !== k) { try { history.replaceState(history.state, '', bookURL(k)); } catch {} } }, [open?.card?.key]);

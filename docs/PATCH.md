@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-28 · claude · 도트 재생기 복사 — 머리말(여섯 공방)
+- lib/sprite-actor.js — 공방 모음 원본 복사. 머리말만 바뀜(게임 공방이 여섯째로 붙어 「여섯 공방 저장소」) — 동작 그대로라 캐시 꼬리표는 안 올림
+
 ## 2026-10-28 · claude · 일상컷 화면비 — FRAME 줄을 늘 싣기
 - lib/prompt-spec.js · lib/prompt-book.js — 일상컷 지시문에 화면비가 빠졌다. 2:3 이 아닐 때만 "Aspect ratio" 를 실어 기본 2:3 에서는 비율 말이 하나도 없었다(사용자, game 에서 먼저 찾음). 일상컷은 이제 OUTPUT 바로 뒤에 FRAME 줄(2:3 이면 "a vertical 2:3 (1024×1536)")을 늘 싣고, SCENE 에는 겹쳐 싣지 않는다. 폼은 그대로(card 줄이 2:3 을 말한다).
 - prompt.html — prompt-spec v=17, prompt-book v=7.

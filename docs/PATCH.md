@@ -7,6 +7,10 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-28 · claude · 뤼팽(귀환) 도트 — 공방 그림 중 골라 4K 한 벌
+- data/sprites.json — arsene_lupin(책 arsene_lupin · 결말 폼 · 4K 칸 192×256 · dot 0.5 · 걷기 115). 사용자 「마음에 드는 그림 하나 골라 도트로」 — 뤼팽 결말(귀환) 그림을 골랐다. 앨리스·손자·춘향 4K 와 같은 길로 뽑아 그림 저장소 sprites/arsene_lupin/ 에 올렸다(원본 gen1, 기록 records/sprites/arsene_lupin/*_4k.json). 서재 바닥·도감 상세·서고 복도에 저절로 선다
+- lib/words.js — sprite.name.arsene_lupin 「뤼팽 (귀환)」
+
 ## 2026-10-28 · claude · 서재 바닥 — 책마다 한 명, 재생기 복사(floor 도 카드마다 한 명)
 - lib/bookshelf.js — 바닥에 세울 인물을 책마다 하나만(alice 와 alice_classic 이 같이 서지 않는다 — 자료에서 앞선 4K 가 선다)
 - lib/sprite-actor.js — 공방 모음 원본 복사(floor 가 카드마다 한 명만 세운다). index·dex·run·sprite.html 의 ?v=9

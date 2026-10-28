@@ -251,6 +251,89 @@
     }
    }
   },
+  "arsene_lupin": {
+   "book": "arsene_lupin",
+   "form": "end",
+   "cell": [
+    192,
+    256
+   ],
+   "foot": [
+    96,
+    254
+   ],
+   "scale": 1,
+   "dot": 0.5,
+   "flip": true,
+   "facing": "right",
+   "states": {
+    "still": {
+     "file": "arsene_lupin/arsene_lupin_end_still_4k.png",
+     "frames": 1
+    },
+    "idle": {
+     "file": "arsene_lupin/arsene_lupin_end_idle_4k.png",
+     "frames": 4,
+     "order": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "ms": [
+      700,
+      220,
+      140,
+      220
+     ]
+    },
+    "walk": {
+     "file": "arsene_lupin/arsene_lupin_end_walk_4k.png",
+     "frames": 6,
+     "order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "ms": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+     ],
+     "speed": 115,
+     "dy": [
+      2,
+      2,
+      2,
+      -2,
+      -2,
+      -2
+     ]
+    },
+    "react": {
+     "file": "arsene_lupin/arsene_lupin_end_react_4k.png",
+     "frames": 4,
+     "order": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "ms": [
+      120,
+      180,
+      320,
+      200
+     ]
+    }
+   }
+  },
   "alice_classic": {
    "book": "alice",
    "form": "begin",

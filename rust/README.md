@@ -5,7 +5,7 @@
 | `art-core` | 그림 특징과 맞추기 — 2×3 칸 Lab 서명, dHash 64비트, Lab 4×4×4 색 막대, 칸마다 조각 고르기(벌점·최대 횟수·간격, 씨앗), 닮음 거리(`similarity`)·책마다 묶은 top-k(`nearest`)·거의 같은 쌍. 바깥 의존 없음 | (라이브러리) |
 | `art-index` | 그림 저장소의 그림 → 색인. `data/img.json` 에 등록된 것만. `--similar` 면 색인 → 닮은 그림(그림마다 8장, 한 책 2장까지) | `data/art-index.json` · `data/art-similar.json` |
 | `mosaic-wasm` | 브라우저 쪽 맞추기. `extern "C"` 내보내기 + 포인터·길이(붙임 생성기 없음) | `lib/mosaic.wasm` |
-| `shelf-gen` | 서고 탐험의 지도 생성기 — 씨앗 하나로 아홉 층 평면도(열·방·단조 길·종류·책·상대 덱). 손으로 쓴 JSON, splitmix64, 바깥 의존 없음. 규칙은 `docs/RUN_DESIGN.md` 2절, `cargo test` 가 3000 씨앗을 돈다 | `lib/shelf-gen.wasm` |
+| `shelf-gen` | 층 평면도 생성기 — 씨앗 하나와 **규칙 표(JSON)** 로 몇 층짜리 평면도(열·방·단조 길·종류·아이템·뽑기). 책 규칙 표(`BOOK_SPEC`)는 wasm 안에 있고(`plan`), 다른 공방은 제 표를 넘긴다(`plan_spec` — 신화 공방 던전이 `data/run.json` 의 `map` 으로 두 층을 짠다). 손으로 쓴 JSON 읽기·쓰기, splitmix64, 바깥 의존 없음. 표의 뜻은 `src/lib.rs` 머리말, 책 규칙은 `docs/RUN_DESIGN.md` 2절, `cargo test` 가 3000 씨앗을 돈다 | `lib/shelf-gen.wasm`(싣개 `lib/shelf-gen.js` 와 함께 다른 공방에 글자 그대로 복사) |
 
 화면(`mosaic.html`)과 싣개(`lib/mosaic.js`)는 빌드 없이 그대로 뜬다. 지은 `.wasm` 만 저장소에 올린다 — `rust/target/` 은 `.gitignore`.
 

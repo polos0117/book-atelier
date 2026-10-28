@@ -25,7 +25,8 @@
 - 책: 한 층 안에서 만나는 책은 서로 다르고, 바로 윗층에서 만난 책과 보스 책은 피한다. 보스 책은 씨앗이 처음에 하나 고르고 그 전 층엔 안 나온다. 그래서 책이 **열둘** 이상이어야 짠다(지금 스무 권).
 - 만남(meet)·보스의 **상대 덱 여섯** — 첫째가 그 책(싸움에서 상대의 첫 손에 반드시 든다). 만남의 **전리품 둘**(그 책 아님), 독서대의 **후보 다섯**(화면은 덱에 없는 앞 셋).
 - 방 종류: `entry` · `meet` 책과 만남(결투 한 장) · `read` 독서대(책 하나 얻기) · `rest` 사서의 책상(등불 하나) · `scene` 장면(그 책을 얻거나 등불) · `stairs` · `boss`.
-- JSON 꼴(`API_VERSION` 1): `{v, seed:[lo,hi], books, boss, floors:[{n, stage, cols, rooms:[{id, col, row, kind, book?, foe?, loot?, offers?}], edges:[[from,to]]}]}`. 책은 설계표 차례의 번호.
+- JSON 꼴(`API_VERSION` 2): `{v, seed:[lo,hi], books, items, boss, floors:[{n, stage, cols, rooms:[{id, col, row, kind, book?, foe?, loot?, offers?}], edges:[[from,to]]}]}`. 책은 설계표 차례의 번호.
+- **규칙 표(2026-10-28)**: 위 규칙은 생성기 안의 표 `BOOK_SPEC`(JSON) 한 장이다 — 층 수·장 나누기·열 수(층 범위별)·가운데 방 수·들어온 자리/나가는 자리/마지막 층의 나가는 자리·층지기 종류·급한 차례(`slots`, 층 범위·every)·채움·아이템 수·방마다 뽑기(`kinds`). 생성기는 표를 읽어 짜므로(`plan_spec`) 다른 공방은 제 표를 넘긴다 — 신화 공방 던전이 `data/run.json` 의 `map` 으로 두 층(계단·보스)을 짠다. 표의 열쇠 뜻은 `rust/shelf-gen/src/lib.rs` 머리말. `lib/shelf-gen.js` 의 `planSpec(seedLo, seedHi, 표)`·`bookSpec()`·`lastError()`.
 
 ## 3. 걷는 규칙
 

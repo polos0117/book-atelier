@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-28 · claude · 지도 생성기를 규칙 표로 — 다른 공방이 제 표로 평면도를 짠다
+
+- rust/shelf-gen/src/lib.rs — 아홉 층 책 규칙이 코드에 박혀 있던 것을 규칙 표(JSON — 층·열·가운데 방·들어온/나가는 자리·층지기·급한 차례·채움·아이템·뽑기)를 읽어 짜는 꼴로 다시 썼다. 책 규칙은 BOOK_SPEC 한 장(plan 은 그대로), plan_spec(seed, 표) 로 아무 표든 받는다(틀리면 0 과 {error}). 손으로 쓴 JSON 읽기. API 2. 검사 여섯 — 책 표 3000 씨앗 규칙 그대로 · 책이 모자라면(열 권) None · 신화 꼴 표 · 틀린 표
+- lib/shelf-gen.wasm — 다시 지음(73KB) · lib/shelf-gen.js — API 2, planSpec·bookSpec·lastError·loaded. 신화 공방(myth-atelier lib/)에 둘을 글자 그대로 복사해 던전이 두 층 평면도를 짠다
+- tests/run-gen.cjs — v 2 · 책 모자람 null 과 까닭 · bookSpec · planSpec(책 표) == plan · 신화 꼴 표(두 층·9열·계단 앞 열 전부 싸움) · 틀린 표 null
+- docs/RUN_DESIGN.md · rust/README.md — 규칙 표 절
+
 ## 2026-10-21 · claude · 서고 탐험 화면 — run.html, 머리 탭 다섯, 설계 문서
 
 - run.html — 새 화면. 고르기(책 셋·전적·오늘의 서고·이어가기) → 지도(층·장·등불·덱 막대, SVG 평면도 — 길 닿는 방은 금테·다녀온 방은 흐리게, 갈 수 있는 방 단추, 지난 일 한 줄, 덱 띠) → 싸움(결투 판 조각, 끝나면 결과 띠와 계속) → 전리품·독서대·장면 상자(가득이면 내놓을 책) → 계단·보스 다시 도전 → 끝(갇힘·완주, 함께 간 책). 매 수 저장(book_run_v1), ?seed= 고정 씨앗, ?daily 오늘의 서고(날짜 씨앗), 끝나면 오늘 기록·탐험 전적(book_run_rec_v1). 가로 PC 는 덱이 오른쪽, 세로 폰은 지도를 옆으로 민다

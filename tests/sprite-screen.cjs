@@ -1,5 +1,5 @@
 /* 도트 시범(sprite.html · lib/sprite-actor.js) — 인물 하나가 작은 공간에서 대기·걷기·고르기 반응을 한다.
-   - 대기는 data/sprites.json 의 차례대로만 칸을 넘긴다(idle 은 1→4→1→3, 2칸은 안 쓴다)
+   - 대기는 data/sprites.json 의 차례대로만 칸을 넘긴다(차례에 없는 칸은 안 쓴다)
    - 걷기는 다른 자리까지 가고, 가는 쪽을 보고, 닿으면 대기 · 저절로도 걷는다(대기 시간이 지나면)
    - 고르기: 바로 한 번 알린다 · 반응 중 연달아 누른 것은 버린다 · 키보드(Enter)·고정 단추로도
    - 멈춤·숨은 탭이면 칸이 안 넘어가고, 다시 재생하면 넘어간다
@@ -41,7 +41,8 @@ const frames = (p, ms) => p.evaluate(ms => new Promise(ok => {
     add('처음은 대기', d.state === 'idle', d.state);
     const seen = await frames(p, 2600);
     const idleFrames = [...new Set(seen.filter(x => x.startsWith('idle:')).map(x => +x.split(':')[1]))].sort();
-    add('대기는 차례의 칸만(2칸 안 씀)', idleFrames.every(f => DEF.states.idle.order.includes(f)) && !idleFrames.includes(1) && idleFrames.length >= 2, idleFrames.join());
+    const notUsed = [0, 1, 2, 3].filter(f => !DEF.states.idle.order.includes(f));   // 차례에 없는 칸(처음 도트는 2칸) — 4K 앨리스는 넷 다 쓴다
+    add('대기는 차례의 칸만', idleFrames.every(f => DEF.states.idle.order.includes(f)) && notUsed.every(f => !idleFrames.includes(f)) && idleFrames.length >= 2, idleFrames.join());
     const box = await p.locator('.sprite-actor').boundingBox();
     add('누르는 자리 44px 넘게', box.width >= 44 && box.height >= 44, JSON.stringify(box));
     const look = await p.$eval('.sprite-actor', e => { const c = getComputedStyle(e); return [c.backgroundColor, c.borderTopWidth, c.boxShadow].join(' '); });
@@ -139,12 +140,13 @@ const frames = (p, ms) => p.evaluate(ms => new Promise(ok => {
     add('그림 없음 → 화면 오류 없음', s.errors.length === 0, s.errors.join(' | '));
     await s.close();
 
-    /* 4. 화소비 — 도트 한 칸이 실제 화소 정수배 */
+    /* 4. 화소비 — 도트 한 칸이 실제 화소 정수배(4K 처럼 dot 0.5 면 시트 두 화소 = 도트 한 칸) */
+    const fine = DEF.dot > 0 && DEF.dot < 1 ? DEF.dot : 1;
     for (const dpr of [1, 2, 2.625, 3]) {
       s = await h.open('sprite.html', { viewport: { width: 412, height: 915 }, mobile: true, imgRoot: art, dpr });
       p = s.page; await ready(p);
       d = await dbg(p);
-      const dev = d.unit * d.dpr;
+      const dev = d.unit * d.dpr / fine;
       add(`화소비 ${dpr} — 도트 한 칸 ${dev.toFixed(3)} 실제 화소(정수)`, Math.abs(dev - Math.round(dev)) < 1e-6 && Math.round(dev) >= 1, dev);
       await s.close();
     }

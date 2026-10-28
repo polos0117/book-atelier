@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-28 · claude · 4K 가 기본 — 앨리스·손자·춘향 4K 한 벌, 처음 도트는 *_classic
+- data/sprites.json — alice·sunzi·chunhyang 이 4K 한 벌(칸 192×256 · dot 0.5 · 발 96,254)로 기본이 되고, 121줄 도트는 alice_classic·sunzi_classic·chunhyang_classic 으로 그대로 남긴다(alice_4k 열쇠는 없앴다). 손자·춘향 4K 는 앨리스와 같은 길(도트 공방 지시문 · 2160×3840 · 원본 격자 그대로)로 뽑아 그림 저장소 sprites/ 에 올렸다
+- lib/words.js — sprite.name.alice_4k 대신 *_classic 셋의 이름 「… (처음 도트)」
+- tests/sprite-screen.cjs — 대기 차례는 인물의 order 를 읽어 본다(4K 앨리스는 네 칸 다 씀), 화소비는 dot 0.5 를 셈에 넣어 시트 두 화소 = 도트 한 칸이 정수 화소인지 본다
+- tests/shelf-sprite-screen.cjs · tests/dex-dot-screen.cjs — 주석의 alice_4k 를 classic 으로
+
 ## 2026-10-28 · claude · 앨리스 4K 한 벌(시험) — alice_4k 인물, 재생기 v3(dot)
 - data/sprites.json — alice_4k 인물: 2160×3840 으로 그려 원본 격자 그대로(16px, 약 230줄) 정리한 정지·대기·걷기·반응(그림 저장소 sprites/alice/*_4k.png, 기록 records/sprites/alice/*_4k.json). 칸 192×256 · 발 [96, 254] · dot 0.5(도트 한 칸이 보통 인물의 반 — 재생기가 화면 크기를 같게 맞춘다). 걷기 빠르기 130 · dy 는 오르내림 두 칸. 지금 앨리스는 그대로 — 서재 바닥·진열실(sprite.html?who=alice_4k)에서 나란히 본다(polos0117.github.io docs/DOT_4K_PLAN.md)
 - lib/sprite-actor.js — 공방 모음 원본 v3 그대로(인물 칸의 dot — 1 아래면 그만큼 잘게 찍은 인물이라 CSS 크기를 같게. 화소비 1 에선 반 화소라 브라우저가 줄여 그린다). 쓰는 화면 넷의 ?v=8

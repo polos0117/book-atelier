@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-28 · claude · 앨리스 4K 한 벌(시험) — alice_4k 인물, 재생기 v3(dot)
+- data/sprites.json — alice_4k 인물: 2160×3840 으로 그려 원본 격자 그대로(16px, 약 230줄) 정리한 정지·대기·걷기·반응(그림 저장소 sprites/alice/*_4k.png, 기록 records/sprites/alice/*_4k.json). 칸 192×256 · 발 [96, 254] · dot 0.5(도트 한 칸이 보통 인물의 반 — 재생기가 화면 크기를 같게 맞춘다). 걷기 빠르기 130 · dy 는 오르내림 두 칸. 지금 앨리스는 그대로 — 서재 바닥·진열실(sprite.html?who=alice_4k)에서 나란히 본다(polos0117.github.io docs/DOT_4K_PLAN.md)
+- lib/sprite-actor.js — 공방 모음 원본 v3 그대로(인물 칸의 dot — 1 아래면 그만큼 잘게 찍은 인물이라 CSS 크기를 같게. 화소비 1 에선 반 화소라 브라우저가 줄여 그린다). 쓰는 화면 넷의 ?v=8
+- lib/words.js — sprite.name.alice_4k
+- tests/sprites-data.py — 걷기 오르내림 검사의 곡선을 칸 높이에 맞춰(256줄 칸은 두 칸)
+
 ## 2026-10-28 · claude · 지도 생성기를 규칙 표로 — 다른 공방이 제 표로 평면도를 짠다
 - rust/shelf-gen/src/lib.rs — 아홉 층 책 규칙이 코드에 박혀 있던 것을 규칙 표(JSON — 층·열·가운데 방·들어온/나가는 자리·층지기·급한 차례·채움·아이템·뽑기)를 읽어 짜는 꼴로 다시 썼다. 책 규칙은 BOOK_SPEC 한 장(plan 은 그대로), plan_spec(seed, 표) 로 아무 표든 받는다(틀리면 0 과 {error}). 손으로 쓴 JSON 읽기. API 2. 검사 여섯 — 책 표 3000 씨앗 규칙 그대로 · 책이 모자라면(열 권) None · 신화 꼴 표 · 틀린 표
 - lib/shelf-gen.wasm — 다시 지음(73KB) · lib/shelf-gen.js — API 2, planSpec·bookSpec·lastError·loaded. 신화 공방(myth-atelier lib/)에 둘을 글자 그대로 복사해 던전이 두 층 평면도를 짠다

@@ -119,6 +119,7 @@ const opt = (extra) => ({ viewport: { width: 390, height: 844 }, mobile: true, i
     /* 4. 여럿 — 인물마다 제 구역(겹치지 않게), 못 받은 인물만 빠진다, 누르면 그 인물의 책, 펼친 동안 모두 쉰다 */
     const SPR = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'sprites.json'), 'utf8'));
     const two = JSON.parse(JSON.stringify(SPR));
+    for (const k of Object.keys(two.actors)) if (k !== 'alice') delete two.actors[k];   // 앨리스 하나에서 시작(alice_4k 같은 시험 인물은 뺀다)
     two.actors.sunzi = { ...JSON.parse(JSON.stringify(SPR.actors.alice)), book: 'sunzi' };
     two.actors.chunhyang = { ...JSON.parse(JSON.stringify(SPR.actors.alice)), book: 'chunhyang' };
     for (const st of Object.values(two.actors.chunhyang.states)) st.file = 'missing/' + st.file;   // 이 인물만 그림이 없다

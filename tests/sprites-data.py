@@ -40,7 +40,7 @@ for key, a in sp['actors'].items():
                     head = []
                     for k in range(n):
                         g = s[:, k * cw:(k + 1) * cw]; ys, _ = np.where(g); top, bot = ys.min(), ys.max(); hy, _ = np.where(g[top:top + int(.22 * (bot - top))]); head.append(top + hy.mean())
-                    y = np.array(head) + np.array(st['dy']); m = y.mean(); pat = np.array([0, 1, -1, 0, 1, -1])
+                    y = np.array(head) + np.array(st['dy']); m = y.mean(); pat = np.array([0, 1, -1, 0, 1, -1]) * max(1, round(ch / 128))   # 잘게 찍은 인물(4K 256줄 칸)은 오르내림도 두 칸
                     off = [k for k in range(n) if abs(st['dy'][k]) < 2 and abs(y[k] - m - pat[k]) > .6]
                     if off: bad.append(f'{key} 걷기: 오르내림이 다리와 어긋난 칸 {off}')
                 if abs(st['speed'] - want) > want * .15: bad.append(f'{key} 걷기: 빠르기 {st["speed"]} 가 보폭 셈 {want:.0f} 와 15% 넘게 다르다 — 발이 미끄러진다')

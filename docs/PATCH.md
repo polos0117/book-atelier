@@ -7,6 +7,10 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 일상컷 트리 모듈 — 해방 까닭(why·unlocked)
+- lib/casual-tree.js — game 원본 다시 복사: 허브 통합 생성기(polos0117.github.io/prompt.html)의 「해방」 몫 `why`(트리 밖 값의 까닭 code, 안이면 null — 안 쓰는 값은 `banned` 가 먼저)와 `unlocked`(장면의 `unlocked` 칸은 repair 가 고치지 않는다). prompt.html casual-tree v=3.
+- tests/casual-tree.cjs — 트리 안 값은 까닭이 없고, 다른 시대 장소·없는 값·계열 밖 자세엔 까닭이 붙고, 해방한 자세는 고치기에도 남는지.
+
 ## 2026-10-29 · claude · 일상컷 트리 모듈 — game 원본 다시 복사, 잠근 칸을 지키는 랜덤
 - lib/casual-tree.js · tools/casual-tree.py — 트리 표마다의 규칙 칸 넷을 더했다(pkm 일상컷 트리, 2026-10-29): 안 쓰는 값 `banned`(방향·프레이밍 — 메뉴·랜덤·고치기에서 빠진다), 프레이밍 규칙 `not_required`(필수 갈래 컷엔 안 씀 — frameOk 에 장면을 주면 본다), 동료 자세 `companion`(동료가 있는 하는 일에서만), 세대의 해 `gen_years`(year(tree, 대상) — 카드의 gen). 이 표엔 그 칸이 없어 지금과 같다. 동료 묶음 companion() 을 더했다. 검사기는 새 칸을 본다.
 - lib/prompt-random.js — 일상컷 랜덤은 잠근 칸이 살아남는 값만 뽑는다(시대를 뽑았는데 잠근 장소가 그 시대에 없으면 다른 시대 — 전에는 잠근 장소가 풀렸다). 세부 축을 뽑아도 추천 조합 표시를 안 지운다. prompt.html casual-tree v=2 · prompt-random v=4.

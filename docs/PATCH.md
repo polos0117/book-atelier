@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 첫 그림 두 장은 사람이 고른다
+- IMAGE_RULES.md — 2절: 첫 그림 A·B 를 보여 주고 어느 쪽으로 갈지 물은 뒤 나머지를 그린다(사용자, game 디아블로 II 에서)
+
 ## 2026-10-29 · claude · 일상컷 트리 모듈 — 해방 까닭(why·unlocked)
 - lib/casual-tree.js — game 원본 다시 복사: 허브 통합 생성기(polos0117.github.io/prompt.html)의 「해방」 몫 `why`(트리 밖 값의 까닭 code, 안이면 null — 안 쓰는 값은 `banned` 가 먼저)와 `unlocked`(장면의 `unlocked` 칸은 repair 가 고치지 않는다). prompt.html casual-tree v=3.
 - tests/casual-tree.cjs — 트리 안 값은 까닭이 없고, 다른 시대 장소·없는 값·계열 밖 자세엔 까닭이 붙고, 해방한 자세는 고치기에도 남는지.

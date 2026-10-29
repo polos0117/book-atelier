@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 하는 일 「화장대 앞 치장」 문장을 동작 하나로
+- data/casual-tree.json — makeup 의 en 「putting on earrings and makeup」 → 「fastening one earring」(game 워크래프트 III 일상4 에서 팔이 가슴 사이로 튀어나왔다 — 두 동작이라 두 손이 다 얼굴로)
+
 ## 2026-10-29 · claude · 첫 그림 두 장은 사람이 고른다
 - IMAGE_RULES.md — 2절: 첫 그림 A·B 를 보여 주고 어느 쪽으로 갈지 물은 뒤 나머지를 그린다(사용자, game 디아블로 II 에서)
 

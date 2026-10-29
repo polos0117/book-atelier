@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 오즈의 마법사 얼굴 계통 African → Mediterranean
+- data/book-design.json — 사용자가 생성기에서 얼굴 계통을 지중해로 바꿔 열한 장을 그렸다. 다음 일상컷도 같은 계통을 싣도록 설계표를 그림에 맞췄다
+
 ## 2026-10-29 · claude · 하는 일 「화장대 앞 치장」 문장을 동작 하나로
 - data/casual-tree.json — makeup 의 en 「putting on earrings and makeup」 → 「fastening one earring」(game 워크래프트 III 일상4 에서 팔이 가슴 사이로 튀어나왔다 — 두 동작이라 두 손이 다 얼굴로)
 

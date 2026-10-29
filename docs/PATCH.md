@@ -7,6 +7,15 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 일상컷 트리 — game-atelier 의 구조를 책으로
+- data/casual-tree.json · lib/casual-tree.js — 일상컷을 갈래·예시 대신 시대 → 장소 → 하는 일 → 의상 → 구도 한 줄로(사용자 「이 구조로 다른 저장소도」). 트리 모듈은 game 원본을 그대로 복사, 표는 책 몫으로 바꿨다: 시대 넷(지금 · 원작 시대·지역 · 이야기 세계 안 · 무대·환상), 게임 몫 장소(PC방·개발실·방송·출시일 줄 …)를 빼고 도서관·서점·낭독회·북클럽·무대·영화 각색 묶음과 이야기 세계의 장소, 각색 의상 계열. 예전 갈래·예시 477개는 추천 조합 276개·변환표 446줄로(빠진 것 0). 필수 갈래는 란제리풍·수영복·역할극 또는 이야기 속 일상(섹시).
+- lib/prompt-spec.js — 예전 갈래·예시 표(CATS·EXAMPLE_MAP·EX_NOTE·CAT_KO·EXAMPLE_DETAIL)를 지우고 game 의 일상컷 줄을 책 말로: CROP(가까운 컷 잘리는 선)·가까운 컷 옷·몸 줄·배경 인물 허용(ONE MAIN FIGURE)·WORLD·SETTING·SYMBOLS(설계표 상징 하나~둘)·SCREENS, 자세 「손가락 하나로 쉿」·「엄지 척」, 폼 자세가 돌아보기면 LOOK-BACK 줄(FORM_LOOK_BACK). STORY PLACE 줄은 WORLD 로. prompt-spec v=21.
+- lib/prompt-book.js — 트리 길로 짓고 고른 장면을 FRAME 바로 뒤로. 원작 시대 → ERA, 이야기 세계 안 → WORLD, 각색 무대(장소 묶음 adapt) → ADAPTATION, 시대·지역은 따옴표로. 전통 의상은 고른 전통이 책의 지역을 이긴다(Outfit note — 예전 갈래 문구의 몫). prompt-book v=8.
+- lib/prompt-ui.js · lib/prompt-random.js · lib/words.js · prompt.html 외 다섯 화면 — 생성기 일상컷 칸을 트리로(추천 조합·칸끼리 규칙·상징·필수 갈래 ★), game 의 일상컷 고정값(전체 강도 strong · 피부 노출 bold · 2:3 잠김)도. 시대는 다시 랜덤·잠금이 된다 — 트리가 시대에 맞는 장소·옷만 남기니 따로 막을 까닭이 없다(game 과 같다). prompt-ui v=3, prompt-random v=3, words v=19.
+- tools/casual-tree.py · tools/casual-plan.cjs — 트리 검사기와 일상컷 묶음 계획기(game 판, 설계표 symbols·style default 없음 맞춤). tools/book-design.py — `conflicts`(폼 지시문 충돌 후보, game 판 — 복식 구조↔발단 차림, 상징↔개방, 자세↔개방, 차림↔자세). 그림 없는 책 후보 5.
+- tests/prompt-book.cjs · tests/prompt-screen.cjs · tests/casual-tree.cjs · tests/casual-tree.py · tests/casual-plan.cjs · tests/casual-plan-screen.cjs · tests/book-design.py — 트리·계획기·충돌 후보. 폼 길이 한도 800 → 820(돌아보기 LOOK-BACK 줄 20낱말).
+- IMAGE_RULES.md · AGENTS.md — 일상컷 트리·고정값·필수 갈래·묶음 짜기·구도 돌리기, 계획대로 안 나오면 먼저 묻기, 명령.
+
 ## 2026-10-29 · claude · 일상컷 — 장면 랜덤이 시대를 고르지 않게, 분리형 선호는 예시의 옷에 진다
 - lib/prompt-random.js · lib/prompt-ui.js — game 젤다 일상2 가 장면 랜덤이 고른 시대(출시 당시) 줄과 미래풍 예시가 부딪혀 예시와 다르게 나왔다. book 의 원작 시대도 같은 길이라 함께 고쳤다(사용자 「game 이랑 book 만」). 시대는 장면 랜덤에 넣지 않고, 시대 칸은 랜덤·잠금 단추 없는 고르기로만 둔다. prompt-random v=2, prompt-ui v=2.
 - lib/prompt-spec.js — 분리형 선호(separates_preference)는 옷 칸이나 장면 예시에 적힌 옷에 진다(예시의 가운·원피스가 상하의로 바뀌던 것). prompt-spec v=19.

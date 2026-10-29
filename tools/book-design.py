@@ -3,6 +3,7 @@
 """책 설계표(data/book-design.json) 검사. docs/GAME_CONCEPT.md 5·6·7절의 규칙을 기계로 본다.
 
   python3 tools/book-design.py check   — 어기는 칸이 있으면 1 로 끝난다. 경고(!)는 알리기만 한다
+  python3 tools/book-design.py conflicts [key] [--all] — 폼 지시문 충돌 후보(차림·자세·상징·개방이 말로 부딪히는 곳). 기본은 그림 없는 책만
 
 보는 것:
   - 칸이 다 찼나(원전 범위·인용 출처·한 줄 인격·욕망·갈등·상징 셋·질문→갈등→답·장르·시대·지역·형태와 재료)
@@ -174,14 +175,120 @@ def warnings(doc):
     return out
 
 
+# ── 폼 지시문 충돌 후보(2026-10-29, game-atelier 에서 옮김 — GTA V) ──
+# 그리기 전에 지시문을 보니 설계표 칸끼리 부딪혔다. 말 겹침으로 찾는 거라 사람이 보고 고치거나,
+# 괜찮으면 그 책의 conflicts_ok 에 열쇠(종류:말)를 적어 다음부터 안 뜨게 한다. 기본은 아직 그림이 없는 책만 본다.
+#   garment   — 타이틀 차림에 실루엣 복식 구조(garment)의 옷이 없다(「긴 코트에 바지」 ↔ 「데님 재킷과 짧은 반바지」)
+#   sig_open  — 상징(symbols)이 개방 사건과 두 말 이상 겹친다(「경찰 헬기 탐조등」 ↔ 「헬기 탐조등이 휩쓸고」 — 중반·엔딩에 헬기).
+#               한 말(물건 하나)만 겹치는 건 정상 — 물건은 폼에, 사건은 개방에(동굴 입구 ↔ 빛이 새는 동굴)
+#   pose_open — 폼 자세가 그 폼 개방과 같은 물건·같은 동사다(「보물 상자 뚜껑을 열며」 ↔ 「보물 상자가 열리며」 — 개방 그림이 폼에서 벌써 일어난다).
+#               물건만 같으면 정상 — 폼은 준비, 개방은 터짐(열쇠를 꽂는다 ↔ 자물쇠가 풀린다)
+#   look_pose — 차림이 몸에 건 물건을 자세는 손에 든다(「목에 건 선글라스」 ↔ 「선글라스를 한 손에 들고」)
+GARMENT_WORDS = {
+    "one_piece_dress": ["원피스", "드레스"], "armor_layered": ["갑옷", "갑주", "판금", "철"], "robe_overlap": ["겹옷", "전포", "도포", "예복", "로브", "두루마기", "가운", "장삼", "겉옷"],
+    "tailored_suit": ["정장", "수트", "슈트", "재킷", "연미복", "더블릿"], "coat_trousers": ["코트"], "layered_skirt": ["치마", "스커트"],
+    "cloak_wrapped": ["망토", "두건", "클로크", "외투"], "flight_suit": ["비행복", "잠수복", "슈트", "수트", "작업복"],
+    "hanbok": ["한복", "저고리", "치마", "당의"],
+}
+PARTICLE = re.compile(r"(으로|에서|까지|처럼|마다|이며|이고|을|를|이|가|은|는|의|에|로|와|과|도|만)$")
+STOP = {"그녀", "하나", "하나씩", "하늘", "순간", "둘레", "사이", "모든", "전체", "거대한", "작은", "위로", "아래", "앞으로", "속에서",
+        "한꺼번에", "차례로", "그림자", "세상", "발밑", "그녀만", "빛나는", "빛으로", "빛이", "위에", "아래로", "끝으로", "이어지며", "푸른", "붉은", "누런"}
+VERB_END = re.compile(r"(리며|며|고|는|어|아|여|ㄴ다|는다|인다|친다|른다|다|며서)$")
+WORN = re.compile(r"(?:목|허리|등|머리|어깨|손목|이마|귀|가슴|발목)에\s*(?:건|맨|찬|두른|쓴|낀|꽂은|단|매단|올린)?\s*((?:[가-힣]{2,}\s){0,2}[가-힣]{2,})")
+HELD = r"(?:을|를)\s+(?:한 손에\s+|두 손으로\s+|손에\s+)?(?:들|쥐|잡|돌리|뽑|내밀|흔들|겨누|펼쳐|받쳐)"
+
+
+def words(text):
+    """낱말 — 조사를 뗀 꼴과 그대로인 꼴 둘 다(「지도」 의 「도」 를 조사로 떼면 「지」 가 된다 — 문명 V 두루마리 지도를 못 잡았다)"""
+    out = set()
+    for w0 in re.findall(r"[가-힣]{2,}", text or ""):
+        for w in (w0, PARTICLE.sub("", w0)):
+            if len(w) >= 2 and w not in STOP:
+                out.add(w)
+    return out
+
+
+def verbs(text):
+    """동사 줄기 — 「열며」 → 열, 「열리며」 → 열 (리며를 떼고), 「터지며」 → 터지"""
+    out = set()
+    for w in re.findall(r"[가-힣]+(?:며|고|는|어|아|여|다)\b", text or ""):
+        st = VERB_END.sub("", w)
+        if st:
+            out.add(st)
+    return out
+
+
+def drawn_keys():
+    """그림이 이미 있는 책 — data/img.json"""
+    try:
+        with open(os.path.join(os.path.dirname(DATA), "img.json"), encoding="utf-8") as f:
+            img = json.load(f)
+    except (OSError, ValueError):
+        return set()
+    return {k for k, v in (img.get("img") or {}).items() if v}
+
+
+def conflicts(doc, only=None, include_drawn=False):
+    """폼 지시문 충돌 후보 — (책 key, 열쇠, 풀이). conflicts_ok 에 적힌 열쇠는 뺀다"""
+    out = []
+    stages = STAGES
+    drawn = set() if (only or include_drawn) else drawn_keys()
+    for g in doc.get("books") or []:
+        if (only and g.get("key") != only) or g.get("key") in drawn:
+            continue
+        ok = set(g.get("conflicts_ok") or [])
+        forms, opens = g.get("forms") or {}, g.get("opens") or {}
+        found = []
+        title = (forms.get(STAGES[0]) or {}).get("look", "")
+        gw = GARMENT_WORDS.get((g.get("silhouette") or {}).get("garment"), [])
+        if gw and not any(w in title for w in gw):
+            found.append(("garment:" + g["silhouette"]["garment"], "발단 차림 %r 에 복식 구조 %s(%s)의 옷이 없다" % (title, g["silhouette"]["garment"], "·".join(gw))))
+        for sig in g.get("symbols") or []:
+            for st in stages:
+                common = words(sig) & words((opens.get(st) or {}).get("scene", ""))
+                if len(common) >= 2:
+                    found.append(("sig_open:" + "·".join(sorted(common)), "상징 %r 가 %s 개방 %r 와 「%s」 를 같이 말한다 — 폼에 그 사건이 미리 그려질 수 있다" % (sig, st, opens[st]["scene"], "·".join(sorted(common)))))
+        for st in stages:
+            pose, scene = (forms.get(st) or {}).get("pose", ""), (opens.get(st) or {}).get("scene", "")
+            nouns = words(pose) & words(scene)
+            vs = [(a, b) for a in verbs(pose) for b in verbs(scene) if a == b or (len(a) < len(b) and b.startswith(a)) or (len(b) < len(a) and a.startswith(b))]
+            if nouns and vs:
+                found.append(("pose_open:" + "·".join(sorted(nouns)), "%s 자세 %r 가 %s 개방 %r 와 같은 물건(%s)·같은 동사(%s)다 — 개방 사건이 폼에서 벌써 일어난다"
+                              % (st, pose, st, scene, "·".join(sorted(nouns)), "·".join(sorted({a for a, _ in vs})))))
+            look = (forms.get(st) or {}).get("look", "")
+            for obj in WORN.findall(look):
+                for head in {obj.split()[-1], PARTICLE.sub("", obj.split()[-1])}:
+                    if len(head) < 2 or not re.search(re.escape(head) + HELD, pose):
+                        continue
+                    found.append(("look_pose:" + head, "%s 차림은 「%s」 를 몸에 거는데(%r) 자세는 손에 든다(%r)" % (st, head, look, pose)))
+        seen = set()
+        for k, msg in found:
+            if k not in ok and k not in seen:
+                seen.add(k)
+                out.append((g["key"], k, msg))
+    return out
+
+
 def main():
+    if len(sys.argv) >= 2 and sys.argv[1] == "conflicts":
+        with open(DATA, encoding="utf-8") as f:
+            doc = json.load(f)
+        args = [a for a in sys.argv[2:] if a != "--all"]
+        rows = conflicts(doc, args[0] if args else None, "--all" in sys.argv)
+        for key, k, msg in rows:
+            print("  ? %s [%s] %s" % (key, k, msg))
+        print("폼 지시문 충돌 후보 %d — 고치거나, 괜찮으면 그 책 conflicts_ok 에 [열쇠]를 적는다" % len(rows))
+        return
     if len(sys.argv) < 2 or sys.argv[1] != "check":
-        raise SystemExit("python3 tools/book-design.py check")
+        raise SystemExit("python3 tools/book-design.py check | conflicts [key] [--all]")
     with open(DATA, encoding="utf-8") as f:
         doc = json.load(f)
     errs = check(doc)
     for w in warnings(doc):
         print("  ! " + w)
+    n = len(conflicts(doc))
+    if n:
+        print("  ! 그림 없는 책의 폼 지시문 충돌 후보 %d — python3 tools/book-design.py conflicts [key] 로 본다(그리기 전에 그 책은 0)" % n)
     for e in errs:
         print("  ✗ " + e)
     if errs:

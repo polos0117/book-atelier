@@ -62,4 +62,14 @@ fails(lambda d: d['books'][0].update(key='Don Quixote'), 'key 는')
 fails(lambda d: d['books'][0]['voice'].update(전개=''), 'voice')
 fails(lambda d: d['books'][0]['voice'].update(결말='가' * 71), 'voice')
 d = copy.deepcopy(doc); del d['books'][0]['voice']; assert B.check(d) == [], B.check(d)
-print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르 · 줄(lane) 말 없음 · 개방 입자 · 말풍선' % len(doc['books']))
+# 폼 지시문 충돌 후보(2026-10-29, game-atelier 에서 옮김) — 말 겹침으로 찾고, 괜찮으면 conflicts_ok
+cf = lambda d, key: {k for _, k, _ in B.conflicts(d, key)}
+assert 'sig_open:예고장·카드' in cf(doc, 'arsene_lupin')
+d = copy.deepcopy(doc); lp = next(b for b in d['books'] if b['key'] == 'arsene_lupin'); lp['conflicts_ok'] = ['sig_open:예고장·카드']
+assert 'sig_open:예고장·카드' not in cf(d, 'arsene_lupin')
+d = copy.deepcopy(doc); k0 = d['books'][0]; k0['forms']['발단']['look'] = '짧은 코트, 목에 건 돋보기'; k0['forms']['발단']['pose'] = '돋보기를 한 손에 들고 선 자세'
+assert 'look_pose:돋보기' in cf(d, k0['key'])
+d = copy.deepcopy(doc); k0 = d['books'][0]; k0['forms']['발단']['look'] = '책장 깃의 짧은 원피스'
+assert 'garment:coat_trousers' in cf(d, k0['key'])
+assert not any(key == 'arsene_lupin' for key, _, _ in B.conflicts(doc)), '기본은 그림 없는 책만'
+print('PASS 책 설계표: %d권 통과 · 실루엣·얼굴 닮음 · 정한 말 · 저작권(보호 중은 경고) · 인용 출처 · 한 명 개방 · 대응 · 폼·개방 셋 · 역할 · 시범 장르 · 줄(lane) 말 없음 · 개방 입자 · 말풍선 · 폼 지시문 충돌 후보' % len(doc['books']))

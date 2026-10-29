@@ -77,29 +77,80 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     t = await out(p);
     assert(t.includes('풍차 앞으로 돌진하는 순간') && t.startsWith("INPUT: attach this book's development form card image"));
     assert.match(await p.$eval('#file-name code', e => e.textContent), /don_quixote_middle_open_literary_fantasy_f\.webp/);
-    /* 6. 일상컷 — 번호·갈래·예시, 장면 랜덤과 잠금 */
+    /* 6. 일상컷 — 트리(시대·장소·하는 일·의상·구도), 원작 시대·이야기 세계·각색 무대, 잠금(2026-10-29 game-atelier 에서 옮김) */
     await p.click('#mode-casual');
+    /* 일상컷 고정값 — pkm·game 과 같다: 전체 강도 strong · 피부 노출 bold · 2:3, 처음부터 잠김. 장면 랜덤을 돌려도 그대로 */
+    const fixed = async why => {
+      assert.equal(await p.$eval('#axis-overall_intensity', e => e.value), 'strong', why + ' 전체 강도');
+      assert.equal(await p.$eval('#axis-skin_exposure', e => e.value), 'bold', why + ' 피부 노출');
+      assert.equal(await p.$eval('#aspect', e => e.value), '2:3', why + ' 화면 비율');
+      for (const id of ['axis-overall_intensity', 'axis-skin_exposure', 'aspect'])
+        assert.equal(await p.$eval('#lock-' + id, e => e.getAttribute('aria-pressed')), 'true', why + ' 잠김 ' + id);
+      const c = await out(p);
+      assert(c.includes('overall_intensity: strong') && c.includes('skin_exposure: bold') && c.includes('FRAME: a vertical 2:3 (1024×1536) image.'), why + ' 지시문');
+    };
+    await fixed('처음');
+    for (let i = 0; i < 5; i++) await p.click('#random-scene');
+    await fixed('장면 랜덤 뒤');
     await p.selectOption('#casual-n', '3');
     assert.match(await p.$eval('#file-name code', e => e.textContent), /don_quixote_literary_fantasy_f_casual3\.webp/);
-    await p.selectOption('#category', 'library_life');
-    await p.selectOption('#example', 'lib_binding');
-    assert((await out(p)).includes('Stitching a book block'));
-    /* 원작 시대 — 같은 갈래·예시를 그 책의 시대·지역 판으로 */
-    assert(!(await out(p)).includes('ERA:'), '기본은 현대');
+    assert.equal(await p.$('#category'), null, '갈래 칸이 없다');
+    assert.equal(await p.$('#example'), null, '예시 칸이 없다');
+    const vals = () => p.evaluate(() => Object.fromEntries(['preset', 'era', 'place', 'act', 'ofam', 'item', 'pose', 'orientation'].map(id => [id, document.querySelector('#' + id).value])));
+    const opts = id => p.$$eval('#' + id + ' option', os => os.map(o => o.value));
+    assert.deepEqual(await opts('era'), ['now', 'book', 'in_story', 'fantasy'], '시대 넷');
+    await p.selectOption('#era', 'now');
+    await p.selectOption('#frame', 'full_body');
+    await p.selectOption('#preset', 'lib_binding');
+    let v = await vals();
+    assert.deepEqual([v.era, v.place, v.act, v.ofam, v.item], ['now', 'lib_bindery', 'stitch_binding', 'everyday', 'apron_blouse'], '추천 조합이 길을 채운다');
+    t = await out(p);
+    assert(t.includes('Activity: stitching a book block') && !t.includes('WORLD:') && !t.includes('ERA:') && !t.includes('SCREENS:'), '제본 공방');
+    /* 원작 시대 — 그 책의 시대·지역 판으로, 옮기기 어려운 곳은 빠진다 */
     await p.selectOption('#era', 'book');
-    assert((await out(p)).includes("ERA: set this scene in her book's own time and place") && (await out(p)).includes('17세기 초'), '원작 시대 줄');
-    /* 시대는 장면 랜덤이 건드리지 않는다 — 랜덤·잠금 단추가 없고, 랜덤을 돌려도 고른 값 그대로(2026-10-29) */
-    assert.equal(await p.$('#lock-era'), null, '시대 칸에는 잠금 단추가 없다');
-    assert.equal(await p.$('#random-era'), null, '시대 칸에는 랜덤 단추가 없다');
-    await p.click('#lock-example');
-    await p.click('#random-scene');
-    assert.equal(await p.$eval('#era', e => e.value), 'book', '장면 랜덤이 시대를 바꾸지 않는다');
-    await p.selectOption('#era', '');
-    for (let i = 0; i < 6; i++) await p.click('#random-scene');
-    assert.equal(await p.$eval('#era', e => e.value), '', '장면 랜덤이 원작 시대를 고르지 않는다');
-    await p.selectOption('#era', 'book');
-    assert.equal(await p.$eval('#example', e => e.value), 'lib_binding', '잠근 예시는 그대로');
-    assert.equal(await p.$eval('#category', e => e.value), 'library_life', '예시를 잠그면 그 갈래도 그대로');
+    assert.equal((await vals()).place, 'lib_bindery', '원작 시대에도 있는 장소는 그대로');
+    t = await out(p);
+    assert(t.includes("ERA: set this scene in her book's own time and place") && t.includes('17세기 초'), '원작 시대 줄');
+    assert(!(await opts('place')).includes('arcade_hall') && !(await opts('place')).includes('fx_studio'), '원작 시대에 없는 곳·환상 무대는 빠진다');
+    /* 이야기 세계 안 — 그 책의 세계의 장소만(예전 갈래 「이야기 속 장소」) */
+    await p.selectOption('#era', 'in_story');
+    assert((await opts('place')).every(k => k.startsWith('story_')), '이야기 세계 안은 그 세계의 장소만');
+    t = await out(p);
+    assert(t.includes('WORLD: this scene happens inside the world of «돈키호테»') && !t.includes('ERA:'), '이야기 세계 안 줄');
+    /* 앞 칸을 잠그면 랜덤은 뒤 칸만 — 시대를 잠그고 돌려도 그대로 */
+    await p.click('#lock-era');
+    for (let i = 0; i < 5; i++) await p.click('#random-scene');
+    v = await vals();
+    assert.equal(v.era, 'in_story', '잠근 시대는 그대로');
+    assert(v.place.startsWith('story_'), '랜덤 장소도 그 시대 안에서');
+    await fixed('트리 랜덤 뒤');
+    await p.click('#lock-era');
+    /* 각색 무대 — 장소 묶음 「무대·영화 각색」 에만 ADAPTATION 줄과 각색 의상 */
+    await p.selectOption('#era', 'now');
+    await p.selectOption('#preset', 'ad_fitting');
+    t = await out(p);
+    assert(t.includes('ADAPTATION: the production adapts «돈키호테»') && t.includes("a period gown of her book's time and place"), '각색 무대');
+    /* 하는 일이 자세를 거른다 — 앉아 기다리기엔 걷기 자세가 없다 */
+    await p.selectOption('#preset', 'travel_station');
+    await p.selectOption('#frame', 'full_body');
+    assert(!(await opts('pose')).includes('walking') && (await opts('pose')).includes('sitting'), '앉기 계열 자세만');
+    assert(!(await opts('orientation')).includes('walking_away'), '앉기 계열 방향만');
+    /* 칸끼리 규칙 — 가까운 컷의 렌즈·자세, 등 돌림엔 표정 X */
+    await p.selectOption('#lens', 'wide24');
+    await p.selectOption('#frame', 'face_close');
+    assert.equal(await p.$eval('#lens', e => e.value), '', '클로즈업으로 바꾸면 광각은 비운다');
+    assert(!(await opts('lens')).includes('wide24') && !(await opts('pose')).includes('sitting'), '클로즈업엔 광각·다리 자세 없음');
+    await p.selectOption('#frame', 'full_body');
+    await p.selectOption('#era', 'now'); await p.selectOption('#place', 'stage_redcarpet'); await p.selectOption('#act', 'opera_stairs');
+    await p.selectOption('#orientation', 'back_to_camera');
+    assert.equal(await p.$eval('#expression', e => e.disabled), true, '등을 보이면 표정 칸이 꺼진다');
+    /* 상징 — 설계표 symbols 중 하나 */
+    assert.deepEqual((await opts('prop')).slice(2), ['0', '1', '2'], '상징 셋');
+    await p.selectOption('#prop', '0');
+    assert((await out(p)).includes('SYMBOL (this one only') && (await out(p)).includes('"풍차"'), '상징 하나');
+    await p.selectOption('#era', 'in_story');
+    await p.selectOption('#place', 'story_bath');
+    assert.match(await p.$eval('#required-note', e => e.textContent), /★/, '이야기 세계 안 목욕 — 필수 갈래');
     /* 7. 복사·기록 — 기록은 records/<책>/<자리>-ui.json, storage 는 장부가 읽는 꼴 */
     await p.click('#copy-prompt');
     await p.waitForFunction(() => document.querySelector('.studio-status').textContent.length > 0);
@@ -107,8 +158,9 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     const rec = JSON.parse(await p.$eval('#record-output', e => e.value));
     assert.equal(rec.record, 'records/don_quixote/casual3-ui.json');
     assert.equal(rec.file, 'don_quixote_literary_fantasy_f_casual3.webp');
-    assert.equal(rec.storage.cards.don_quixote.scenes.casual.ex, 'lib_binding');
-    assert.equal(rec.storage.cards.don_quixote.scenes.casual.era, 'book', '잠근 시대는 무작위에도 그대로, 기록에 남는다');
+    assert.equal(rec.storage.cards.don_quixote.scenes.casual.era, 'in_story');
+    assert.equal(rec.storage.cards.don_quixote.scenes.casual.place, 'story_bath');
+    assert(!('cat' in rec.storage.cards.don_quixote.scenes.casual), '기록에 옛 갈래 칸이 없다');
     assert.equal(rec.styleVersion, 'v7');
     /* 8. 저장 — 새로고침해도 이어지고, 다른 책은 직전 책 외형을 가져올 수 있다 */
     await p.reload(); await p.waitForSelector('#prompt-output');
@@ -135,6 +187,6 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert.equal(await c.page.$eval('#mode-open', e => e.getAttribute('aria-pressed')), 'true', '주소의 모드');
     assert.deepEqual(c.errors, []);
     await c.close();
-    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·갈래·원작 시대·잠금 · 복사·기록 · 저장·직전 책 외형');
+    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·고정값·트리(추천 조합·원작 시대·이야기 세계·각색 무대·잠근 앞 칸·자세 계열·칸끼리 규칙·상징·필수 갈래) · 복사·기록 · 저장·직전 책 외형');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

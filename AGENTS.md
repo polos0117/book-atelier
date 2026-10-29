@@ -25,7 +25,7 @@
 |---|---|---|
 | 서재 | `index.html` · `lib/bookshelf.js` · `lib/bookshelf.css` | 책장(책등을 누르면 한 권 펼치기)·책장 밑 바닥의 도트 인물(폭에 맞춰 휴대폰 둘·넓은 화면 셋, 날마다 차례가 돈다, 누르면 그 인물의 책을 펼친다, 펼친 동안 쉰다 — `lib/sprite-actor.js`·`data/sprites.json`, 도트를 못 받으면 바닥째 없다)·패치 기록·공간. 펼친 책의 감상은 `lib/scene-motion.js` 로 움직인다(켄 번스·명장면 열리기·입자 — `docs/SCENE_MOTION.md`, 서가 상세·결투 절정도) |
 | 서가 | `dex.html` · `lib/dex-filter.js` | 도감 — 최근 추가 줄·새 표·거르기·나란히 보기(폼 셋·개방 셋)·화풍 비교·넘기기·크게 보기·진열·닮은 그림 줄(`data/art-similar.json`, 상세를 열 때만 받는다)·도트(도트 인물이 있는 책은 목록 칸에 「도트」 표, 상세에 작은 무대 한 줄 — `data/sprites.json`). 최근·새는 `data/img.json` 의 `added`(등록한 날)만 읽는다 — 날짜 없는 그림은 안 뜬다 |
-| 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
+| 프롬프트 | `prompt.html` · `lib/prompt-*.js` · `data/casual-tree.json` · `lib/casual-tree.js`(일상컷 트리 — game-atelier 원본을 그대로 복사) · `lib/figures.js` | 생성기 — 폼 초상·개방·일상컷 |
 | 모자이크 | `mosaic.html` · `lib/mosaic.js` · `lib/mosaic.wasm` · `data/art-index.json` | 그림 한 장을 서가의 썸네일 조각으로 다시 짠다(휴대폰 배경·포스터 PNG/JPEG). 서가 상세의 "모자이크로 만들기"·서재 펼친 책에서 들어온다 — 344 폭 머리에 탭 여섯은 안 들어 항해(서재·서가·프롬프트·결투·탐험)에는 없다 |
 | 결투 | `duel.html` · `lib/duel.js` · `data/duel.json` | 책장 넘기기 — 덱 여섯 권, 세 장(발단·전개·결말), 자리 셋, 절정 한 번. 규칙은 엔진에만, 수치는 자료에만. 한 DOM 에 가로(펼친 책: 왼쪽 나·오른쪽 상대)·세로(위 상대·아래 나) 두 배치 — CSS 그리드 영역만 바뀐다(DUEL_DESIGN 3-8절). 「오늘의 판」은 날짜가 씨앗(`lib/today.js`), 끝난 판은 `atelier_today_v1:book` 에 적혀 공방 지도(polos0117.github.io)가 읽는다 |
 | 도트 진열실 | `sprite.html` · `lib/sprite-actor.js`·`.css` · `data/sprites.json` | 도트 인물 모두 — 위는 고른 인물(`?who=`)의 무대(대기·걷기·고르기 반응·멈춤·1/2/3배·움직임 끔), 아래는 인물마다 정지 도트·동작 시트 칸 띠(원래 크기)·서가와 만든 기록 길. 시트는 그림 저장소 `sprites/`, 기록은 `records/sprites/`. 머리 항해에는 없다 — 서가 상세의 도트 줄·서재 바닥 밑 「도트 진열실」 에서 들어온다 |
@@ -51,6 +51,12 @@
 개방 명장면은 그녀 한 명과 사물·환경·괴물로 표현할 수 있어야 한다.
 설계표에 새 정한 말(vocab)을 더하면 `lib/prompt-spec.js` 의 `VOCAB_EN` 에 영어도 더한다(`node tests/prompt-book.cjs` 가 본다).
 개방의 `particles`(입자 하나)는 프롬프트에 안 실리는 움직임 말이다 — 영어 대신 `lib/scene-motion.js` 의 `KINDS` 와 같아야 한다(`tests/scene-motion.cjs`).
+그 책을 그리기 전에는 `python3 tools/book-design.py conflicts <key>` 를 본다 — 고치거나, 보고 괜찮으면 그 책 `conflicts_ok` 에 [열쇠]를 적는다.
+
+일상컷은 트리로 고른다 — 시대 → 장소 → 하는 일 → 의상 → 구도(2026-10-29, game-atelier 에서 옮김, `data/casual-tree.json` · `lib/casual-tree.js`, IMAGE_RULES 2절).
+예전 갈래·예시는 추천 조합과 변환표로 옮겼다. 표를 고치면 `python3 tools/casual-tree.py check`·`audit` 를 돌린다.
+`lib/casual-tree.js` 는 game-atelier 의 같은 파일과 글자 하나 다르지 않게 둔다(고치려면 game 쪽을 고치고 복사한다). 책마다 다른 것은 트리 표에만.
+일상컷 묶음은 `node tools/casual-plan.cjs <책>` 으로 짜고, 올리기 전에 `node tools/casual-plan.cjs <책> --check <기록 폴더>` 로 묶음 규칙을 본다.
 
 ### 3. 저작권 (비상업)
 
@@ -102,9 +108,17 @@
 ```bash
 python3 tests/book-design.py         # 책 설계표 — 실루엣·얼굴 닮음, 저작권, 한 명 개방, 대응, 폼 열쇠
 python3 tools/book-design.py check
+python3 tools/book-design.py conflicts [key] [--all]   # 폼 지시문 충돌 후보(복식 구조↔발단 차림, 상징↔개방 사건, 자세↔개방, 차림↔자세). 그리기 전에 그 책은 0
+python3 tools/casual-tree.py check    # 일상컷 트리 표 — 시대→장소→하는 일→의상 길이 끊긴 데·없는 열쇠·필수 갈래
+python3 tools/casual-tree.py audit    # 하는 일 문장의 고정물이 붙는 장소 문장에 없는 쌍 — 하는 일·장소를 넣었으면 0 인지 본다
+python3 tests/casual-tree.py         # 트리 검사기가 규칙마다 거는지 · 책 몫(이야기 세계·각색 무대)
+node tests/casual-tree.cjs           # 트리 자세 계열의 자세·방향 열쇠가 생성기 표에 있다 · 칸끼리 규칙
+node tools/casual-plan.cjs <책> --out <폴더>   # 일상컷 묶음 짜기(그릴 때) · --check <기록 폴더> 로 올리기 전 검사
+node tests/casual-plan.cjs           # 묶음 계획기 — 서른다섯 권 × 씨앗 셋이 규칙을 지키고 기록이 생성기 꼴
+node tests/casual-plan-screen.cjs    # 계획기 기록을 생성기 화면에 넣으면 같은 지시문(브라우저)
 python3 tests/register-images.py     # 그림 등록 — 파일 이름 꼴·자리·틀린 이름은 저장 안 함·등록한 날(added)·git 이력 채우기
 node tests/img-shards.cjs            # 그림 주소·등록기·워크플로·.gitignore 가 같은 저장소 차례
-node tests/prompt-book.cjs           # 프롬프트 — 다섯 권 × 폼 셋 × 갈래, 정한 말 영어
+node tests/prompt-book.cjs           # 프롬프트 — 책마다 폼 셋 × 갈래, 일상컷 트리·추천 조합, 정한 말 영어
 node tests/words.cjs                 # 낱말 표
 node tests/patch.cjs                 # 패치 기록 모양
 node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·책마다 고유 규칙·AI

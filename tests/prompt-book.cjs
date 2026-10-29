@@ -2,8 +2,9 @@
    Run: node tests/prompt-book.cjs */
 const fs = require('node:fs'), vm = require('node:vm'), assert = require('node:assert/strict');
 const ctx = { window: {}, console }; vm.createContext(ctx);
-for (const f of ['lib/prompt-spec.js', 'lib/prompt-book.js']) vm.runInContext(fs.readFileSync(f, 'utf8'), ctx);
-const S = ctx.window.AtelierSpec, P = ctx.window.AtelierPrompt;
+for (const f of ['lib/prompt-spec.js', 'lib/casual-tree.js', 'lib/prompt-book.js']) vm.runInContext(fs.readFileSync(f, 'utf8'), ctx);
+const S = ctx.window.AtelierSpec, P = ctx.window.AtelierPrompt, CT = ctx.window.AtelierCasualTree, T = S.BOOK_LINES;
+const tree = JSON.parse(fs.readFileSync('data/casual-tree.json', 'utf8'));
 const design = JSON.parse(fs.readFileSync('data/book-design.json', 'utf8'));
 const style = JSON.parse(fs.readFileSync('data/style.json', 'utf8'));
 const lf = style.styles.literary_fantasy, text = lf.versions.find(v => v.v === lf.current).text;
@@ -35,8 +36,8 @@ for (const b of design.books) for (const stage of Object.keys(V.form_key)) {
     longest = Math.max(longest, P.words(t)); n++;
   }
 }
-// 몸 개수 줄 BODY 와 일상컷 HAND TASK 로 40낱말쯤 늘었다(2026-10-27)
-assert(longest <= 800, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 800 낱말을 넘는다: ' + longest);
+// 몸 개수 줄 BODY 와 일상컷 HAND TASK 로 40낱말쯤 늘었다(2026-10-27). 폼 자세가 돌아보기면 LOOK-BACK 줄 20낱말(2026-10-29, 눈물을 마시는 새 발단 807)
+assert(longest <= 820, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 820 낱말을 넘는다: ' + longest);
 
 /* 3. 직접 고른 얼굴·체형은 설계표 묶음을 이긴다(그 묶음이 FACE·SILHOUETTE 줄에서 빠진다) */
 const b = design.books[0];
@@ -46,47 +47,108 @@ assert(!mine.includes(S.VOCAB_EN.body[b.silhouette.body] + ' build') && mine.inc
 const off = P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, faceDesignOn: false, silhouetteOn: false });
 assert(!off.includes('FACE (') && !off.includes('SILHOUETTE:'), '끄면 빠진다');
 
-/* 4. 일상컷 — 갈래·예시·세 축, 서고의 일상 */
-const cas = P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', axes: { overall_intensity: 'strong', skin_exposure: 'bold' } });
+/* 4. 일상컷 — 트리 길(시대 → 장소 → 하는 일 → 의상 → 구도, 2026-10-29 game-atelier 에서 옮김). 갈래 설명 문단·예시 문장은 없다 */
+const cas = (x = {}) => P.buildCasual({ book: b, tree, styleText: text, ...x });
+const sceneOf = t => t.split('SCENE (chosen):\n')[1].split('\n\n')[0];
+const plain = cas();
+assert(!/\nCategory: |\nExample scene: /.test(plain), '갈래 설명·예시 문장이 남았다');
+assert(sceneOf(plain).startsWith('Place: ' + CT.place(tree, 'street_cafe').en + '\nActivity: ' + CT.act(tree, 'coffee_takeout').en + '\nOutfit: ' + CT.family(tree, 'everyday').en), '기본 길 — 카페·커피·평상복');
+assert(!plain.includes('WORLD:') && !plain.includes('SCREENS:') && !plain.includes('ERA:') && !plain.includes('ADAPTATION:'), '지금 현실 기본');
+assert(plain.includes(T.casualWardrobe) && plain.includes(T.casualPose) && plain.includes(T.casualOutput), '옷·각도·출력 줄');
+assert(plain.includes(T.figureCasual) && !plain.includes(T.figure), '일상컷은 배경 인물 허용 줄(붐비는 장소) — 폼·개방은 한 명만');
+/* 옷 — 고른 옷 > 계열 풀이, 직접 쓴 옷이 이긴다 */
+const lace = cas({ era: 'now', place: 'home_bedroom', act: 'dress_up', ofam: 'lingerie', item: 'lace_set' });
+assert(sceneOf(lace).includes('Outfit: ' + CT.item(tree, 'lingerie', 'lace_set').en), '고른 옷');
+assert(sceneOf(cas({ era: 'now', place: 'home_bedroom', act: 'dress_up', ofam: 'lingerie', item: 'lace_set', outfit: 'a red silk robe' })).includes('Outfit: a red silk robe'), '직접 쓴 옷이 이긴다');
+/* 시대 — 이야기 세계 안은 WORLD(설계표 place, 예전 「이야기 속 장소」), 무대·환상은 SETTING, 원작 시대는 ERA */
+const world = cas({ era: 'in_story', place: 'story_bath', act: 'soak', ofam: 'bath' });
+assert(world.includes('WORLD: this scene happens inside the world of «' + b.title + '», as if she simply lives there — ' + q(b.place) + '.') && !world.includes('ERA:'), '이야기 세계 안');
+assert(sceneOf(cas({ era: 'in_story', place: 'story_place', act: 'stroll', ofam: 'everyday' })).startsWith('Place: the place named in WORLD'), '그 책의 장소는 WORLD 를 가리킨다');
+assert(cas({ era: 'fantasy', place: 'fx_studio', act: 'editorial_pose', ofam: 'editorial' }).includes(T.casualFantasy), '무대·환상');
+assert(CT.places(tree, 'in_story', b).every(p => p.group === 'story') && CT.places(tree, 'now', b).every(p => p.group !== 'story'), '이야기 세계 안은 그 세계의 장소만');
+/* 각색 무대 — 장소 묶음 adapt 에만 ADAPTATION(책의 시대·지역), 각색 의상은 거기서만 */
+const ad = cas({ era: 'now', place: 'adapt_fitting', act: 'costume_fitting', ofam: 'adaptation', item: 'period_gown' });
+assert(ad.includes('ADAPTATION: the production adapts «' + b.title + '»') && ad.includes(q(b.era)) && !ad.includes('WORLD:'), '각색 줄');
+assert(!lace.includes('ADAPTATION:') && !cas({ era: 'now', place: 'salon_cafe', act: 'read_aloud', ofam: 'everyday' }).includes('ADAPTATION:'), '다른 장소엔 없다');
+assert(tree.places.filter(p => p.outfits.includes('adaptation')).every(p => p.group === 'adapt'), '각색 의상은 각색 무대에서만');
+/* 원작 시대 — 시대·지역 줄, 그 시대로 옮기기 어려운 곳은 빠진다 */
+{ const hm = design.books.find(x => x.key === 'hamlet'), base = { book: hm, tree, styleText: text, era: 'now', place: 'stage_event', act: 'event_greet', ofam: 'roleplay', item: 'adult_police' };
+  const now = P.buildCasual(base), then = P.buildCasual({ ...base, era: 'book' });
+  assert(!now.includes('ERA:') && then.includes('ERA: set this scene') && then.includes(q(hm.era)) && then.includes(q(hm.region)) && then.includes('city watch'), '원작 시대');
+  assert(then.indexOf('FRAME:') < then.indexOf('ERA:') && then.indexOf('ERA:') < then.indexOf('SCENE (chosen):\n') && then.indexOf('SCENE (chosen):\n') < then.indexOf('WARDROBE:'), 'FRAME → 시대 줄 → 고른 장면 → 옷 줄');
+  assert(!P.buildPrompt({ outputMode: 'form', book: hm, stage: '발단', styleText: text, era: 'book' }).includes('ERA:'), '폼 초상에는 없다');
+  assert(!CT.places(tree, 'book', hm).some(p => ['arcade_hall', 'spa_jjimjil', 'night_karaoke'].includes(p.key)) && CT.places(tree, 'book', hm).some(p => p.key === 'lib_reading_room'), '원작 시대에 없는 곳'); }
+/* 고른 장면은 위쪽 — 「아래 설정을 따른다」 는 말이 남지 않는다 */
+assert(!/below describe|settings below|line below|Framing below|chosen below/.test(plain), '일상컷에 「아래」 말이 남았다');
+/* 화면 줄 — 오락실·사진 부스만 */
+assert(cas({ era: 'now', place: 'arcade_hall', act: 'play_cabinet', ofam: 'everyday' }).includes(T.casualScreens) && !lace.includes('SCREENS:'), '화면 줄');
+/* 가까운 프레이밍이면 CROP 줄(game 2026-10-29) */
+const station = { era: 'now', place: 'travel_rural_station', act: 'wait_train', ofam: 'everyday' };
+for (const frame of S.CLOSE_FRAMES) {
+  const t = cas({ ...station, frame, pose: 'sitting' });
+  assert(t.includes('CROP: ' + S.CROP_EDGE[frame] + '. This crop wins'), frame + ' CROP 줄에 잘리는 선');
+  assert(t.indexOf('CROP:') > t.indexOf('FRAME:') && t.indexOf('CROP:') < t.indexOf('WARDROBE:'), frame + ' CROP 은 FRAME 바로 밑');
+  assert(t.includes(T.anatomyClose) && !t.includes('7.5 heads'), frame + ' 가까운 컷에 등신 말 없음');
+  const tb = cas({ ...station, frame, axes: { skin_exposure: 'bold' } });
+  assert(tb.includes(T.casualWardrobeClose) && !tb.includes(T.casualWardrobe), frame + ' 가까운 컷 옷 줄');
+  assert(!/skin_exposure: [^\n]*(midriff|leg)/.test(tb) && tb.includes('inside the crop'), frame + ' 가까운 컷 노출 풀이');
+}
+assert(cas({ ...station, frame: 'full_body' }).includes(T.anatomy), '먼 컷은 등신 줄 그대로');
+for (const frame of ['full_body', 'environmental', 'three_quarter', '']) assert(!cas({ ...station, frame }).includes('CROP:'), frame + ' CROP 없음');
 /* 뒤돌아보기 — 등이 카메라를 보는 각도·돌아보는 자세에만 LOOK-BACK 줄(pkm 2026-10-25 같은 문제) */
-for (const x of [{ orient: 'rear_3q' }, { orient: 'three_quarter_back' }, { orient: 'over_shoulder' }, { orient: 'back' }, { pose: 'turning_back' }])
-  assert(P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes(S.BOOK_LINES.casualLookBack), '뒤돌아보기 줄 ' + JSON.stringify(x));
-for (const x of [{ orient: 'front_3q' }, { pose: 'walking' }, {}])
-  assert(!P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', ...x }).includes('LOOK-BACK:'), '뒤돌아보기 줄 없음 ' + JSON.stringify(x));
-/* 이야기 속 장소는 설계표 place, 각색은 책의 시대·지역 한 줄(2026-10-26) — 다른 갈래에는 안 싣는다 */
-const sp = P.buildCasual({ book: b, styleText: text, cat: 'story_place', ex: 'sp_walk' });
-assert(b.place && sp.includes('STORY PLACE: the setting of «' + b.title + '» — ' + b.place + '.') && !sp.includes('ADAPTATION:'), '이야기 속 장소 줄');
-const ad = P.buildCasual({ book: b, styleText: text, cat: 'stage_adaptation', ex: 'ad_fitting' });
-assert(ad.includes('ADAPTATION: the production adapts «' + b.title + '»') && ad.includes(b.era) && !ad.includes('STORY PLACE:'), '각색 줄');
-assert(!cas.includes('STORY PLACE:') && !cas.includes('ADAPTATION:') && !P.buildCasual({ book: b, styleText: text, cat: 'literary_salon', ex: 'ls_reading' }).match(/STORY PLACE:|ADAPTATION:/), '다른 갈래엔 없다');
-assert(cas.includes(S.BOOK_LINES.casualWardrobe), '일상컷은 첨부 그림의 옷을 버리고 장면의 옷을 입는다');
-/* 와일드카드도 고른 예시를 그대로 짓는다(2026-10-29, game 젤다 일상2) */
-assert(S.CATS.find(r => r[0] === 'wildcard')[3].includes('build exactly that scene'), '와일드카드가 예시를 따른다');
-/* 분리형 선호는 옷 칸·장면 예시에 적힌 옷에 진다(2026-10-29, game 젤다 일상2) */
-for (const v of ['prefer separates', 'strongly prefer separates']) assert(S.SCENE_AXIS_GUIDES.separates_preference[v][1].includes('Example scene'), '분리형 ' + v);
+const walk = { era: 'now', place: 'street_alley', act: 'stroll', ofam: 'everyday' };
+for (const x of [{ orient: 'rear_3q' }, { orient: 'over_shoulder' }, { pose: 'turning_back' }]) assert(cas({ ...walk, ...x }).includes(T.casualLookBack), '뒤돌아보기 ' + JSON.stringify(x));
+assert(!cas({ ...walk, orient: 'front_3q' }).includes('LOOK-BACK:'), '앞모습엔 뒤돌아보기 줄 없음');
+/* 자세·방향은 하는 일의 자세 계열 안에서만 */
+const fixed = CT.repair(tree, { ...station, pose: 'walking', orient: 'walking_away' }, b, S.CLOSE_FRAMES);
+assert(fixed.pose === '' && fixed.orient === '', '앉기 계열에 걷기 자세·방향은 없다');
+/* 상징 — 자동은 하나~둘, 하나를 골랐으면 그것만, 없음이면 줄이 없다 */
+assert(plain.includes('SYMBOLS (one or two at most, as an accessory or an object in the scene — never printed on or woven into the clothes): ' + b.symbols.map(s => '"' + q(s) + '"').join(', ') + '.'), '일상컷 상징은 장신구·주변 사물로');
+assert(cas({ prop: '1' }).includes(T.casualSignatureOne.replace('{item}', '"' + q(b.symbols[1]) + '"')), '상징 하나');
+assert(!cas({ prop: 'none' }).includes('SYMBOL'), '상징 없음');
+/* 전통 의상 — 고른 전통이 책의 지역을 이긴다(돈키호테 아오자이). 원작 시대 판은 그 시대로 옮긴다 */
+const dq = design.books.find(x => x.key === 'don_quixote'), aoPath = { book: dq, tree, styleText: text, era: 'now', place: 'street_market', act: 'stroll', ofam: 'traditional', item: 'aodai_daily' };
+const ao = P.buildCasual(aoPath);
+assert(ao.includes("wins over her book's region") && ao.includes('mandarin collar'), '아오자이');
+assert(!P.buildCasual({ ...aoPath, era: 'book' }).includes('Outfit note:'), '원작 시대 판엔 없다');
+/* 분리형 선호는 고른 옷에 진다 */
+for (const v of ['prefer separates', 'strongly prefer separates']) assert(S.SCENE_AXIS_GUIDES.separates_preference[v][1].includes('chosen Outfit'), '분리형 ' + v);
 /* 일상컷 옷은 장면의 옷 그대로 — 책의 특징은 장신구·주변 사물로만(2026-10-29, game 에서 먼저) */
-assert(!/color echo|motif on the clothing|source palette and motifs in clothing|integrated into everyday clothing/.test(JSON.stringify(S.BOOK_LINES) + JSON.stringify(S.SCENE_AXIS_GUIDES)), '옷에 책 색·무늬를 넣으라는 말이 남았다');
-assert(cas.includes("Do not carry the attached image's palette, patterns or trim into the outfit") && cas.includes("never in the outfit's colours, patterns or cut"), '옷은 첨부 그림의 색·무늬를 따르지 않는다');
+assert(!/color echo|motif on the clothing|source palette and motifs in clothing|integrated into everyday clothing/.test(JSON.stringify(T) + JSON.stringify(S.SCENE_AXIS_GUIDES)), '옷에 책 색·무늬를 넣으라는 말이 남았다');
+assert(plain.includes("Do not carry the attached image's palette, patterns or trim into the outfit") && plain.includes("never in the outfit's colours, patterns or cut"), '옷은 첨부 그림의 색·무늬를 따르지 않는다');
 for (const v of ['subtle', 'balanced', 'strong']) {
-  const t = P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', axes: { source_influence: v } });
+  const t = cas({ axes: { source_influence: v } });
   assert(/accessor|props|object in the scene/.test(t.match(/source_influence: [^\n]*/)[0]), '원본 반영 ' + v + ' 은 장신구·사물로');
 }
-/* 일상컷 화면비 — 기본 2:3 도 늘 FRAME 줄로 싣는다. 고르면 그 비율 하나만(SCENE 에 겹쳐 싣지 않는다) (2026-10-28) */
-assert(cas.includes('FRAME: a vertical 2:3 (1024×1536) image.') && !cas.includes('Aspect ratio'), '일상컷 FRAME 기본 2:3');
+/* 일상컷 화면비 — 기본 2:3 도 늘 FRAME 줄로 싣는다. 고르면 그 비율 하나만 (2026-10-28) */
+assert(plain.includes('FRAME: a vertical 2:3 (1024×1536) image.') && !plain.includes('Aspect ratio'), '일상컷 FRAME 기본 2:3');
 for (const [a, w] of [['3:2', 'a horizontal 3:2 (1536×1024)'], ['1:1', 'a square 1:1'], ['9:16', 'a tall vertical 9:16'], ['16:9', 'a wide horizontal 16:9']]) {
-  const t = P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', aspect: a });
+  const t = cas({ aspect: a });
   assert(t.includes('FRAME: ' + w) && !t.includes('2:3') && !t.includes('Aspect ratio'), '일상컷 FRAME ' + a);
 }
-assert(cas.includes(S.BOOK_LINES.casualPose) && cas.indexOf(S.BOOK_LINES.casualPose) < cas.indexOf('SCENE (chosen)'), '일상컷은 첨부 그림의 고개 각도·시선·카메라를 따르지 않는다 — 장면 설정 앞에');
-assert(cas.includes('Stitching a book block') && cas.includes('overall_intensity: strong') && cas.startsWith('INPUT: the attached image'), '일상컷 조립');
+assert(plain.includes(T.casualPose) && plain.indexOf('SCENE (chosen)') < plain.indexOf(T.casualPose), '고른 장면 → 각도 줄');
+/* 예전 기록(갈래·예시) — 변환표로 같은 길이 된다. 예전 원작 시대는 그 장소가 받으면 그대로 */
+assert.equal(cas({ cat: 'library_life', ex: 'lib_binding' }), cas({ era: 'now', place: 'lib_bindery', act: 'stitch_binding', ofam: 'everyday', item: 'apron_blouse' }), '예전 기록 → 추천 조합 길');
+assert(sceneOf(cas({ cat: 'lingerie', ex: 'lace_set' })).includes(CT.item(tree, 'lingerie', 'lace_set').en), '예전 옷 예시 → 그 옷');
+assert(cas({ cat: 'library_life', ex: 'lib_binding', era: 'book' }).includes('ERA:'), '예전 원작 시대는 그대로');
+assert(cas({ cat: 'story_place', ex: 'sp_walk' }).includes('WORLD:') && cas({ cat: 'stage_adaptation', ex: 'ad_fitting' }).includes('ADAPTATION:'), '예전 이야기 속 장소·각색');
+/* 추천 조합이 다 조립되고, 따옴표 밖은 영어, 길이 한도 */
+let longestCasual = 0;
+for (const bk of design.books) for (const pr of tree.presets) {
+  const t = P.buildCasual({ book: bk, tree, styleText: text, ...CT.applyPreset(tree, {}, pr.key) });
+  assert(t.includes('Place: ') && t.includes('Activity: ') && t.includes('Outfit: '), pr.key + ' 장면 줄');
+  assert(!/[가-힣]/.test(t.replace(/"[^"]*"/g, '').replace(/«[^»]*»/g, '').replace(/STYLE: [^\n]*/, '')), bk.key + ' ' + pr.key + ' 따옴표 밖은 영어');
+  longestCasual = Math.max(longestCasual, P.words(t));
+}
+assert(longestCasual <= 800, '가장 긴 일상컷이 800 낱말을 넘는다: ' + longestCasual);
+assert.throws(() => P.buildCasual({ book: b, styleText: text }), /Casual tree is required/);
 assert(!/Pok[eé]mon|포켓몬/.test(JSON.stringify(S)), '표에 포켓몬 말이 남았다');
-for (const r of S.CATS) if (r[0] !== 'auto_random' && r[0] !== '__custom__') assert((S.EXAMPLE_MAP[r[0]] || []).length, r[0] + ' 예시가 없다');
 assert(!S.ACTION_CONTROLS.some(c => c.key === 'equipment'), '책은 빈손 — 무장 고르기가 없다');
 
 /* 5. 화풍 블록은 책 줄 바로 뒤, 판의 점검 줄은 맨 끝, 참고 그림이 있으면 "그리는 방식만" (2026-10-15 시범 세 묶음) */
 const cur = lf.versions.find(v => v.v === lf.current);
 /* 자리 검사는 점검 줄이 있는 판으로 본다(지금 판 v7 은 점검 줄이 없다) */
-const full = { book: b, stage: '발단', styleText: cur.text, styleCheck: cur.check || 'rendering check.', styleRef: true, params: [] };   // 참고 그림을 켰을 때
+const full = { book: b, tree, stage: '발단', styleText: cur.text, styleCheck: cur.check || 'rendering check.', styleRef: true, params: [] };   // 참고 그림을 켰을 때
 for (const [name, t] of [['새 인물', P.buildPrompt({ ...full, outputMode: 'form' })], ['이어가기', P.buildPrompt({ ...full, outputMode: 'form', identityMode: 'reference', baseStage: '발단' })],
   ['개방', P.buildPrompt({ ...full, outputMode: 'open' })], ['일상', P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })]]) {
   const parts = t.split('\n\n');
@@ -160,7 +222,7 @@ assert(!/thumb|fingers|never|mirrored|thrust/.test(S.BOOK_LINES.hands + S.BOOK_L
 assert(S.BOOK_LINES.body.includes('two arms and two legs') && S.BOOK_LINES.handsCasual.startsWith('HAND TASK:'), '몸 줄·일상컷 손 줄');
 // 경찰·간호사 — 금지어만 있어 부품이 없었다. 옷 부품 + 동작, 극장 말 없이(햄릿이 무대 의상으로 끌려갔다)
 for (const ex of ['adult_police', 'adult_nurse']) {
-  const t = P.buildCasual({ book: design.books.find(x => x.key === 'hamlet'), styleText: text, cat: 'adult_roleplay', ex });
+  const t = P.buildCasual({ book: design.books.find(x => x.key === 'hamlet'), tree, styleText: text, cat: 'adult_roleplay', ex });
   assert(/cap/.test(t) && !/theatrical/.test(t) && t.includes('never restyle the chosen outfit'), ex);
 }
 // 개방 명장면은 폼 배경에서 뺀다(바스커빌 사냥개) — 새 인물·이어가기 모두, 개방·일상컷엔 없음
@@ -179,21 +241,6 @@ assert(P.buildPrompt({ outputMode: 'form', book: b, stage: '결말', baseStage: 
   const mine2 = P.buildPrompt({ outputMode: 'form', book: ti, stage: '발단', styleText: text, params: [['facial ethnicity', 'Korean']] });
   assert(!mine2.includes('Latin American ancestry') && mine2.includes('facial ethnicity: Korean'), '고른 계통이 이긴다');
   assert(!P.buildPrompt({ outputMode: 'form', book: ti, stage: '전개', baseStage: '발단', identityMode: 'reference', styleText: text }).includes('ancestry'), '이어가기는 첨부 그림'); }
-// 원작 시대 — 고르면 시대·지역 줄, 기본(현대)은 없다
-{ const hm = design.books.find(x => x.key === 'hamlet'), base = { book: hm, styleText: text, cat: 'adult_roleplay', ex: 'adult_police' };
-  const now = P.buildCasual(base), then = P.buildCasual({ ...base, era: 'book' });
-  assert(!now.includes('ERA:') && then.includes('ERA: set this scene') && then.includes(q(hm.era)) && then.includes(q(hm.region)) && then.includes('city watch'), '원작 시대');
-  assert(then.indexOf('ERA:') > then.indexOf('WARDROBE:') && then.indexOf('ERA:') < then.indexOf('SCENE (chosen)'), '시대 줄은 옷 줄 뒤, 장면 앞');
-  assert(!P.buildPrompt({ outputMode: 'form', book: hm, stage: '발단', styleText: text, era: 'book' }).includes('ERA:'), '폼 초상에는 없다'); }
-// 전통 의상 — 고른 전통이 책의 지역을 이긴다(돈키호테 아오자이). 장면 문장이 없던 예시는 짜임을 적는다
-const ao = P.buildCasual({ book: design.books.find(x => x.key === 'don_quixote'), styleText: text, cat: 'traditional', ex: 'aodai_daily' });
-assert(ao.includes('wins over her book') && ao.includes('mandarin collar') && ao.includes('wide-leg silk trousers'), '아오자이');
-for (const [cat, rows] of Object.entries(S.EXAMPLE_MAP)) for (const r of rows) if (r[0] && r[0] !== '__custom__') {
-  assert(r[5] || S.EXAMPLE_DETAIL[r[0]], cat + ' · ' + r[0] + ' 장면 문장이 없다 — 이름만 실린다(lib/prompt-spec.js EXAMPLE_DETAIL)');
-  const t = P.buildCasual({ book: b, styleText: text, cat, ex: r[0] });
-  assert(P.words(t) <= 800, cat + ' · ' + r[0] + ' 일상컷이 800 낱말을 넘는다');
-}
-assert(!/thruster|cockpit|Gundam|Pok[eé]mon/i.test(Object.values(S.EXAMPLE_DETAIL).join(' ')), '예시 풀이에 건담·포켓몬 말이 없다');
 // 한복 — 한 낱말로는 한푸로 갔다(춘향전). 새 인물은 실루엣에, 이어가기는 GARMENT 줄에 구조를 싣는다
 const ch = design.books.find(x => x.key === 'chunhyang');
 assert(P.buildPrompt({ outputMode: 'form', book: ch, stage: '발단', styleText: text }).includes('jeogori') , '새 인물 — 한복 풀이');
@@ -210,7 +257,7 @@ for (const bk of design.books) {
   const ts = [P.buildPrompt({ outputMode: 'form', book: bk, stage: '발단', styleText: text }),
     P.buildPrompt({ outputMode: 'form', book: bk, stage: '전개', baseStage: '발단', identityMode: 'reference', styleText: text }),
     P.buildPrompt({ outputMode: 'open', book: bk, stage: '결말', styleText: text }),
-    P.buildCasual({ book: bk, styleText: text, cat: 'library_life', ex: 'lib_binding' })];
+    P.buildCasual({ book: bk, tree, styleText: text, cat: 'library_life', ex: 'lib_binding' })];
   for (const t of ts) {
     assert.equal(t.includes(guard), prot, bk.key + (prot ? ' 에 원작 글만 줄이 없다' : ' 은 만료됐는데 원작 글만 줄이 있다'));
     for (const a of bk.adaptations || []) assert(!t.includes(a), '각색 이름은 프롬프트에 싣지 않는다: ' + a);
@@ -219,4 +266,4 @@ for (const bk of design.books) {
 assert(design.books.some(bk => P.isProtected(bk)), '보호 중인 책이 하나는 있다(검사가 헛돌지 않게)');
 const py = fs.readFileSync('tools/book-design.py', 'utf8').match(/KOREA_LAST_EXPIRED_DEATH = (\d+)/);
 assert.equal(Number(py[1]), S.KOREA_LAST_EXPIRED_DEATH, '보호 기준 해가 검사기와 생성기에서 같다');
-console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세·폼 자세 · 한복 구조 · 보호 중인 책은 원작 글만`);
+console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 트리(시대·장소·하는 일·옷·이야기 세계·각색·원작 시대·CROP·상징·예전 기록) · 추천 조합 ${tree.presets.length}개 × ${design.books.length}권 가장 긴 것 ${longestCasual}낱말 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세·폼 자세 · 한복 구조 · 보호 중인 책은 원작 글만`);

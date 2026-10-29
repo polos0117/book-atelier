@@ -30,9 +30,10 @@
   "three_musketeers": {"byStyle": {"literary_fantasy": {"casual": {"f": ["three_musketeers_literary_fantasy_f_casual1.webp", "three_musketeers_literary_fantasy_f_casual2.webp", "three_musketeers_literary_fantasy_f_casual3.webp", "three_musketeers_literary_fantasy_f_casual4.webp", "three_musketeers_literary_fantasy_f_casual5.webp", "three_musketeers_literary_fantasy_f_casual6.webp"]}, "byForm": {"begin": {"f": "three_musketeers_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "three_musketeers_begin_open_literary_fantasy_f.webp"}, "end": {"f": "three_musketeers_end_literary_fantasy_f.webp"}, "end_open": {"f": "three_musketeers_end_open_literary_fantasy_f.webp"}, "middle": {"f": "three_musketeers_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "three_musketeers_middle_open_literary_fantasy_f.webp"}}}}},
   "time_machine": {"byStyle": {"literary_fantasy": {"casual": {"f": ["time_machine_literary_fantasy_f_casual1.webp", "time_machine_literary_fantasy_f_casual2.webp", "time_machine_literary_fantasy_f_casual3.webp", "time_machine_literary_fantasy_f_casual4.webp"]}, "byForm": {"begin": {"f": "time_machine_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "time_machine_begin_open_literary_fantasy_f.webp"}, "end": {"f": "time_machine_end_literary_fantasy_f.webp"}, "end_open": {"f": "time_machine_end_open_literary_fantasy_f.webp"}, "middle": {"f": "time_machine_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "time_machine_middle_open_literary_fantasy_f.webp"}}}}},
   "treasure_island": {"byStyle": {"literary_fantasy": {"casual": {"f": ["treasure_island_literary_fantasy_f_casual1.webp", "treasure_island_literary_fantasy_f_casual2.webp", "treasure_island_literary_fantasy_f_casual3.webp", "treasure_island_literary_fantasy_f_casual4.webp"]}, "byForm": {"begin": {"f": "treasure_island_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "treasure_island_begin_open_literary_fantasy_f.webp"}, "end": {"f": "treasure_island_end_literary_fantasy_f.webp"}, "end_open": {"f": "treasure_island_end_open_literary_fantasy_f.webp"}, "middle": {"f": "treasure_island_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "treasure_island_middle_open_literary_fantasy_f.webp"}}}}},
-  "twenty_thousand_leagues": {"byStyle": {"literary_fantasy": {"casual": {"f": ["twenty_thousand_leagues_literary_fantasy_f_casual1.webp", "twenty_thousand_leagues_literary_fantasy_f_casual2.webp", "twenty_thousand_leagues_literary_fantasy_f_casual3.webp", "twenty_thousand_leagues_literary_fantasy_f_casual4.webp", "twenty_thousand_leagues_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "twenty_thousand_leagues_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "twenty_thousand_leagues_begin_open_literary_fantasy_f.webp"}, "end": {"f": "twenty_thousand_leagues_end_literary_fantasy_f.webp"}, "end_open": {"f": "twenty_thousand_leagues_end_open_literary_fantasy_f.webp"}, "middle": {"f": "twenty_thousand_leagues_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "twenty_thousand_leagues_middle_open_literary_fantasy_f.webp"}}}}}
+  "twenty_thousand_leagues": {"byStyle": {"literary_fantasy": {"casual": {"f": ["twenty_thousand_leagues_literary_fantasy_f_casual1.webp", "twenty_thousand_leagues_literary_fantasy_f_casual2.webp", "twenty_thousand_leagues_literary_fantasy_f_casual3.webp", "twenty_thousand_leagues_literary_fantasy_f_casual4.webp", "twenty_thousand_leagues_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "twenty_thousand_leagues_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "twenty_thousand_leagues_begin_open_literary_fantasy_f.webp"}, "end": {"f": "twenty_thousand_leagues_end_literary_fantasy_f.webp"}, "end_open": {"f": "twenty_thousand_leagues_end_open_literary_fantasy_f.webp"}, "middle": {"f": "twenty_thousand_leagues_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "twenty_thousand_leagues_middle_open_literary_fantasy_f.webp"}}}}},
+  "wizard_of_oz": {"byStyle": {"literary_fantasy": {"casual": {"f": ["wizard_of_oz_literary_fantasy_f_casual1.webp", "wizard_of_oz_literary_fantasy_f_casual2.webp", "wizard_of_oz_literary_fantasy_f_casual3.webp", "wizard_of_oz_literary_fantasy_f_casual4.webp", "wizard_of_oz_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "wizard_of_oz_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "wizard_of_oz_begin_open_literary_fantasy_f.webp"}, "end": {"f": "wizard_of_oz_end_literary_fantasy_f.webp"}, "end_open": {"f": "wizard_of_oz_end_open_literary_fantasy_f.webp"}, "middle": {"f": "wizard_of_oz_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "wizard_of_oz_middle_open_literary_fantasy_f.webp"}}}}}
  },
- "count": 31,
+ "count": 32,
  "added": {
   "alice_begin_literary_fantasy_f.webp": "2026-10-17",
   "alice_begin_open_literary_fantasy_f.webp": "2026-10-17",
@@ -349,6 +350,17 @@
   "twenty_thousand_leagues_literary_fantasy_f_casual4.webp": "2026-10-22",
   "twenty_thousand_leagues_literary_fantasy_f_casual5.webp": "2026-10-22",
   "twenty_thousand_leagues_middle_literary_fantasy_f.webp": "2026-10-22",
-  "twenty_thousand_leagues_middle_open_literary_fantasy_f.webp": "2026-10-22"
+  "twenty_thousand_leagues_middle_open_literary_fantasy_f.webp": "2026-10-22",
+  "wizard_of_oz_begin_literary_fantasy_f.webp": "2026-10-29",
+  "wizard_of_oz_begin_open_literary_fantasy_f.webp": "2026-10-29",
+  "wizard_of_oz_end_literary_fantasy_f.webp": "2026-10-29",
+  "wizard_of_oz_end_open_literary_fantasy_f.webp": "2026-10-29",
+  "wizard_of_oz_literary_fantasy_f_casual1.webp": "2026-10-29",
+  "wizard_of_oz_literary_fantasy_f_casual2.webp": "2026-10-29",
+  "wizard_of_oz_literary_fantasy_f_casual3.webp": "2026-10-29",
+  "wizard_of_oz_literary_fantasy_f_casual4.webp": "2026-10-29",
+  "wizard_of_oz_literary_fantasy_f_casual5.webp": "2026-10-29",
+  "wizard_of_oz_middle_literary_fantasy_f.webp": "2026-10-29",
+  "wizard_of_oz_middle_open_literary_fantasy_f.webp": "2026-10-29"
  }
 }

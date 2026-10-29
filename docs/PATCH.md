@@ -7,6 +7,10 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 일상컷 트리 모듈 — game 원본 다시 복사, 잠근 칸을 지키는 랜덤
+- lib/casual-tree.js · tools/casual-tree.py — 트리 표마다의 규칙 칸 넷을 더했다(pkm 일상컷 트리, 2026-10-29): 안 쓰는 값 `banned`(방향·프레이밍 — 메뉴·랜덤·고치기에서 빠진다), 프레이밍 규칙 `not_required`(필수 갈래 컷엔 안 씀 — frameOk 에 장면을 주면 본다), 동료 자세 `companion`(동료가 있는 하는 일에서만), 세대의 해 `gen_years`(year(tree, 대상) — 카드의 gen). 이 표엔 그 칸이 없어 지금과 같다. 동료 묶음 companion() 을 더했다. 검사기는 새 칸을 본다.
+- lib/prompt-random.js — 일상컷 랜덤은 잠근 칸이 살아남는 값만 뽑는다(시대를 뽑았는데 잠근 장소가 그 시대에 없으면 다른 시대 — 전에는 잠근 장소가 풀렸다). 세부 축을 뽑아도 추천 조합 표시를 안 지운다. prompt.html casual-tree v=2 · prompt-random v=4.
+
 ## 2026-10-29 · claude · 일상컷 트리 — game-atelier 의 구조를 책으로
 - data/casual-tree.json · lib/casual-tree.js — 일상컷을 갈래·예시 대신 시대 → 장소 → 하는 일 → 의상 → 구도 한 줄로(사용자 「이 구조로 다른 저장소도」). 트리 모듈은 game 원본을 그대로 복사, 표는 책 몫으로 바꿨다: 시대 넷(지금 · 원작 시대·지역 · 이야기 세계 안 · 무대·환상), 게임 몫 장소(PC방·개발실·방송·출시일 줄 …)를 빼고 도서관·서점·낭독회·북클럽·무대·영화 각색 묶음과 이야기 세계의 장소, 각색 의상 계열. 예전 갈래·예시 477개는 추천 조합 276개·변환표 446줄로(빠진 것 0). 필수 갈래는 란제리풍·수영복·역할극 또는 이야기 속 일상(섹시).
 - lib/prompt-spec.js — 예전 갈래·예시 표(CATS·EXAMPLE_MAP·EX_NOTE·CAT_KO·EXAMPLE_DETAIL)를 지우고 game 의 일상컷 줄을 책 말로: CROP(가까운 컷 잘리는 선)·가까운 컷 옷·몸 줄·배경 인물 허용(ONE MAIN FIGURE)·WORLD·SETTING·SYMBOLS(설계표 상징 하나~둘)·SCREENS, 자세 「손가락 하나로 쉿」·「엄지 척」, 폼 자세가 돌아보기면 LOOK-BACK 줄(FORM_LOOK_BACK). STORY PLACE 줄은 WORLD 로. prompt-spec v=21.

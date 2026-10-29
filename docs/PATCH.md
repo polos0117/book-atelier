@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 일상컷 — 장면 랜덤이 시대를 고르지 않게, 분리형 선호는 예시의 옷에 진다
+- lib/prompt-random.js · lib/prompt-ui.js — game 젤다 일상2 가 장면 랜덤이 고른 시대(출시 당시) 줄과 미래풍 예시가 부딪혀 예시와 다르게 나왔다. book 의 원작 시대도 같은 길이라 함께 고쳤다(사용자 「game 이랑 book 만」). 시대는 장면 랜덤에 넣지 않고, 시대 칸은 랜덤·잠금 단추 없는 고르기로만 둔다. prompt-random v=2, prompt-ui v=2.
+- lib/prompt-spec.js — 분리형 선호(separates_preference)는 옷 칸이나 장면 예시에 적힌 옷에 진다(예시의 가운·원피스가 상하의로 바뀌던 것). prompt-spec v=19.
+- tests/prompt-screen.cjs · tests/prompt-book.cjs — 시대 칸에 랜덤·잠금 단추가 없고 장면 랜덤을 돌려도 시대 그대로, 분리형 줄이 예시의 옷을 말한다.
+
 ## 2026-10-29 · claude · 일상컷 옷 — 첨부 그림의 색·무늬를 따라가지 않게, 책은 장신구·주변 사물로
 - lib/prompt-spec.js · prompt.html — game 일상컷 옷이 첨부 그림을 따라 비슷비슷하던 것과 같은 문구가 여기도 있었다(사용자 「book 이랑 pkm 도 같이」). OUTPUT 은 책을 장신구·주변 사물로만(옷의 색·무늬·재단엔 넣지 않는다, 들고 있는 책은 여전히 안 된다), WARDROBE 는 첨부 그림의 색·무늬·장식을 옷에 옮기지 말라, 원본 반영 축(source_influence)은 subtle 장신구 하나 / balanced 장신구 하나와 주변 사물 하나 / strong 장신구·소품 몇 가지(옷은 늘 그 장면의 옷). prompt-spec v=18.
 - tests/prompt-book.cjs — 옷에 책 색·무늬를 넣으라는 말이 없고, 원본 반영 세 값이 장신구·사물을 말한다.

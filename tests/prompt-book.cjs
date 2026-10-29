@@ -60,6 +60,8 @@ const ad = P.buildCasual({ book: b, styleText: text, cat: 'stage_adaptation', ex
 assert(ad.includes('ADAPTATION: the production adapts «' + b.title + '»') && ad.includes(b.era) && !ad.includes('STORY PLACE:'), '각색 줄');
 assert(!cas.includes('STORY PLACE:') && !cas.includes('ADAPTATION:') && !P.buildCasual({ book: b, styleText: text, cat: 'literary_salon', ex: 'ls_reading' }).match(/STORY PLACE:|ADAPTATION:/), '다른 갈래엔 없다');
 assert(cas.includes(S.BOOK_LINES.casualWardrobe), '일상컷은 첨부 그림의 옷을 버리고 장면의 옷을 입는다');
+/* 분리형 선호는 옷 칸·장면 예시에 적힌 옷에 진다(2026-10-29, game 젤다 일상2) */
+for (const v of ['prefer separates', 'strongly prefer separates']) assert(S.SCENE_AXIS_GUIDES.separates_preference[v][1].includes('Example scene'), '분리형 ' + v);
 /* 일상컷 옷은 장면의 옷 그대로 — 책의 특징은 장신구·주변 사물로만(2026-10-29, game 에서 먼저) */
 assert(!/color echo|motif on the clothing|source palette and motifs in clothing|integrated into everyday clothing/.test(JSON.stringify(S.BOOK_LINES) + JSON.stringify(S.SCENE_AXIS_GUIDES)), '옷에 책 색·무늬를 넣으라는 말이 남았다');
 assert(cas.includes("Do not carry the attached image's palette, patterns or trim into the outfit") && cas.includes("never in the outfit's colours, patterns or cut"), '옷은 첨부 그림의 색·무늬를 따르지 않는다');

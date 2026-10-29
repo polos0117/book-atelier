@@ -88,9 +88,16 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert(!(await out(p)).includes('ERA:'), '기본은 현대');
     await p.selectOption('#era', 'book');
     assert((await out(p)).includes("ERA: set this scene in her book's own time and place") && (await out(p)).includes('17세기 초'), '원작 시대 줄');
-    await p.click('#lock-era');
+    /* 시대는 장면 랜덤이 건드리지 않는다 — 랜덤·잠금 단추가 없고, 랜덤을 돌려도 고른 값 그대로(2026-10-29) */
+    assert.equal(await p.$('#lock-era'), null, '시대 칸에는 잠금 단추가 없다');
+    assert.equal(await p.$('#random-era'), null, '시대 칸에는 랜덤 단추가 없다');
     await p.click('#lock-example');
     await p.click('#random-scene');
+    assert.equal(await p.$eval('#era', e => e.value), 'book', '장면 랜덤이 시대를 바꾸지 않는다');
+    await p.selectOption('#era', '');
+    for (let i = 0; i < 6; i++) await p.click('#random-scene');
+    assert.equal(await p.$eval('#era', e => e.value), '', '장면 랜덤이 원작 시대를 고르지 않는다');
+    await p.selectOption('#era', 'book');
     assert.equal(await p.$eval('#example', e => e.value), 'lib_binding', '잠근 예시는 그대로');
     assert.equal(await p.$eval('#category', e => e.value), 'library_life', '예시를 잠그면 그 갈래도 그대로');
     /* 7. 복사·기록 — 기록은 records/<책>/<자리>-ui.json, storage 는 장부가 읽는 꼴 */

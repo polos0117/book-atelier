@@ -60,6 +60,13 @@ const ad = P.buildCasual({ book: b, styleText: text, cat: 'stage_adaptation', ex
 assert(ad.includes('ADAPTATION: the production adapts «' + b.title + '»') && ad.includes(b.era) && !ad.includes('STORY PLACE:'), '각색 줄');
 assert(!cas.includes('STORY PLACE:') && !cas.includes('ADAPTATION:') && !P.buildCasual({ book: b, styleText: text, cat: 'literary_salon', ex: 'ls_reading' }).match(/STORY PLACE:|ADAPTATION:/), '다른 갈래엔 없다');
 assert(cas.includes(S.BOOK_LINES.casualWardrobe), '일상컷은 첨부 그림의 옷을 버리고 장면의 옷을 입는다');
+/* 일상컷 옷은 장면의 옷 그대로 — 책의 특징은 장신구·주변 사물로만(2026-10-29, game 에서 먼저) */
+assert(!/color echo|motif on the clothing|source palette and motifs in clothing|integrated into everyday clothing/.test(JSON.stringify(S.BOOK_LINES) + JSON.stringify(S.SCENE_AXIS_GUIDES)), '옷에 책 색·무늬를 넣으라는 말이 남았다');
+assert(cas.includes("Do not carry the attached image's palette, patterns or trim into the outfit") && cas.includes("never in the outfit's colours, patterns or cut"), '옷은 첨부 그림의 색·무늬를 따르지 않는다');
+for (const v of ['subtle', 'balanced', 'strong']) {
+  const t = P.buildCasual({ book: b, styleText: text, cat: 'library_life', ex: 'lib_binding', axes: { source_influence: v } });
+  assert(/accessor|props|object in the scene/.test(t.match(/source_influence: [^\n]*/)[0]), '원본 반영 ' + v + ' 은 장신구·사물로');
+}
 /* 일상컷 화면비 — 기본 2:3 도 늘 FRAME 줄로 싣는다. 고르면 그 비율 하나만(SCENE 에 겹쳐 싣지 않는다) (2026-10-28) */
 assert(cas.includes('FRAME: a vertical 2:3 (1024×1536) image.') && !cas.includes('Aspect ratio'), '일상컷 FRAME 기본 2:3');
 for (const [a, w] of [['3:2', 'a horizontal 3:2 (1536×1024)'], ['1:1', 'a square 1:1'], ['9:16', 'a tall vertical 9:16'], ['16:9', 'a wide horizontal 16:9']]) {

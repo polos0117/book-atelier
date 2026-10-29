@@ -2705,7 +2705,7 @@
     "story_bath",
     "travel_lake"
    ],
-   "en": "swimming through the water mid-stroke",
+   "en": "swimming breaststroke, her head and shoulders above the water",
    "outfits": [
     "swimwear"
    ],
@@ -2717,7 +2717,8 @@
    ],
    "not_frames": [
     "full_body",
-    "environmental"
+    "environmental",
+    "three_quarter"
    ]
   },
   {

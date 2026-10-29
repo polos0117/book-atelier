@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-29 · claude · 헤엄치기 문장·컷
+- data/casual-tree.json — 하는 일 swim 의 en 「swimming through the water mid-stroke」 → 「swimming breaststroke, her head and shoulders above the water」, not_frames 에 three_quarter 를 더했다. game 리니지 일상4 가 두 번 다 물속에 앉아 기댔다 — 무릎까지 담는 3/4 컷이 수평으로 누운 헤엄과 부딪혀 몸을 세웠다
+
 ## 2026-10-29 · claude · 오즈의 마법사 얼굴 계통 African → Mediterranean
 - data/book-design.json — 사용자가 생성기에서 얼굴 계통을 지중해로 바꿔 열한 장을 그렸다. 다음 일상컷도 같은 계통을 싣도록 설계표를 그림에 맞췄다
 

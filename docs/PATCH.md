@@ -7,6 +7,9 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-30 · claude · 두 손에 일이 하나씩이면 왼손·오른손을 적는다
+- IMAGE_RULES.md — 2절 칸끼리 규칙: 가슴 위·클로즈업에서 두 손이 다 일하면 추가 연출 요청에 오른손·왼손을 갈라 적는다(game 하스스톤 일상5에서 손이 둘 다 오른손으로 나왔다, 사용자)
+
 ## 2026-10-29 · claude · 헤엄치기 문장·컷
 - data/casual-tree.json — 하는 일 swim 의 en 「swimming through the water mid-stroke」 → 「swimming breaststroke, her head and shoulders above the water」, not_frames 에 three_quarter 를 더했다. game 리니지 일상4 가 두 번 다 물속에 앉아 기댔다 — 무릎까지 담는 3/4 컷이 수평으로 누운 헤엄과 부딪혀 몸을 세웠다
 

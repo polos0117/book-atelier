@@ -7,6 +7,13 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-10-31 · claude · GPT 세션 이미지 규칙 — 잠금 · 지시문 묶음 · 묻지 않고 올리기 · 일상컷 다섯 장
+- docs/IMAGE_AUTOMATION.md — 사람이 안 지켜보는 GPT 세션의 길(pkm · game 과 같게, 사용자 2026-10-31): 실행마다 한 권 · 하루 열두 권, 잠금 → 일상컷 계획 → 지시문 묶음 → 그리기 → AI 검수 → 묻지 않고 올리기 → 끝. 멈출 때와 기록 꼴
+- tools/prompt-pack.cjs — 브라우저 없이 생성기와 같은 지시문 · 기록을 파일로(폼 셋 · 개방 셋 · 일상 다섯, game 판을 책 꼴로). 틀린 칸이 있으면 아무것도 안 쓴다
+- tools/image-claim.cjs — 잠금(그림 저장소 records/automation/claims/<책>.json), 다음 차례 · 빈 자리(일상컷 다섯 장까지) · 끝 · 멈춤 · 풀기. game 과 같은 도구
+- IMAGE_RULES.md — 한 책의 일상컷은 다섯 장(적은 옛 책은 모자란 번호만), GPT 세션은 IMAGE_AUTOMATION 0절
+- tests/prompt-pack-screen.cjs · tests/image-claim.cjs · AGENTS.md
+
 ## 2026-10-30 · claude · 두 손에 일이 하나씩이면 왼손·오른손을 적는다
 - IMAGE_RULES.md — 2절 칸끼리 규칙: 가슴 위·클로즈업에서 두 손이 다 일하면 추가 연출 요청에 오른손·왼손을 갈라 적는다(game 하스스톤 일상5에서 손이 둘 다 오른손으로 나왔다, 사용자)
 

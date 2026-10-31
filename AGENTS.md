@@ -12,6 +12,7 @@
 | `docs/DUEL_DESIGN.md` | 결투 — 세 방향 비교와 선택, 규칙 전체, 서른다섯 권 규칙, 시뮬레이터 균형 |
 | `data/book-design.json` | 책 설계표. 책 한 권 = 한 칸, 외형과 전투를 함께 뽑는다 |
 | `IMAGE_RULES.md` | 그림 만들기·파일 이름·기록·등록 — 그림 작업 전에 |
+| `docs/IMAGE_AUTOMATION.md` | GPT 세션(사람이 안 지켜보는) 이미지 작업 — 잠금(`tools/image-claim.cjs`) · 지시문 묶음(`tools/prompt-pack.cjs`) · 검수 · 묻지 않고 올리기 |
 | `docs/ART_STYLE.md` · `data/style.json` | 화풍 — 책별 설계 프롬프트 뒤에 붙이는 공통 블록(키·판 따로) |
 | `docs/PORT_NOTES.md` | 어디서 무엇을 가져왔고, 무엇을 일부러 뺐나 |
 | `docs/ART_INDEX.md` · `rust/README.md` | 그림 색인(모자이크 서명·dHash·색 막대)과 닮은 그림(거리·무게·한 책 둘까지), wasm 다시 짓기 |
@@ -116,6 +117,8 @@ node tests/casual-tree.cjs           # 트리 자세 계열의 자세·방향 �
 node tools/casual-plan.cjs <책> --out <폴더>   # 일상컷 묶음 짜기(그릴 때) · --check <기록 폴더> 로 올리기 전 검사
 node tests/casual-plan.cjs           # 묶음 계획기 — 서른다섯 권 × 씨앗 셋이 규칙을 지키고 기록이 생성기 꼴
 node tests/casual-plan-screen.cjs    # 계획기 기록을 생성기 화면에 넣으면 같은 지시문(브라우저)
+node tests/prompt-pack-screen.cjs    # 지시문 묶음(tools/prompt-pack.cjs) 열한 자리를 생성기 화면에 넣으면 같은 지시문 · 파일 이름 · 틀린 설정은 안 씀(브라우저)
+node tests/image-claim.cjs           # 이미지 작업 잠금 — bare 저장소로 잡기 · 겹침 · 실행마다 하나 · push 경합 되돌림 · 하루 몫
 python3 tests/register-images.py     # 그림 등록 — 파일 이름 꼴·자리·틀린 이름은 저장 안 함·등록한 날(added)·git 이력 채우기
 node tests/img-shards.cjs            # 그림 주소·등록기·워크플로·.gitignore 가 같은 저장소 차례
 node tests/prompt-book.cjs           # 프롬프트 — 책마다 폼 셋 × 갈래, 일상컷 트리·추천 조합, 정한 말 영어

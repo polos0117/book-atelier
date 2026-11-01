@@ -7,10 +7,17 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · gpt · 허생전 그림 열한 장 등록
+- book-atelier-img — 발단·전개·결말 폼 셋, 개방 셋, 트리 버전2 일상 다섯을 1024×1536 WebP로 추가했다. 생성기 UI 설정·프롬프트 해시·원본 및 변환 해시·AI 검수 기록을 records/heo_saeng/에 보존했다. 화풍은 literary_fantasy v7, 정본은 발단이다.
+- records/heo_saeng/*-import.json(그림 저장소) — 현대 남산 탑·혼합 건축, 결말의 은 꾸러미 동작, 일상컷 손 좌우·크롭·시대 각색·의상 재료 불일치 등 관찰한 문제를 검수 실패로 기록했다. GPT 작업 규칙대로 임의 재생성 없이 올렸다.
+- data/img.json — 자동 그림 등록으로 새 열한 장과 등록일이 추가됐다. 기존 항목과 날짜는 보존했다.
+- data/art-index.json · data/art-similar.json — 기존 색인 특징을 보존하고 새 열한 장의 실제 워크플로 썸네일 특징과 전체 닮은 그림 순위를 갱신했다. Cargo가 없는 환경이라 기존 C float32 변환을 사용하고 기존 닮은 그림 점수 2792개가 모두 일치함을 확인했다.
+
 ## 2026-11-01 · claude · 뒷모습 돌아보기 — 돌아보는 어깨 · 손의 화면 쪽 · 얼굴 손의 팔
 - lib/casual-tree-v2.js(공용, game 원본 · book · element · pkm 같은 파일) — backLook: 몸이 뒤쪽(far)이고 머리가 어깨 너머(look_back)면 돌아보는 어깨를 얼굴에 닿는 손(zone face)의 쪽으로(없으면 왼쪽) 정하고, 손 줄에 붙일 화면 쪽 말과 얼굴 손의 팔 줄을 준다. 「어깨 너머」 만 적으니 모델이 아무 쪽으로 돌렸고 뒷모습에서 「her own right hand」 를 자주 뒤집어, 얼굴 쪽과 반대 팔이 귀를 만지려 머리 뒤를 가로질렀다(element 「난간에서 돌아보기」 — 사용자 「지속적으로 뒷태에서 머리 만지는 컷이 팔 구조 해석이 잘못됐는지」). 시험 세 장(o-blood 메카 일상1 두 번 · c 판타지 일상1)에서 팔이 같은 쪽 어깨에서 올라갔다
 - tests/prompt-book.cjs — 버전2 일상컷 낱말 한도 800 → 900(이 줄로 844)
 - lib/prompt-book.js — COMPOSITION 의 머리 말을 「her own left shoulder — the shoulder on the image's left side」 로, 손 줄 끝에 「on the image's … side, since her back is to the camera」, 얼굴 손이면 ARM 줄(같은 쪽 어깨에서 · 팔꿈치는 옆으로 · 머리 · 목 뒤를 가로지르지 않는다). 앞모습은 그대로. 생성기 캐시 번호 올림
+
 
 ## 2026-11-01 · gpt · 지킬 박사와 하이드 그림 열한 장 등록
 - data/book-design.json — 약병은 발단에서 드는 소품이므로 끓어오르는 약과 발단 개방의 어휘 중복을 검토 후 허용했다. 개방의 실험실·플라스크·보랏빛 김은 폼 배경에서 보류한다.

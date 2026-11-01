@@ -3032,6 +3032,7 @@
   },
   {
    "key": "jekyll_hyde",
+   "conflicts_ok": ["sig_open:끓어오르·끓어오르는"],
    "title": "지킬 박사와 하이드",
    "author": "로버트 루이스 스티븐슨",
    "author_death": 1894,

@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-02 · gpt · 별의 전령 이미지 11장 등록
+- data/img.json — 폼 3장·개방 3장·트리 v2 일상 5장 자동 등록을 확인했다.
+- data/art-index.json · data/art-similar.json — 새 썸네일 11장의 특징을 art-core로 계산하고 기존 색인을 보존해 닮은 그림 목록을 다시 만들었다. 환경에 cargo가 없어 rustc로 같은 코어를 실행했다.
+- 생성·검수 기록은 book-atelier-img의 records/sidereus_nuncius/에 남겼다. 전개·전개 개방의 책 소지, 결말 개방의 위성 개수와 일부 일상 구도·손·모티프 차이는 QA 실패로 기록하고 자동화 규칙에 따라 재생성 없이 등록했다.
+
 ## 2026-11-02 · gpt · 신곡 11장 등록·그림 색인 갱신
 - data/img.json — 그림 등록 워크플로가 발단·전개·결말과 각 개방 3장, 일상 5장을 자동 등록했다.
 - data/art-index.json · data/art-similar.json — 기존 393개 특징을 보존하고 자동 썸네일 11개의 Rust art-core 특징과 닮은 그림을 갱신했다. 임시 FFI로 기존 유사도 점수 전체와 대조했으며, 구형 rustc를 위해 사용하지 않는 matcher의 Option 문법만 호환 표기로 바꿨다. 저장소 소스는 바꾸지 않았다.

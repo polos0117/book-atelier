@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 일상컷 트리 버전2 3단계 — 생성기 화면
+- lib/prompt-ui.js — 새 일상컷 · 버전2 기록은 버전2 칸(시대 → 장소 → 날씨 → 의상 → 옷 → 상징 → 안경 → 자세 추천 → 몸 자세 · 받침 · 구도 · 몸 방향 · 머리 · 카메라 → 오른손 · 왼손 → 소품 동작 → 다리 → 시선 → 표정, 트리 밖 값 🔓 해방, 맞지 않는 칸이면 복사 막기), 버전1 기록은 버전1 칸 그대로 열고 「버전2 로 옮기기」 단추. game 의 화면을 책 꼴로(원작 시대 이름 · 상징)
+- lib/prompt-random.js — 버전2 장면 랜덤(game 과 같다 — 책 이름 · 상징만). lib/words.js — 버전2 화면 말 일흔둘(game 그대로). lib/prompt-spec.js — CASUAL_HAND_WORDS
+- prompt.html — lib/casual-tree-v2.js 를 싣고 판 올림(words 20 · prompt-spec 22 · prompt-book 9 · prompt-random 5 · prompt-ui 4)
+- tests/prompt-screen.cjs — 일상컷 6절을 버전2 칸으로(제본 공방 · 원작 시대 · 이야기 세계 · 잠근 시대 · 각색 · 표정 꺼짐 · 상징 · 필수 갈래 · 기록 treeV 2)
+
 ## 2026-11-01 · claude · 일상컷 트리 버전2 2단계 — 지시문 줄
 - lib/prompt-book.js — 장면이 treeV 2 이고 버전2 표가 오면 버전2 줄(game 의 buildCasualV2 · casualDetailsV2 를 책 꼴로): POSTURE · SUPPORT · COMPOSITION · 렌즈 자동 · 손 둘(인물 기준) · PROP · LEGS · GAZE · 표정(시선 말을 뗀). 원작 시대 · 이야기 세계(story_place 는 WORLD 의 장소) · 각색 줄 · 전통 의상 말은 버전1 과 같은 자리. 책엔 들 알아볼 거리가 없어 상징 줄은 늘 싣는다. 버전1 기록은 버전1 그대로
 - lib/prompt-spec.js — 버전2 줄(casualOutputV2 는 책 문장 「never a carried book」 그대로, 끝만 「Everything else follows SCENE」) · FRAME · CROP · BODY · HANDS · PROP · 돌아보기

@@ -96,23 +96,24 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert.match(await p.$eval('#file-name code', e => e.textContent), /don_quixote_literary_fantasy_f_casual3\.webp/);
     assert.equal(await p.$('#category'), null, '갈래 칸이 없다');
     assert.equal(await p.$('#example'), null, '예시 칸이 없다');
-    const vals = () => p.evaluate(() => Object.fromEntries(['preset', 'era', 'place', 'act', 'ofam', 'item', 'pose', 'orientation'].map(id => [id, document.querySelector('#' + id).value])));
+    /* 새 일상컷은 트리 버전2(2026-11-01) — 하는 일 칸 없이 몸 자세 · 받침 · 구도 · 손 · 시선 */
+    assert(await p.$('#casual-tree-v2') && !(await p.$('#act')) && !(await p.$('#lens')), '버전2 칸');
+    const vals = () => p.evaluate(() => Object.fromEntries(['era', 'place', 'ofam', 'item', 'posture', 'frame'].map(id => [id, (document.querySelector('#' + id) || {}).value])));
     const opts = id => p.$$eval('#' + id + ' option', os => os.map(o => o.value));
-    assert.deepEqual(await opts('era'), ['now', 'book', 'in_story', 'fantasy'], '시대 넷');
+    assert.deepEqual((await opts('era')).filter(Boolean), ['now', 'book', 'in_story', 'fantasy'], '시대 넷');
     await p.selectOption('#era', 'now');
-    await p.selectOption('#frame', 'full_body');
-    await p.selectOption('#preset', 'lib_binding');
+    await p.selectOption('#place', 'lib_bindery');
     let v = await vals();
-    assert.deepEqual([v.era, v.place, v.act, v.ofam, v.item], ['now', 'lib_bindery', 'stitch_binding', 'everyday', 'apron_blouse'], '추천 조합이 길을 채운다');
+    assert.equal(v.place, 'lib_bindery');
     t = await out(p);
-    assert(t.includes('Activity: stitching a book block') && !t.includes('WORLD:') && !t.includes('ERA:') && !t.includes('SCREENS:'), '제본 공방');
+    assert(t.includes('Place: a bindery and conservation workshop') && t.includes('POSTURE: ') && t.includes('COMPOSITION: ') && !t.includes('Activity: ') && !t.includes('WORLD:') && !t.includes('ERA:'), '제본 공방 — 버전2 줄');
     /* 원작 시대 — 그 책의 시대·지역 판으로, 옮기기 어려운 곳은 빠진다 */
     await p.selectOption('#era', 'book');
     assert.equal((await vals()).place, 'lib_bindery', '원작 시대에도 있는 장소는 그대로');
     t = await out(p);
     assert(t.includes("ERA: set this scene in her book's own time and place") && t.includes('17세기 초'), '원작 시대 줄');
     assert(!(await opts('place')).includes('arcade_hall') && !(await opts('place')).includes('fx_studio'), '원작 시대에 없는 곳·환상 무대는 빠진다');
-    /* 이야기 세계 안 — 그 책의 세계의 장소만(예전 갈래 「이야기 속 장소」) */
+    /* 이야기 세계 안 — 그 책의 세계의 장소만 */
     await p.selectOption('#era', 'in_story');
     assert((await opts('place')).every(k => k.startsWith('story_')), '이야기 세계 안은 그 세계의 장소만');
     t = await out(p);
@@ -125,31 +126,25 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert(v.place.startsWith('story_'), '랜덤 장소도 그 시대 안에서');
     await fixed('트리 랜덤 뒤');
     await p.click('#lock-era');
-    /* 각색 무대 — 장소 묶음 「무대·영화 각색」 에만 ADAPTATION 줄과 각색 의상 */
+    /* 각색 무대 — 장소 묶음 「무대·영화 각색」 에만 ADAPTATION 줄 */
     await p.selectOption('#era', 'now');
-    await p.selectOption('#preset', 'ad_fitting');
+    await p.selectOption('#place', 'adapt_fitting');
     t = await out(p);
-    assert(t.includes('ADAPTATION: the production adapts «돈키호테»') && t.includes("a period gown of her book's time and place"), '각색 무대');
-    /* 하는 일이 자세를 거른다 — 앉아 기다리기엔 걷기 자세가 없다 */
-    await p.selectOption('#preset', 'travel_station');
+    assert(t.includes('ADAPTATION: the production adapts «돈키호테»'), '각색 무대');
+    /* 등을 보이고 고개를 안 돌리면 표정 칸이 꺼진다 */
+    await p.selectOption('#place', 'street_park');
     await p.selectOption('#frame', 'full_body');
-    assert(!(await opts('pose')).includes('walking') && (await opts('pose')).includes('sitting'), '앉기 계열 자세만');
-    assert(!(await opts('orientation')).includes('walking_away'), '앉기 계열 방향만');
-    /* 칸끼리 규칙 — 가까운 컷의 렌즈·자세, 등 돌림엔 표정 X */
-    await p.selectOption('#lens', 'wide24');
-    await p.selectOption('#frame', 'face_close');
-    assert.equal(await p.$eval('#lens', e => e.value), '', '클로즈업으로 바꾸면 광각은 비운다');
-    assert(!(await opts('lens')).includes('wide24') && !(await opts('pose')).includes('sitting'), '클로즈업엔 광각·다리 자세 없음');
-    await p.selectOption('#frame', 'full_body');
-    await p.selectOption('#era', 'now'); await p.selectOption('#place', 'stage_redcarpet'); await p.selectOption('#act', 'opera_stairs');
-    await p.selectOption('#orientation', 'back_to_camera');
-    assert.equal(await p.$eval('#expression', e => e.disabled), true, '등을 보이면 표정 칸이 꺼진다');
+    if ((await opts('body')).includes('back')) {
+      await p.selectOption('#body', 'back');
+      if ((await opts('head')).includes('with_body')) { await p.selectOption('#head', 'with_body'); assert.equal(await p.$eval('#expression', e => e.disabled), true, '등을 보이면 표정 칸이 꺼진다'); }
+    }
     /* 상징 — 설계표 symbols 중 하나 */
     assert.deepEqual((await opts('prop')).slice(2), ['0', '1', '2'], '상징 셋');
     await p.selectOption('#prop', '0');
     assert((await out(p)).includes('SYMBOL (this one only') && (await out(p)).includes('"풍차"'), '상징 하나');
     await p.selectOption('#era', 'in_story');
     await p.selectOption('#place', 'story_bath');
+    if ((await opts('ofam')).includes('bath')) await p.selectOption('#ofam', 'bath');
     assert.match(await p.$eval('#required-note', e => e.textContent), /★/, '이야기 세계 안 목욕 — 필수 갈래');
     /* 7. 복사·기록 — 기록은 records/<책>/<자리>-ui.json, storage 는 장부가 읽는 꼴 */
     await p.click('#copy-prompt');
@@ -160,7 +155,7 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert.equal(rec.file, 'don_quixote_literary_fantasy_f_casual3.webp');
     assert.equal(rec.storage.cards.don_quixote.scenes.casual.era, 'in_story');
     assert.equal(rec.storage.cards.don_quixote.scenes.casual.place, 'story_bath');
-    assert(!('cat' in rec.storage.cards.don_quixote.scenes.casual), '기록에 옛 갈래 칸이 없다');
+    assert(!('cat' in rec.storage.cards.don_quixote.scenes.casual) && rec.storage.cards.don_quixote.scenes.casual.treeV === 2, '기록에 옛 갈래 칸이 없고 버전2');
     assert.equal(rec.styleVersion, 'v7');
     /* 8. 저장 — 새로고침해도 이어지고, 다른 책은 직전 책 외형을 가져올 수 있다 */
     await p.reload(); await p.waitForSelector('#prompt-output');

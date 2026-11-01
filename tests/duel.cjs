@@ -603,6 +603,54 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   const hs = put(st, 'me', 'heo_saeng', 0); put(st, 'foe', 'dracula', 1);
   ok(hs.tok === 0 && LG(st, 'me').rule.length === 0, '전개에 낸 허생은 빈손 — 사재기가 없다');
 }
+{ /* 맥베스 — 예언(2026-11-01) */
+  const st = rig(['macbeth'], ['sunzi']);
+  const mb = put(st, 'me', 'macbeth', 0); ok(mb.tok === 3, '발단에 들면 예언 셋');
+  st.chapter = 1; const sz = put(st, 'foe', 'sunzi', 0); mb.power = 6; sz.power = 20; hit(st, 'me', 0, 0);
+  ok(mb.tok === 2 && sz.power === 20 - (3 + 2), '전개 — 칠 때 예언 하나로 피해 +2(공격 타격 3)');
+  sz.power = 3; hit(st, 'me', 0, 0); ok(st.foe.slots[0] === null && mb.power === 6 + 2 && mb.tok === 1, '그 치기로 닫으면 힘 +2');
+}
+{
+  const st = rig(['macbeth'], ['heo_saeng'], { chapter: 2 });
+  const mb = put(st, 'me', 'macbeth', 0); mb.tok = 1; mb.power = 10;
+  put(st, 'foe', 'heo_saeng', 0); ok(mb.tok === 0 && mb.power === 10, '결말 — 맞을 때 예언 하나로 피해를 막는다');
+  hit(st, 'foe', 0, 0); ok(mb.power === 10 - (3 + 2 - 1 + 1), '예언이 없으면 피해 +1(희극→비극 +2, 버티기 방패 1)');
+}
+{ /* 월장석 — 증언 */
+  const st = rig(['moonstone'], ['dracula', 'sunzi']);
+  const ms = put(st, 'me', 'moonstone', 1);
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(ms.tok === 3, '발단 — 내 턴마다 증언 +1, 셋까지');
+  st.chapter = 1; const dr = put(st, 'foe', 'dracula', 0); dr.power = D.base(data, st, dr) + 3; ms.power = 5;
+  const before = dr.power; hit(st, 'me', 1, 0); ok(ms.power === 6 && dr.power < before - 1, '전개 — 칠 때 표적의 덧힘에서 1 을 가져온다');
+  dr.power = D.base(data, st, dr); ms.power = 5; hit(st, 'me', 1, 0); ok(ms.power === 5, '덧힘이 없으면 가져갈 것이 없다');
+  st.chapter = 2; const sz = put(st, 'foe', 'sunzi', 2); dr.power = 9; sz.power = 6; ms.flags.entered = {}; D.BOOK.moonstone.form({ data, st }, ms, 2);
+  ok(dr.power === 9 - 2 && sz.power === 6 - 2, '결말 — 증언(셋)마다 센 상대 책부터 하나씩 힘 −2, 판 위의 책 수까지');
+}
+{ /* 우리들 — 번호 */
+  const st = rig(['kosmos', 'we'], ['dracula']);
+  const ko = put(st, 'me', 'kosmos', 0), we = put(st, 'me', 'we', 1); ok(we.tok === 2, '발단에 들 때 판 위의 아군마다(자신 포함) 번호 하나');
+  st.chapter = 1; ko.power = 10; put(st, 'foe', 'dracula', 0);
+  ok(we.tok === 1 && st.log.some(e => e.t === 'rule' && e.what === 'glasswall'), '전개 — 아군이 맞을 때 번호 하나로 피해 −2');
+  st.chapter = 2; we.tok = 2; ko.power = 1; we.power = 5; we.flags.entered = {}; D.BOOK.we.form({ data, st }, we, 2);
+  ok(ko.power === 5 && we.tok === 0, '결말 — 남은 번호마다 가장 약한 아군 힘 +2');
+}
+{ /* 신곡 — 죄 · 연옥 · 천국 */
+  const st = rig(['divine_comedy'], ['sunzi']);
+  const sz = put(st, 'foe', 'sunzi', 0); sz.power = 30; const dc = put(st, 'me', 'divine_comedy', 0);
+  ok(sz.flags.sin === 1, '발단 — 칠 때 표적에 죄 하나');
+  for (let i = 0; i < 3; i++) { sz.power = 30; hit(st, 'me', 0, 0); } ok(sz.flags.sin === 3, '죄는 셋까지');
+  sz.power = 20; D.BOOK.divine_comedy.chapterEnd({ data, st }, dc); ok(sz.power === 17, '장이 끝날 때 죄만큼 힘을 잃는다');
+  st.chapter = 1; dc.power = 7; for (let i = 0; i < 4; i++) start(st, 'me'); ok(dc.tok === 3 && dc.power === 10, '전개 — 내 턴마다 힘 +1, 셋까지');
+  st.chapter = 2; dc.power = 4; dc.flags.entered = {}; D.BOOK.divine_comedy.form({ data, st }, dc, 2); ok(dc.power === 5, '결말 — 아군 모두 힘 +1');
+}
+{ /* 별의 전령 — 관측 */
+  const st = rig(['sidereus_nuncius'], ['chunhyang', 'sunzi']);
+  const ch = put(st, 'foe', 'chunhyang', 1), sz = put(st, 'foe', 'sunzi', 2); ch.power = 10; sz.power = 5;
+  const sn = put(st, 'me', 'sidereus_nuncius', 0); ok(ch.flags.observed && !sz.flags.observed, '발단에 들 때 가장 센 상대 책을 관측');
+  const h = { target: ch, ignoreGuard: false }; D.BOOK.sidereus_nuncius.allyStrike({ data, st }, sn, h); ok(h.ignoreGuard, '관측된 책은 아군의 치기에 방패가 없다');
+  st.chapter = 1; start(st, 'me'); ok(sz.flags.observed, '전개 — 내 턴마다 아직 관측 안 된 가장 센 상대 책을 관측');
+  st.chapter = 2; sn.power = 4; sn.flags.entered = {}; D.BOOK.sidereus_nuncius.form({ data, st }, sn, 2); ok(sn.power === 4 + 2 * 2, '결말 — 관측된 상대 책마다 힘 +2');
+}
 /* ── 자동 넘기기 — 할 수 있는 것이 없으면 넘긴다 ── */
 {
   const st = rig(['kosmos'], []);

@@ -6,9 +6,9 @@
   "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
   "hair": ["short_crop", "bob", "ponytail", "long_straight", "long_wavy", "updo_bun", "braids", "voluminous"],
   "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped", "flight_suit"],
-  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages", "lab_notes", "fur_velvet", "logbook_brass", "clippings", "petal_script", "gilt_invitations", "gazette_columns", "blueprint_sheets", "sealed_dispatches", "specimen_plates", "challenge_letters", "brick_storybook", "governess_diary", "split_casebook", "ledger_coins"],
-  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "towering_lean", "skyward_gaze", "floating_drift", "veiled_glance", "tipping_hat", "pact_reach", "porthole_gaze", "tale_gesture", "cloud_recline", "recoil_reach", "mischief_leap", "dock_reach", "candle_deduce", "assembly_rise", "throne_lean", "specimen_sketch", "lunge_salute", "road_skip", "wind_shawl", "potion_toast", "coin_toss"],
-  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "sea_sand", "teal_silver", "forest_red", "gold_void", "violet_snow", "noir_ivory", "ash_ember", "tide_ink", "deep_pearl", "lamp_indigo", "lotus_cloud", "drowned_green", "moon_moss", "champagne_green", "gaslight_umber", "factory_steel", "medici_crimson", "volcanic_teal", "musketeer_azure", "emerald_brick", "heather_slate", "fog_violet", "brine_brass"],
+  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages", "lab_notes", "fur_velvet", "logbook_brass", "clippings", "petal_script", "gilt_invitations", "gazette_columns", "blueprint_sheets", "sealed_dispatches", "specimen_plates", "challenge_letters", "brick_storybook", "governess_diary", "split_casebook", "ledger_coins", "prophecy_tartan", "testimony_folios", "glass_timetable", "canto_scrolls", "lens_sketches"],
+  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "towering_lean", "skyward_gaze", "floating_drift", "veiled_glance", "tipping_hat", "pact_reach", "porthole_gaze", "tale_gesture", "cloud_recline", "recoil_reach", "mischief_leap", "dock_reach", "candle_deduce", "assembly_rise", "throne_lean", "specimen_sketch", "lunge_salute", "road_skip", "wind_shawl", "potion_toast", "coin_toss", "dagger_reach", "moonlit_gem", "ranks_halt", "lantern_descent", "telescope_sight"],
+  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "sea_sand", "teal_silver", "forest_red", "gold_void", "violet_snow", "noir_ivory", "ash_ember", "tide_ink", "deep_pearl", "lamp_indigo", "lotus_cloud", "drowned_green", "moon_moss", "champagne_green", "gaslight_umber", "factory_steel", "medici_crimson", "volcanic_teal", "musketeer_azure", "emerald_brick", "heather_slate", "fog_violet", "brine_brass", "heath_crown", "moon_saffron", "glass_verdant", "inferno_starlight", "lunar_brass"],
   "face_shape": ["oval", "round", "heart", "long", "square_soft", "diamond"],
   "eyes": ["almond_wide", "round_large", "narrow_upturned", "droopy_soft", "deep_set", "monolid_long"],
   "brows": ["straight_thick", "arched_thin", "soft_round", "angled_sharp", "low_heavy"],
@@ -3229,6 +3229,506 @@
     "변 부자에게 빌린 만 냥",
     "과일과 말총의 사재기",
     "바다에 던진 은"
+   ]
+  },
+  {
+   "key": "macbeth",
+   "title": "맥베스",
+   "author": "윌리엄 셰익스피어",
+   "author_death": 1616,
+   "abroad_protected": false,
+   "source_scope": "『맥베스』(1606) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "황야의 세 자매가 던진 예언 한 마디에 왕관으로 손을 뻗고, 그 손에 묻은 피를 끝내 씻어 내지 못하는 이",
+   "voice": {
+    "발단": "장차 왕이 되리라 — 황야의 세 자매가 그렇게 말했어요.",
+    "전개": "피에 이만큼 발을 담갔으니, 돌아가느니 건너가는 편이 낫죠.",
+    "결말": "꺼져라, 짧은 촛불아. 인생은 걸어 다니는 그림자일 뿐."
+   },
+   "desire": "예언된 왕관을 제 손으로 쥐는 것",
+   "conflict": "야망 대 양심",
+   "symbols": [
+    "왕관 봉인 반지",
+    "황야의 솥",
+    "움직이는 버넘 숲"
+   ],
+   "arc": {
+    "question": "예언은 운명인가, 유혹인가",
+    "conflict": "왕을 죽여 왕관을 쥐지만, 의심이 피를 부르고 피가 다시 의심을 부른다",
+    "answer": "스스로 이루려 한 예언은 끝내 스스로를 삼킨다"
+   },
+   "genre": "비극",
+   "era": "11세기 스코틀랜드(1606년 극)",
+   "region": "스코틀랜드 고지대 — 천둥 치는 황야 → 인버네스 성 → 던시네인",
+   "place": "a storm-lashed Scottish highland heath with a ruined standing stone under low thunderclouds",
+   "form_material": "왕관 봉인이 찍힌 예언 책장을 엮은 타탄 망토 — 끝단이 검붉게 물든",
+   "binding": "hardcover",
+   "ethnicity": "European",
+   "silhouette": {
+    "body": "tall_statuesque",
+    "hair": "long_wavy",
+    "garment": "cloak_wrapped",
+    "material": "prophecy_tartan",
+    "pose": "dagger_reach",
+    "palette": "heath_crown"
+   },
+   "face": {
+    "face_shape": "diamond",
+    "eyes": "deep_set",
+    "brows": "angled_sharp",
+    "nose": "straight_narrow",
+    "lips": "thin_long"
+   },
+   "rule": {
+    "principle": "예언이 왕관을 약속하고 피가 피를 부른다 — 예언을 다 쓰면 몰락한다",
+    "forms": {
+     "발단": "들어올 때 예언 셋을 받는다 — 황야의 세 자매",
+     "전개": "칠 때 예언 하나를 써 피해 +2, 그 치기로 상대 책을 닫으면 힘 +2 — 피가 피를 부른다",
+     "결말": "맞을 때 예언 하나를 써 그 피해를 막는다 — 예언이 없으면 맞을 때마다 피해 +1"
+    },
+    "counter": "예언은 셋뿐이다 — 전개에 다 쓰면 결말이 무르다. 결말엔 여러 책으로 여러 번 쳐서 남은 예언을 벗긴다"
+   },
+   "forms": {
+    "발단": {
+     "look": "천둥 치는 황야의 장군 — 빗물에 젖은 타탄 망토, 사슬 갑옷 어깨, 예언을 새긴 장교 띠",
+     "role": "정찰",
+     "pose": "황야의 바람을 맞으며 한 손을 들어 안개 속 세 그림자를 가리키는 자세",
+     "expr": "curious"
+    },
+    "전개": {
+     "look": "왕을 죽인 밤 — 촛불 빛에 젖은 왕관 봉인 망토, 풀어 헤친 머리, 손끝에 번진 검붉은 얼룩",
+     "role": "공격",
+     "pose": "허공에 떠오른 단검을 향해 한 손을 뻗고 다른 손은 가슴을 움켜쥔 자세",
+     "expr": "cold_smile"
+    },
+    "결말": {
+     "look": "던시네인의 왕 — 무거운 왕관과 갑옷 위에 찢긴 타탄 망토, 잠 못 든 눈",
+     "role": "버티기",
+     "pose": "성벽 위에서 칼끝을 돌바닥에 꽂고 서서 숲이 다가오는 쪽을 노려보는 자세",
+     "expr": "determined"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "천둥 치는 황야, 돌무더기 곁에서 끓어오르는 솥과 비스듬히 쏟아지는 빗줄기",
+     "one_figure": true,
+     "particles": "rain"
+    },
+    "전개": {
+     "scene": "촛불 하나 켜진 인버네스 성의 어두운 복도, 허공에 떠서 빛나는 단검",
+     "one_figure": true,
+     "particles": "embers"
+    },
+    "결말": {
+     "scene": "안개 낀 새벽, 나뭇가지와 잎으로 뒤덮인 숲 자체가 던시네인 성벽 쪽으로 밀려오는 광경",
+     "one_figure": true,
+     "particles": "leaves"
+    }
+   },
+   "scene_cards": [
+    "세 자매의 예언",
+    "씻기지 않는 손",
+    "버넘 숲"
+   ]
+  },
+  {
+   "key": "moonstone",
+   "title": "월장석",
+   "author": "윌키 콜린스",
+   "author_death": 1889,
+   "abroad_protected": false,
+   "source_scope": "『월장석』(1868) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "인도 신전에서 빼앗긴 노란 다이아몬드를 쫓아, 여러 사람의 증언을 한 장씩 이어 붙여 진실에 닿는 이",
+   "voice": {
+    "발단": "생일 선물이 저주가 될 줄은 아무도 몰랐죠.",
+    "전개": "다들 무언가를 숨겨요. 그래서 다들 증언해야 해요.",
+    "결말": "그날 밤을 그대로 다시 걸어 보면 — 보석이 어디로 갔는지 보여요."
+   },
+   "desire": "사라진 보석의 길을 증언으로 다시 잇는 것",
+   "conflict": "체면 대 진실",
+   "symbols": [
+    "달빛을 품은 노란 다이아몬드",
+    "여러 필체의 증언 원고",
+    "초승달 문양"
+   ],
+   "arc": {
+    "question": "보석을 가져간 손은 누구의 것인가",
+    "conflict": "생일 밤 사라진 월장석을 두고 저택 사람들의 증언이 엇갈린다",
+    "answer": "범인은 잠든 채 걸었던 손 — 진실은 여러 목소리를 이어야 드러난다"
+   },
+   "genre": "추리",
+   "era": "1840년대 빅토리아 초기(1868년 작)",
+   "region": "인도 세링가파탐 → 요크셔 해안의 시골 저택 → 런던",
+   "place": "a Victorian country-house drawing room on the Yorkshire coast at night, moonlight falling through tall windows",
+   "form_material": "여러 필체의 증언 원고를 겹쳐 꿰맨 드레스 — 가슴께에 달빛 다이아몬드",
+   "binding": "hardcover",
+   "ethnicity": "South Asian",
+   "silhouette": {
+    "body": "curvy",
+    "hair": "long_straight",
+    "garment": "layered_skirt",
+    "material": "testimony_folios",
+    "pose": "moonlit_gem",
+    "palette": "moon_saffron"
+   },
+   "face": {
+    "face_shape": "oval",
+    "eyes": "droopy_soft",
+    "brows": "straight_thick",
+    "nose": "small_button",
+    "lips": "heart_full"
+   },
+   "rule": {
+    "principle": "증언을 한 장씩 이어 붙이면 보석의 길이 드러난다",
+    "forms": {
+     "발단": "내 턴마다 증언 +1, 셋까지 — 저택 사람들이 차례로 말한다",
+     "전개": "칠 때 표적이 그 폼의 기본보다 높은 힘(덧힘)이 있으면 1을 가져온다 — 보석은 손을 옮겨 다닌다",
+     "결말": "결말에 들 때 증언마다 센 상대 책부터 하나씩 힘 −2 — 증언이 맞춰진다"
+    },
+    "counter": "증언은 발단에만 모인다 — 발단에 닫거나 서둘러 넘기면 결말이 약하다. 덧힘을 쌓지 않으면 전개에 가져갈 것이 없다"
+   },
+   "forms": {
+    "발단": {
+     "look": "생일 밤의 아가씨 — 촛불 빛 흰 드레스의 겹겹 치마, 가슴께에 노랗게 빛나는 다이아몬드",
+     "role": "지원",
+     "pose": "달빛 드는 창가에서 목걸이의 보석을 손바닥에 올려 비춰 보는 자세",
+     "expr": "gentle"
+    },
+    "전개": {
+     "look": "증언을 모으는 이 — 여러 필체의 원고를 겹친 외투 드레스, 손에 든 놋쇠 촛대",
+     "role": "정찰",
+     "pose": "어두운 복도에서 촛대를 낮게 들고 문틈의 물감 자국을 살피는 자세",
+     "expr": "focused"
+    },
+    "결말": {
+     "look": "몽유의 재연 — 풀어 헤친 머리, 물감 묻은 잠옷 자락, 반쯤 감긴 눈",
+     "role": "교란",
+     "pose": "잠든 듯 눈을 반쯤 감고 한 손을 앞으로 내민 채 천천히 걸어 나오는 자세",
+     "expr": "sleepy"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "어두운 인도 신전 안, 달의 신상 이마에서 노랗게 빛나는 다이아몬드",
+     "one_figure": true,
+     "particles": "stars"
+    },
+    "전개": {
+     "scene": "요크셔 해안의 떨리는 모래 늪, 물결 없이 천천히 빨려 드는 모래와 가라앉는 작은 상자",
+     "one_figure": true,
+     "particles": "mist"
+    },
+    "결말": {
+     "scene": "한밤의 저택 응접실, 열린 인도풍 장식장과 바닥에 떨어진 물감 묻은 잠옷",
+     "one_figure": true,
+     "particles": "dust"
+    }
+   },
+   "scene_cards": [
+    "세링가파탐의 저주",
+    "떨리는 모래 늪",
+    "물감 묻은 잠옷"
+   ]
+  },
+  {
+   "key": "we",
+   "title": "우리들",
+   "author": "예브게니 자먀찐",
+   "author_death": 1937,
+   "abroad_protected": false,
+   "source_scope": "『우리들』(1920~1921 집필) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "유리로 된 도시에서 번호로 불리며 시간표대로 살다가, 녹색 벽 너머의 바람을 처음 알아 버린 이",
+   "voice": {
+    "발단": "우리는 모두 같은 시각에 일어나 같은 박자로 숟가락을 들어요. 완벽하죠.",
+    "전개": "벽 너머에서 무언가가 불러요. 저 숲이요.",
+    "결말": "수술이면 상상을 떼어 낼 수 있대요. 그래도 — 벽은 이미 갈라졌어요."
+   },
+   "desire": "완벽한 질서 속에서도 자기만의 마음을 지키는 것",
+   "conflict": "질서 대 자유",
+   "symbols": [
+    "가슴의 금속 번호판",
+    "시간율법 표",
+    "녹색 벽"
+   ],
+   "arc": {
+    "question": "완벽한 질서 속에서 사람은 행복할 수 있는가",
+    "conflict": "번호의 삶에 금이 가고, 녹색 벽 너머에서 반란이 시작된다",
+    "answer": "상상을 떼어 내면 질서는 지켜지지만, 그때 사람은 사라진다"
+   },
+   "genre": "SF",
+   "era": "먼 미래 — 단일국(1920년 작)",
+   "region": "유리로 지은 단일국 → 녹색 벽 너머의 숲",
+   "place": "a futurist city of transparent glass apartment blocks and geometric avenues under a pale even sky",
+   "form_material": "번호와 시간표가 새겨진 투명한 유리판 책장을 이은 제복",
+   "binding": "hardcover",
+   "ethnicity": "Central Asian",
+   "silhouette": {
+    "body": "athletic",
+    "hair": "short_crop",
+    "garment": "flight_suit",
+    "material": "glass_timetable",
+    "pose": "ranks_halt",
+    "palette": "glass_verdant"
+   },
+   "face": {
+    "face_shape": "square_soft",
+    "eyes": "monolid_long",
+    "brows": "arched_thin",
+    "nose": "upturned",
+    "lips": "small_bow"
+   },
+   "rule": {
+    "principle": "번호의 질서가 막아 주지만, 벽이 무너지면 그 힘이 풀려난다",
+    "forms": {
+     "발단": "들어올 때 판 위의 아군 책마다(자신 포함) 번호 하나",
+     "전개": "아군 책이 맞을 때 번호 하나를 써 그 피해 −2 — 유리 벽이 막는다",
+     "결말": "결말에 들 때 남은 번호마다 가장 약한 아군 힘 +2 — 녹색 벽이 무너진다"
+    },
+    "counter": "번호는 들어올 때 정해진다 — 판이 비었을 때 들어오면 적다. 전개에 자주 쳐서 번호를 미리 쓰게 하면 결말이 약하다"
+   },
+   "forms": {
+    "발단": {
+     "look": "번호로 불리는 시민 — 회청색 유니파 작업복, 가슴의 금속 번호판, 투명한 유리 견장",
+     "role": "버티기",
+     "pose": "줄을 맞춰 걷다 멈춘 듯 두 팔을 몸에 붙이고 반듯하게 선 자세",
+     "expr": "calm"
+    },
+    "전개": {
+     "look": "벽 너머를 본 이 — 제복 위에 두른 숲빛 초록 스카프, 금 간 유리 견장",
+     "role": "지원",
+     "pose": "유리 벽에 한 손바닥을 대고 그 너머 숲을 바라보는 자세",
+     "expr": "wistful"
+    },
+    "결말": {
+     "look": "녹색 벽이 무너진 날 — 깨진 유리판이 흩날리는 찢긴 제복, 바람에 날리는 머리",
+     "role": "돌파",
+     "pose": "깨진 유리 사이로 한 발 내디디며 두 팔을 활짝 벌리는 자세",
+     "expr": "relieved"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "투명한 유리 집들이 끝없이 늘어선 도시, 자로 잰 듯 곧은 텅 빈 대로",
+     "one_figure": true,
+     "particles": "dust"
+    },
+    "전개": {
+     "scene": "녹색 벽의 갈라진 틈으로 쏟아져 드는 숲의 초록 빛과 바람",
+     "one_figure": true,
+     "particles": "leaves"
+    },
+    "결말": {
+     "scene": "산산조각 난 유리 벽 위로 쏟아지는 햇빛과 흩날리는 유리 파편",
+     "one_figure": true,
+     "particles": "sparks"
+    }
+   },
+   "scene_cards": [
+    "시간율법 표",
+    "유리 집의 커튼 시간",
+    "녹색 벽의 틈"
+   ]
+  },
+  {
+   "key": "divine_comedy",
+   "title": "신곡",
+   "author": "단테 알리기에리",
+   "author_death": 1321,
+   "abroad_protected": false,
+   "source_scope": "『신곡』 지옥 · 연옥 · 천국(1308~1321) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "인생의 한가운데 어두운 숲에서 길을 잃고, 지옥의 아홉 원을 내려가 연옥 산을 올라 별빛 천국에 닿는 순례자",
+   "voice": {
+    "발단": "여기 들어오는 자여, 모든 희망을 버려라 — 문에 그렇게 적혀 있었어요.",
+    "전개": "한 층 오를 때마다 짐이 하나씩 가벼워져요.",
+    "결말": "해와 다른 별들을 움직이는 사랑 — 그것을 보았어요."
+   },
+   "desire": "길 잃은 영혼이 별에 닿는 것",
+   "conflict": "죄 대 구원",
+   "symbols": [
+    "지옥문의 글귀",
+    "연옥 산의 일곱 둘레",
+    "하얀 천상의 장미"
+   ],
+   "arc": {
+    "question": "길 잃은 사람은 어떻게 별에 닿는가",
+    "conflict": "지옥에서 죄를 하나씩 보고, 연옥 산을 오르며 죄를 벗는다",
+    "answer": "해와 별을 움직이는 사랑이 영혼도 끌어올린다"
+   },
+   "genre": "사상",
+   "era": "1300년 부활절 주간(14세기 초 작)",
+   "region": "어두운 숲 → 지옥의 아홉 원 → 연옥 산 → 천국의 하늘",
+   "place": "the gate of a vast underworld abyss carved into dark rock, ringed terraces descending into a red glow",
+   "form_material": "세 편의 시행을 새긴 양피지 두루마리를 겹겹이 두른 순례자의 겉옷 — 아래는 불빛, 위는 별빛",
+   "binding": "hardcover",
+   "ethnicity": "Mediterranean",
+   "silhouette": {
+    "body": "slender",
+    "hair": "braids",
+    "garment": "robe_overlap",
+    "material": "canto_scrolls",
+    "pose": "lantern_descent",
+    "palette": "inferno_starlight"
+   },
+   "face": {
+    "face_shape": "long",
+    "eyes": "almond_wide",
+    "brows": "soft_round",
+    "nose": "aquiline",
+    "lips": "full_wide"
+   },
+   "rule": {
+    "principle": "죄를 보고, 죄를 벗고, 빛으로 오른다",
+    "forms": {
+     "발단": "칠 때 표적에 죄 하나(셋까지) — 죄 붙은 상대 책은 장이 끝날 때 죄만큼 힘을 잃는다",
+     "전개": "내 턴이 시작될 때 힘 +1, 셋까지 — 연옥 산을 한 둘레씩 오른다",
+     "결말": "결말에 들 때 아군 책 모두 힘 +1 — 천국의 빛"
+    },
+    "counter": "죄는 장이 끝날 때만 문다 — 그 전에 이 책을 닫으면 끝난다. 전개는 천천히 오른다 — 일찍 쳐서 오르기 전에 깎는다"
+   },
+   "forms": {
+    "발단": {
+     "look": "지옥을 내려가는 이 — 그을린 양피지 겉옷, 붉은 불빛이 스민 소매, 손에 든 작은 등불",
+     "role": "교란",
+     "pose": "벼랑 끝에서 등불을 낮게 들고 아래로 이어진 원들을 내려다보는 자세",
+     "expr": "serious"
+    },
+    "전개": {
+     "look": "연옥 산을 오르는 이 — 이마의 일곱 표식이 하나씩 지워지는 회청빛 겉옷, 맨발",
+     "role": "버티기",
+     "pose": "가파른 돌계단을 한 손으로 짚고 위를 올려다보며 한 걸음 오르는 자세",
+     "expr": "pensive"
+    },
+    "결말": {
+     "look": "천국의 빛 — 별빛이 수놓인 흰 겉옷, 머리 위에 떠 있는 빛의 고리",
+     "role": "지원",
+     "pose": "빛 속에 떠올라 두 팔을 위로 펼치고 고개를 젖힌 자세",
+     "expr": "soft_smile"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "바위에 새겨진 거대한 지옥문, 그 아래로 소용돌이치는 붉은 불길의 원들",
+     "one_figure": true,
+     "particles": "embers"
+    },
+    "전개": {
+     "scene": "새벽빛 아래 바다 한가운데 솟은 연옥 산과 구름 위로 이어진 돌계단",
+     "one_figure": true,
+     "particles": "mist"
+    },
+    "결말": {
+     "scene": "끝없이 펼쳐진 흰 장미 모양의 빛, 그 꽃잎마다 반짝이는 별",
+     "one_figure": true,
+     "particles": "stars"
+    }
+   },
+   "scene_cards": [
+    "어두운 숲",
+    "일곱 둘레",
+    "천상의 장미"
+   ]
+  },
+  {
+   "key": "sidereus_nuncius",
+   "title": "별의 전령",
+   "author": "갈릴레오 갈릴레이",
+   "author_death": 1642,
+   "abroad_protected": false,
+   "source_scope": "『시데레우스 눈치우스(별의 전령)』(1610) 전체",
+   "quote_source": "직접 옮김",
+   "persona": "손수 깎은 망원경 하나로 달의 산과 은하수의 별과 목성의 네 달을 처음 본 이",
+   "voice": {
+    "발단": "달은 매끈한 거울이 아니에요. 산과 골짜기가 있어요.",
+    "전개": "맨눈엔 보이지 않던 별이 — 셀 수도 없이 많아요.",
+    "결말": "목성 곁의 네 별이 밤마다 자리를 바꿔요. 저건 목성을 도는 달이에요."
+   },
+   "desire": "하늘을 제 눈으로 다시 보는 것",
+   "conflict": "권위 대 관측",
+   "symbols": [
+    "놋쇠 망원경",
+    "달의 그림자 스케치",
+    "목성 곁의 네 별"
+   ],
+   "arc": {
+    "question": "하늘은 정말 완전하고 변하지 않는가",
+    "conflict": "망원경이 달의 산과 수많은 별과 목성의 달을 차례로 보여 준다",
+    "answer": "본 것을 그대로 적으면 하늘의 질서가 다시 쓰인다"
+   },
+   "genre": "과학",
+   "era": "1610년 베네치아 · 파도바",
+   "region": "베네치아 종탑 → 파도바의 지붕 위 관측대",
+   "place": "a rooftop observatory above Renaissance Padua at night, a long brass telescope pointed at a bright moon",
+   "form_material": "달 스케치와 별 목록을 적은 관측 노트 책장을 놋쇠 경통 띠로 묶은 겉옷",
+   "binding": "hardcover",
+   "ethnicity": "Japanese",
+   "silhouette": {
+    "body": "petite",
+    "hair": "ponytail",
+    "garment": "coat_trousers",
+    "material": "lens_sketches",
+    "pose": "telescope_sight",
+    "palette": "lunar_brass"
+   },
+   "face": {
+    "face_shape": "round",
+    "eyes": "narrow_upturned",
+    "brows": "low_heavy",
+    "nose": "straight_narrow",
+    "lips": "wide_smile"
+   },
+   "rule": {
+    "principle": "관측하면 보이고, 보이면 숨지 못한다",
+    "forms": {
+     "발단": "들어올 때 가장 센 상대 책을 관측 — 관측된 책은 아군의 치기에 방패가 없다",
+     "전개": "내 턴마다 아직 관측 안 된 가장 센 상대 책을 관측",
+     "결말": "결말에 들 때 판 위의 관측된 상대 책마다 힘 +2, 넷까지 — 목성의 네 달"
+    },
+    "counter": "관측은 판 위의 책에만 붙는다 — 늦게 내면 피한다. 방패에 기대는 책은 이 책을 먼저 닫는다"
+   },
+   "forms": {
+    "발단": {
+     "look": "망원경을 깎는 이 — 렌즈 가루가 묻은 작업 코트와 바지, 달 스케치 책장을 꽂은 소매",
+     "role": "정찰",
+     "pose": "놋쇠 망원경을 한쪽 눈에 대고 달을 겨누는 자세",
+     "expr": "focused"
+    },
+    "전개": {
+     "look": "별을 세는 이 — 별 목록 책장이 겹친 짙은 남색 외투, 깃에 꽂은 깃펜",
+     "role": "교란",
+     "pose": "지붕 난간에 기대 고개를 젖히고 깃펜 끝으로 하늘의 별을 짚어 세는 자세",
+     "expr": "surprised"
+    },
+    "결말": {
+     "look": "메디치의 별 — 목성과 네 달이 도는 놋쇠 궤도 장식, 별 목록이 빛나는 망토",
+     "role": "공격",
+     "pose": "망원경을 칼처럼 하늘로 치켜들고 한 발 내딛는 자세",
+     "expr": "proud"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "망원경 렌즈 너머로 가까이 보이는 달 표면, 빛과 그림자로 갈린 산과 분화구",
+     "one_figure": true,
+     "particles": "dust"
+    },
+    "전개": {
+     "scene": "맨눈엔 희뿌옇던 은하수가 수많은 별로 쏟아지는 밤하늘",
+     "one_figure": true,
+     "particles": "stars"
+    },
+    "결말": {
+     "scene": "검은 하늘에서 목성 곁에 일렬로 선 네 개의 빛과 그 궤적",
+     "one_figure": true,
+     "particles": "sparks"
+    }
+   },
+   "scene_cards": [
+    "달의 산",
+    "수많은 별",
+    "메디치의 별"
    ]
   }
  ]

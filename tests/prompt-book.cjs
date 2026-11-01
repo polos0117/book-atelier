@@ -295,8 +295,7 @@ assert.equal(Number(py[1]), S.KOREA_LAST_EXPIRED_DEATH, '보호 기준 해가 �
     assert(!/[가-힣]/.test(txt.replace(/"[^"]*"/g, '').replace(/«[^»]*»/g, '').replace(/STYLE: [^\n]*/, '')), w + ' 따옴표 밖은 영어');
     longestV2 = Math.max(longestV2, P.words(txt)); v2n++;
   }
-  /* 뒷모습 돌아보기 줄(손의 화면 쪽 · 팔 줄, 2026-11-01)로 45낱말쯤 늘어 800 → 900 (game · pkm 은 1200) */
-  assert(longestV2 <= 900, '가장 긴 버전2 일상컷이 900 낱말을 넘는다: ' + longestV2);
+  assert(longestV2 <= 800, '가장 긴 버전2 일상컷이 800 낱말을 넘는다: ' + longestV2);
   /* 시대 · 이야기 세계 · 각색 줄 — 버전1 과 같은 자리 */
   const b0 = design.books[0], base = { treeV: 2, ofam: 'everyday', item: 'jeans_tee', posture: 'stand', support: 'none', frame: 'waist_up', body: 'front', head: 'with_body', camera: 'eye', right: 'hip', left: 'down', gaze: 'camera' };
   const era = cas2(b0, { ...base, era: 'book', place: 'lib_reading_room' });

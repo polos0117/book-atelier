@@ -65,6 +65,11 @@
   "wizard_of_oz": {"max": 3, "need": 2, "home": 3},
   "jane_eyre": {"mend": 1, "max": 3},
   "jekyll_hyde": {"max": 3, "hyde": 2, "toll": 1},
-  "heo_saeng": {"loan": 3, "steal": 2, "sea": 2}
+  "heo_saeng": {"loan": 3, "steal": 2, "sea": 2},
+  "macbeth": {"prophecy": 3, "regicide": 2, "blood": 2, "fall": 1},
+  "moonstone": {"max": 3, "steal": 1, "piece": 2},
+  "we": {"shield": 2, "free": 2},
+  "divine_comedy": {"max": 3, "climb": 3, "light": 1},
+  "sidereus_nuncius": {"orbit": 2, "max": 4}
  }
 }

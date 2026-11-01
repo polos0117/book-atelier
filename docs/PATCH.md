@@ -7,6 +7,15 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 책 다섯 권 더 — 맥베스·월장석·우리들·신곡·별의 전령
+- data/book-design.json — 여덟 번째 다섯 권 설계표: 비극·추리·SF·사상·과학에 네 번째 책(이제 열 장르에 네 권씩, 마흔 권). 지역 처음 넷 — 스코틀랜드 고지대·인도 신전과 요크셔 해안·유리 미래 도시·저승. 정한 말 열다섯(재료 prophecy_tartan·testimony_folios·glass_timetable·canto_scrolls·lens_sketches, 자세 dagger_reach·moonlit_gem·ranks_halt·lantern_descent·telescope_sight, 팔레트 heath_crown·moon_saffron·glass_verdant·inferno_starlight·lunar_brass). 폼 표정 단계마다 다르게, 얼굴은 어느 책과도 2+ 다르게, 폼 지시문 충돌 0(상징이 개방 장면과 겹친 것 · 복식 구조 말이 빠진 것 고침). 다섯 권 모두 한국·해외 보호가 끝난 책. 사용자 「추천 조합으로 진행해줘」
+- lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯
+- lib/duel.js — `BOOK` 에 효과 다섯: 맥베스 예언 셋·칠 때 예언으로 +2·닫으면 힘 +2·결말에 예언으로 피해를 막고 없으면 +1, 월장석 증언(셋까지)·칠 때 표적 덧힘 1 을 가져옴·결말에 증언마다 센 상대 −2, 우리들 번호(판 위 아군 수)·전개에 아군 피해 −2·결말에 남은 번호마다 약한 아군 +2, 신곡 칠 때 죄(셋까지)·장 끝에 죄만큼 깎음·전개 힘 +1(셋까지)·결말 아군 모두 +1, 별의 전령 관측(방패 없음)·전개 내 턴마다 관측·결말 관측마다 +2(넷까지). 새 갈고리는 없다
+- data/duel.json — 새 다섯 권의 수. 3,000판에서 마흔 권 모두 43~59%, 선공 45.5%(보정 +5 그대로). 신곡은 처음 61.0% → 천국의 빛 +2 → +1(56.7%)
+- lib/words.js · lib/duel-ui.js — 규칙 기록 말 열여섯, 판 위 깃발 「죄 n」·「관측」. 화면들의 words.js ?v=22, duel.js ?v=6, duel-ui.js ?v=5, book-frame.js ?v=5, prompt-spec.js ?v=25
+- tests/duel.cjs — 새 다섯 권 규칙 확인 21가지. tests/prompt-book.cjs — 버전2 일상컷 낱말 한도를 900 → 800 으로 되돌림(뒷모습 팔 줄을 뺀 뒤 가장 긴 것 785)
+- docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md · tests/casual-plan.cjs — 4절 표에 다섯 줄, 5절 균형을 마흔 권으로 다시, 9-7절 여덟 번째 다섯 권, "서른다섯 권" → "마흔 권"
+
 ## 2026-11-01 · claude · 「난간에서 돌아보기」 빼기 — 뒷모습으로 돌아보며 얼굴 · 머리에 손 안 대기
 - data/casual-tree-v2.json — 자세 추천 rail_lookback(뒤 3/4 · 어깨 너머 · 오른손 난간 · 왼손 머리 넘기기)을 뺐다. 좌우 · 팔 줄을 적은 시험 세 장도 사용자가 「아니 지금도 이상해. 그냥 지금 구도는 갈래에서 없애줘」
 - lib/casual-tree-v2.js(공용) — 몸이 뒤쪽(far)이고 머리가 어깨 너머(look_back)면 얼굴 · 머리에 대는 손(zone face)을 못 고른다(why lookback — 화면 · 랜덤 · 계획기가 같이 막는다). backLook 은 팔 줄 없이 왼쪽 어깨 · 손의 화면 쪽만. 예전 기록의 그 손은 다시 검사(repair)가 비운다

@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 표정 「윙크」 더하기
+- lib/prompt-spec.js — EXPRESSION_OPTIONS · EXPRESSION_DETAIL 에 wink(한쪽 눈 감은 윙크 · 입꼬리 한쪽)를 game 표와 같은 글로 더했다. 일상컷 트리 버전2 표정표(data/casual-tree-v2.json)에는 이미 있었다. 사용자 「book 쪽에 윙크 표정 추가해줘」
+- data/book-design.json — 아르센 뤼팽 전개 폼 표정을 playful(윙크가 없어 대신 썼다) → wink 로 되돌렸다
+- prompt.html — prompt-spec.js 캐시 번호 23 → 24
+
 ## 2026-11-01 · claude · 폼 표정 — 발단 · 전개 · 결말 단계마다 다른 기본 표정
 - data/book-design.json — 폼마다 expr(표정 표 열쇠)를 책 성격대로 적었다: 발단 — 이야기가 열리는 호기심 · 평온(curious · calm · playful …), 전개 — 갈등의 결의 · 당혹(determined · surprised · focused …), 결말 — 그 책 결말의 정서(비극은 wistful · exhausted, 해피엔딩은 relieved · gentle · laughing_open). 사용자 「element 작업했던것 중 표정 관련된 내용을 game,book 공방도 공방 성격에 맞게 반영해줘. book 은 발단, 전개, 결말 / game 은 타이틀, 중반, 엔딩의 표정이 다 비슷비슷해보여」
 - lib/prompt-book.js · lib/prompt-spec.js — 표정을 고르지 않으면 EXPRESSION 줄(이어가기 폼은 첨부 그림의 표정을 바꾼다). AGE 줄에서 「soft full cheeks · soft smile」 을 뺐다(첫 폼에 미소가 박혀 다음 폼까지 따라갔다)

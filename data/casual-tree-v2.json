@@ -4720,7 +4720,8 @@
    "editorial": [],
    "bridal": [],
    "retro": [],
-   "adaptation": []
+   "adaptation": [],
+   "halloween": []
   },
   "add": {
    "overalls": [
@@ -4998,6 +4999,17 @@
     "lodge_terrace"
    ],
    "ko": "눈 덮인 테라스에 수영복 · 목욕 차림"
+  },
+  {
+   "outfits": [
+    "halloween"
+   ],
+   "places": [
+    "@spa",
+    "@sports",
+    "@water"
+   ],
+   "ko": "할로윈으로 목욕·운동·물가"
   }
  ],
  "presets": [

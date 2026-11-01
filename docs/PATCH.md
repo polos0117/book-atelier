@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · gpt · 맥베스 그림 등록
+- 맥베스 폼 3장·개방 3장·일상 5장의 생성 설정과 AI 검수 기록을 그림 저장소에 추가했다.
+- data/img.json — 자동 등록 11장을 확인했다.
+- data/art-index.json·data/art-similar.json — 기존 항목을 보존하며 맥베스의 색인과 닮은 그림을 갱신했다.
+
 ## 2026-11-01 · claude · 책 다섯 권 더 — 맥베스·월장석·우리들·신곡·별의 전령
 - data/book-design.json — 여덟 번째 다섯 권 설계표: 비극·추리·SF·사상·과학에 네 번째 책(이제 열 장르에 네 권씩, 마흔 권). 지역 처음 넷 — 스코틀랜드 고지대·인도 신전과 요크셔 해안·유리 미래 도시·저승. 정한 말 열다섯(재료 prophecy_tartan·testimony_folios·glass_timetable·canto_scrolls·lens_sketches, 자세 dagger_reach·moonlit_gem·ranks_halt·lantern_descent·telescope_sight, 팔레트 heath_crown·moon_saffron·glass_verdant·inferno_starlight·lunar_brass). 폼 표정 단계마다 다르게, 얼굴은 어느 책과도 2+ 다르게, 폼 지시문 충돌 0(상징이 개방 장면과 겹친 것 · 복식 구조 말이 빠진 것 고침). 다섯 권 모두 한국·해외 보호가 끝난 책. 사용자 「추천 조합으로 진행해줘」
 - lib/prompt-spec.js · lib/book-frame.js — 새 정한 말의 영어, 책 틀 색 다섯

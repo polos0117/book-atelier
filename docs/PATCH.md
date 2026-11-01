@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · gpt · 허생전 발단·일상1 팔 연결 수정
+- book-atelier-img/img/heo_saeng_begin_literary_fantasy_f.webp — 화면 왼쪽 오른손의 갓끈 동작을 유지하고, 화면 오른쪽 소매에서 이어지는 왼팔·손목·빈손을 복원했다. 얼굴·머리·의상·배경·전신 구도는 유지했다.
+- book-atelier-img/img/heo_saeng_literary_fantasy_f_casual1.webp — 양팔이 각 어깨에서 이어지도록 복원하고 오른손(뒷모습의 화면 오른쪽)으로 등불을 자연스럽게 잡게 했다. 화면 왼쪽 왼팔은 빈손으로 내리며 옛 등불 손을 제거했다.
+- book-atelier-img/records/heo_saeng/repairs/2026-11-01-arms/ — 사용자 지시·수정 전후 해시·생성기 추가 요청과 UI 상태·수정본 검수를 보존했다. 이전 검수에서 누락 팔을 가려진 팔로 판단한 오류를 정정했다. 이전 이미지와 기록은 Git 이력에 남는다.
+- data/art-index.json · data/art-similar.json — 자동 재생성된 실제 썸네일로 대상 두 장의 특징과 전체 닮은 그림 순위를 갱신했다. 나머지 358장 특징은 보존했다. Cargo 없는 환경의 기존 C float32 변환을 쓰고 변경 전 닮은 그림 점수 2880개가 모두 일치함을 확인했다.
+
 ## 2026-11-01 · gpt · 허생전 그림 열한 장 등록
 - book-atelier-img — 발단·전개·결말 폼 셋, 개방 셋, 트리 버전2 일상 다섯을 1024×1536 WebP로 추가했다. 생성기 UI 설정·프롬프트 해시·원본 및 변환 해시·AI 검수 기록을 records/heo_saeng/에 보존했다. 화풍은 literary_fantasy v7, 정본은 발단이다.
 - records/heo_saeng/*-import.json(그림 저장소) — 현대 남산 탑·혼합 건축, 결말의 은 꾸러미 동작, 일상컷 손 좌우·크롭·시대 각색·의상 재료 불일치 등 관찰한 문제를 검수 실패로 기록했다. GPT 작업 규칙대로 임의 재생성 없이 올렸다.

@@ -2850,6 +2850,7 @@
   },
   {
    "key": "jane_eyre",
+   "conflicts_ok": ["sig_open:바람·바람에"],
    "title": "제인 에어",
    "author": "샬럿 브론테",
    "author_death": 1855,

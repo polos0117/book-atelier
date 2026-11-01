@@ -74,4 +74,57 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-'));
 fs.writeFileSync(path.join(dir, 'casual1-ui.json'), JSON.stringify({ book: g.key, storage: { cards: { [g.key]: { scenes: { casual: { cat: 'travel_exploration', ex: 'travel_station', frame: 'face_close', orient: 'looking_down', lens: 'telephoto135' } } } } } }));
 const old = C.oldCuts(dir, g);
 assert(old.length === 1 && old[0].place === 'travel_rural_station' && old[0].n === 1, '예전 기록 → 트리 길');
+/* 버전2(2026-11-01 — 기본) — 서른다섯 권 × 씨앗 둘: 묶음 규칙 · 트리 위 · 기록 · 지시문 */
+for (const f of ['lib/casual-tree-v2.js']) vm.runInContext(read(f), ctx);
+const C2 = ctx.window.AtelierCasualTreeV2, tree2 = JSON.parse(read('data/casual-tree-v2.json')), T2 = C2.make(tree2, tree);
+let n2 = 0;
+for (const g2 of design.books) for (const seed of [1, 2]) {
+  const res = C.plan2(g2, [1, 2, 3, 4, 5], [], { seed });
+  const w = g2.key + ' ' + seed;
+  assert.deepEqual(C.check2(res.cuts, g2), [], w);
+  assert(res.cuts.every(c => c.treeV === 2 && c.preset && !c.act && !c.pose && !c.orient && !c.lens), w + ' 버전2 칸만');
+  assert(res.cuts.some(c => C.requiredType(c) === res.required), w + ' 필수 갈래');
+  assert.equal(new Set(res.cuts.map(c => c.preset)).size, 5, w + ' 자세 추천은 서로 다르게');
+  assert.equal(new Set(res.cuts.map(c => c.frame)).size, 5, w + ' 프레이밍은 서로 다르게');
+  assert.equal(new Set(res.cuts.map(c => c.era)).size, 4, w + ' 시대 넷이 다');
+  assert(!res.cuts.some(c => (C2.use(T2, c.use) || {}).prop === 'signature'), w + ' 책엔 들 알아볼 거리가 없다');
+  assert(res.cuts.filter(c => C2.awkward(T2, c.ofam, c.place).length).length <= 1, w + ' ⚠ 한 장까지');
+  assert(res.cuts.filter(c => C.DRINKS.includes((C2.use(T2, c.use) || {}).prop)).length <= 1, w + ' 마실 것 한 장까지');
+  for (const c of res.cuts) {
+    const plain = x => JSON.parse(JSON.stringify(x));
+    assert.deepEqual(plain(C2.repair(T2, c, g2)), plain({ ...c, treeV: 2 }), w + ' 칸 ' + c.n + ' 다시 검사가 고칠 것이 없다');
+    const rec = C.record(g2, c), sc = rec.storage.cards[g2.key].scenes.casual;
+    assert(sc.treeV === 2 && sc.axes.overall_intensity === 'strong' && sc.axes.skin_exposure === 'bold' && sc.aspect === '2:3', w + ' 기록 · 고정값');
+    assert(rec.prompt.includes('POSTURE: ') && rec.prompt.includes('COMPOSITION: ') && !rec.prompt.includes('Activity:'), w + ' 버전2 지시문');
+  }
+  n2++;
+}
+/* 버전1 컷 위에 버전2 로 더 짠다 — 장소 · 의상 · 프레이밍은 섞어서 견준다(이미 있는 책 일상컷은 다 버전1) */
+const v1first = C.plan(g, [1, 2, 3, 4, 5], [], { seed: 9 }).cuts.map(c => ({ ...c, old: true }));
+const more2 = C.plan2(g, [6, 7, 8], v1first, { seed: 9 });
+assert.deepEqual(C.check2(more2.cuts, g, v1first), [], '버전1 다섯 장 위에 버전2 세 장');
+assert(!more2.cuts.some(c => v1first.some(o => o.place === c.place)), '이미 있는 장소는 피한다');
+/* 책 사이 안 쓴 트리 먼저(2026-11-01, game · element 와 같게) — 장소 · 자세 추천 · 표정을 많이 쓴 것으로 채운 횟수를 주면 안 쓴 값이 훨씬 자주 */
+{
+  const S = ctx.window.AtelierSpec, places = tree.places.map(p => p.key), presets = tree2.presets.map(x => x.key), exprs = S.EXPRESSION_OPTIONS.map(r => r[0]).filter(Boolean);
+  const third = list => new Set(list.filter((k, i) => i % 3 === 0)), fP = third(places), fR = third(presets), fE = third(exprs);
+  const heavy = (all, keep) => Object.fromEntries(all.filter(k => !keep.has(k)).map(k => [k, 12]));
+  const usage = { prop: {}, place: heavy(places, fP), item: {}, preset: heavy(presets, fR), posture: {}, expr: heavy(exprs, fE) };
+  const share = (u, f, set) => { let hit = 0, all = 0; for (const g2 of design.books.slice(0, 10)) for (const seed of [3, 11]) for (const c of C.plan2(g2, [1, 2, 3, 4, 5], [], { seed, usage: u }).cuts) { if (!c[f]) continue; all++; if (set.has(c[f])) hit++; } return hit / all; };
+  for (const [f, set, name] of [['place', fP, '장소'], ['preset', fR, '자세 추천'], ['expr', fE, '표정']]) {
+    const base = share({}, f, set), lean = share(usage, f, set);
+    assert(lean > 0.6 && lean > base * 1.5, name + ' — 안 쓴 값 비율 ' + lean.toFixed(2) + ' (횟수 없이 ' + base.toFixed(2) + ')');
+  }
+  assert.deepEqual(C.plan2(g, [1, 2, 3], [], { seed: 7, usage }).cuts, C.plan2(g, [1, 2, 3], [], { seed: 7, usage }).cuts, '같은 입력 · 씨앗이면 같은 답');
+  const img = path.join(__dirname, '../../book-atelier-img/records');
+  /* 그림 저장소 기록(생성기 꼴 casualN-ui.json — 지금은 몇 권만 있다)의 장소를 다 센다 */
+  if (fs.existsSync(img)) {
+    const u = C.sceneUsage(img, g.key), cnt = Object.values(u.place).reduce((a, b) => a + b, 0);
+    let want = 0;
+    for (const k of fs.readdirSync(img)) { if (k === g.key || !fs.statSync(path.join(img, k)).isDirectory()) continue;
+      for (const f of fs.readdirSync(path.join(img, k)).filter(x => /^casual\d+-ui\.json$/.test(x))) { try { const r = JSON.parse(fs.readFileSync(path.join(img, k, f), 'utf8')); if (r.storage.cards[r.book].scenes.casual.place) want++; } catch (e) {} } }
+    assert.equal(cnt, want, '그림 저장소 기록에서 장소를 센다');
+  }
+}
+console.log(`PASS 일상컷 묶음 계획 버전2: ${design.books.length}권 × 씨앗 둘 ${n2}묶음 규칙 · 트리 위 · 기록 · 지시문 · 버전1 위에 더 짜기 · 책 사이 안 쓴 장소 · 자세 추천 · 표정 먼저`);
 console.log(`PASS 일상컷 묶음 계획: ${design.books.length}권 × 씨앗 셋 ${n}묶음 규칙·기록·고정값 · 필수 갈래 돌리기 · 있는 컷 위에 더 짜기 · 규칙 검사 · 고른 칸 · 예전 기록`);

@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 일상컷 트리 버전2 4단계 — 계획기(기본 버전2) · 지시문 묶음 · 책 사이 안 쓴 값 먼저 · 문서
+- tools/casual-plan.cjs — game 의 계획기 버전2(plan2 · check2 · randomSlot2)를 책 꼴로(상징 · 들 알아볼 거리 없음), 기본이 버전2(--v1 은 예전 길), 기록 읽기 · 묶음 검사도 버전2 를 안다. 다른 책 기록(--usage)에서 장소 · 옷 · 표정 · 자세 추천 · 자세 · 소품을 세어 안 쓴 값 먼저(무게 4, 쓴 값 1/(1+횟수)² — game · element 와 같다). 사용자 「book쪽도 tree2로 옮긴뒤에 같은작업까지 진행해줘」
+- tools/prompt-pack.cjs — 버전2 계획을 받는다(버전2 트리로 검사, 생성기 blankV2 꼴 상태, tree2 로 조립)
+- tests/casual-plan.cjs — 서른다섯 권 × 씨앗 둘 버전2 묶음 규칙 · 기록 · 지시문 · 버전1 위에 더 짜기 · 안 쓴 장소 · 자세 추천 · 표정이 60% 넘게. tests/casual-plan-screen.cjs · tests/prompt-pack-screen.cjs — 버전2 계획이 화면과 같은 지시문
+- IMAGE_RULES.md 2절 「일상컷 트리 버전2」 · docs/IMAGE_AUTOMATION.md 3절 — 버전2 가 기본, --v1 · --usage none 은 쓰지 않는다. 옛 책 일상컷은 생성기 꼴 기록이 없어 셈에 안 들어간다
+
 ## 2026-11-01 · claude · 일상컷 트리 버전2 3단계 — 생성기 화면
 - lib/prompt-ui.js — 새 일상컷 · 버전2 기록은 버전2 칸(시대 → 장소 → 날씨 → 의상 → 옷 → 상징 → 안경 → 자세 추천 → 몸 자세 · 받침 · 구도 · 몸 방향 · 머리 · 카메라 → 오른손 · 왼손 → 소품 동작 → 다리 → 시선 → 표정, 트리 밖 값 🔓 해방, 맞지 않는 칸이면 복사 막기), 버전1 기록은 버전1 칸 그대로 열고 「버전2 로 옮기기」 단추. game 의 화면을 책 꼴로(원작 시대 이름 · 상징)
 - lib/prompt-random.js — 버전2 장면 랜덤(game 과 같다 — 책 이름 · 상징만). lib/words.js — 버전2 화면 말 일흔둘(game 그대로). lib/prompt-spec.js — CASUAL_HAND_WORDS

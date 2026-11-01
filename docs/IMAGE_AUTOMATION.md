@@ -60,7 +60,7 @@ node tools/prompt-pack.cjs init <책> --dir $W/pack --plan $W/plan/plan.json   #
 node tools/prompt-pack.cjs build --dir $W/pack                                  # 자리마다 <자리>-prompt.txt · <자리>-ui.json · INDEX.md
 ```
 
-- 일상컷은 책의 일상컷 트리(`data/casual-tree.json`)로 짠다. 계획기가 묶음 규칙(필수 갈래 · 장소 · 의상 · 구도 돌리기 · 먼/가까운 컷 …, `IMAGE_RULES.md` 2절)을 지킨다.
+- 일상컷은 **트리 버전2**(계획기 기본, `IMAGE_RULES.md` 2절 「일상컷 트리 버전2」)로 짠다 — `--v1` 은 쓰지 않는다. 계획기가 묶음 규칙(필수 갈래 · 장소 · 의상 · 자세 추천 · 먼/가까운 컷 · 네 시대 · 책 사이 안 쓴 장소 · 옷 · 자세 · 표정 먼저 …)을 지킨다. 그림 저장소 기록을 읽어야 하니 `--usage none` 은 쓰지 않는다.
   옛 책은 일상컷 기록이 그림 저장소에 없을 수 있다 — 그러면 이미 있는 컷과의 겹침은 계획기가 못 본다(검수에서 그림끼리 견준다).
   GPT 세션은 계획을 사람에게 보이지 않는다 — 계획기 출력 그대로 간다. 이미 있는 컷의 기록(`--records`)은 겹침 검사에만 쓴다.
 - `settings.json` 은 **비워 둔 채** build 하는 것이 기본이다. 고칠 때만 칸을 채우고, 직접 입력(글 칸 · 표에 없는 값)엔 `why` 를 적는다.

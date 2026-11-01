@@ -18,8 +18,8 @@ const design = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/book-des
     }]]) {
       const g = design.books.find(x => x.key === key), dir = path.join(tmp, key);
       fs.mkdirSync(dir);
-      const res = C.plan(g, [1, 2, 3, 4, 5], [], { seed: 21 });
-      fs.writeFileSync(path.join(dir, 'plan.json'), JSON.stringify({ book: key, seed: 21, required: res.required, slots: [1, 2, 3, 4, 5], cuts: res.cuts }));
+      const res = C.plan2(g, [1, 2, 3, 4, 5], [], { seed: 21 });   // 버전2 계획(기본, 2026-11-01)
+      fs.writeFileSync(path.join(dir, 'plan.json'), JSON.stringify({ book: key, seed: 21, tree: 2, required: res.required, slots: [1, 2, 3, 4, 5], cuts: res.cuts }));
       const set = K.initSettings(g, path.join(dir, 'plan.json'));
       if (edit) edit(set);
       fs.writeFileSync(path.join(dir, 'settings.json'), JSON.stringify(set));

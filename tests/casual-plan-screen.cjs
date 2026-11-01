@@ -9,14 +9,15 @@ const design = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/book-des
   const h = await start();
   try {
     let n = 0;
-    for (const key of ['hamlet', 'chunhyang', 'lord_of_the_rings']) {
+    /* 버전2(기본, 2026-11-01) 둘 · 버전1(--v1) 하나 */
+    for (const [key, v2] of [['hamlet', true], ['chunhyang', true], ['lord_of_the_rings', false]]) {
       const g = design.books.find(x => x.key === key);
-      for (const cut of C.plan(g, [1, 2, 3, 4, 5], [], { seed: 21 }).cuts.slice(0, 3)) {
+      for (const cut of (v2 ? C.plan2 : C.plan)(g, [1, 2, 3, 4, 5], [], { seed: 21 }).cuts.slice(0, 3)) {
         const rec = C.record(g, cut);
         const { page: p } = await h.open('index.html', { viewport: FOLD.inner, mobile: true });
         await p.evaluate(s => localStorage.setItem('book_prompt_v1', JSON.stringify(s)), rec.storage);
         await p.goto(p.url().replace(/index\.html.*$/, 'prompt.html?book=' + key + '&mode=casual'));
-        await p.waitForSelector('#casual-tree');
+        await p.waitForSelector(v2 ? '#casual-tree-v2' : '#casual-tree');
         const shown = await p.$eval('#prompt-output', e => e.value);
         assert.equal(shown, rec.prompt, key + ' casual' + cut.n + ' 화면과 계획기 지시문이 다르다');
         assert.equal(await p.$eval('#place', e => e.value), cut.place, '장소 칸');

@@ -23,10 +23,10 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const ROOT = path.join(__dirname, '..');
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 const ctx = { window: {}, console }; vm.createContext(ctx);
-for (const f of ['lib/prompt-spec.js', 'lib/casual-tree.js', 'lib/prompt-book.js']) vm.runInContext(read(f), ctx);
-const S = ctx.window.AtelierSpec, CT = ctx.window.AtelierCasualTree, P = ctx.window.AtelierPrompt;
+for (const f of ['lib/prompt-spec.js', 'lib/casual-tree.js', 'lib/casual-tree-v2.js', 'lib/prompt-book.js']) vm.runInContext(read(f), ctx);
+const S = ctx.window.AtelierSpec, CT = ctx.window.AtelierCasualTree, C2 = ctx.window.AtelierCasualTreeV2, P = ctx.window.AtelierPrompt;
 const design = JSON.parse(read('data/book-design.json')), style = JSON.parse(read('data/style.json'));
-const tree = JSON.parse(read('data/casual-tree.json'));
+const tree = JSON.parse(read('data/casual-tree.json')), tree2 = JSON.parse(read('data/casual-tree-v2.json'));
 /* 화풍 — 생성기와 같이 default 가 비었으면 첫 화풍(prompt-ui 의 defaultStyle) */
 const STYLE = style.default && style.styles[style.default] ? style.default : Object.keys(style.styles)[0];
 const PLAN = require('./casual-plan.cjs');
@@ -47,6 +47,8 @@ const CASUAL_LOCKS = { 'axes.overall_intensity': true, 'axes.skin_exposure': tru
 /* 일상 — 계획기(tools/casual-plan.cjs 의 cardState)와 같은 모양(트리 버전1) */
 const planScene = () => ({ expr: '', pose: '', orient: '', scene: '', outfit: '', frame: '', lens: '', camera: '', custom: '', aspect: '2:3', axes: {}, action: {}, randomLocks: {} });
 const blankCasual = () => ({ ...blankScene(), axes: { overall_intensity: 'strong', skin_exposure: 'bold' }, randomLocks: { ...CASUAL_LOCKS } });
+/* 일상 버전2(2026-11-01) — 생성기의 blankV2() 꼴(버전1 칸 없이) */
+const blankV2 = () => ({ treeV: 2, expr: '', scene: '', outfit: '', custom: '', aspect: '2:3', axes: { overall_intensity: 'strong', skin_exposure: 'bold' }, action: {}, randomLocks: { ...CASUAL_LOCKS } });
 
 /* 안에서는 game-atelier 판과 줄을 맞추려고 책 한 권(설계표 books 한 칸)을 game 이라 부른다 */
 function gameOf(key) {
@@ -116,7 +118,14 @@ function validate(set, game, plan) {
     if (TEXT.some(k => ((x.scene || {})[k] || '').trim()) && !(x.why || '').trim()) errs.push('slots.' + s.slot + ' 에 직접 입력이 있는데 why 가 비었다');
   }
   if (plan) for (const cut of plan.cuts) {
-    const { n, ...sc } = cut, fixed = CT.repair(tree, { ...sc }, game, S.CLOSE_FRAMES);
+    const { n, ...sc } = cut;
+    /* 버전2 계획(2026-11-01) — 버전2 트리로 */
+    if (sc.treeV === 2) {
+      const fixed = C2.repair(C2.make(tree2, tree), { ...sc }, game);
+      for (const k of ['place', 'ofam', 'posture', 'frame', 'body', 'head']) if (sc[k] && fixed[k] !== sc[k]) errs.push('계획 컷 ' + n + ' 의 ' + k + ' 가 트리에 안 맞는다(' + sc[k] + ')');
+      continue;
+    }
+    const fixed = CT.repair(tree, { ...sc }, game, S.CLOSE_FRAMES);
     for (const k of ['era', 'place', 'act', 'ofam', 'item', 'frame', 'orient', 'lens', 'pose']) if (sc[k] && fixed[k] !== sc[k]) errs.push('계획 컷 ' + n + ' 의 ' + k + ' 가 트리에 안 맞는다(' + sc[k] + ')');
   }
   return errs;
@@ -130,14 +139,15 @@ function stateOf(game, set, s, pilot) {
     params: { ...(c.params || {}) }, locks: {}, mode: s.mode, scenes: { form: blankScene(), open: blankScene(), casual: blankCasual() }, versionPinned: false };
   if (s.mode === 'casual') {
     const { n, ...cut } = s.cut, x = set.slots[s.slot];
-    st.scenes.casual = { ...planScene(), ...cut, custom: x.custom || '', preset: '', randomLocks: { ...CASUAL_LOCKS } };
+    st.scenes.casual = cut.treeV === 2 ? { ...blankV2(), ...cut, custom: x.custom || '', randomLocks: { ...CASUAL_LOCKS } }
+      : { ...planScene(), ...cut, custom: x.custom || '', preset: '', randomLocks: { ...CASUAL_LOCKS } };
     if (x.exposure) st.scenes.casual.axes = { ...(st.scenes.casual.axes || {}), skin_exposure: x.exposure };
   } else { st.scenes[s.mode] = { ...blankScene(), ...((set.slots[s.slot] || {}).scene || {}) }; if ((set.slots[s.slot] || {}).exposure) st.exposure = set.slots[s.slot].exposure; }
   return st;
 }
 function promptOf(game, st, s) {
   const sv = styleOf(), scene = st.scenes[s.mode];
-  const input = { ...st, ...scene, book: game, tree, stage: STAGE[st.form], baseStage: STAGE[st.baseForm], styleText: sv.ver.text,
+  const input = { ...st, ...scene, book: game, tree, tree2, stage: STAGE[st.form], baseStage: STAGE[st.baseForm], styleText: sv.ver.text,
     styleCheck: sv.ver.check || '', styleRef: false, outputMode: s.mode, identityMode: s.mode !== 'form' || st.identityMode === 'reference' ? 'reference' : 'create',
     params: Object.entries(st.params) };
   return s.mode === 'casual' ? P.buildCasual(input) : P.buildPrompt(input);

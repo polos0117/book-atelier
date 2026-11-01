@@ -5545,20 +5545,6 @@
    "gaze": "at_prop"
   },
   {
-   "key": "rail_lookback",
-   "ko": "난간에서 돌아보기",
-   "posture": "lean_rail",
-   "support": "none",
-   "frame": "environmental",
-   "body": "rear_3q",
-   "head": "over_shoulder",
-   "camera": "eye",
-   "right": "rail",
-   "left": "hair_tuck",
-   "legs": "contrapposto",
-   "gaze": "camera"
-  },
-  {
    "key": "walk_away",
    "ko": "멀어지며 걷기",
    "posture": "walk",

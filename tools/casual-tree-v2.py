@@ -446,6 +446,9 @@ def check(doc, v1):
             err.append(f"{w} — 두 손이 같은 자세 {sides[0]} (같은 데를 두 손이 쓴다)")
         if sum(1 for s in sides if s.startswith("chin_")) > 1 and not (sides[0] == sides[1]):
             err.append(f"{w} — 두 손이 다 턱을 괸다")
+        # 뒷모습으로 돌아보며 얼굴 · 머리에 손 — 팔이 머리 뒤를 가로질렀다(2026-11-01 「난간에서 돌아보기」 뺌, lib/casual-tree-v2.js whyHand lookback)
+        if body[p["body"]].get("far") and head[p["head"]].get("look_back") and any(s != "prop" and hands[s]["zone"] == "face" for s in sides):
+            err.append(f"{w} — 뒷모습으로 돌아보는 컷에 얼굴 · 머리에 대는 손")
         for s in SIDES:
             k = p[s]
             if k == "prop":

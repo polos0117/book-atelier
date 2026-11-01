@@ -16,11 +16,17 @@
 - tests/duel.cjs — 새 다섯 권 규칙 확인 21가지. tests/prompt-book.cjs — 버전2 일상컷 낱말 한도를 900 → 800 으로 되돌림(뒷모습 팔 줄을 뺀 뒤 가장 긴 것 785)
 - docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md · docs/RUN_DESIGN.md · AGENTS.md · tests/casual-plan.cjs — 4절 표에 다섯 줄, 5절 균형을 마흔 권으로 다시, 9-7절 여덟 번째 다섯 권, "서른다섯 권" → "마흔 권"
 
+## 2026-11-01 · gpt · 허생전 발단 개방을 팔 수정본 기준으로 재생성
+- book-atelier-img/img/heo_saeng_begin_open_literary_fantasy_f.webp — 팔을 복원한 현재 발단을 첨부해 인물·얼굴·양팔·의상·전신 카메라를 고정하고 비 새는 오두막·책 더미·빈 쌀독의 개방 배경을 다시 만들었다.
+- book-atelier-img/records/heo_saeng/repairs/2026-11-01-begin-open/ — 사용자 지시, 기준 발단 해시, 교체 전후 해시, 생성기 명장면 세부 요청·UI 상태, 양팔 유지 검수 기록을 보존했다. 이전 개방 이미지와 기록은 Git 이력에 남는다.
+- data/art-index.json · data/art-similar.json — 자동 썸네일로 발단 개방 한 장의 특징과 전체 닮은 그림 순위를 갱신했다. 나머지 359장 특징은 보존했다. Cargo 없는 환경의 기존 C float32 변환을 사용하고 기존 점수 2880개 일치를 확인했다.
+
 ## 2026-11-01 · claude · 「난간에서 돌아보기」 빼기 — 뒷모습으로 돌아보며 얼굴 · 머리에 손 안 대기
 - data/casual-tree-v2.json — 자세 추천 rail_lookback(뒤 3/4 · 어깨 너머 · 오른손 난간 · 왼손 머리 넘기기)을 뺐다. 좌우 · 팔 줄을 적은 시험 세 장도 사용자가 「아니 지금도 이상해. 그냥 지금 구도는 갈래에서 없애줘」
 - lib/casual-tree-v2.js(공용) — 몸이 뒤쪽(far)이고 머리가 어깨 너머(look_back)면 얼굴 · 머리에 대는 손(zone face)을 못 고른다(why lookback — 화면 · 랜덤 · 계획기가 같이 막는다). backLook 은 팔 줄 없이 왼쪽 어깨 · 손의 화면 쪽만. 예전 기록의 그 손은 다시 검사(repair)가 비운다
 - tools/casual-tree-v2.py — 추천이 그 조합이면 건다
 - lib/words.js — 못 고르는 까닭 낱말 lookback. 생성기 캐시 번호 올림
+
 
 ## 2026-11-01 · gpt · 허생전 발단·일상1 팔 연결 수정
 - book-atelier-img/img/heo_saeng_begin_literary_fantasy_f.webp — 화면 왼쪽 오른손의 갓끈 동작을 유지하고, 화면 오른쪽 소매에서 이어지는 왼팔·손목·빈손을 복원했다. 얼굴·머리·의상·배경·전신 구도는 유지했다.

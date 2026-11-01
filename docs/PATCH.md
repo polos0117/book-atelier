@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 일상컷 트리 버전2 1단계 — 표 · 모듈 · 검사기
+- data/casual-tree-v2.json — game 의 버전2 표를 책 몫으로 바꿨다(tools/casual-tree-v2-from-game.py 로 다시 만들 수 있다): 게임 장소 game_* → 이야기 장소 story_*, 책에 없는 오락실 · 개발실 장소를 빼고 서재 아홉 · 살롱 여섯 · 각색 여섯의 받침을 닮은 자리에서, 오락실 소품 · 휴대용 게임기(연도 소품)를 빼고 서재 · 살롱 · 각색 장소에 책 · 편지 · 찻잔 · 마이크 … 를 붙였다, 시대 release → book, 책 표에 없는 옷(game 이 넓힌 여덟)은 가리키지 않는다, 각색 의상 외투 차림은 옷깃. 사용자 「book쪽도 tree2로 옮긴뒤에 같은작업까지 진행해줘」
+- lib/casual-tree-v2.js · tools/casual-tree-v2.py — game 과 같은 파일(공방이 같이 쓰는 모듈 · 검사기)
+- tests/casual-tree-v2.py · tests/casual-tree-v2.cjs — game 시험을 책 몫으로(알아볼 거리 없음 · 연도 소품 없음 · 이야기 · 서재 · 살롱 · 각색 장소)
+
 ## 2026-11-01 · gpt · 제인 에어 11장 등록과 그림 색인 갱신
 - data/img.json — 그림 등록 워크플로가 제인 에어 폼 3·개방 3·일상 5장을 등록. book-atelier-img의 생성·QA 기록에 사실적인 채색, 종이 글씨 무늬, 일부 구도·의상 이탈을 미통과로 남겼다.
 - data/art-index.json · data/art-similar.json — 등록된 338장 전체를 색인·닮은 그림에 반영. Cargo가 없어 rust/art-core 수식을 C float32로 옮겨 계산했다. 기존 154장의 dHash·Lab과 닮은 그림 점수·목록은 일치하고, 색 막대는 148장 일치·6장 최대 1/255 차이여서 기존 특징값은 보존했다. 계산 방식은 색인의 computation에도 명시했다.

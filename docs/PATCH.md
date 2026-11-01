@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 일상컷 트리 버전2 2단계 — 지시문 줄
+- lib/prompt-book.js — 장면이 treeV 2 이고 버전2 표가 오면 버전2 줄(game 의 buildCasualV2 · casualDetailsV2 를 책 꼴로): POSTURE · SUPPORT · COMPOSITION · 렌즈 자동 · 손 둘(인물 기준) · PROP · LEGS · GAZE · 표정(시선 말을 뗀). 원작 시대 · 이야기 세계(story_place 는 WORLD 의 장소) · 각색 줄 · 전통 의상 말은 버전1 과 같은 자리. 책엔 들 알아볼 거리가 없어 상징 줄은 늘 싣는다. 버전1 기록은 버전1 그대로
+- lib/prompt-spec.js — 버전2 줄(casualOutputV2 는 책 문장 「never a carried book」 그대로, 끝만 「Everything else follows SCENE」) · FRAME · CROP · BODY · HANDS · PROP · 돌아보기
+- tests/prompt-book.cjs — 서른다섯 권 × 추천 48 이 버전2 줄로 · 800 낱말 안 · 원작 시대 · 이야기 세계 · 각색 · 버전1 기록은 버전1
+
 ## 2026-11-01 · claude · 일상컷 트리 버전2 1단계 — 표 · 모듈 · 검사기
 - data/casual-tree-v2.json — game 의 버전2 표를 책 몫으로 바꿨다(tools/casual-tree-v2-from-game.py 로 다시 만들 수 있다): 게임 장소 game_* → 이야기 장소 story_*, 책에 없는 오락실 · 개발실 장소를 빼고 서재 아홉 · 살롱 여섯 · 각색 여섯의 받침을 닮은 자리에서, 오락실 소품 · 휴대용 게임기(연도 소품)를 빼고 서재 · 살롱 · 각색 장소에 책 · 편지 · 찻잔 · 마이크 … 를 붙였다, 시대 release → book, 책 표에 없는 옷(game 이 넓힌 여덟)은 가리키지 않는다, 각색 의상 외투 차림은 옷깃. 사용자 「book쪽도 tree2로 옮긴뒤에 같은작업까지 진행해줘」
 - lib/casual-tree-v2.js · tools/casual-tree-v2.py — game 과 같은 파일(공방이 같이 쓰는 모듈 · 검사기)

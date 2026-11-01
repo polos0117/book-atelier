@@ -2,7 +2,7 @@
    Run: node tests/prompt-book.cjs */
 const fs = require('node:fs'), vm = require('node:vm'), assert = require('node:assert/strict');
 const ctx = { window: {}, console }; vm.createContext(ctx);
-for (const f of ['lib/prompt-spec.js', 'lib/casual-tree.js', 'lib/prompt-book.js']) vm.runInContext(fs.readFileSync(f, 'utf8'), ctx);
+for (const f of ['lib/prompt-spec.js', 'lib/casual-tree.js', 'lib/casual-tree-v2.js', 'lib/prompt-book.js']) vm.runInContext(fs.readFileSync(f, 'utf8'), ctx);
 const S = ctx.window.AtelierSpec, P = ctx.window.AtelierPrompt, CT = ctx.window.AtelierCasualTree, T = S.BOOK_LINES;
 const tree = JSON.parse(fs.readFileSync('data/casual-tree.json', 'utf8'));
 const design = JSON.parse(fs.readFileSync('data/book-design.json', 'utf8'));
@@ -266,4 +266,46 @@ for (const bk of design.books) {
 assert(design.books.some(bk => P.isProtected(bk)), '보호 중인 책이 하나는 있다(검사가 헛돌지 않게)');
 const py = fs.readFileSync('tools/book-design.py', 'utf8').match(/KOREA_LAST_EXPIRED_DEATH = (\d+)/);
 assert.equal(Number(py[1]), S.KOREA_LAST_EXPIRED_DEATH, '보호 기준 해가 검사기와 생성기에서 같다');
+/* 일상컷 트리 버전2(2026-11-01, game 의 docs/CASUAL_TREE_V2.md 5절 — 책 몫) — 장면 treeV 2 + 표 tree2 면 버전2 줄 */
+{
+  const C2 = ctx.window.AtelierCasualTreeV2, tree2 = JSON.parse(fs.readFileSync('data/casual-tree-v2.json', 'utf8')), t2 = C2.make(tree2, tree);
+  const cas2 = (book, sc, x = {}) => P.buildCasual({ book, tree, tree2, styleText: text, ...sc, ...x });
+  const block = (txt, head) => txt.split('\n\n').find(l => l.startsWith(head)) || '';
+  const spots = tree2.presets.map(pr => {
+    for (const pl of tree.places) {
+      const era = pl.eras.includes('now') ? 'now' : pl.eras[0];
+      for (const ofam of C2.era(t2, era).outfits) if (C2.presetOk(t2, { era, place: pl.key, ofam }, pr.key)) return C2.repair(t2, C2.applyPreset(t2, { era, place: pl.key, ofam }, pr.key));
+    }
+    assert.fail(pr.key + ' 쓸 장소가 없다');
+  });
+  let longestV2 = 0, v2n = 0;
+  for (const bk of design.books) for (const sc0 of spots) {
+    const sc = C2.repair(t2, sc0, bk), txt = cas2(bk, sc), scene = block(txt, 'SCENE (chosen):'), f = C2.frame(t2, sc.frame), u = C2.use(t2, sc.use);
+    const w = sc.preset + ' ' + bk.key;
+    assert(!/^(Activity|Pose|Orientation|Framing): /m.test(scene) && !txt.includes(T.handsCasual) && !txt.includes(T.casualOutput), w + ' 버전1 줄이 없다');
+    assert(scene.includes('POSTURE: ') && scene.includes('COMPOSITION: ' + f.en) && txt.includes(T.bodyV2) && txt.includes(T.handsV2) && txt.includes(T.casualOutputV2), w + ' 버전2 줄');
+    assert(sc.right === sc.left && C2.hand(t2, sc.right) && C2.hand(t2, sc.right).both ? scene.includes('BOTH HANDS: ') && !scene.includes('RIGHT HAND: ') : /RIGHT HAND: her own right\b/.test(scene) && /LEFT HAND: her own left\b/.test(scene), w + ' 손 줄');
+    assert.equal(scene.includes('PROP: '), !!u, w + ' 소품 줄은 소품 동작이 있을 때만');
+    assert(txt.includes('SYMBOLS ('), w + ' 상징 줄(책엔 들 알아볼 거리가 없다)');
+    assert.equal(scene.includes('LEGS: '), !!(sc.legs && f.legs), w + ' 다리 줄은 다리가 보이는 컷만');
+    const bd = tree2.body.find(b => b.key === sc.body) || {}, hd = tree2.head.find(x => x.key === sc.head) || {};
+    assert(!txt.includes(T.casualLookBack) && txt.includes(T.casualLookBackV2) === !!(bd.far && hd.look_back), w + ' 돌아보기 줄');
+    if (f.close) assert(txt.includes(T.casualCropV2.split('{edge}')[0]) && txt.includes(T.anatomyClose), w + ' 가까운 컷 CROP · 몸 줄');
+    assert(!/[가-힣]/.test(txt.replace(/"[^"]*"/g, '').replace(/«[^»]*»/g, '').replace(/STYLE: [^\n]*/, '')), w + ' 따옴표 밖은 영어');
+    longestV2 = Math.max(longestV2, P.words(txt)); v2n++;
+  }
+  assert(longestV2 <= 800, '가장 긴 버전2 일상컷이 800 낱말을 넘는다: ' + longestV2);
+  /* 시대 · 이야기 세계 · 각색 줄 — 버전1 과 같은 자리 */
+  const b0 = design.books[0], base = { treeV: 2, ofam: 'everyday', item: 'jeans_tee', posture: 'stand', support: 'none', frame: 'waist_up', body: 'front', head: 'with_body', camera: 'eye', right: 'hip', left: 'down', gaze: 'camera' };
+  const era = cas2(b0, { ...base, era: 'book', place: 'lib_reading_room' });
+  assert(era.includes(T.casualEra.split('{era}')[0]) && era.includes('Place: ' + tree.places.find(p => p.key === 'lib_reading_room').en), '원작 시대 줄 · 서재 장소');
+  const world = cas2(b0, { ...base, era: 'in_story', place: 'story_place', ofam: 'homewear', item: '' });
+  assert(world.includes('Place: the place named in WORLD') && world.includes(T.casualWorld.split('{title}')[0]), '이야기 세계 — 그 책의 장소');
+  const ad = cas2(b0, { ...base, era: 'now', place: 'adapt_makeup', posture: 'sit_chair' });
+  assert(ad.includes(T.casualAdaptation.split('{title}')[0]), '각색 장소면 각색 줄');
+  /* 버전1 기록은 표가 와도 버전1 그대로 */
+  const v1 = P.buildCasual({ book: b0, tree, tree2, styleText: text, era: 'now', place: 'home_living', act: tree.activities.find(a => (a.places || []).includes('home_living') || true).key, ofam: 'everyday' });
+  assert(!v1.includes('POSTURE: ') && v1.includes(T.casualOutput), '버전1 기록은 버전1 줄');
+  console.log(`PASS 일상컷 버전2: ${design.books.length}권 × 추천 ${spots.length} = ${v2n}개 · 가장 긴 것 ${longestV2}낱말 · 버전1 줄 없음 · 손 · 소품 · 다리 · 돌아보기 · 원작 시대 · 이야기 세계 · 각색 · 버전1 기록은 그대로`);
+}
 console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 트리(시대·장소·하는 일·옷·이야기 세계·각색·원작 시대·CROP·상징·예전 기록) · 추천 조합 ${tree.presets.length}개 × ${design.books.length}권 가장 긴 것 ${longestCasual}낱말 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세·폼 자세 · 한복 구조 · 보호 중인 책은 원작 글만`);

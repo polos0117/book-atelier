@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 폼 표정 — 발단 · 전개 · 결말 단계마다 다른 기본 표정
+- data/book-design.json — 폼마다 expr(표정 표 열쇠)를 책 성격대로 적었다: 발단 — 이야기가 열리는 호기심 · 평온(curious · calm · playful …), 전개 — 갈등의 결의 · 당혹(determined · surprised · focused …), 결말 — 그 책 결말의 정서(비극은 wistful · exhausted, 해피엔딩은 relieved · gentle · laughing_open). 사용자 「element 작업했던것 중 표정 관련된 내용을 game,book 공방도 공방 성격에 맞게 반영해줘. book 은 발단, 전개, 결말 / game 은 타이틀, 중반, 엔딩의 표정이 다 비슷비슷해보여」
+- lib/prompt-book.js · lib/prompt-spec.js — 표정을 고르지 않으면 EXPRESSION 줄(이어가기 폼은 첨부 그림의 표정을 바꾼다). AGE 줄에서 「soft full cheeks · soft smile」 을 뺐다(첫 폼에 미소가 박혀 다음 폼까지 따라갔다)
+- tools/book-design.py — 폼마다 expr 이 있고 셋이 다르다. tests/prompt-book.cjs — 단계마다 표정 줄 · 고른 표정이 이긴다 · AGE 줄에 미소 없음
+- IMAGE_RULES.md 2절 · html 판 올림. 이미 그린 그림은 그대로 둔다
+
 ## 2026-11-01 · claude · 일상컷 트리 버전2 4단계 — 계획기(기본 버전2) · 지시문 묶음 · 책 사이 안 쓴 값 먼저 · 문서
 - tools/casual-plan.cjs — game 의 계획기 버전2(plan2 · check2 · randomSlot2)를 책 꼴로(상징 · 들 알아볼 거리 없음), 기본이 버전2(--v1 은 예전 길), 기록 읽기 · 묶음 검사도 버전2 를 안다. 다른 책 기록(--usage)에서 장소 · 옷 · 표정 · 자세 추천 · 자세 · 소품을 세어 안 쓴 값 먼저(무게 4, 쓴 값 1/(1+횟수)² — game · element 와 같다). 사용자 「book쪽도 tree2로 옮긴뒤에 같은작업까지 진행해줘」
 - tools/prompt-pack.cjs — 버전2 계획을 받는다(버전2 트리로 검사, 생성기 blankV2 꼴 상태, tree2 로 조립)

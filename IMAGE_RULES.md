@@ -34,6 +34,14 @@ pkm-atelier 의 `IMAGE_RULES.md` 를 책의 꼴(한 책 = 폼 셋 + 개방 셋 +
 
 ## 2. 한 책의 구성
 
+**폼 표정 — 단계마다 다르게**(2026-11-01, element 의 「기본 표정」 을 책 꼴로 — 사용자 「element 작업했던것 중 표정 관련된 내용을 game,book 공방도 공방 성격에 맞게 반영해줘. book 은 발단, 전개, 결말 / game 은 타이틀, 중반, 엔딩의 표정이 다 비슷비슷해보여」):
+발단 · 전개 · 결말 세 폼의 표정이 비슷했던 까닭은 둘 — 첫 폼의 AGE 줄이 모두에게 「soft full cheeks · soft smile」 을 박았고, 이어가기 폼은 첨부한 첫 그림의 얼굴(표정까지)을 따랐다.
+- AGE 줄에서 볼 · 미소 말을 뺐다(「whatever her expression」 — 주름 없이만).
+- 설계표 `forms.<단계>.expr`(생성기 표정 표 EXPRESSION_DETAIL 의 열쇠) — 발단 — 이야기가 열리는 호기심 · 평온(curious · calm · playful …), 전개 — 갈등의 결의 · 당혹(determined · surprised · focused …), 결말 — 그 책 결말의 정서(비극은 wistful · exhausted, 해피엔딩은 relieved · gentle · laughing_open). 세 폼이 서로 달라야 한다(검사기가 본다).
+- 생성기에서 표정을 고르지 않으면 지시문에 `EXPRESSION (<단계>): …` 줄 — 이어가기 폼은 「첨부 그림의 표정을 바꾼다, 누구인지만 지킨다」. 고르면 고른 것만 싣는다.
+- 이미 그린 그림은 그대로 둔다. 새로 그리는 폼부터.
+
+
 ```
 첫 그림(시범 폼, 첨부 없음) → 나머지 폼 둘(첫 그림 첨부) → 폼별 개방 셋(그 폼 그림 첨부) → 일상컷(첫 그림 첨부)
 ```

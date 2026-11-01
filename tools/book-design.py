@@ -105,6 +105,9 @@ def check(doc):
             # 자세 — 폼마다 다르게. 생성기의 기본 자세가 된다(STANCE 줄)
             if not str(f.get("pose") or "").strip():
                 bad("%s 폼의 자세(pose)가 비었다" % s)
+            # 표정 — 단계마다 다른 기본 표정(2026-11-01 — 발단 · 전개 · 결말 표정이 비슷했다). 값 대조는 tests/prompt-book.cjs(EXPRESSION_DETAIL)
+            if not re.fullmatch(r"[a-z_]+", str(f.get("expr") or "")):
+                bad("%s 폼의 표정(expr)이 비었거나 열쇠 꼴이 아니다" % s)
             o = opens.get(s) or {}
             if not str(o.get("scene") or "").strip():
                 bad("%s 개방의 장면이 비었다" % s)
@@ -115,6 +118,8 @@ def check(doc):
                 bad("%s 개방의 입자 particles=%r 는 정한 말이 아니다(%s)" % (s, o.get("particles"), "·".join(V.get("particles", []))))
             if "particles" in f and f.get("particles") not in V.get("particles", []):
                 bad("%s 폼의 입자 particles=%r 는 정한 말이 아니다" % (s, f.get("particles")))
+        if len({(forms.get(s) or {}).get("expr") for s in STAGES}) < 3:
+            bad("폼 셋의 표정(expr)이 서로 달라야 한다")
         if len({(forms.get(s) or {}).get("pose") for s in STAGES}) < 3:
             bad("세 폼의 자세가 겹친다 — 넘겨 볼 때 같은 그림처럼 보인다")
         if len({(forms.get(s) or {}).get("role") for s in STAGES}) < 2:

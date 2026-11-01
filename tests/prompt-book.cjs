@@ -37,7 +37,7 @@ for (const b of design.books) for (const stage of Object.keys(V.form_key)) {
   }
 }
 // 몸 개수 줄 BODY 와 일상컷 HAND TASK 로 40낱말쯤 늘었다(2026-10-27). 폼 자세가 돌아보기면 LOOK-BACK 줄 20낱말(2026-10-29, 눈물을 마시는 새 발단 807)
-assert(longest <= 820, '가장 긴 프롬프트(과감 노출·점검 줄 포함)가 820 낱말을 넘는다: ' + longest);
+assert(longest <= 850, '가장 긴 프롬프트(과감 노출·점검 줄 · 폼 표정 줄 포함 — 2026-11-01)가 850 낱말을 넘는다: ' + longest);
 
 /* 3. 직접 고른 얼굴·체형은 설계표 묶음을 이긴다(그 묶음이 FACE·SILHOUETTE 줄에서 빠진다) */
 const b = design.books[0];
@@ -195,7 +195,8 @@ assert(!/storybook|watercolor washes|muted, |gentle contrast|simplified into/.te
 // 연출 — 화려함·장식·역광·서 있는 카드 자세는 화풍 줄이 아니라 이 두 줄이 쥔다(돈키호테 v7 시범). 폼 초상에만, 자세·연출을 고르면 STANCE 는 빠진다
 const pf = P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, exposure: 'bold' }).split('\n\n');
 const pi = pf.indexOf(S.BOOK_LINES.presentation);
-assert(pi > 0 && pf[pi - 1].startsWith('EXPOSURE') && pf[pi + 1].startsWith('STANCE') && pf[pi + 2].startsWith('OUTPUT:'), '노출 → 연출 → 자세 → 출력');
+let po = pi + 2; while (/^(LOOK-BACK|EXPRESSION \()/.test(pf[po] || '')) po++;
+assert(pi > 0 && pf[pi - 1].startsWith('EXPOSURE') && pf[pi + 1].startsWith('STANCE') && pf[po].startsWith('OUTPUT:'), '노출 → 연출 → 자세 → (폼 표정) → 출력');
 assert(P.buildPrompt({ ...full, styleRef: false, outputMode: 'form', identityMode: 'reference', baseStage: '발단', stage: '전개' }).includes(S.BOOK_LINES.presentation), '이어가기에도 연출 줄');
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, pose: 'standing' }).includes('STANCE'), '자세를 고르면 기본 자세 줄이 빠진다');
 assert(!P.buildPrompt({ outputMode: 'form', book: b, stage: '발단', styleText: text, action: { category: S.ACTION_CATEGORIES[0].key } }).includes('STANCE'), '연출을 고르면 기본 자세 줄이 빠진다');
@@ -307,5 +308,26 @@ assert.equal(Number(py[1]), S.KOREA_LAST_EXPIRED_DEATH, '보호 기준 해가 �
   const v1 = P.buildCasual({ book: b0, tree, tree2, styleText: text, era: 'now', place: 'home_living', act: tree.activities.find(a => (a.places || []).includes('home_living') || true).key, ofam: 'everyday' });
   assert(!v1.includes('POSTURE: ') && v1.includes(T.casualOutput), '버전1 기록은 버전1 줄');
   console.log(`PASS 일상컷 버전2: ${design.books.length}권 × 추천 ${spots.length} = ${v2n}개 · 가장 긴 것 ${longestV2}낱말 · 버전1 줄 없음 · 손 · 소품 · 다리 · 돌아보기 · 원작 시대 · 이야기 세계 · 각색 · 버전1 기록은 그대로`);
+}
+/* 폼 표정(2026-11-01 — 단계마다 표정이 비슷했다) — 설계표 forms.<단계>.expr 가 단계마다 다르고, 고르지 않으면 그 표정 줄, 고르면 고른 것만. AGE 줄에 미소가 없다 */
+{
+  const D2 = JSON.parse(fs.readFileSync('data/book-design.json', 'utf8')), stages = Object.keys(D2.vocab.form_key);
+  const S2 = ctx.window.AtelierSpec, T2 = S2.BOOK_LINES;
+  assert(!S2.AGE_LINES['20s'].includes('smile') && !S2.AGE_LINES['20s'].includes('soft full cheeks'), 'AGE 줄에 미소 · 볼 말이 없다');
+  let fe = 0;
+  for (const x of D2.books) {
+    assert.equal(new Set(stages.map(s => x.forms[s].expr)).size, stages.length, x.key + ' 단계마다 다른 표정');
+    for (const stage of stages) {
+      const e = x.forms[stage].expr, ref = stage !== stages[0];
+      assert(S2.EXPRESSION_DETAIL[e], x.key + ' ' + stage + ' 표정 ' + e + ' 이 표에 없다');
+      const base = { book: x, stage, baseStage: stages[0], styleText: 'X', outputMode: 'form', identityMode: ref ? 'reference' : 'create', params: [], exposure: 'bold', faceDesignOn: true, silhouetteOn: true };
+      const t = P.buildPrompt(base), line = t.split('\n\n').find(l => l.startsWith('EXPRESSION ('));
+      assert(line && line.includes(S2.EXPRESSION_DETAIL[e]) && line.includes(ref ? "replaces the attached image's" : 'on her own face') && !/soft smile/.test(t), x.key + ' ' + stage + ' 표정 줄');
+      const picked = P.buildPrompt({ ...base, expr: e === 'calm' ? 'curious' : 'calm' });
+      assert(!picked.split('\n\n').some(l => l.startsWith('EXPRESSION (')) && picked.includes('Expression: ' + S2.EXPRESSION_DETAIL[e === 'calm' ? 'curious' : 'calm']), x.key + ' ' + stage + ' 고른 표정이 이긴다');
+      fe++;
+    }
+  }
+  console.log('PASS 폼 표정: ' + D2.books.length + ' × ' + stages.length + ' = ' + fe + ' — 단계마다 다른 표정 · 그 표정 줄(이어가기는 첨부 그림 표정을 바꾼다) · 고르면 고른 것 · AGE 줄에 미소 없음');
 }
 console.log(`PASS 책 프롬프트: ${design.books.length}권 × 폼 3 × (새 인물·이어가기·개방) ${n}개 · 가장 긴 것 ${longest}낱말 · 정한 말 영어 · 직접 고른 값 우선 · 일상컷 트리(시대·장소·하는 일·옷·이야기 세계·각색·원작 시대·CROP·상징·예전 기록) · 추천 조합 ${tree.presets.length}개 × ${design.books.length}권 가장 긴 것 ${longestCasual}낱말 · 빈손 · 화풍 ${lf.current} 앞에·점검 끝에·참고 그림은 방식만 · 노출 칸·목 · 나이 줄(기본 20대) · 연출·카드 자세·폼 자세 · 한복 구조 · 보호 중인 책은 원작 글만`);

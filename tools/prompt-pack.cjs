@@ -14,8 +14,10 @@
    자리마다 고정인 것(모드 · 폼 · 인물 기준 · 첨부)은 도구가 정한다 — 첫 그림은 설계표 pilot.form(없으면 첫 폼)으로 새 인물,
    나머지 폼은 첫 그림 이어가기, 개방은 그 폼 그림(+ 되면 첫 그림), 일상은 첫 그림. 고칠 수 있는 칸:
      card                motifs · lookNote(직접 입력 — why 필요) · faceDesignOn · silhouetteOn · exposure · params(외형 — 표의 값, 아니면 직접 입력이라 why)
-     폼 · 개방 자리       scene 의 expr · pose · orient · frame · lens(표의 값) · scene · outfit · camera · custom(직접 입력 — why)
-     일상 자리           custom(추가 연출 — why) · 나머지는 계획 그대로 */
+     폼 · 개방 자리       scene 의 expr · pose · orient · frame · lens(표의 값) · scene · outfit · camera · custom(직접 입력 — why) ·
+                         exposure(moderate · low — 그 자리만 card.exposure 보다 낮춘다, why 필요)
+     일상 자리           custom(추가 연출 — why) · exposure(moderate · low — 그 컷만 피부 노출 축을 낮춘다, why 필요) · 나머지는 계획 그대로
+     exposure 는 필터 거절 뒤 노출 낮추기(사용자 2026-11-01 「필터 문제로 막히면 재시도 후, 노출 수위를 낮춰가며 재시도로」 — IMAGE_RULES 1절) 에만 쓴다 */
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm'), crypto = require('node:crypto');
 const ROOT = path.join(__dirname, '..');
@@ -81,6 +83,8 @@ function initSettings(game, planPath) {
 function validate(set, game, plan) {
   const errs = [], { list } = slots(game, plan), names = list.map(s => s.slot);
   const unknown = (obj, allowed, where) => Object.keys(obj || {}).forEach(k => { if (!allowed.includes(k)) errs.push(where + ' 에 없는 칸 ' + k); });
+  /* 노출 낮추기 — 필터 거절 뒤 노출 낮추기(사용자 2026-11-01 「필터 문제로 막히면 재시도 후, 노출 수위를 낮춰가며 재시도로」 — IMAGE_RULES 1절). 값은 moderate · low, 까닭(why)이 있어야 한다 */
+  const lower = (x, where) => { if (x.exposure == null || x.exposure === '') return; if (!['moderate', 'low'].includes(x.exposure)) errs.push(where + '.exposure 는 moderate · low(낮추기만)'); else if (!(x.why || '').trim()) errs.push(where + '.exposure 를 낮췄는데 why(막힌 까닭)가 비었다'); };
   if (set.book !== game.key) errs.push('settings.book 이 ' + game.key + ' 가 아니다');
   if (set.style !== styleOf().key) errs.push('화풍은 책마다 하나(' + styleOf().key + ') — data/style.json');
   const c = set.card || {};
@@ -100,11 +104,13 @@ function validate(set, game, plan) {
     const x = (set.slots || {})[s.slot];
     if (!x) { errs.push('slots.' + s.slot + ' 가 없다'); continue; }
     if (s.mode === 'casual') {
-      unknown(x, ['custom', 'why'], 'slots.' + s.slot);
+      unknown(x, ['custom', 'exposure', 'why'], 'slots.' + s.slot);
+      lower(x, 'slots.' + s.slot);
       if ((x.custom || '').trim() && !(x.why || '').trim()) errs.push('slots.' + s.slot + '.custom 의 why 가 비었다');
       continue;
     }
-    unknown(x, ['scene', 'why'], 'slots.' + s.slot);
+    unknown(x, ['scene', 'exposure', 'why'], 'slots.' + s.slot);
+    lower(x, 'slots.' + s.slot);
     unknown(x.scene, [...Object.keys(SELECT), ...TEXT], 'slots.' + s.slot + '.scene');
     for (const [k, rows] of Object.entries(SELECT)) { const v = (x.scene || {})[k]; if (v && !keys(rows).includes(v)) errs.push('slots.' + s.slot + '.scene.' + k + ' 의 값 ' + v + ' 가 표에 없다'); }
     if (TEXT.some(k => ((x.scene || {})[k] || '').trim()) && !(x.why || '').trim()) errs.push('slots.' + s.slot + ' 에 직접 입력이 있는데 why 가 비었다');
@@ -125,7 +131,8 @@ function stateOf(game, set, s, pilot) {
   if (s.mode === 'casual') {
     const { n, ...cut } = s.cut, x = set.slots[s.slot];
     st.scenes.casual = { ...planScene(), ...cut, custom: x.custom || '', preset: '', randomLocks: { ...CASUAL_LOCKS } };
-  } else st.scenes[s.mode] = { ...blankScene(), ...((set.slots[s.slot] || {}).scene || {}) };
+    if (x.exposure) st.scenes.casual.axes = { ...(st.scenes.casual.axes || {}), skin_exposure: x.exposure };
+  } else { st.scenes[s.mode] = { ...blankScene(), ...((set.slots[s.slot] || {}).scene || {}) }; if ((set.slots[s.slot] || {}).exposure) st.exposure = set.slots[s.slot].exposure; }
   return st;
 }
 function promptOf(game, st, s) {

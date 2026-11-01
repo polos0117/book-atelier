@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-01 · claude · 안전 필터에 막히면 — 다시 · 노출 낮추기 · 계획 바꾸기
+- IMAGE_RULES.md 1절 — 같은 지시문으로 한 번 더 → 노출을 한 단계씩 낮춰(과감 → 보통 → 적게) 단계마다 한 번 → 그래도 막히면 계획을 바꾼다(한 번, 새 계획도 같은 순서). 노출 칸 말고 다른 말은 바꾸지 않는다. 시도는 generation.retries 에. 사용자 「생성룰에 필터 문제로 막히면 재시도 후, 노출 수위를 낮춰가며 재시도로 바꿔줘. 그래도 안될 땐 계획 변경으로」
+- docs/IMAGE_AUTOMATION.md — GPT 세션의 멈춤 조건과 일상 한 칸 다시 정하기를 같은 순서로
+- tools/prompt-pack.cjs — 노출 낮추기 칸 `slots.<자리>.exposure`(폼 · 개방은 그 자리만 card.exposure 대신, 일상은 피부 노출 축): moderate · low 만, 까닭(why) 필수
+- tests/prompt-pack-screen.cjs — 폼 한 자리 low · 일상 한 칸 moderate 가 화면과 같은 지시문, 까닭 없는 낮추기 · bold 는 build 가 막는다
+
 ## 2026-10-31 · claude · GPT 세션 이미지 규칙 — 잠금 · 지시문 묶음 · 묻지 않고 올리기 · 일상컷 다섯 장
 - docs/IMAGE_AUTOMATION.md — 사람이 안 지켜보는 GPT 세션의 길(pkm · game 과 같게, 사용자 2026-10-31): 실행마다 한 권 · 하루 열두 권, 잠금 → 일상컷 계획 → 지시문 묶음 → 그리기 → AI 검수 → 묻지 않고 올리기 → 끝. 멈출 때와 기록 꼴
 - tools/prompt-pack.cjs — 브라우저 없이 생성기와 같은 지시문 · 기록을 파일로(폼 셋 · 개방 셋 · 일상 다섯, game 판을 책 꼴로). 틀린 칸이 있으면 아무것도 안 쓴다

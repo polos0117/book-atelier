@@ -14,7 +14,7 @@ const design = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/book-des
     for (const [key, edit] of [['alice', null], ['hamlet', set => {
       set.card.params = { 'hair color': 'silver', 'eye color': '#3a7bd5' }; set.card.motifs = 'pressed violets at the collar'; set.card.why = '검사 — 직접 입력';
       const [a, b] = Object.keys(set.slots); set.slots[a].scene = { expr: 'soft_smile', frame: 'waist_up' }; set.slots[b].scene = { custom: 'cold castle torchlight' }; set.slots[b].why = '검사';
-      set.slots.casual2.custom = 'Her right hand holds one letter; her left hand rests on the table.'; set.slots.casual2.why = '검사';
+      set.slots.casual2.custom = 'Her right hand holds one letter; her left hand rests on the table.'; set.slots.casual2.why = '검사'; set.slots.casual3.exposure = 'moderate'; set.slots.casual3.why = '필터 거절 뒤 노출 낮추기 검사'; set.slots[a].exposure = 'low'; set.slots[a].why = '필터 거절 뒤 노출 낮추기 검사';
     }]]) {
       const g = design.books.find(x => x.key === key), dir = path.join(tmp, key);
       fs.mkdirSync(dir);
@@ -30,6 +30,7 @@ const design = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/book-des
       for (const s of list) {
         const rec = JSON.parse(fs.readFileSync(path.join(dir, s.slot + '-ui.json'), 'utf8'));
         assert.equal(fs.readFileSync(path.join(dir, s.slot + '-prompt.txt'), 'utf8'), rec.prompt);
+        if (edit && s.slot === 'casual3') assert(/skin_exposure: moderate/.test(rec.prompt) && !/skin_exposure: bold/.test(rec.prompt), '일상 노출 낮추기가 지시문에');
         const { page: p } = await h.open('index.html', { viewport: FOLD.inner, mobile: true });
         await p.evaluate(st => localStorage.setItem('book_prompt_v1', JSON.stringify(st)), rec.storage);
         await p.goto(p.url().replace(/index\.html.*$/, 'prompt.html?book=' + key + '&mode=' + s.mode));
@@ -44,12 +45,12 @@ const design = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/book-des
     const g = design.books.find(x => x.key === 'alice'), bad = path.join(tmp, 'bad');
     fs.mkdirSync(bad);
     const set = K.initSettings(g, '');
-    set.card.params = { 'hair color': 'not-a-value' }; set.slots.end.scene = { frame: 'nope' }; set.slots.begin.scene = { custom: 'x' }; set.slots.middle.extra = 1;
+    set.card.params = { 'hair color': 'not-a-value' }; set.slots.end.scene = { frame: 'nope' }; set.slots.begin.scene = { custom: 'x' }; set.slots.middle.extra = 1; set.slots.end.exposure = 'low'; set.slots.middle.exposure = 'bold';
     fs.writeFileSync(path.join(bad, 'settings.json'), JSON.stringify(set));
     const err = console.error; const said = []; console.error = m => said.push(m);
     try { assert.equal(K.build(bad), 1); } finally { console.error = err; }
     assert(!fs.existsSync(path.join(bad, 'end-prompt.txt')), '틀리면 쓰지 않는다');
-    for (const re of [/card 에 직접 입력/, /scene\.frame 의 값 nope/, /slots\.begin 에 직접 입력/, /slots\.middle 에 없는 칸 extra/]) assert(said.some(m => re.test(m)), re + ' 를 알린다');
+    for (const re of [/card 에 직접 입력/, /scene\.frame 의 값 nope/, /slots\.begin 에 직접 입력/, /slots\.middle 에 없는 칸 extra/, /slots\.end\.exposure 를 낮췄는데 why/, /slots\.middle\.exposure 는 moderate · low/]) assert(said.some(m => re.test(m)), re + ' 를 알린다');
     console.log(`PASS 지시문 묶음 ↔ 생성기 화면: ${n} 자리(두 책 · 폼 · 개방 · 일상 · 고친 설정 하나)를 화면에 넣으면 같은 지시문 · 같은 파일 이름 · 틀린 설정은 안 쓴다`);
   } finally { await h.stop(); fs.rmSync(tmp, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

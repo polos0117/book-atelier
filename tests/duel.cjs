@@ -651,6 +651,58 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   st.chapter = 1; start(st, 'me'); ok(sz.flags.observed, '전개 — 내 턴마다 아직 관측 안 된 가장 센 상대 책을 관측');
   st.chapter = 2; sn.power = 4; sn.flags.entered = {}; D.BOOK.sidereus_nuncius.form({ data, st }, sn, 2); ok(sn.power === 4 + 2 * 2, '결말 — 관측된 상대 책마다 힘 +2');
 }
+{ /* 두 개의 탑 — 길(2026-11-02) */
+  const st = rig(['two_towers', 'sunzi'], ['chunhyang', 'dracula']);
+  const sz = put(st, 'me', 'sunzi', 2), tt = put(st, 'me', 'two_towers', 0);
+  sz.power = 2; tt.power = 9; start(st, 'me'); ok(sz.power === 3, '발단 — 내 턴마다 가장 약한 아군 힘 +1');
+  const c = { data, st }; st.chapter = 1;
+  const big = put(st, 'foe', 'dracula', 1); big.power = 30; tt.power = 5;
+  const h1 = { target: big, dmg: 3 }; D.BOOK.two_towers.beforeStrike(c, tt, h1); ok(h1.dmg === 5, '전개 — 자신보다 센 책을 칠 때 피해 +2');
+  big.power = 1; const h2 = { target: big, dmg: 3 }; D.BOOK.two_towers.beforeStrike(c, tt, h2); ok(h2.dmg === 3, '약한 책엔 그대로');
+  st.chapter = 2; const ch = put(st, 'foe', 'chunhyang', 2); big.power = 10; ch.power = 8;
+  D.BOOK.two_towers.form(c, tt, 2); ok(big.power === 8 && ch.power === 6, '결말 — 가장 센 상대 둘에게 2 씩');
+}
+{ /* 왕의 귀환 — 상처 */
+  const st = rig(['return_of_the_king', 'sunzi'], ['dracula']);
+  const sz = put(st, 'me', 'sunzi', 2); const p0 = sz.power;
+  const rk = put(st, 'me', 'return_of_the_king', 0); ok(sz.power === p0 + 1 && rk.power === D.base(data, st, rk), '발단 — 들어올 때 다른 아군 모두 힘 +1');
+  const c = { data, st }; st.chapter = 1; rk.power = 30;
+  for (let i = 0; i < 5; i++) D.BOOK.return_of_the_king.damaged(c, rk);
+  ok(rk.tok === 3, '전개 — 맞을 때마다 상처, 셋까지');
+  st.chapter = 2; const dr = put(st, 'foe', 'dracula', 1); dr.power = 10; rk.flags.entered = {};
+  D.BOOK.return_of_the_king.form(c, rk, 2); ok(dr.power === 7, '결말 — 상처만큼 가장 센 상대를 친다');
+  rk.tok = 0; dr.power = 10; D.BOOK.return_of_the_king.form(c, rk, 2); ok(dr.power === 8, '상처가 적어도 2 는 친다');
+}
+{ /* 냉정과 열정 사이 — 약속 */
+  const st = rig(['calm_and_passion', 'sunzi'], ['dracula']); st.foe.hand.push('dracula');
+  const cp = put(st, 'me', 'calm_and_passion', 0), sz = put(st, 'me', 'sunzi', 2); const c = { data, st };
+  for (let i = 0; i < 4; i++) D.BOOK.calm_and_passion.chapterEnd(c, cp); ok(cp.tok === 3, '장이 끝날 때 약속 하나, 셋까지');
+  st.chapter = 1; sz.power = 1; put(st, 'foe', 'dracula', 2);
+  ok(st.me.slots[2] === sz && sz.power === D.base(data, st, sz) && cp.tok === 2, '전개 — 아군이 닫힐 때 약속 하나로 되살린다');
+  st.chapter = 0; ok(D.BOOK.calm_and_passion.closing(c, cp, sz) !== true && cp.tok === 2, '발단엔 되살리지 않는다');
+  st.chapter = 2; cp.power = 3; cp.flags.entered = {}; D.BOOK.calm_and_passion.form(c, cp, 2); ok(cp.power === 3 + 2 * 2, '결말 — 약속마다 힘 +2');
+}
+{ /* 서유기 — 소란 */
+  const st = rig(['journey_to_the_west'], ['dracula', 'sunzi']);
+  const dr = put(st, 'foe', 'dracula', 0), sz = put(st, 'foe', 'sunzi', 2); dr.power = 30; sz.power = 10;
+  const jw = put(st, 'me', 'journey_to_the_west', 0); ok(sz.power === 8, '발단 — 칠 때 분신이 다른 상대도 1 친다(교란의 튀기기 1 과 따로)');
+  const c = { data, st }; st.chapter = 1; jw.power = 5;
+  for (let i = 0; i < 4; i++) start(st, 'me'); ok(jw.tok === 2 && jw.power === 7, '전개 — 내 턴마다 소란 하나 · 힘 +1, 둘까지');
+  st.chapter = 2; jw.power = 2; jw.flags.entered = {}; D.BOOK.journey_to_the_west.form(c, jw, 2); ok(jw.tok === 0 && jw.power === 2 + 2 * 2, '결말 — 소란마다 가장 약한 아군 힘 +2');
+}
+{ /* 오페라의 유령 — 가면 */
+  const st = rig(['phantom_of_the_opera'], ['dracula', 'sunzi']);
+  const dr = put(st, 'foe', 'dracula', 0); dr.power = 10;
+  const ph = put(st, 'me', 'phantom_of_the_opera', 0); const c = { data, st };
+  ok(ph.flags.hidden && dr.power === 10, '발단 — 들어오면 숨는다(치지도 않는다)');
+  ok(D.legal(data, st, 'me').attack.length === 0, '숨은 동안 칠 수 없다');
+  st.turn = 'foe'; ok(D.legal(data, st, 'foe').attack.length === 0, '숨은 책은 공격받지 않는다');
+  start(st, 'me'); ok(dr.power === 9, '발단 — 내 턴마다 맞은편 힘 −1');
+  st.chapter = 1; ph.flags.entered = {}; D.BOOK.phantom_of_the_opera.form(c, ph, 1); ok(!ph.flags.hidden, '전개 — 드러난다');
+  const sz = put(st, 'foe', 'sunzi', 2); sz.power = 4; dr.power = 12;
+  D.BOOK.phantom_of_the_opera.chapterEnd(c, ph); ok(dr.power === 10 && sz.power === 4, '전개 — 장이 끝날 때 가장 센 상대 힘 −2');
+  st.chapter = 2; D.BOOK.phantom_of_the_opera.form(c, ph, 2); ok(dr.power === 8 && sz.power === 2, '결말 — 샹들리에가 상대 모두에게 2');
+}
 /* ── 자동 넘기기 — 할 수 있는 것이 없으면 넘긴다 ── */
 {
   const st = rig(['kosmos'], []);

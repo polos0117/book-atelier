@@ -70,6 +70,11 @@
   "moonstone": {"max": 3, "steal": 1, "piece": 2},
   "we": {"shield": 2, "free": 2},
   "divine_comedy": {"max": 3, "climb": 3, "light": 1},
-  "sidereus_nuncius": {"orbit": 2, "max": 4}
+  "sidereus_nuncius": {"orbit": 2, "max": 4},
+  "two_towers": {"guide": 1, "stand": 2, "march": 2},
+  "return_of_the_king": {"beacon": 1, "max": 3, "least": 2},
+  "calm_and_passion": {"max": 3, "duomo": 2},
+  "journey_to_the_west": {"clone": 1, "max": 2, "havoc": 1, "share": 2},
+  "phantom_of_the_opera": {"voice": 1, "box": 2, "chandelier": 2}
  }
 }

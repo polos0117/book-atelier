@@ -74,7 +74,7 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-'));
 fs.writeFileSync(path.join(dir, 'casual1-ui.json'), JSON.stringify({ book: g.key, storage: { cards: { [g.key]: { scenes: { casual: { cat: 'travel_exploration', ex: 'travel_station', frame: 'face_close', orient: 'looking_down', lens: 'telephoto135' } } } } } }));
 const old = C.oldCuts(dir, g);
 assert(old.length === 1 && old[0].place === 'travel_rural_station' && old[0].n === 1, '예전 기록 → 트리 길');
-/* 버전2(2026-11-01 — 기본) — 마흔 권 × 씨앗 둘: 묶음 규칙 · 트리 위 · 기록 · 지시문 */
+/* 버전2(2026-11-01 — 기본) — 마흔다섯 권 × 씨앗 둘: 묶음 규칙 · 트리 위 · 기록 · 지시문 */
 for (const f of ['lib/casual-tree-v2.js']) vm.runInContext(read(f), ctx);
 const C2 = ctx.window.AtelierCasualTreeV2, tree2 = JSON.parse(read('data/casual-tree-v2.json')), T2 = C2.make(tree2, tree);
 let n2 = 0;

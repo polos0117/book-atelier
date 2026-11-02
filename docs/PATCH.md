@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-03 · gpt · 장자 일상1 새 구도 재생성
+- book-atelier-img의 장자 일상1 — 사용자가 이전 왼팔 보정 구도를 거절해 정면 3/4 시점에서 양팔꿈치를 좌우로 벌린 머리 말리기 자세로 다시 생성했다. 두 팔의 어깨·상완·팔꿈치·손목 연결을 확인했다.
+- records/zhuangzi/casual1-ui.json · casual1-import.json · casual-plan.json — 새 구도와 사용자 지정 1번 칸, 생성·검수 기록을 반영하고 이전 계획·기록을 revisions에 보존했다.
+- data/art-index.json · data/art-similar.json — 일상1 특징을 교체하고 기존 492장 전체의 유사도를 다시 계산했다.
+
 ## 2026-11-03 · gpt · 장자 일상1 왼팔 연결 수정
 - book-atelier-img의 장자 일상1 — 사용자가 지적한 끊어진 왼팔 상완과 소매를 어깨·팔꿈치·손목으로 자연스럽게 연결했다. 얼굴·복장·머리 말리는 동작과 온천 배경을 유지했다.
 - records/zhuangzi/casual1-ui.json · casual1-import.json — 수정 요청과 생성기 추가 연출, 첨부 원본 서명 및 검수를 기록하고 이전 기록을 revisions에 보존했다.

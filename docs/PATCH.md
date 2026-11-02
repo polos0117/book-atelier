@@ -7,6 +7,12 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-02 · gpt · 두 개의 탑 그림 등록·색인
+- 두 개의 탑 — 폼 3장·개방 3장·일상 5장, 1024×1536 WebP와 생성기·검수 기록을 그림 저장소에 반영. 자동 등록 11장 확인.
+- data/art-index.json · data/art-similar.json — 기존 415장 특징을 보존하고 새 썸네일 11장을 더해 426장으로 갱신. 이 환경에는 Cargo가 없어 art-core의 계산을 임시 C++ 도구로 동일하게 수행했고, 기존 닮은 그림 3,320칸의 점수가 모두 일치함을 확인.
+- 검수 편차는 records/two_towers/*-import.json에 기록. 전개 개방의 손 자세 변경, 일상4의 책 소지·의상 충돌, 일상 프레이밍·손 좌우 차이를 통과로 바꾸지 않음.
+
+
 ## 2026-11-02 · claude · 공용 트리 모듈 복사 — 코스튬 컷의 안 쓰는 프레이밍 칸
 - lib/casual-tree.js · lib/casual-tree-v2.js — 공용 트리 모듈(game 원본)을 그대로 복사. 표에 costume_required.not_frames 가 있으면 그 옷 계열 컷에 그 프레이밍을 안 쓴다(이유 code costume). 이 공방 표엔 그 칸이 없어 동작은 그대로
 - tools/casual-tree.py — 같이 복사(코스튬 칸이 있을 때만 보는 검사)

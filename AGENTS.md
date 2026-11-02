@@ -9,7 +9,7 @@
 |---|---|
 | 이 문서 | 규칙과 자리 |
 | `docs/GAME_CONCEPT.md` | 게임 구조 — 고정 원칙·전투·장르·설계표·디자인 규칙·저작권·시범 |
-| `docs/DUEL_DESIGN.md` | 결투 — 세 방향 비교와 선택, 규칙 전체, 마흔다섯 권 규칙, 시뮬레이터 균형 |
+| `docs/DUEL_DESIGN.md` | 결투 — 세 방향 비교와 선택, 규칙 전체, 쉰 권 규칙, 시뮬레이터 균형 |
 | `data/book-design.json` | 책 설계표. 책 한 권 = 한 칸, 외형과 전투를 함께 뽑는다 |
 | `IMAGE_RULES.md` | 그림 만들기·파일 이름·기록·등록 — 그림 작업 전에 |
 | `docs/IMAGE_AUTOMATION.md` | GPT 세션(사람이 안 지켜보는) 이미지 작업 — 잠금(`tools/image-claim.cjs`) · 지시문 묶음(`tools/prompt-pack.cjs`) · 검수 · 묻지 않고 올리기 |
@@ -115,7 +115,7 @@ python3 tools/casual-tree.py audit    # 하는 일 문장의 고정물이 붙는
 python3 tests/casual-tree.py         # 트리 검사기가 규칙마다 거는지 · 책 몫(이야기 세계·각색 무대)
 node tests/casual-tree.cjs           # 트리 자세 계열의 자세·방향 열쇠가 생성기 표에 있다 · 칸끼리 규칙
 node tools/casual-plan.cjs <책> --out <폴더>   # 일상컷 묶음 짜기(그릴 때) · --check <기록 폴더> 로 올리기 전 검사
-node tests/casual-plan.cjs           # 묶음 계획기 — 마흔다섯 권 × 씨앗 셋이 규칙을 지키고 기록이 생성기 꼴
+node tests/casual-plan.cjs           # 묶음 계획기 — 쉰 권 × 씨앗 셋이 규칙을 지키고 기록이 생성기 꼴
 node tests/casual-plan-screen.cjs    # 계획기 기록을 생성기 화면에 넣으면 같은 지시문(브라우저)
 node tests/prompt-pack-screen.cjs    # 지시문 묶음(tools/prompt-pack.cjs) 열한 자리를 생성기 화면에 넣으면 같은 지시문 · 파일 이름 · 틀린 설정은 안 씀(브라우저)
 node tests/image-claim.cjs           # 이미지 작업 잠금 — bare 저장소로 잡기 · 겹침 · 실행마다 하나 · push 경합 되돌림 · 하루 몫

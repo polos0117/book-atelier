@@ -6,9 +6,9 @@
   "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
   "hair": ["short_crop", "bob", "ponytail", "long_straight", "long_wavy", "updo_bun", "braids", "voluminous"],
   "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped", "flight_suit"],
-  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages", "lab_notes", "fur_velvet", "logbook_brass", "clippings", "petal_script", "gilt_invitations", "gazette_columns", "blueprint_sheets", "sealed_dispatches", "specimen_plates", "challenge_letters", "brick_storybook", "governess_diary", "split_casebook", "ledger_coins", "prophecy_tartan", "testimony_folios", "glass_timetable", "canto_scrolls", "lens_sketches", "bark_mail", "white_tree_heraldry", "rosso_blu_linen", "cloud_woodblock", "score_velvet"],
-  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "towering_lean", "skyward_gaze", "floating_drift", "veiled_glance", "tipping_hat", "pact_reach", "porthole_gaze", "tale_gesture", "cloud_recline", "recoil_reach", "mischief_leap", "dock_reach", "candle_deduce", "assembly_rise", "throne_lean", "specimen_sketch", "lunge_salute", "road_skip", "wind_shawl", "potion_toast", "coin_toss", "dagger_reach", "moonlit_gem", "ranks_halt", "lantern_descent", "telescope_sight", "horn_call", "beacon_raise", "dome_wait", "staff_somersault", "mask_lift"],
-  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "sea_sand", "teal_silver", "forest_red", "gold_void", "violet_snow", "noir_ivory", "ash_ember", "tide_ink", "deep_pearl", "lamp_indigo", "lotus_cloud", "drowned_green", "moon_moss", "champagne_green", "gaslight_umber", "factory_steel", "medici_crimson", "volcanic_teal", "musketeer_azure", "emerald_brick", "heather_slate", "fog_violet", "brine_brass", "heath_crown", "moon_saffron", "glass_verdant", "inferno_starlight", "lunar_brass", "plains_bark", "beacon_silver", "terracotta_blue", "peach_gold", "chandelier_noir"],
+  "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages", "lab_notes", "fur_velvet", "logbook_brass", "clippings", "petal_script", "gilt_invitations", "gazette_columns", "blueprint_sheets", "sealed_dispatches", "specimen_plates", "challenge_letters", "brick_storybook", "governess_diary", "split_casebook", "ledger_coins", "prophecy_tartan", "testimony_folios", "glass_timetable", "canto_scrolls", "lens_sketches", "bark_mail", "white_tree_heraldry", "rosso_blu_linen", "cloud_woodblock", "score_velvet", "leaf_skein", "butterfly_slips", "tri_kingdom_mantle", "owl_post_parchment", "duct_tape_suit"],
+  "pose": ["striding", "charging", "seated_study", "tilted_curious", "crouch_rise", "rising_swing", "commanding_stand", "kneeling_observe", "dance_turn", "towering_lean", "skyward_gaze", "floating_drift", "veiled_glance", "tipping_hat", "pact_reach", "porthole_gaze", "tale_gesture", "cloud_recline", "recoil_reach", "mischief_leap", "dock_reach", "candle_deduce", "assembly_rise", "throne_lean", "specimen_sketch", "lunge_salute", "road_skip", "wind_shawl", "potion_toast", "coin_toss", "dagger_reach", "moonlit_gem", "ranks_halt", "lantern_descent", "telescope_sight", "horn_call", "beacon_raise", "dome_wait", "staff_somersault", "mask_lift", "window_flight", "butterfly_doze", "oath_stride", "mirror_reach", "potato_kneel"],
+  "palette": ["ink_jade", "tricolor_warm", "navy_gold", "cream_blue", "oxblood_gray", "rose_jade", "rust_parchment", "black_white", "moss_tweed", "brass_teal", "blush_ivory", "crimson_black", "sea_sand", "teal_silver", "forest_red", "gold_void", "violet_snow", "noir_ivory", "ash_ember", "tide_ink", "deep_pearl", "lamp_indigo", "lotus_cloud", "drowned_green", "moon_moss", "champagne_green", "gaslight_umber", "factory_steel", "medici_crimson", "volcanic_teal", "musketeer_azure", "emerald_brick", "heather_slate", "fog_violet", "brine_brass", "heath_crown", "moon_saffron", "glass_verdant", "inferno_starlight", "lunar_brass", "plains_bark", "beacon_silver", "terracotta_blue", "peach_gold", "chandelier_noir", "neverland_dusk", "dream_azure", "three_realms_dusk", "scarlet_gold_candle", "mars_butterscotch"],
   "face_shape": ["oval", "round", "heart", "long", "square_soft", "diamond"],
   "eyes": ["almond_wide", "round_large", "narrow_upturned", "droopy_soft", "deep_set", "monolid_long"],
   "brows": ["straight_thick", "arched_thin", "soft_round", "angled_sharp", "low_heavy"],
@@ -4209,7 +4209,7 @@
     "principle": "\"가면\" 뒤에 숨어 극장을 지배한다 — 드러나는 순간 모든 것을 무너뜨린다",
     "forms": {
      "발단": "벽 너머에 숨는다 — 공격받지 않지만 치지도 못한다. 내 턴이 시작될 때 맞은편(비었으면 가장 약한 상대) 힘 −1",
-     "전개": "가면을 벗고 드러난다. 장이 끝날 때 상대의 가장 센 책 힘 −2 — 5번 박스를 비워라",
+     "전개": "가면을 벗고 드러난다. 장이 끝날 때 상대의 가장 센 책 힘 −1 — 5번 박스를 비워라",
      "결말": "결말에 들 때 샹들리에가 떨어진다 — 상대 책 모두에게 2"
     },
     "counter": "숨은 동안엔 다른 책을 노리고, 전개에 드러나면 바로 친다. 결말엔 판에 책을 적게 두면 샹들리에가 덜 아프다"
@@ -4255,6 +4255,525 @@
     "분장실 거울 너머의 목소리",
     "떨어지는 샹들리에",
     "가면무도회의 붉은 죽음"
+   ]
+  },
+  {
+   "key": "peter_pan",
+   "title": "피터 팬",
+   "author": "J. M. 배리",
+   "author_death": 1937,
+   "abroad_protected": true,
+   "adaptations": [
+    "디즈니 애니메이션(1953)·실사 영화 — 초록 튜닉과 붉은 깃털 모자, 팅커벨의 생김새",
+    "뮤지컬·연극 무대 의상",
+    "출간본 표지·삽화"
+   ],
+   "source_scope": "소설 『피터와 웬디』(1911) 본문 — 희곡 『피터 팬』(1904)·『켄싱턴 공원의 피터 팬』은 넣지 않는다",
+   "quote_source": "직접 옮김",
+   "persona": "어른이 되기를 거부하고 네버랜드의 하늘을 나는, 그림자를 잃어버린 영원한 아이",
+   "voice": {
+    "발단": "창문 열어 둬. 두 번째 별에서 오른쪽, 아침까지 곧장이야.",
+    "전개": "후크 선장? 째깍 소리만 나도 도망가는걸.",
+    "결말": "죽는 것도 굉장히 큰 모험일 거야."
+   },
+   "desire": "영원히 아이로 남는 것",
+   "conflict": "자유 대 성장",
+   "symbols": [
+    "잃어버린 그림자",
+    "요정 가루",
+    "째깍거리는 악어"
+   ],
+   "arc": {
+    "question": "자라지 않는 것은 자유인가, 상실인가",
+    "conflict": "네버랜드의 모험이 빛날수록 아이들은 집과 어머니를 그리워한다",
+    "answer": "아이들은 돌아가 자라고, 그녀는 창밖에 남는다 — 영원한 아이의 대가는 잊힘이다"
+   },
+   "genre": "동화·판타지",
+   "era": "1900년대 초 런던 → 네버랜드(가상)",
+   "region": "런던 블룸즈버리의 아이 방 → 네버랜드의 인어 호수와 해적선",
+   "place": "a moonlit London nursery window opening onto rooftops, a distant island of lagoons and a pirate ship beneath the stars",
+   "form_material": "마른 나뭇잎과 거미줄로 엮은 책장 튜닉, 요정 가루가 묻은 금빛 가장자리",
+   "binding": "hardcover",
+   "ethnicity": "Southeast Asian",
+   "silhouette": {
+    "body": "petite",
+    "hair": "short_crop",
+    "garment": "layered_skirt",
+    "material": "leaf_skein",
+    "pose": "window_flight",
+    "palette": "neverland_dusk"
+   },
+   "face": {
+    "face_shape": "heart",
+    "eyes": "round_large",
+    "brows": "angled_sharp",
+    "nose": "broad_soft",
+    "lips": "thin_long"
+   },
+   "rule": {
+    "principle": "\"자라지 않는다\" — 쌓은 것을 책장을 넘겨도 잃지 않지만, 끝내 아이들은 돌아간다",
+    "forms": {
+     "발단": "내 턴마다 요정 가루 — 힘 +1(셋까지)",
+     "전개": "책장을 넘겨도 자라지 않는다 — 장이 끝날 때의 덧힘(셋까지)을 다음 장에 그대로 가져간다. 칠 때 표적이 이 책보다 세면 피해 +1",
+     "결말": "결말에 들 때 아이들이 집으로 — 이 책은 창밖으로 떠나고(패배가 아니다) 남은 아군 모두 힘 +2"
+    },
+    "counter": "장이 끝나기 전에 쳐서 덧힘을 깎는다 — 가져갈 것이 없다. 결말에 떠나면 판 위 책 수가 하나 준다"
+   },
+   "forms": {
+    "발단": {
+     "look": "아이 방 창가 — 마른 나뭇잎을 겹겹이 엮은 짧은 치마 튜닉, 맨발, 발목에 실로 꿰매 단 그림자",
+     "role": "정찰",
+     "pose": "열린 창틀에 한쪽 무릎을 걸치고 앉아 방 안을 들여다보는 자세",
+     "expr": "mischievous"
+    },
+    "전개": {
+     "look": "네버랜드 — 나뭇잎 튜닉 위에 해적에게서 빼앗은 붉은 허리띠, 귀 뒤에 꽂은 새 깃털 하나, 허리의 작은 단검",
+     "role": "교란",
+     "pose": "돛대 꼭대기에서 한 손으로 밧줄을 잡고 몸을 뒤로 젖혀 수탉처럼 외치는 자세",
+     "expr": "laughing_open"
+    },
+    "결말": {
+     "look": "돌아온 창가 — 해진 나뭇잎 튜닉, 손바닥에 남은 요정 가루, 목에 건 도토리 단추 목걸이",
+     "role": "지원",
+     "pose": "닫힌 창밖 공중에 떠서 두 손을 유리창에 대고 방 안을 들여다보는 자세",
+     "expr": "wistful"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "달빛 아이 방, 창문이 열리며 작은 빛 하나가 방 안을 휘젓고 날아다닌다",
+     "one_figure": true,
+     "particles": "fireflies"
+    },
+    "전개": {
+     "scene": "인어 호수의 바위 위로 해가 지고, 물결 위에 해적선 그림자가 길게 비친다",
+     "one_figure": true,
+     "particles": "bubbles"
+    },
+    "결말": {
+     "scene": "런던 지붕 위로 두 번째 별이 빛나고, 그 오른쪽으로 아침까지 이어지는 빛의 길",
+     "one_figure": true,
+     "particles": "stars"
+    }
+   },
+   "scene_cards": [
+    "그림자를 꿰매는 밤",
+    "인어 호수",
+    "째깍 악어와 후크"
+   ]
+  },
+  {
+   "key": "zhuangzi",
+   "title": "장자",
+   "author": "장주(전승)",
+   "anonymous": true,
+   "abroad_protected": false,
+   "source_scope": "『장자』 내편 일곱 편 중심(외편·잡편의 우화 일부)",
+   "quote_source": "직접 옮김",
+   "persona": "나비가 된 꿈에서 깨어 내가 나비인지 나비가 나인지 묻고, 쓸모없음의 쓸모를 웃으며 말하는 자유로운 떠돌이",
+   "voice": {
+    "발단": "북쪽 바다의 물고기가 새가 되어 구만 리를 난다.",
+    "전개": "쓸모없는 나무라서 아무도 베지 않았다. 그래서 크게 자랐다.",
+    "결말": "내가 나비 꿈을 꾼 걸까, 나비가 내 꿈을 꾸는 걸까."
+   },
+   "desire": "어디에도 매이지 않고 노니는 것",
+   "conflict": "쓸모 대 자유",
+   "symbols": [
+    "나비",
+    "구만 리를 나는 붕새",
+    "쓸모없는 큰 나무"
+   ],
+   "arc": {
+    "question": "쓸모 있어야만 가치가 있는가",
+    "conflict": "세상은 쓸모를 재고 이름을 다투며 서로를 베어 낸다",
+    "answer": "나비와 나, 꿈과 깸의 경계가 녹으면 매임 없이 노닌다"
+   },
+   "genre": "사상",
+   "era": "전국 시대(기원전 4세기)",
+   "region": "송나라 몽 땅 — 호숫가 다리 → 북쪽 바다",
+   "place": "a misty river bridge in ancient Song country, willow-lined banks and a vast northern sea beyond",
+   "form_material": "물결무늬 죽간을 풀어 날개처럼 늘어뜨린 헐렁한 도포, 나비 날개 모양 소매",
+   "binding": "bamboo",
+   "ethnicity": "Chinese",
+   "silhouette": {
+    "body": "lanky",
+    "hair": "long_wavy",
+    "garment": "robe_overlap",
+    "material": "butterfly_slips",
+    "pose": "butterfly_doze",
+    "palette": "dream_azure"
+   },
+   "face": {
+    "face_shape": "long",
+    "eyes": "droopy_soft",
+    "brows": "soft_round",
+    "nose": "broad_soft",
+    "lips": "wide_smile"
+   },
+   "rule": {
+    "principle": "\"쓸모없음\" 으로 살아남는다 — 다투지 않을수록 꺾이지 않는다",
+    "forms": {
+     "발단": "치지 않고 턴을 보내면 소요유 — 다음 내 턴에 힘 +1(셋까지)",
+     "전개": "쓸모없는 나무 — 이 책보다 센 책이 치면 그 피해 −2",
+     "결말": "결말에 들 때 나비 꿈 — 이 책보다 센 가장 센 상대 책과 힘을 맞바꾼다"
+    },
+    "counter": "작은 책으로 여러 번 친다 — 큰 책은 나무를 베지 못한다. 결말 전에 상대 힘을 고르게 두면 맞바꿔도 얻을 게 적다"
+   },
+   "forms": {
+    "발단": {
+     "look": "북쪽 바다의 붕새 — 깃털처럼 펄럭이는 넓은 소매 도포, 풀어 내린 머리, 맨발",
+     "role": "정찰",
+     "pose": "바닷가 바위 위에서 두 팔을 활짝 펼쳐 바람을 안는 자세",
+     "expr": "playful"
+    },
+    "전개": {
+     "look": "쓸모없는 나무 아래 — 헐렁하게 풀어 입은 도포, 허리에 매단 커다란 표주박",
+     "role": "버티기",
+     "pose": "굽은 큰 나무 아래 비스듬히 누워 표주박을 베고 한쪽 무릎을 세운 자세",
+     "expr": "amused"
+    },
+    "결말": {
+     "look": "나비 꿈 — 반투명한 나비 날개 소매, 흐트러진 머리칼에 앉은 나비 한 마리",
+     "role": "교란",
+     "pose": "눈을 반쯤 감고 한 손바닥 위에 나비를 올린 채 발끝으로 가볍게 서 있는 자세",
+     "expr": "sleepy"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "북쪽 바다가 갈라지며 거대한 물고기가 하늘을 덮는 새로 솟구친다",
+     "one_figure": true,
+     "particles": "mist"
+    },
+    "전개": {
+     "scene": "들판 한가운데 아무도 베지 않은 거대한 나무가 하늘을 가린다",
+     "one_figure": true,
+     "particles": "leaves"
+    },
+    "결말": {
+     "scene": "수천 마리 나비가 꿈처럼 흩어지며 세상의 윤곽이 흐려진다",
+     "one_figure": true,
+     "particles": "petals"
+    }
+   },
+   "scene_cards": [
+    "호숫가 다리의 물고기 문답",
+    "포정의 소 잡기",
+    "동이를 두드리며 부르는 노래"
+   ]
+  },
+  {
+   "key": "three_kingdoms",
+   "title": "삼국지",
+   "author": "나관중(전승)",
+   "anonymous": true,
+   "abroad_protected": false,
+   "adaptations": [
+    "코에이 『삼국지』 게임의 인물 그림",
+    "요코야마 미쓰테루 만화·이문열 평역의 그림",
+    "드라마·영화(『적벽대전』 등)의 갑옷과 배우 얼굴"
+   ],
+   "source_scope": "『삼국지연의』 120회(14세기 나관중 정리, 모종강 본) — 정사 『삼국지』는 넣지 않는다",
+   "quote_source": "직접 옮김",
+   "persona": "도원에서 맺은 맹세 하나를 붙들고, 천하가 셋으로 갈라지는 바람 속을 끝까지 걸어가는 흩어진 형제들의 깃발",
+   "voice": {
+    "발단": "같은 날 태어나지 못했으나, 같은 날 죽기를 원한다.",
+    "전개": "동남풍이 분다. 적벽이 불탄다.",
+    "결말": "오장원의 별이 진다. 그래도 맹세는 남는다."
+   },
+   "desire": "도원의 맹세대로 무너진 한나라를 다시 세우는 것",
+   "conflict": "의리 대 천하",
+   "symbols": [
+    "도원의 복숭아꽃",
+    "흰 깃털 부채",
+    "세 나라의 깃발"
+   ],
+   "arc": {
+    "question": "의리는 천하를 얻을 수 있는가",
+    "conflict": "맹세한 형제가 하나씩 쓰러지고, 지혜도 하늘의 때를 이기지 못한다",
+    "answer": "천하는 끝내 다른 손에 들어가지만, 맹세와 충의의 이야기는 남는다"
+   },
+   "genre": "비극",
+   "era": "후한 말~삼국 시대(184~280), 14세기 소설",
+   "region": "탁군 도원 → 적벽 → 오장원",
+   "place": "a peach orchard in full blossom outside an old Han-dynasty town, distant river cliffs and war banners",
+   "form_material": "위·촉·오 세 빛 비단 망토를 겹쳐 전장 지도를 찍은 책장, 복숭아꽃 매듭",
+   "binding": "hanji",
+   "ethnicity": "East Asian",
+   "silhouette": {
+    "body": "tall_statuesque",
+    "hair": "long_wavy",
+    "garment": "cloak_wrapped",
+    "material": "tri_kingdom_mantle",
+    "pose": "oath_stride",
+    "palette": "three_realms_dusk"
+   },
+   "face": {
+    "face_shape": "diamond",
+    "eyes": "almond_wide",
+    "brows": "straight_thick",
+    "nose": "straight_narrow",
+    "lips": "full_wide"
+   },
+   "rule": {
+    "principle": "\"맹세\" 로 묶인다 — 형제가 쓰러질수록 남은 이가 그 몫을 짊어진다",
+    "forms": {
+     "발단": "들어올 때 도원결의 — 판 위 아군 책마다(자신 포함) 맹세 하나(셋까지)",
+     "전개": "이 책이 판에 있으면 장이 끝날 때 적벽의 불 — 상대 책 모두 힘 −1",
+     "결말": "아군 책이 닫힐 때마다 맹세 하나를 써 힘 +3 — 형제의 몫을 짊어진다"
+    },
+    "counter": "맹세는 발단에 들어올 때만 — 아군이 적을 때 들어오면 적다. 결말엔 아군을 닫지 말고 그녀부터 친다"
+   },
+   "forms": {
+    "발단": {
+     "look": "도원결의 — 붉은 비단 겉옷 위에 두른 세 빛 망토, 머리에 꽂은 복숭아꽃, 손에 든 맹세의 술잔",
+     "role": "지원",
+     "pose": "복숭아나무 아래 술잔을 높이 들어 하늘에 맹세하는 자세",
+     "expr": "determined"
+    },
+    "전개": {
+     "look": "적벽 — 흰 학창의 위에 두른 세 빛 망토, 손에 든 흰 깃털 부채",
+     "role": "공격",
+     "pose": "뱃머리에 서서 흰 깃털 부채를 들어 동남쪽 바람을 가리키는 자세",
+     "expr": "confident"
+    },
+    "결말": {
+     "look": "오장원 — 바래고 찢긴 세 빛 망토, 손에 든 등불, 허리에 꽂은 지도 두루마리",
+     "role": "버티기",
+     "pose": "가을바람 부는 진영 언덕에서 등불을 들고 밤하늘의 별을 올려다보는 자세",
+     "expr": "nostalgic"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "만개한 복숭아밭에 꽃잎이 바람을 타고 휘몰아친다",
+     "one_figure": true,
+     "particles": "petals"
+    },
+    "전개": {
+     "scene": "동남풍을 타고 강 위의 배들이 한꺼번에 불길에 휩싸인다",
+     "one_figure": true,
+     "particles": "embers"
+    },
+    "결말": {
+     "scene": "가을밤 오장원 하늘에서 큰 별 하나가 진영 위로 떨어진다",
+     "one_figure": true,
+     "particles": "stars"
+    }
+   },
+   "scene_cards": [
+    "삼고초려",
+    "장판교의 외침",
+    "출사표"
+   ]
+  },
+  {
+   "key": "harry_potter_stone",
+   "title": "해리 포터와 마법사의 돌",
+   "author": "J. K. 롤링",
+   "alive": true,
+   "abroad_protected": true,
+   "adaptations": [
+    "워너 브러더스 영화(2001~) — 배우 얼굴, 교복·목도리·지팡이·둥근 안경 디자인",
+    "출간본 표지(메리 그랑프레·토머스 테일러 등)",
+    "게임·테마파크·연극의 디자인"
+   ],
+   "source_scope": "『해리 포터와 마법사의 돌』(1997) 1권만 — 2권부터는 넣지 않는다",
+   "quote_source": "인용 안 함",
+   "persona": "계단 밑 작은 방에서 열한 살 생일에 편지를 받고, 마법 학교의 금지된 복도 끝에 숨겨진 돌을 지키러 내려가는 아이",
+   "voice": {
+    "발단": "편지가 왔어. 이번엔 내 이름이 적혀 있어.",
+    "전개": "머리 셋 달린 개가 지키는 문. 그 아래 뭐가 있지?",
+    "결말": "범인은 처음부터 가장 조용한 자리에 있었어."
+   },
+   "desire": "자신이 누구인지 알고 머물 곳을 찾는 것",
+   "conflict": "의심 대 믿음",
+   "symbols": [
+    "부엉이가 물어 온 편지",
+    "붉게 빛나는 돌",
+    "투명 망토"
+   ],
+   "arc": {
+    "question": "의심 가는 자가 정말 범인인가",
+    "conflict": "모두가 음침한 교수를 의심하는 사이, 돌을 노리는 손은 다른 곳에 숨어 있다",
+    "answer": "겉모습이 아니라 마음이 가린 것을 볼 때 진실이 드러난다"
+   },
+   "genre": "추리",
+   "era": "1990년대 영국(가상 마법 학교)",
+   "region": "프리벳가 → 다이애건 앨리 → 마법 학교 지하",
+   "place": "a vast candlelit castle hall beneath an enchanted night-sky ceiling, a dark lake and forest beyond the towers",
+   "form_material": "봉랍을 찍은 양피지 편지를 겹쳐 지은 망토, 부엉이 깃털 가장자리",
+   "binding": "hardcover",
+   "ethnicity": "European",
+   "silhouette": {
+    "body": "petite",
+    "hair": "bob",
+    "garment": "robe_overlap",
+    "material": "owl_post_parchment",
+    "pose": "mirror_reach",
+    "palette": "scarlet_gold_candle"
+   },
+   "face": {
+    "face_shape": "round",
+    "eyes": "almond_wide",
+    "brows": "low_heavy",
+    "nose": "upturned",
+    "lips": "small_bow"
+   },
+   "rule": {
+    "principle": "\"단서\" 로 겉모습 뒤를 본다 — 의심을 모아 진짜 범인을 가린다",
+    "forms": {
+     "발단": "들어올 때 가장 센 상대 책에 의심 하나 — 의심 붙은 책이 치면 그 피해 −1",
+     "전개": "칠 때 단서 +1(셋까지)",
+     "결말": "결말에 들 때 의심이 붙지 않은 가장 약한 상대 책을 단서마다 2 친다 — 범인은 가장 조용한 자리에"
+    },
+    "counter": "의심 붙은 책 대신 다른 책으로 친다. 결말엔 약한 책을 판에 남기지 않는다"
+   },
+   "forms": {
+    "발단": {
+     "look": "편지가 온 날 — 헐렁한 낡은 스웨터 위에 막 받은 검은 교복 로브, 손에 쥔 양피지 편지",
+     "role": "정찰",
+     "pose": "계단 밑 작은 방 문간에 서서 편지 봉투를 두 손으로 들어 불빛에 비춰 보는 자세",
+     "expr": "surprised"
+    },
+    "전개": {
+     "look": "금지된 복도 — 은빛으로 일렁이는 투명 망토를 반쯤 걸친 교복, 진홍·금빛 목도리, 손에 든 가는 지팡이",
+     "role": "교란",
+     "pose": "어두운 복도 모퉁이에서 몸을 낮추고 망토 자락 아래로 반쯤 사라진 채 안쪽을 엿보는 자세",
+     "expr": "curious"
+    },
+    "결말": {
+     "look": "돌을 지키는 방 — 그을린 교복, 풀어진 목도리, 주머니 속에서 붉게 비치는 빛",
+     "role": "공격",
+     "pose": "커다란 금테 거울 앞에 서서 한 손을 주머니에 넣고 다른 손을 거울 쪽으로 뻗는 자세",
+     "expr": "determined"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "벽난로에서 수십 통의 편지가 소용돌이치며 방 안으로 쏟아져 나온다",
+     "one_figure": true,
+     "particles": "pages"
+    },
+    "전개": {
+     "scene": "거대한 마법 체스판 위에서 돌 말들이 부서지며 건너편 문으로 가는 길이 열린다",
+     "one_figure": true,
+     "particles": "dust"
+    },
+    "결말": {
+     "scene": "불꽃이 둘러싼 방, 거울 속에서 붉은 돌이 빛나며 불길이 갈라진다",
+     "one_figure": true,
+     "particles": "embers"
+    }
+   },
+   "scene_cards": [
+    "다이애건 앨리",
+    "트롤과 여자 화장실",
+    "소망의 거울"
+   ]
+  },
+  {
+   "key": "the_martian",
+   "title": "마션",
+   "author": "앤디 위어",
+   "alive": true,
+   "abroad_protected": true,
+   "adaptations": [
+    "리들리 스콧 영화(2015) — 배우 얼굴·우주복·서식지 디자인·포스터 구도",
+    "출간본 표지"
+   ],
+   "source_scope": "『마션』(2011 자가 출판, 2014 정식 출간) 전체",
+   "quote_source": "인용 안 함",
+   "persona": "화성에 홀로 남겨져, 감자와 덕트 테이프와 계산으로 하루하루 살아남는 식물학자 우주비행사",
+   "voice": {
+    "발단": "모두 떠났다. 나는 아직 살아 있다. 계산부터 하자.",
+    "전개": "감자는 자란다. 오늘도 망하지 않았다.",
+    "결말": "손을 뻗어. 이번엔 놓치지 않아."
+   },
+   "desire": "지구로 돌아가는 것",
+   "conflict": "고립 대 끈기",
+   "symbols": [
+    "감자 싹",
+    "덕트 테이프",
+    "낡은 탐사선"
+   ],
+   "arc": {
+    "question": "혼자 남은 사람은 얼마나 버틸 수 있는가",
+    "conflict": "물·공기·식량이 하나씩 바닥나고, 고칠수록 새로 부서진다",
+    "answer": "과학과 유머로 한 문제씩 풀면, 지구 전체가 그녀를 데리러 온다"
+   },
+   "genre": "SF",
+   "era": "2030년대(가까운 미래)",
+   "region": "화성 아키달리아 평원 → 스키아파렐리 분화구",
+   "place": "a rust-red Martian plain under a butterscotch sky, a white habitat dome and a dusty rover",
+   "form_material": "모래빛 우주복에 계산을 적은 책장을 덧대고 은빛 덕트 테이프로 감은 차림",
+   "binding": "hardcover",
+   "ethnicity": "Latin American",
+   "silhouette": {
+    "body": "broad_strong",
+    "hair": "ponytail",
+    "garment": "flight_suit",
+    "material": "duct_tape_suit",
+    "pose": "potato_kneel",
+    "palette": "mars_butterscotch"
+   },
+   "face": {
+    "face_shape": "square_soft",
+    "eyes": "narrow_upturned",
+    "brows": "soft_round",
+    "nose": "broad_soft",
+    "lips": "heart_full"
+   },
+   "rule": {
+    "principle": "\"고치기\" 로 버틴다 — 부서질 때마다 테이프로 하루를 더 산다",
+    "forms": {
+     "발단": "들어올 때 덕트 테이프 하나 — 닫힐 피해를 받으면 그것을 써 힘 1 로 버틴다(어느 장이든)",
+     "전개": "내 턴마다 감자 — 힘 +1(셋까지)",
+     "결말": "결말에 들 때 테이프가 남아 있으면 힘 +3 — 지구가 데리러 온다"
+    },
+    "counter": "한 번 닫아 테이프를 쓰게 하고 다시 닫는다. 감자가 자라기 전에 크게 친다"
+   },
+   "forms": {
+    "발단": {
+     "look": "모래 폭풍 다음 날 — 찢긴 곳을 은빛 덕트 테이프로 감은 모래빛 우주 슈트, 옆구리에 낀 헬멧",
+     "role": "버티기",
+     "pose": "서식지 문 앞 붉은 모래 위에 서서 헬멧을 옆구리에 끼고 지평선을 둘러보는 자세",
+     "expr": "serious"
+    },
+    "전개": {
+     "look": "감자 농장 — 서식지 안의 소매 걷은 작업복, 흙 묻은 장갑, 팔뚝에 적은 계산 메모",
+     "role": "지원",
+     "pose": "흙 바닥에 무릎을 꿇고 싹 난 감자를 두 손으로 받쳐 든 자세",
+     "expr": "amused"
+    },
+    "결말": {
+     "look": "상승선 — 테이프로 감은 우주복과 허리에 묶은 끈, 손목에 감은 줄",
+     "role": "돌파",
+     "pose": "검은 우주에 떠서 한 팔을 쭉 뻗어 손을 내미는 자세",
+     "expr": "relieved"
+    }
+   },
+   "opens": {
+    "발단": {
+     "scene": "붉은 모래 폭풍이 서식지를 덮치며 안테나가 꺾여 날아간다",
+     "one_figure": true,
+     "particles": "dust"
+    },
+    "전개": {
+     "scene": "서식지 안 흙 위로 초록 감자 싹이 줄지어 돋는다",
+     "one_figure": true,
+     "particles": "leaves"
+    },
+    "결말": {
+     "scene": "검은 우주, 끊어진 줄 끝 손끝 너머로 커다란 우주선의 불빛이 다가온다",
+     "one_figure": true,
+     "particles": "stars"
+    }
+   },
+   "scene_cards": [
+    "감자 농장",
+    "낡은 탐사선과 16진법",
+    "화성의 해적"
    ]
   }
  ]

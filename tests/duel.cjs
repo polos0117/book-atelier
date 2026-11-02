@@ -700,8 +700,52 @@ const LG = (st, who) => { st.turn = who; return D.legal(data, st, who); };
   start(st, 'me'); ok(dr.power === 9, '발단 — 내 턴마다 맞은편 힘 −1');
   st.chapter = 1; ph.flags.entered = {}; D.BOOK.phantom_of_the_opera.form(c, ph, 1); ok(!ph.flags.hidden, '전개 — 드러난다');
   const sz = put(st, 'foe', 'sunzi', 2); sz.power = 4; dr.power = 12;
-  D.BOOK.phantom_of_the_opera.chapterEnd(c, ph); ok(dr.power === 10 && sz.power === 4, '전개 — 장이 끝날 때 가장 센 상대 힘 −2');
-  st.chapter = 2; D.BOOK.phantom_of_the_opera.form(c, ph, 2); ok(dr.power === 8 && sz.power === 2, '결말 — 샹들리에가 상대 모두에게 2');
+  D.BOOK.phantom_of_the_opera.chapterEnd(c, ph); ok(dr.power === 11 && sz.power === 4, '전개 — 장이 끝날 때 가장 센 상대 힘 −1');
+  st.chapter = 2; D.BOOK.phantom_of_the_opera.form(c, ph, 2); ok(dr.power === 9 && sz.power === 2, '결말 — 샹들리에가 상대 모두에게 2');
+}
+{ /* 피터 팬 — 자라지 않는다(2026-11-02) */
+  const st = rig(['peter_pan', 'sunzi'], ['dracula']);
+  const pp = put(st, 'me', 'peter_pan', 0), sz = put(st, 'me', 'sunzi', 2); const c = { data, st };
+  const b0 = pp.power; for (let i = 0; i < 4; i++) start(st, 'me'); ok(pp.power === b0 + 3 && pp.flags.dust === 3, '발단 — 내 턴마다 요정 가루 힘 +1, 셋까지');
+  D.BOOK.peter_pan.chapterEnd(c, pp); ok(pp.tok === 3, '발단이 끝날 때 덧힘을 적어 둔다');
+  st.chapter = 1; pp.power = D.base(data, st, pp); D.BOOK.peter_pan.form(c, pp, 1); ok(pp.power === D.base(data, st, pp) + 3 && pp.tok === 0, '전개에 들 때 덧힘을 가져온다');
+  const dr = put(st, 'foe', 'dracula', 1); dr.power = 30; const h = { target: dr, dmg: 3 }; D.BOOK.peter_pan.beforeStrike(c, pp, h); ok(h.dmg === 4, '전개 — 센 표적엔 피해 +1');
+  st.chapter = 2; const s0 = sz.power; D.BOOK.peter_pan.form(c, pp, 2); ok(st.me.slots[0] === null && sz.power === s0 + 2 && st.me.lost === 0, '결말 — 창밖으로 떠나고(패배 아님) 아군 힘 +2');
+}
+{ /* 장자 — 쓸모없음 */
+  const st = rig(['zhuangzi'], ['dracula']);
+  const zz = put(st, 'me', 'zhuangzi', 0); const c = { data, st };
+  const p0 = zz.power; zz.flags.struck = true; start(st, 'me'); ok(zz.power === p0 && !zz.flags.struck, '친 턴 뒤에는 소요유가 없다');
+  start(st, 'me'); start(st, 'me'); ok(zz.power === p0 + 2 && zz.tok === 2, '발단 — 치지 않은 턴마다 힘 +1');
+  st.chapter = 1; const dr = put(st, 'foe', 'dracula', 1); dr.power = 30; zz.power = 5;
+  const h = { attacker: dr, target: zz, dmg: 5 }; D.BOOK.zhuangzi.beforeDamage(c, zz, h); ok(h.dmg === 3, '전개 — 센 책이 치면 피해 −2');
+  st.chapter = 2; zz.power = 4; dr.power = 12; D.BOOK.zhuangzi.form(c, zz, 2); ok(zz.power === 12 && dr.power === 4, '결말 — 나비 꿈, 가장 센 상대와 힘을 맞바꾼다');
+}
+{ /* 삼국지 — 맹세 */
+  const st = rig(['three_kingdoms', 'sunzi', 'alice'], ['dracula', 'heo_saeng']);
+  const sz = put(st, 'me', 'sunzi', 1), al = put(st, 'me', 'alice', 2), tk = put(st, 'me', 'three_kingdoms', 0); const c = { data, st };
+  ok(tk.tok === 3, '발단에 들 때 판 위 아군마다 맹세(자신 포함)');
+  st.chapter = 1; const dr = put(st, 'foe', 'dracula', 1), hs = put(st, 'foe', 'heo_saeng', 2); dr.power = 9; hs.power = 9;
+  D.BOOK.three_kingdoms.chapterEnd(c, tk); ok(dr.power === 8 && hs.power === 8, '전개 — 장이 끝날 때 상대 모두 힘 −1');
+  st.chapter = 2; tk.power = 5; D.BOOK.three_kingdoms.allyClosed(c, tk, al); ok(tk.power === 8 && tk.tok === 2, '결말 — 아군이 닫힐 때 맹세 하나로 힘 +3');
+}
+{ /* 해리 포터와 마법사의 돌 — 의심 · 단서 */
+  const st = rig(['harry_potter_stone'], ['dracula', 'sunzi']);
+  const dr = put(st, 'foe', 'dracula', 1), sz = put(st, 'foe', 'sunzi', 2); dr.power = 20; sz.power = 3;
+  const hp = put(st, 'me', 'harry_potter_stone', 0); const c = { data, st };
+  ok(dr.flags.suspect === 'me' && !sz.flags.suspect, '발단 — 가장 센 상대에 의심');
+  const h = { attacker: dr, target: hp, dmg: 4, source: 'strike' }; D.BOOK.harry_potter_stone.beforeDamage(c, hp, h); D.BOOK.harry_potter_stone.allyHit(c, hp, h); ok(h.dmg === 3, '의심 붙은 책의 치기는 피해 −1(한 번만)');
+  st.chapter = 1; for (let i = 0; i < 4; i++) D.BOOK.harry_potter_stone.afterStrike(c, hp); ok(hp.tok === 3, '전개 — 칠 때 단서, 셋까지');
+  st.chapter = 2; sz.power = 10; D.BOOK.harry_potter_stone.form(c, hp, 2); ok(sz.power === 4, '결말 — 의심 안 붙은 가장 약한 상대를 단서마다 2');
+}
+{ /* 마션 — 테이프 · 감자 */
+  const st = rig(['the_martian'], ['dracula']);
+  const tm = put(st, 'me', 'the_martian', 0); const c = { data, st };
+  ok(tm.tok === 1, '발단 — 덕트 테이프 하나');
+  tm.power = 3; const h = { target: tm, dmg: 5 }; D.BOOK.the_martian.beforeDamage(c, tm, h); ok(h.dmg === 2 && tm.tok === 0, '닫힐 피해 — 테이프로 힘 1 에서 버틴다');
+  const h2 = { target: tm, dmg: 5 }; tm.power = 3; D.BOOK.the_martian.beforeDamage(c, tm, h2); ok(h2.dmg === 5, '테이프가 없으면 그대로');
+  st.chapter = 1; tm.power = 5; for (let i = 0; i < 4; i++) start(st, 'me'); ok(tm.power === 8, '전개 — 내 턴마다 감자 힘 +1, 셋까지');
+  st.chapter = 2; tm.tok = 1; tm.power = 5; D.BOOK.the_martian.form(c, tm, 2); ok(tm.power === 8, '결말 — 테이프가 남았으면 힘 +3');
 }
 /* ── 자동 넘기기 — 할 수 있는 것이 없으면 넘긴다 ── */
 {

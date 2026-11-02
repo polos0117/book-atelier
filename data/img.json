@@ -45,9 +45,10 @@
   "twenty_thousand_leagues": {"byStyle": {"literary_fantasy": {"casual": {"f": ["twenty_thousand_leagues_literary_fantasy_f_casual1.webp", "twenty_thousand_leagues_literary_fantasy_f_casual2.webp", "twenty_thousand_leagues_literary_fantasy_f_casual3.webp", "twenty_thousand_leagues_literary_fantasy_f_casual4.webp", "twenty_thousand_leagues_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "twenty_thousand_leagues_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "twenty_thousand_leagues_begin_open_literary_fantasy_f.webp"}, "end": {"f": "twenty_thousand_leagues_end_literary_fantasy_f.webp"}, "end_open": {"f": "twenty_thousand_leagues_end_open_literary_fantasy_f.webp"}, "middle": {"f": "twenty_thousand_leagues_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "twenty_thousand_leagues_middle_open_literary_fantasy_f.webp"}}}}},
   "two_towers": {"byStyle": {"literary_fantasy": {"casual": {"f": ["two_towers_literary_fantasy_f_casual1.webp", "two_towers_literary_fantasy_f_casual2.webp", "two_towers_literary_fantasy_f_casual3.webp", "two_towers_literary_fantasy_f_casual4.webp", "two_towers_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "two_towers_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "two_towers_begin_open_literary_fantasy_f.webp"}, "end": {"f": "two_towers_end_literary_fantasy_f.webp"}, "end_open": {"f": "two_towers_end_open_literary_fantasy_f.webp"}, "middle": {"f": "two_towers_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "two_towers_middle_open_literary_fantasy_f.webp"}}}}},
   "we": {"byStyle": {"literary_fantasy": {"casual": {"f": ["we_literary_fantasy_f_casual1.webp", "we_literary_fantasy_f_casual2.webp", "we_literary_fantasy_f_casual3.webp", "we_literary_fantasy_f_casual4.webp", "we_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "we_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "we_begin_open_literary_fantasy_f.webp"}, "end": {"f": "we_end_literary_fantasy_f.webp"}, "end_open": {"f": "we_end_open_literary_fantasy_f.webp"}, "middle": {"f": "we_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "we_middle_open_literary_fantasy_f.webp"}}}}},
-  "wizard_of_oz": {"byStyle": {"literary_fantasy": {"casual": {"f": ["wizard_of_oz_literary_fantasy_f_casual1.webp", "wizard_of_oz_literary_fantasy_f_casual2.webp", "wizard_of_oz_literary_fantasy_f_casual3.webp", "wizard_of_oz_literary_fantasy_f_casual4.webp", "wizard_of_oz_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "wizard_of_oz_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "wizard_of_oz_begin_open_literary_fantasy_f.webp"}, "end": {"f": "wizard_of_oz_end_literary_fantasy_f.webp"}, "end_open": {"f": "wizard_of_oz_end_open_literary_fantasy_f.webp"}, "middle": {"f": "wizard_of_oz_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "wizard_of_oz_middle_open_literary_fantasy_f.webp"}}}}}
+  "wizard_of_oz": {"byStyle": {"literary_fantasy": {"casual": {"f": ["wizard_of_oz_literary_fantasy_f_casual1.webp", "wizard_of_oz_literary_fantasy_f_casual2.webp", "wizard_of_oz_literary_fantasy_f_casual3.webp", "wizard_of_oz_literary_fantasy_f_casual4.webp", "wizard_of_oz_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "wizard_of_oz_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "wizard_of_oz_begin_open_literary_fantasy_f.webp"}, "end": {"f": "wizard_of_oz_end_literary_fantasy_f.webp"}, "end_open": {"f": "wizard_of_oz_end_open_literary_fantasy_f.webp"}, "middle": {"f": "wizard_of_oz_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "wizard_of_oz_middle_open_literary_fantasy_f.webp"}}}}},
+  "zhuangzi": {"byStyle": {"literary_fantasy": {"casual": {"f": ["zhuangzi_literary_fantasy_f_casual1.webp", "zhuangzi_literary_fantasy_f_casual2.webp", "zhuangzi_literary_fantasy_f_casual3.webp", "zhuangzi_literary_fantasy_f_casual4.webp", "zhuangzi_literary_fantasy_f_casual5.webp"]}, "byForm": {"begin": {"f": "zhuangzi_begin_literary_fantasy_f.webp"}, "begin_open": {"f": "zhuangzi_begin_open_literary_fantasy_f.webp"}, "end": {"f": "zhuangzi_end_literary_fantasy_f.webp"}, "end_open": {"f": "zhuangzi_end_open_literary_fantasy_f.webp"}, "middle": {"f": "zhuangzi_middle_literary_fantasy_f.webp"}, "middle_open": {"f": "zhuangzi_middle_open_literary_fantasy_f.webp"}}}}}
  },
- "count": 46,
+ "count": 47,
  "added": {
   "alice_begin_literary_fantasy_f.webp": "2026-10-17",
   "alice_begin_open_literary_fantasy_f.webp": "2026-10-17",
@@ -529,6 +530,17 @@
   "wizard_of_oz_literary_fantasy_f_casual4.webp": "2026-10-29",
   "wizard_of_oz_literary_fantasy_f_casual5.webp": "2026-10-29",
   "wizard_of_oz_middle_literary_fantasy_f.webp": "2026-10-29",
-  "wizard_of_oz_middle_open_literary_fantasy_f.webp": "2026-10-29"
+  "wizard_of_oz_middle_open_literary_fantasy_f.webp": "2026-10-29",
+  "zhuangzi_begin_literary_fantasy_f.webp": "2026-11-02",
+  "zhuangzi_begin_open_literary_fantasy_f.webp": "2026-11-02",
+  "zhuangzi_end_literary_fantasy_f.webp": "2026-11-02",
+  "zhuangzi_end_open_literary_fantasy_f.webp": "2026-11-02",
+  "zhuangzi_literary_fantasy_f_casual1.webp": "2026-11-02",
+  "zhuangzi_literary_fantasy_f_casual2.webp": "2026-11-02",
+  "zhuangzi_literary_fantasy_f_casual3.webp": "2026-11-02",
+  "zhuangzi_literary_fantasy_f_casual4.webp": "2026-11-02",
+  "zhuangzi_literary_fantasy_f_casual5.webp": "2026-11-02",
+  "zhuangzi_middle_literary_fantasy_f.webp": "2026-11-02",
+  "zhuangzi_middle_open_literary_fantasy_f.webp": "2026-11-02"
  }
 }

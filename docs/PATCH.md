@@ -7,6 +7,11 @@
 날짜는 `2026-10-15` 꼴, 누가는 `claude` 또는 `gpt`, 새 칸이 위로 간다.
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
+## 2026-11-02 · claude · 반지의 제왕을 1부 「반지 원정대」 로 — 두 개의 탑 · 왕의 귀환은 따로 책
+- data/book-design.json — 열쇠 lord_of_the_rings 는 그대로(올린 그림 이름이 안 깨진다), 제목 「반지의 제왕: 반지 원정대」 · 범위 1부(1954)만. 결말 폼 · 개방을 회색 항구(3부 끝) → 아몬 헨 · 라우로스 강가에서 홀로 배를 띄우는 1부 끝으로, 결말 목소리 · 답 · 지역 · 장면 카드(톰 봄바딜의 숲 · 깊은골의 회의 · 로스로리엔의 거울)도 1부로. 사용자 「반지의 제왕 추가할 때 부제목 별로 나눌걸 그랬네」 → 「A안으로 진행」
+- lib/words.js · lib/duel.js · docs/DUEL_DESIGN.md · docs/GAME_CONCEPT.md — 결말 규칙 말 「반지를 던진다」 → 「홀로 배를 띄운다 — 가장 센 상대를 끌고 내려간다」(효과 · 수는 그대로). 화면 words.js ?v=23
+- 그림: 결말 폼 · 결말 개방 두 장은 새 결말로 다시 그린다(옛 sha256 은 그림 저장소 records/lord_of_the_rings/replacement.json)
+
 ## 2026-11-02 · gpt · 별의 전령 이미지 11장 등록
 - data/img.json — 폼 3장·개방 3장·트리 v2 일상 5장 자동 등록을 확인했다.
 - data/art-index.json · data/art-similar.json — 새 썸네일 11장의 특징을 art-core로 계산하고 기존 색인을 보존해 닮은 그림 목록을 다시 만들었다. 환경에 cargo가 없어 rustc로 같은 코어를 실행했다.

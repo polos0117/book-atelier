@@ -28,7 +28,7 @@ fails(lambda d: d['books'][0]['silhouette'].update(hair='mohawk'), '정한 말�
 d = copy.deepcopy(doc); d['books'][0].update(author_death=1996, adaptations=['세이건 다큐멘터리'])
 assert B.check(d) == [] and any('아직 보호 중' in w for w in B.warnings(d)), B.warnings(d)
 # 지금 경고는 보호 중인 책(생존 작가 · 1963년 이후 사망)만
-assert sorted(w.split(':')[0] for w in B.warnings(doc)) == sorted(b['title'] for b in doc['books'] if B.protected_kr(b)), B.warnings(doc)
+assert sorted(w.split(': 한국에서')[0] for w in B.warnings(doc)) == sorted(b['title'] for b in doc['books'] if B.protected_kr(b)), B.warnings(doc)
 # 생존 작가 — 사망 연도 없이 alive, 경고만. 둘 다 적으면 걸린다
 d = copy.deepcopy(doc); d['books'][0].pop('author_death'); d['books'][0].update(alive=True, adaptations=['영화'])
 assert B.check(d) == [] and any('살아 있다' in w for w in B.warnings(d)), (B.check(d), B.warnings(d))

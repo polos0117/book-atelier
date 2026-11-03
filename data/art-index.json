@@ -1,5 +1,5 @@
 {
-  "computation": "Existing entries preserved. Harry Potter and the Philosopher’s Stone: 11 entries computed from official workflow thumbnails using an art-core-compatible C++ float32 implementation. Feature computation matched an existing reference; every existing similarity-list score was validated before recomputing all lists.",
+  "computation": "Existing entries preserved except the two user-requested Harry Potter left-hand repairs, recalculated from official workflow thumbnails with the validated art-core-compatible calculator. Existing similarity scores and a reference thumbnail were checked.",
   "count": 514,
   "files": {
     "alice_begin_literary_fantasy_f.webp": {"dhash":"2306278507269a73","hist":"AAAAAAAAAAAABw8DAAAFAwAAAAAAAAAAARUtFQAABAkAAAAAAAAAAAEGKCIAAAEFAAAAAAAAAgIAAAsQAAAAAA==","lab":[43,11,9,54,11,15,48,10,8,56,10,13,47,12,11,47,11,11,49,11,11]},
@@ -173,8 +173,8 @@
     "hamlet_middle_open_literary_fantasy_f.webp": {"dhash":"af22322973a9d2b1","hist":"AAAAAAAAAQAAAFkIAAAPCQAAAAAAAAAAAAAhFQAAAQsAAAAAAAAAAAAAFBYAAAAEAAAAAAAAAQEAAAQNAAAAAA==","lab":[31,13,17,30,11,14,36,10,14,35,9,13,34,8,12,33,9,13,33,10,14]},
     "harry_potter_stone_begin_literary_fantasy_f.webp": {"dhash":"8b8ca82172525271","hist":"AAAAAAAAAAAAAEkNAAAJGAAAAAAAAAAAAAALFQAAAy8AAAAAAAAAAAAAAREAAAAbAAAAAAAAAAAAAAEGAAAAAQ==","lab":[28,14,17,41,18,28,29,14,17,37,16,22,27,16,17,35,17,21,33,16,21]},
     "harry_potter_stone_begin_open_literary_fantasy_f.webp": {"dhash":"8b0c393171505071","hist":"AAAAAAAAAAAAACkHAAAIHwAAAAAAAAAAAAAEBgAAAU8AAAAAAAAAAAAAAAYAAAAzAAAAAAAAAAMAAAANAAAABA==","lab":[34,16,22,45,21,32,37,18,24,46,21,32,32,19,23,41,21,27,39,20,27]},
-    "harry_potter_stone_end_literary_fantasy_f.webp": {"dhash":"28a8e8584859d0f1","hist":"AAAAAAAAAAAAADsQAAAKGQAAAAAAAAAAAAAJIAAAAjsAAAAAAAAAAAAAAAUAAAAbAAAAAAAAAAEAAAAGAAAAAg==","lab":[31,15,21,39,18,29,25,17,19,32,17,25,29,16,18,34,19,26,32,17,23]},
-    "harry_potter_stone_end_open_literary_fantasy_f.webp": {"dhash":"28686859cad9f0e1","hist":"AAAAAAAAAAAAABsHAAAKLAAAAAAAAAAAAAAAAQAAAGEAAAAAAAAAAAAAAAEAAAAyAAAAAAAAAAQAAAAIAAAABA==","lab":[37,25,34,43,27,39,31,25,30,40,30,40,34,25,31,38,28,37,37,27,35]},
+    "harry_potter_stone_end_literary_fantasy_f.webp": {"dhash":"28a8e8584859d0f1","hist":"AAAAAAAAAAAAADcSAAAKHAAAAAAAAAAAAAAIHQAAAUEAAAAAAAAAAAAAAAMAAAAcAAAAAAAAAAEAAAAGAAAAAg==","lab":[31,15,21,39,18,29,26,17,20,32,18,26,29,16,19,34,19,27,32,17,24]},
+    "harry_potter_stone_end_open_literary_fantasy_f.webp": {"dhash":"a8687859cad1f0e1","hist":"AAAAAAAAAAAAABkHAAAJLgAAAAAAAAAAAAAAAQAAAGIAAAAAAAAAAAAAAAEAAAA0AAAAAAAAAAUAAAAIAAAABA==","lab":[37,26,35,43,29,40,32,26,32,40,32,42,34,26,32,39,30,39,38,28,37]},
     "harry_potter_stone_literary_fantasy_f_casual1.webp": {"dhash":"d0e4e6e26672c705","hist":"AAAAAAAAAAAAABIDAAAFDwAAAAAAAAABAAACCgAAASIAAAAAAAAAAAAABycAAAFOAAAAAAAAAQEAABASAAAAAw==","lab":[47,15,20,52,16,27,40,19,23,59,20,26,57,19,26,71,14,21,54,17,24]},
     "harry_potter_stone_literary_fantasy_f_casual2.webp": {"dhash":"48da8aa92fb299a8","hist":"AAAAAAAAAQAAAC4QAAAABAAAAAAACgMGAAQTJAAAABYAAAAAAAABBgACAw4AAAAtAAAAAAAAAAMAAwEGAAAAAQ==","lab":[35,12,20,46,5,10,41,14,22,46,8,20,36,13,19,41,9,22,41,10,19]},
     "harry_potter_stone_literary_fantasy_f_casual3.webp": {"dhash":"11296f2f6d852e72","hist":"AAAAAAAAAAAABCMCAAAJBQAAAAAAAAAAAAUyCgABChcAAAAAAAAAAAADCwYAAQc1AAAAAAAAAQAAAgYGAAAAAQ==","lab":[37,14,17,47,14,14,53,17,17,48,17,15,41,13,11,35,18,15,44,15,15]},

@@ -152,8 +152,12 @@ const full = { book: b, tree, stage: '발단', styleText: cur.text, styleCheck: 
 for (const [name, t] of [['새 인물', P.buildPrompt({ ...full, outputMode: 'form' })], ['이어가기', P.buildPrompt({ ...full, outputMode: 'form', identityMode: 'reference', baseStage: '발단' })],
   ['개방', P.buildPrompt({ ...full, outputMode: 'open' })], ['일상', P.buildCasual({ ...full, cat: 'library_life', ex: 'lib_binding' })]]) {
   const parts = t.split('\n\n');
+  if (name === '일상') {   // 일상컷 얼굴 · 화풍은 첨부 그림에 맡긴다(2026-11-03) — 판 문장 · 점검 대신 「첨부 그림 그대로」 · FACE 줄
+    assert(t.includes("STYLE: keep the attached image's rendering exactly") && !t.includes('FINAL CHECK') && t.includes('FACE: exactly the face of the attached image'), name + ' — 화풍 · 얼굴은 첨부 그림 그대로');
+  } else {
   assert(parts.findIndex(x => x.startsWith('STYLE: ')) <= 2, name + ' — 화풍 블록이 앞쪽(입력·책 다음)');
   assert(parts[parts.length - 1].startsWith('FINAL CHECK: '), name + ' — 맨 끝에 화풍 점검');
+  }
   if (full.styleRef) assert(t.includes('STYLE REFERENCE:') && /style reference image/.test(parts[0]), name + ' — 참고 그림을 첨부하고 그리는 방식만');
 }
 if (full.styleRef) assert(P.buildPrompt({ ...full, outputMode: 'form' }).startsWith('INPUT: attach only the style reference image'), '새 인물은 참고 그림만 첨부');
@@ -295,7 +299,7 @@ assert.equal(Number(py[1]), S.KOREA_LAST_EXPIRED_DEATH, '보호 기준 해가 �
     assert(!/[가-힣]/.test(txt.replace(/"[^"]*"/g, '').replace(/«[^»]*»/g, '').replace(/STYLE: [^\n]*/, '')), w + ' 따옴표 밖은 영어');
     longestV2 = Math.max(longestV2, P.words(txt)); v2n++;
   }
-  assert(longestV2 <= 800, '가장 긴 버전2 일상컷이 800 낱말을 넘는다: ' + longestV2);
+  assert(longestV2 <= 900, '가장 긴 버전2 일상컷이 900 낱말을 넘는다: ' + longestV2);   // 2026-11-03 +100 — 화풍 문장 대신 「첨부 그림 그대로」 · FACE 줄 · 표정 끝 한 마디
   /* 시대 · 이야기 세계 · 각색 줄 — 버전1 과 같은 자리 */
   const b0 = design.books[0], base = { treeV: 2, ofam: 'everyday', item: 'jeans_tee', posture: 'stand', support: 'none', frame: 'waist_up', body: 'front', head: 'with_body', camera: 'eye', right: 'hip', left: 'down', gaze: 'camera' };
   const era = cas2(b0, { ...base, era: 'book', place: 'lib_reading_room' });

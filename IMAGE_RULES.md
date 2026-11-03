@@ -60,6 +60,9 @@ pkm-atelier 의 `IMAGE_RULES.md` 를 책의 꼴(한 책 = 폼 셋 + 개방 셋 +
 
 ### 일상컷 트리 버전2 (2026-11-01 — 지금의 기본)
 
+- **일상컷 지시문은 얼굴 · 화풍을 첨부 그림에 맡긴다(2026-11-03).** 공방 화풍 문장 대신 「STYLE: keep the attached image's rendering exactly …」, 나이 줄 대신(없으면 CHARACTER 줄 바로 밑에) 「FACE: exactly the face of the attached image …」, 표정 줄 끝에 「눈썹 · 눈꺼풀 · 입꼬리로만, 얼굴은 첨부 그림 그대로」. 화풍 점검(FINAL CHECK) 줄도 일상컷엔 없다.
+  화풍 · 얼굴 문장을 새로 주면 GPT 세션이 첨부 그림의 얼굴을 그 말대로 다시 그렸다(헬륨 메카 일상 — 사용자 「일상컷 저거 너무 이상해」 → 이 세 줄로 「이제 좀 낫네」). 세계 그림 · 폼 · 개방은 그대로 화풍 문장을 싣는다.
+
 사용자 「book쪽도 tree2로 옮긴뒤에 같은작업까지 진행해줘」 — game · element · pkm 과 같은 **트리 버전2**(game 의 `docs/CASUAL_TREE_V2.md`)로 옮겼다. 하는 일 칸이 없고, 시대 · 장소 · 의상을 고른 뒤 몸 쪽을 칸으로 고른다:
 시대 → 장소 → 날씨 → 의상 → 옷 → 상징 → 안경 → 자세 추천 → 몸 자세 · 받침 → 구도(프레이밍 · 몸 방향 · 머리 · 카메라) → 오른손 · 왼손(인물 기준) → 소품 동작 → 다리 → 시선 → 표정.
 - 표는 `data/casual-tree-v2.json`(game 표를 책 몫으로 — `tools/casual-tree-v2-from-game.py`), 거르기는 `lib/casual-tree-v2.js`, 검사는 `python3 tools/casual-tree-v2.py check`(둘 다 game 과 같은 파일). 시대 · 장소 · 의상은 버전1 표(아래)를 그대로 읽는다.

@@ -39,7 +39,7 @@ for (const g of design.books) for (const seed of [1, 2, 3]) {
     const rec = C.record(g, c), sc = rec.storage.cards[g.key].scenes.casual;
     assert.equal(rec.file, `${g.key}_literary_fantasy_f_casual${c.n}.webp`);
     assert.equal(rec.record, `records/${g.key}/casual${c.n}-ui.json`);
-    assert(rec.prompt.includes('STYLE: ' + cur.text) && (cur.check ? rec.prompt.endsWith('FINAL CHECK: ' + cur.check) : !rec.prompt.includes('FINAL CHECK')), '화풍 판·점검');
+    assert(rec.prompt.includes("STYLE: keep the attached image's rendering exactly") && !rec.prompt.includes('FINAL CHECK'), '일상컷 화풍은 첨부 그림 그대로(2026-11-03)');
     assert(sc.axes.overall_intensity === 'strong' && sc.axes.skin_exposure === 'bold' && sc.aspect === '2:3', '일상컷 고정값');
     assert(rec.prompt.includes('SCENE (chosen):\n') && rec.prompt.includes('overall_intensity: strong'), '지시문');
   }

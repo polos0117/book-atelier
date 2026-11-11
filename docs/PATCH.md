@@ -8,6 +8,11 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-11 · claude · core v2 — 긴 얼굴 글
+- face_shape.long 「long face」 → 「gently long oval face」(감사 B4 · X9). 폼 지시문 400개 중 27개 FACE 줄만 바뀜
+- 사용자 2026-11-11 「넣어주고」(원소 금 시험 두 쌍)
+- prompt.html ?v=29
+
 ## 2026-11-11 · claude · 표정 표를 공방 공통 글(core v1)로
 - lib/prompt-spec.js 끝에 화풍공방 core/v1 블록 — 표정 표 32개가 공통 글(삼국지 11-03 순화본)로. VOCAB_EN 공통 열쇠 42개는 이미 같아 그대로
 - 사용자 2026-11-11 「프롬포트 … 문구관리를 하나의 공방에서」 → 「응 1번부터 진행해줘」

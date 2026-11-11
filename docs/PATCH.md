@@ -8,6 +8,9 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-11 · claude · core v4 블록
+- core 블록 판을 v4 로 — 칸 꼴 틀(CORE_FRAME)이 같이 오지만 이 공방 지시문은 아직 제 구조라 바뀐 것 없음. 칸 꼴로 옮길 땐 대조표 초안 먼저(사용자 2026-11-11 3단계)
+
 ## 2026-11-11 · claude · core v3 — 각진 얼굴 · 웃는 입 글
 - square_soft 「softly squared face with a rounded jaw」, wide_smile 「a wide mouth with softly upturned corners」(감사 B4). 폼 지시문 400개 중 57개 FACE 줄만 바뀜
 - 사용자 2026-11-11 「정리하는 김에 깔끔하게 하는게 낫지?」

@@ -8,6 +8,9 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-11 · claude · core v5 블록
+- core 블록 판만 v5(표식 red_lip 을 연하게) — 이 공방엔 표식 표가 없어 지시문 변화 없음
+
 ## 2026-11-11 · claude · 연출 줄 장식에서 흉갑 · 코르셋 빼기(감사 B1 일부)
 - PRESENTATION(칸 꼴 1칸 Presentation): 「decorative metal or gold accents (trim, clasps, a breastplate or corset, jewelry)(금속 · 금 장식 — 테두리 · 잠금쇠 · 흉갑이나 코르셋 · 보석)」 → 「(trim, clasps, jewelry)(테두리 · 잠금쇠 · 보석)」 — 정장 · 비행복 · 한복 책에도 흉갑 · 코르셋이 붙고, 노출 줄의 「corset-like waist」 와 겹쳐 코르셋이 두 번 나온 책이 49권
 - 화려함(glamorous · 고밀도 · 금속 장식 · 역광 · 대비)은 그대로 — 사용자 2026-11-11 「g1,b1은 일부만」. 폼 150 · 개방의 그 한 토막만. prompt.html prompt-spec ?v 올림, 검사 — 원래 깨진 둘 말고 통과

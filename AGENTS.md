@@ -121,7 +121,8 @@ node tests/prompt-pack-screen.cjs    # 지시문 묶음(tools/prompt-pack.cjs) �
 node tests/image-claim.cjs           # 이미지 작업 잠금 — bare 저장소로 잡기 · 겹침 · 실행마다 하나 · push 경합 되돌림 · 하루 몫
 python3 tests/register-images.py     # 그림 등록 — 파일 이름 꼴·자리·틀린 이름은 저장 안 함·등록한 날(added)·git 이력 채우기
 node tests/img-shards.cjs            # 그림 주소·등록기·워크플로·.gitignore 가 같은 저장소 차례
-node tests/prompt-book.cjs           # 프롬프트 — 책마다 폼 셋 × 갈래, 일상컷 트리·추천 조합, 정한 말 영어
+node tests/prompt-book.cjs           # 프롬프트 — 책마다 폼 셋 × 갈래, 일상컷 트리·추천 조합, 정한 말 영어(폼·개방은 줄 꼴 — 스위치 끈 판)
+node tests/prompt-sections.cjs       # 칸 꼴 — 폼 초상·개방(쉰 권 × 세 단계 × 세 갈래)이 core 칸 틀 다섯 칸, 줄 꼴과 마디마다 견줘 잃은 글·새로 쓴 글 0, 옛 줄 이름 없음, 스위치(data/style.json sections)
 node tests/words.cjs                 # 낱말 표
 node tests/patch.cjs                 # 패치 기록 모양
 node tests/duel.cjs                  # 결투 규칙 — 파생·덱·판·치기·상성·장·절정·책마다 고유 규칙·AI

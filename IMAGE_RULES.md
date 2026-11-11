@@ -53,6 +53,17 @@ pkm-atelier 의 `IMAGE_RULES.md` 를 책의 꼴(한 책 = 폼 셋 + 개방 셋 +
 | 개방 | — | 그 폼 그림(+ 되면 첫 그림) | 같은 구도에서 둘레의 세계가 그 단계의 명장면으로 |
 | 일상컷 다섯 장 | — | 첫 그림 | 아래 일상컷 트리의 장면. 옷은 장면의 옷 그대로 — 책의 특징은 장신구·주변 사물로만(옷의 색·무늬로 옮기지 않는다, 2026-10-29). 첫 그림은 얼굴·머리·몸만 — 고개 각도·시선·카메라는 장면 설정대로(생성기의 ANGLE 줄) |
 
+**폼 초상 · 개방 지시문은 칸 꼴**(2026-11-11 — 사용자 「초안 없이 다 진행해줘」, 3단계 칸 꼴 통일): 새 인물 · 이어가기 · 개방 지시문을 화풍공방 core 칸 틀(`AtelierSpec.CORE_FRAME` — 삼국지 · 원소와 같은 틀)로 짓는다. 빈 줄로 나눈 여섯 덩어리, 칸 안은 한 줄에 한 항목. 글은 줄 꼴과 같은 표(`BOOK_LINES`)에서 문장째 옮긴 것이다(새로 쓰지 않는다).
+- 머리말 — Input(첨부) · Output(무엇을 그리나) · Book · Subject(새 인물만 — 책의 의인화) · 따옴표 안 글 읽는 법
+- 1 STYLE — 화풍 판 전문 · Style reference(참고 그림을 붙일 때) · Presentation(폼 초상의 연출 — 빛 마디는 4칸)
+- 2 CHARACTER — (이어가기 · 개방은 맨 위에 「Keep her face …」) · Age · Face — · Body and hair · Identity(고른 외형) · Expression · Persona · 욕망/갈등 · Symbols · Motifs · Proportions(옛 ANATOMY) · Body · 맨 끝 core 해부 줄 Anatomy
+- 3 COSTUME — 단계(BEGINNING · DEVELOPMENT · ENDING) — Costume(그 단계의 모습) · Form note · Battle role/단계 · (이어가기) 겉옷 다시 입지 않기 · Garment · Material · Silhouette(복식 구조 · 주재료) · Colours · Outfit and props · Exposure. 개방은 「Costume: keep her costume.」 한 줄
+- 4 SCENE — Place · Pose(옛 STANCE — 「slightly low camera」 같은 카메라 글은 그대로) · Attitude · Look-back · Hands · Light · Composition(카드 구도) · 고른 장면 값. 개방은 World(명장면) · Scene note · Note · Composition
+- 5 CONSTRAINTS — One figure only · Source only(보호 중인 책) · Hold back(개방 명장면 미루기) · Final check(판에 있을 때) — 규칙 줄은 글 그대로 · 맨 끝 `Avoid:`(「No …」 나열을 모은 것 + 화풍 판의 `avoid` 목록)
+- 줄 꼴과 달라지는 글은 다섯 가지뿐: 줄 머리(첫 글자만 대문자), 「No …」 나열 → Avoid, 옛 줄 이름(FORM · FACE · STANCE)을 가리키던 말 → above · below(`BOOK_SECTIONS.refs`), core 해부 줄과 겹치는 몸 · 손 마디 빼기, 개방의 Keep 한 문장을 2 · 3 · 4칸에 나누기. 빛 줄은 하나(화풍 판에 제 빛 줄이 있으면 그것).
+- 켜는 곳은 `data/style.json` 최상위 `"sections": true` — `false` 로 바꾸거나 지우면(또는 그 판에 `"sections": false`) 줄 꼴 그대로 나온다. 생성기 화면 · 지시문 묶음이 같은 스위치를 읽는다. 조립 `lib/prompt-book.js` buildSections, 칸 꼴 말 `lib/prompt-spec.js` BOOK_SECTIONS, 검사 `node tests/prompt-sections.cjs`(쉰 권 × 세 단계 × 세 갈래를 줄 꼴과 마디마다 견준다).
+- 일상컷은 줄 꼴 그대로다. 이 문서 · `docs/ART_STYLE.md` 의 대문자 줄 이름(AGE · EXPOSURE · PRESENTATION · STANCE · EXPRESSION · HOLD BACK …)은 줄 꼴 이름이고, 칸 꼴에선 위 칸의 같은 줄이다.
+
 **첫 그림은 사람이 고른다(사용자 2026-10-29, game 디아블로 II 에서).** 첫 그림은 같은 지시문으로 두 장(A·B)을 받아 나란히 보여 주고, 어느 쪽으로 갈지 물은 뒤에
 나머지 폼·개방·일상컷을 그린다 — 뒤의 그림이 다 그 한 장을 첨부하니, 고른 뒤에 바꾸면 전부 다시 그려야 한다.
 

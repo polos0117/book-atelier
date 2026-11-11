@@ -30,6 +30,8 @@ const design = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/book-des
       for (const s of list) {
         const rec = JSON.parse(fs.readFileSync(path.join(dir, s.slot + '-ui.json'), 'utf8'));
         assert.equal(fs.readFileSync(path.join(dir, s.slot + '-prompt.txt'), 'utf8'), rec.prompt);
+        /* 폼 · 개방 자리는 칸 꼴(2026-11-11 — data/style.json "sections"), 일상 자리는 줄 꼴 */
+        assert.equal(/^Input: /.test(rec.prompt) && rec.prompt.split('\n\n').length === 6 && /\n\n5\. CONSTRAINTS\n[\s\S]*\nAvoid: [^\n]+$/.test(rec.prompt), s.mode !== 'casual', key + ' ' + s.slot + ' 칸 꼴은 폼 · 개방 자리만');
         if (edit && s.slot === 'casual3') assert(/skin_exposure: moderate/.test(rec.prompt) && !/skin_exposure: bold/.test(rec.prompt), '일상 노출 낮추기가 지시문에');
         const { page: p } = await h.open('index.html', { viewport: FOLD.inner, mobile: true });
         await p.evaluate(st => localStorage.setItem('book_prompt_v1', JSON.stringify(st)), rec.storage);

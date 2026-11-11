@@ -8,6 +8,15 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-11 · claude · 폼 초상 · 개방 지시문을 칸 꼴로(3단계)
+- lib/prompt-book.js · lib/prompt-spec.js BOOK_SECTIONS — 새 인물 · 이어가기 · 개방 지시문을 화풍공방 core 칸 틀(CORE_FRAME — 삼국지 · 원소 · 게임과 같은 틀)의 머리말 + 다섯 칸으로 짓는다. 글은 줄 꼴 그대로 자리만 옮겼고 일상컷은 그대로
+- 칸 대조 — 머리말: INPUT · OUTPUT · BOOK · SUBJECT · 따옴표 읽는 법 / 1 STYLE: STYLE · STYLE REFERENCE · PRESENTATION / 2 CHARACTER: 첨부 그림의 그 사람 · AGE · FACE · SILHOUETTE(→ Body and hair) · IDENTITY · EXPRESSION · MOTIFS · ANATOMY(→ Proportions) · BODY · 해부 줄 / 3 COSTUME — 단계: FORM(→ Costume) · FORM NOTE · MATERIAL · GARMENT · 실루엣 palette(→ Colours) · EXPOSURE / 4 SCENE: STANCE(→ Pose, 낮은 카메라 글 그대로) · LOOK-BACK · HANDS · 빛(→ Light 한 줄) · 구도 · SCENE NOTE · NOTE / 5 CONSTRAINTS: ONE FIGURE ONLY · SOURCE ONLY · HOLD BACK · FINAL CHECK · Avoid
+- 바뀐 글 — 줄 머리(대문자 머리는 첫 글자만 대문자), 「No …」 나열(한 사람 줄 · 비율 줄 · 계통 풀이 · 옛 화풍 판 글) → Avoid, 옛 줄 이름(FORM · FACE · STANCE)을 가리키던 말 일곱 곳 → 자리 말, core 해부 줄과 글자 그대로 겹치는 몸 · 손 마디 빼기, 빛 줄 하나. 글을 나눈 한 곳: 개방의 「Keep her face, hair, body, costume, camera, framing and subject scale.」 → 2칸 「Keep her face, hair and body.」 · 3칸 「keep her costume.」 · 4칸 「keep her camera, framing and subject scale.」(3칸이 비지 않게, 뜻 그대로)
+- 켜는 곳 — data/style.json 꼭대기 sections: true(false 면 줄 꼴, 판에 sections: false 면 그 판만). lib/prompt-ui.js · tools/prompt-pack.cjs 가 같은 스위치(sectionsOn)
+- 검사 — tests/prompt-sections.cjs(새로): 쉰 권 × 세 단계 × 세 갈래 450장 + 변주 50장이 여섯 덩어리 · 칸 머리 = CORE_FRAME · 2칸 끝 해부 줄 · 빛 줄 하나 · Avoid 맨 끝 · 옛 줄 이름 없음 · 줄 꼴과 마디마다 견줘 잃은 마디 0 · 새로 쓴 글 0(달라진 마디는 검사 안 CHANGED 표). prompt-book · prompt-screen · prompt-pack-screen 은 칸 꼴 기준으로, 줄 꼴은 스위치 끈 판으로 계속 본다
+- IMAGE_RULES.md 2절 칸 꼴 단락 · docs/ART_STYLE.md 한 줄 · AGENTS.md 검사 줄 · lib/words.js(얼굴 줄 이름) · prompt.html ?v=(prompt-spec 32 · prompt-book 12 · prompt-ui 5 · words 26, words 를 싣는 다른 화면도 26)
+- 사용자 2026-11-11 「초안 없이 다 진행해줘」(3단계 — 칸 꼴 통일)
+
 ## 2026-11-11 · claude · core v4 블록
 - core 블록 판을 v4 로 — 칸 꼴 틀(CORE_FRAME)이 같이 오지만 이 공방 지시문은 아직 제 구조라 바뀐 것 없음. 칸 꼴로 옮길 땐 대조표 초안 먼저(사용자 2026-11-11 3단계)
 

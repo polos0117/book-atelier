@@ -3,6 +3,7 @@
    GPT 세션은 브라우저를 못 띄운다 — 생성기 화면(lib/prompt-ui.js)이 부르는 조립부(lib/prompt-book.js 의 buildPrompt · buildCasual)를
    같은 저장 상태로 불러, 한 책 열한 자리(폼 셋 · 개방 셋 · 일상컷 다섯 — IMAGE_RULES 2절)의 지시문과 기록을 쓴다.
    기록(<자리>-ui.json)은 생성기 「기록 내보내기」 와 같은 꼴이고, 그 storage 를 생성기에 넣으면 같은 지시문이 나온다(tests/prompt-pack-screen.cjs 가 견준다).
+   폼 · 개방 자리는 생성기와 같은 스위치(data/style.json "sections")로 칸 꼴(머리말 + 다섯 칸, 2026-11-11) — 끄면 줄 꼴. 일상 자리는 줄 꼴.
 
    node tools/prompt-pack.cjs init <책> --dir <작업 폴더> [--plan <계획기 --out 폴더>/plan.json]
      작업 폴더에 settings.json(고칠 수 있는 칸만)을 만든다 — 이미 있으면 덮지 않고 멈춘다.
@@ -148,7 +149,7 @@ function stateOf(game, set, s, pilot) {
 function promptOf(game, st, s) {
   const sv = styleOf(), scene = st.scenes[s.mode];
   const input = { ...st, ...scene, book: game, tree, tree2, stage: STAGE[st.form], baseStage: STAGE[st.baseForm], styleText: sv.ver.text,
-    styleCheck: sv.ver.check || '', styleRef: false, outputMode: s.mode, identityMode: s.mode !== 'form' || st.identityMode === 'reference' ? 'reference' : 'create',
+    styleCheck: sv.ver.check || '', styleRef: false, sections: P.sectionsOn(style, sv.ver), styleAvoid: sv.ver.avoid, outputMode: s.mode, identityMode: s.mode !== 'form' || st.identityMode === 'reference' ? 'reference' : 'create',
     params: Object.entries(st.params) };
   return s.mode === 'casual' ? P.buildCasual(input) : P.buildPrompt(input);
 }

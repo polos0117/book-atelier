@@ -1,4 +1,5 @@
 /* 생성기 — 책 고르기(✓·◐ 표시)·세 갈래·시범 폼에서 시작·파일 이름·외형 잠금과 무작위·되돌리기·직전 책 외형·장면 랜덤과 잠금·복사·기록·저장.
+   폼 초상 · 개방 지시문은 칸 꼴(2026-11-11 — data/style.json "sections", 머리말 + 다섯 칸)로 본다. 스위치를 끈 줄 꼴은 맨 끝에서 따로 본다(같은 검사를 옛 머리로).
    ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/prompt-screen.cjs */
 const assert = require('node:assert/strict'), os = require('node:os'), fs = require('node:fs'), path = require('node:path');
 const { execFileSync } = require('node:child_process');
@@ -23,39 +24,40 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert.equal(await p.$eval('#form', e => e.value), 'middle');
     let t = await out(p);
     /* 기본은 텍스트만 — 참고 그림을 붙이면 얼굴·구도까지 따라왔다. 노출 기본은 과감 */
-    assert(t.startsWith('INPUT: text only') && !t.includes('STYLE REFERENCE:') && t.includes('FORM — DEVELOPMENT (전개)') && t.includes('SILHOUETTE:') && t.includes('FACE ('));
-    assert(t.includes('STYLE: 섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍') && !t.includes('FINAL CHECK'), '지금 판(v7) — 화풍 한 줄, 점검 줄 없음');
+    assert(t.startsWith('Input: text only') && !t.includes('Style reference:') && t.includes('\n\n3. COSTUME — DEVELOPMENT\nCostume: "') && t.includes('\nBody and hair: ') && t.includes('\nSilhouette: garment structure: ') && t.includes('\nFace — '));
+    assert.deepEqual(t.split('\n\n').slice(1).map(x => x.split('\n')[0]), ['1. STYLE', '2. CHARACTER', '3. COSTUME — DEVELOPMENT', '4. SCENE', '5. CONSTRAINTS'], '칸 꼴 — 머리말 + 다섯 칸');
+    assert(t.includes('\n1. STYLE\n섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍\n') && !t.includes('Final check') && /\nAvoid: [^\n]+\.$/.test(t), '지금 판(v7) — 화풍 한 줄, 점검 줄 없음, 맨 끝은 Avoid');
     assert.equal(await p.$eval('#style-version', e => e.value), 'v7', '지금 판을 따라간다');
-    assert(t.includes('AGE: in her twenties'), '나이 자동이면 20대');
+    assert(t.includes('\nAge: in her twenties'), '나이 자동이면 20대');
     assert.equal(await p.$eval('#exposure', e => e.value), 'bold', '노출 기본은 과감');
-    assert(t.includes('EXPOSURE (bold)'));
+    assert(t.includes('\nExposure (bold): '));
     await p.click('#attach-style-ref');
     t = await out(p);
-    assert(t.startsWith('INPUT: attach only the style reference image') && t.includes('STYLE REFERENCE:'), '켜면 참고 그림을 같이 붙인다');
+    assert(t.startsWith('Input: attach only the style reference image') && t.includes('\nStyle reference: '), '켜면 참고 그림을 같이 붙인다');
     await p.click('#attach-style-ref');
     await p.selectOption('#exposure', '');
-    assert(!(await out(p)).includes('EXPOSURE'), '자동이면 노출 줄이 없다');
+    assert(!(await out(p)).includes('Exposure ('), '자동이면 노출 줄이 없다');
     await p.selectOption('#exposure', 'bold');
     assert.match(await p.$eval('#file-name code', e => e.textContent), /^don_quixote_middle_literary_fantasy_f\.webp$/);
-    /* 3. 외형 — 고르면 IDENTITY 에, 얼굴 설계 끄기, 되돌리기·다시 하기 */
+    /* 3. 외형 — 고르면 2칸 Identity 에, 얼굴 설계 끄기, 되돌리기·다시 하기 */
     await p.selectOption('#param-apparent-age', '20s');
-    assert((await out(p)).includes('AGE: in her twenties') && !(await out(p)).includes('apparent age:'), '고른 나이는 AGE 줄로');
+    assert((await out(p)).includes('\nAge: in her twenties') && !(await out(p)).includes('apparent age:'), '고른 나이는 Age 줄로');
     /* 머리색 RGB — HEX 칸에 적으면 고르개에 RGB 줄이 생기고, 프롬프트에는 코드와 색 이름이 같이 들어간다(myth 생성기와 같다) */
     await p.$eval('#param-hair-color-hex', e => { for (let d = e.closest('details'); d; d = d.parentElement.closest('details')) d.open = true; });
     await p.fill('#param-hair-color-hex', '#1b2a6b');
     assert.equal(await p.$eval('#param-hair-color', e => e.value), '#1b2a6b', 'RGB 값이 고르개에 남는다');
-    assert((await out(p)).includes('hair color: #1B2A6B (dark blue)'), 'HEX → 코드와 색 이름');
+    assert((await out(p)).includes('\nIdentity (chosen details override the automatic look)\nhair color: #1B2A6B (dark blue)'), 'HEX → 코드와 색 이름(2칸 Identity)');
     await p.$eval('#param-hair-color-r', e => { e.value = '200'; e.dispatchEvent(new Event('input', { bubbles: true })); });
     assert((await out(p)).includes('hair color: #C82A6B'), 'R 막대');
     assert.equal(await p.$eval('#param-hair-color-hex', e => e.value), '#c82a6b', '막대를 움직이면 HEX 칸도 따라온다');
     await p.selectOption('#param-hair-color', '');
     assert(!(await out(p)).includes('hair color:'), '자동으로 되돌리기');
     await p.click('#face-design-on');
-    assert(!(await out(p)).includes('FACE ('), '얼굴 설계를 끄면 FACE 줄이 빠진다');
+    assert(!(await out(p)).includes('\nFace — '), '얼굴 설계를 끄면 Face 줄이 빠진다');
     await p.click('#undo');
-    assert((await out(p)).includes('FACE ('), '되돌리기 — 얼굴 설계가 다시 켜진다');
+    assert((await out(p)).includes('\nFace — '), '되돌리기 — 얼굴 설계가 다시 켜진다');
     await p.click('#redo');
-    assert(!(await out(p)).includes('FACE ('), '다시 하기');
+    assert(!(await out(p)).includes('\nFace — '), '다시 하기');
     await p.click('#undo');
     /* 잠근 항목은 무작위가 안 바꾼다 */
     await p.click('button.param-lock[aria-label$="외관상 나이"]');
@@ -66,7 +68,7 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.selectOption('#identity-mode', 'reference');
     assert.equal(await p.$eval('#base-form', e => e.value), 'middle', '첨부할 확정 그림은 시범 폼');
     t = await out(p);
-    assert(t.includes('approved character (development form)') && t.includes('FORM — BEGINNING') && !t.includes('SILHOUETTE:') && !t.includes('IDENTITY'), '이어가기');
+    assert(t.includes('approved character (development form)') && t.includes('\n\n3. COSTUME — BEGINNING\n') && t.includes('\n2. CHARACTER\nKeep her face, eye and hair colors') && !t.includes('Body and hair:') && !t.includes('Silhouette:') && !t.includes('Identity ('), '이어가기');
     await p.selectOption('#form', 'middle');
     /* 5. 개방 — 그 폼 그림 첨부, 명장면, 파일 이름에 _open */
     await p.click('#mode-open');
@@ -75,7 +77,7 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     await p.waitForFunction(() => new URLSearchParams(location.search).get('mode') === 'open');
     assert.deepEqual(await q(), { book: 'don_quixote', mode: 'open' }, '고른 책·모드가 주소에');
     t = await out(p);
-    assert(t.includes('풍차 앞으로 돌진하는 순간') && t.startsWith("INPUT: attach this book's development form card image"));
+    assert(t.includes('풍차 앞으로 돌진하는 순간') && t.startsWith("Input: attach this book's development form card image") && t.includes('\n\n4. SCENE\nWorld: Change the world around her into this scene: "'));
     assert.match(await p.$eval('#file-name code', e => e.textContent), /don_quixote_middle_open_literary_fantasy_f\.webp/);
     /* 6. 일상컷 — 트리(시대·장소·하는 일·의상·구도), 원작 시대·이야기 세계·각색 무대, 잠금(2026-10-29 game-atelier 에서 옮김) */
     await p.click('#mode-casual');
@@ -182,6 +184,30 @@ const out = p => p.$eval('#prompt-output', e => e.value);
     assert.equal(await c.page.$eval('#mode-open', e => e.getAttribute('aria-pressed')), 'true', '주소의 모드');
     assert.deepEqual(c.errors, []);
     await c.close();
-    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·고정값·트리(추천 조합·원작 시대·이야기 세계·각색 무대·잠근 앞 칸·자세 계열·칸끼리 규칙·상징·필수 갈래) · 복사·기록 · 저장·직전 책 외형');
+    /* 스위치를 끈 판(data/style.json "sections": false) — 폼 초상 · 이어가기 · 개방이 줄 꼴 그대로(칸 꼴 전의 검사를 옛 머리로) */
+    const styleOff = { ...JSON.parse(fs.readFileSync('data/style.json', 'utf8')), sections: false };
+    const d = await h.open('prompt.html?book=don_quixote', opt({ files: { 'data/img.json': imgjson, 'data/style.json': styleOff } })), o = d.page;
+    await o.waitForSelector('#prompt-output');
+    t = await out(o);
+    assert(t.startsWith('INPUT: text only') && !t.includes('STYLE REFERENCE:') && t.includes('FORM — DEVELOPMENT (전개)') && t.includes('SILHOUETTE:') && t.includes('FACE (') && !t.includes('1. STYLE'), '끈 판 — 새 인물 줄 꼴');
+    assert(t.includes('STYLE: 섬세한 선화 + 회화적 채색의 성인 판타지 삽화풍') && !t.includes('FINAL CHECK') && t.includes('AGE: in her twenties') && t.includes('EXPOSURE (bold)'), '끈 판 — 화풍 · 나이 · 노출 줄');
+    await o.click('#attach-style-ref');
+    t = await out(o);
+    assert(t.startsWith('INPUT: attach only the style reference image') && t.includes('STYLE REFERENCE:'), '끈 판 — 참고 그림');
+    await o.click('#attach-style-ref');
+    await o.click('#face-design-on');
+    assert(!(await out(o)).includes('FACE ('), '끈 판 — 얼굴 설계를 끄면 FACE 줄이 빠진다');
+    await o.selectOption('#form', 'begin');
+    await o.selectOption('#identity-mode', 'reference');
+    t = await out(o);
+    assert(t.includes('approved character (development form)') && t.includes('FORM — BEGINNING') && !t.includes('SILHOUETTE:') && !t.includes('IDENTITY'), '끈 판 — 이어가기');
+    await o.selectOption('#form', 'middle');
+    await o.click('#mode-open');
+    await o.waitForFunction(() => new URLSearchParams(location.search).get('mode') === 'open');
+    t = await out(o);
+    assert(t.includes('풍차 앞으로 돌진하는 순간') && t.startsWith("INPUT: attach this book's development form card image"), '끈 판 — 개방');
+    assert.deepEqual(d.errors, []);
+    await d.close();
+    console.log('PASS 생성기: 책 표시 ✓◐· · 시범 폼 · 파일 이름 · 외형·머리색 RGB·얼굴 설계·되돌리기·잠금 · 이어가기 · 개방 · 일상컷 번호·고정값·트리(추천 조합·원작 시대·이야기 세계·각색 무대·잠근 앞 칸·자세 계열·칸끼리 규칙·상징·필수 갈래) · 복사·기록 · 저장·직전 책 외형 · 폼 초상·개방은 칸 꼴(스위치를 끄면 줄 꼴)');
   } finally { await h.stop(); fs.rmSync(art, { recursive: true, force: true }); }
 })().catch(e => { console.error(e); process.exit(1); });

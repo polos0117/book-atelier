@@ -1,4 +1,6 @@
 /* 책 프롬프트 — 설계표 다섯 권 × 세 폼 × (새 인물·이어가기·개방) + 일상컷이 다 조립되고, 정한 말이 다 영어로 풀린다.
+   폼 초상 · 개방은 여기서 **줄 꼴**(스위치 sections 를 끈 판 — buildPrompt 에 sections 를 넘기지 않는다)로 본다. 줄 꼴이 칸 꼴의 원본이다 —
+   칸 꼴(2026-11-11, data/style.json "sections")은 tests/prompt-sections.cjs 가 이 줄 꼴과 마디마다 견준다. 일상컷은 줄 꼴뿐이다.
    Run: node tests/prompt-book.cjs */
 const fs = require('node:fs'), vm = require('node:vm'), assert = require('node:assert/strict');
 const ctx = { window: {}, console }; vm.createContext(ctx);

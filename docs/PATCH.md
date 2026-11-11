@@ -8,6 +8,10 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-11 · claude · 연출 줄 장식에서 흉갑 · 코르셋 빼기(감사 B1 일부)
+- PRESENTATION(칸 꼴 1칸 Presentation): 「decorative metal or gold accents (trim, clasps, a breastplate or corset, jewelry)(금속 · 금 장식 — 테두리 · 잠금쇠 · 흉갑이나 코르셋 · 보석)」 → 「(trim, clasps, jewelry)(테두리 · 잠금쇠 · 보석)」 — 정장 · 비행복 · 한복 책에도 흉갑 · 코르셋이 붙고, 노출 줄의 「corset-like waist」 와 겹쳐 코르셋이 두 번 나온 책이 49권
+- 화려함(glamorous · 고밀도 · 금속 장식 · 역광 · 대비)은 그대로 — 사용자 2026-11-11 「g1,b1은 일부만」. 폼 150 · 개방의 그 한 토막만. prompt.html prompt-spec ?v 올림, 검사 — 원래 깨진 둘 말고 통과
+
 ## 2026-11-11 · claude · 폼 초상 · 개방 지시문을 칸 꼴로(3단계)
 - lib/prompt-book.js · lib/prompt-spec.js BOOK_SECTIONS — 새 인물 · 이어가기 · 개방 지시문을 화풍공방 core 칸 틀(CORE_FRAME — 삼국지 · 원소 · 게임과 같은 틀)의 머리말 + 다섯 칸으로 짓는다. 글은 줄 꼴 그대로 자리만 옮겼고 일상컷은 그대로
 - 칸 대조 — 머리말: INPUT · OUTPUT · BOOK · SUBJECT · 따옴표 읽는 법 / 1 STYLE: STYLE · STYLE REFERENCE · PRESENTATION / 2 CHARACTER: 첨부 그림의 그 사람 · AGE · FACE · SILHOUETTE(→ Body and hair) · IDENTITY · EXPRESSION · MOTIFS · ANATOMY(→ Proportions) · BODY · 해부 줄 / 3 COSTUME — 단계: FORM(→ Costume) · FORM NOTE · MATERIAL · GARMENT · 실루엣 palette(→ Colours) · EXPOSURE / 4 SCENE: STANCE(→ Pose, 낮은 카메라 글 그대로) · LOOK-BACK · HANDS · 빛(→ Light 한 줄) · 구도 · SCENE NOTE · NOTE / 5 CONSTRAINTS: ONE FIGURE ONLY · SOURCE ONLY · HOLD BACK · FINAL CHECK · Avoid

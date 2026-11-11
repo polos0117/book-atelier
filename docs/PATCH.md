@@ -8,6 +8,12 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-11 · claude · 표정 표를 공방 공통 글(core v1)로
+- lib/prompt-spec.js 끝에 화풍공방 core/v1 블록 — 표정 표 32개가 공통 글(삼국지 11-03 순화본)로. VOCAB_EN 공통 열쇠 42개는 이미 같아 그대로
+- 사용자 2026-11-11 「프롬포트 … 문구관리를 하나의 공방에서」 → 「응 1번부터 진행해줘」
+- 폼 지시문 400개 중 250개에서 EXPRESSION 줄만 바뀜(예: 코스모스 발단 「one brow raised higher, head tilted, eyes wide…」 → 「one brow slightly raised, attentive eyes」)
+- tests/prompt-book.cjs 「soft smile 없음」 검사는 표정 줄 밖에서만(soft_smile 표정 글 자체에 들어가서), 새 tests/core-sync.cjs, prompt.html ?v=28
+
 ## 2026-11-03 · claude · 일상컷 얼굴 · 화풍은 첨부 그림에 맡긴다
 - lib/prompt-book.js — 일상컷 지시문 끝에서 refLock: 화풍 문장 → 「STYLE: keep the attached image's rendering exactly …」, 나이 줄 → 「FACE: exactly the face of the attached image …」(없으면 CHARACTER 밑에), 표정 줄 끝에 「눈썹 · 눈꺼풀 · 입꼬리로만」, FINAL CHECK 줄 뺌. 사용자 「일상컷 저거 너무 이상해」 → 「이제 좀 낫네」 → 「응 다 적용해줘」 — 화풍 · 얼굴 문장을 새로 주면 GPT 세션이 첨부 그림의 얼굴을 다시 그렸다(헬륨 메카 일상)
 - tests — 일상컷 화풍 · 얼굴 · 표정 줄 검사로 바꾸고 일상컷 낱말 상한을 올렸다

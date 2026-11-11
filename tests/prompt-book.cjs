@@ -326,7 +326,7 @@ assert.equal(Number(py[1]), S.KOREA_LAST_EXPIRED_DEATH, '보호 기준 해가 �
       assert(S2.EXPRESSION_DETAIL[e], x.key + ' ' + stage + ' 표정 ' + e + ' 이 표에 없다');
       const base = { book: x, stage, baseStage: stages[0], styleText: 'X', outputMode: 'form', identityMode: ref ? 'reference' : 'create', params: [], exposure: 'bold', faceDesignOn: true, silhouetteOn: true };
       const t = P.buildPrompt(base), line = t.split('\n\n').find(l => l.startsWith('EXPRESSION ('));
-      assert(line && line.includes(S2.EXPRESSION_DETAIL[e]) && line.includes(ref ? "replaces the attached image's" : 'on her own face') && !/soft smile/.test(t), x.key + ' ' + stage + ' 표정 줄');
+      assert(line && line.includes(S2.EXPRESSION_DETAIL[e]) && line.includes(ref ? "replaces the attached image's" : 'on her own face') && !/soft smile/.test(t.replace(line, '')), x.key + ' ' + stage + ' 표정 줄');
       const picked = P.buildPrompt({ ...base, expr: e === 'calm' ? 'curious' : 'calm' });
       assert(!picked.split('\n\n').some(l => l.startsWith('EXPRESSION (')) && picked.includes('Expression: ' + S2.EXPRESSION_DETAIL[e === 'calm' ? 'curious' : 'calm']), x.key + ' ' + stage + ' 고른 표정이 이긴다');
       fe++;

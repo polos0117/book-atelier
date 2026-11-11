@@ -8,6 +8,11 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-11 · claude · core v3 — 각진 얼굴 · 웃는 입 글
+- square_soft 「softly squared face with a rounded jaw」, wide_smile 「a wide mouth with softly upturned corners」(감사 B4). 폼 지시문 400개 중 57개 FACE 줄만 바뀜
+- 사용자 2026-11-11 「정리하는 김에 깔끔하게 하는게 낫지?」
+- prompt.html ?v=30
+
 ## 2026-11-11 · claude · core v2 — 긴 얼굴 글
 - face_shape.long 「long face」 → 「gently long oval face」(감사 B4 · X9). 폼 지시문 400개 중 27개 FACE 줄만 바뀜
 - 사용자 2026-11-11 「넣어주고」(원소 금 시험 두 쌍)

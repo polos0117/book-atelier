@@ -3,7 +3,7 @@
  "note": "책 설계표 — 책 한 권 = 한 칸. 외형과 전투를 같은 칸에서 함께 뽑는다(docs/GAME_CONCEPT.md 5절). python3 tools/book-design.py check 가 본다: 칸이 다 찼나, 정한 말만 썼나(장정 binding 포함 — 서가가 두르는 틀), voice 는 결투에서 판에 들어올 때 그 책이 하는 한마디(발단·전개·결말 — 장마다 그 폼의 말, 인용이 아니라 설계표의 인물로 새로 쓴 말). 어느 두 책도 실루엣 축 6 중 셋 이상·얼굴 5 묶음 중 둘 이상 다른가, 폼·개방이 셋씩인가, 개방이 한 명으로 표현되나, 고유 규칙에 상대의 대응이 있나, 저작권 칸(사망 연도·해외 보호)을 적었나 — 한국에서 아직 보호 중인 책은 경고만.",
  "vocab": {
   "genre": ["비극", "희극·풍자", "추리", "모험", "로맨스", "공포", "SF", "동화·판타지", "사상", "과학"],
-  "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong"],
+  "body": ["petite", "slender", "lanky", "athletic", "curvy", "tall_statuesque", "broad_strong", "lean_toned", "petite_voluptuous"],
   "hair": ["short_crop", "bob", "ponytail", "long_straight", "long_wavy", "updo_bun", "braids", "voluminous"],
   "garment": ["one_piece_dress", "armor_layered", "robe_overlap", "tailored_suit", "coat_trousers", "layered_skirt", "hanbok", "cloak_wrapped", "flight_suit"],
   "material": ["bamboo_slips", "paper_pages", "paper_armor", "parchment", "leather_binding", "cloth_binding", "silk_scroll", "card_stock", "stitched_patchwork", "hanji", "metal_instruments", "letter_paper", "scaled_pages", "lab_notes", "fur_velvet", "logbook_brass", "clippings", "petal_script", "gilt_invitations", "gazette_columns", "blueprint_sheets", "sealed_dispatches", "specimen_plates", "challenge_letters", "brick_storybook", "governess_diary", "split_casebook", "ledger_coins", "prophecy_tartan", "testimony_folios", "glass_timetable", "canto_scrolls", "lens_sketches", "bark_mail", "white_tree_heraldry", "rosso_blu_linen", "cloud_woodblock", "score_velvet", "leaf_skein", "butterfly_slips", "tri_kingdom_mantle", "owl_post_parchment", "duct_tape_suit"],

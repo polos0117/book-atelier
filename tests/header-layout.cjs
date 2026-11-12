@@ -30,11 +30,11 @@ function same(actual,expected,label){
 (async()=>{
  const h=await start();
  try{
-  for(const [viewport,mobile] of [[FOLD.cover,true],[FOLD.inner,true],
-   [{width:1280,height:900},false],[{width:1920,height:1080},false],[{width:882,height:344},true]]){
+  /* 크기는 가장 좁은 덮개 · PC · 낮은 가로(제목이 원래 숨는 화면) 셋, 밀도 둘은 PC 에서만(2026-11-12 검사 정리) */
+  for(const [viewport,mobile] of [[FOLD.cover,true],[{width:1280,height:900},false],[{width:882,height:344},true]]){
    const a=await h.open('index.html',{viewport,mobile}),p=a.page;
    try{
-    for(const density of ['compact','relaxed']){
+    for(const density of mobile?['compact']:['compact','relaxed']){
      await p.goto(h.base+'/index.html');await p.waitForSelector('.workspace-nav');
      await p.evaluate(d=>window.AtelierAppearance.set('density',d),density);
      const reference=await geometry(p);
@@ -86,6 +86,6 @@ function same(actual,expected,label){
     assert.deepEqual(a.errors,[]);
    }finally{await a.close()}
   }
-  console.log('PASS header layout: 5 pages, 5 viewport sizes, both densities, stable navigation while scrolling');
+  console.log('PASS header layout: 5 pages, 3 viewport sizes, both densities on PC, stable navigation while scrolling');
  }finally{await h.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

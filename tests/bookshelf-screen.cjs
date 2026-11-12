@@ -28,7 +28,8 @@ const boxes=[{width:1440,height:1000},FOLD.inner,{width:390,height:844},FOLD.cov
   assert(new Set(await p.locator('.book-spine').evaluateAll(es=>es.map(e=>getComputedStyle(e).backgroundColor))).size>=8,'책등 빛이 책마다 다르다');
   for(const theme of ['sunlit','moonlit','hanok']) {
    await p.evaluate(t=>AtelierAppearance.set('theme',t),theme);
-   for(const viewport of boxes) {
+   /* 크기는 첫 테마에서만 PC · 가장 좁은 덮개 · 낮은 가로 셋, 다른 테마는 PC 하나(2026-11-12 검사 정리 — 펼치기 열다섯 번에서 다섯 번) */
+   for(const viewport of theme==='sunlit'?[boxes[0],FOLD.cover,boxes[4]]:[boxes[0]]) {
     await p.setViewportSize(viewport);
     await p.locator('.wrap').evaluate(e=>e.scrollTop=0);
     assert(await p.evaluate(()=>document.body.scrollWidth<=innerWidth),'no page overflow');

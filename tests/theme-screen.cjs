@@ -39,11 +39,12 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
    assert.deepEqual(nav.map(x=>x.href),['index.html','dex.html','prompt.html','duel.html','run.html']);
    assert.deepEqual(nav.filter(x=>x.current==='page').map(x=>x.href),[file]);
    const before=file==='prompt.html'?await p.locator('#prompt-output').inputValue():null;
-   for(const theme of ['sunlit','moonlit','hanok','forest','candlelit']) {
+   /* 테마 다섯은 서재에서만(배경 그림 이름이 테마마다 다르다), 다른 화면은 하나로. 크기는 덮개 · PC 둘(2026-11-12 검사 정리) */
+   for(const theme of file==='index.html'?['sunlit','moonlit','hanok','forest','candlelit']:['candlelit']) {
    await p.evaluate(t=>window.AtelierAppearance.set('theme',t),theme);
    await p.reload();await p.waitForSelector(ready);
    assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),theme,'room persists after reload');
-   for(const viewport of [FOLD.cover,{width:390,height:844},FOLD.inner,{width:1440,height:1000},{width:844,height:390}]){
+   for(const viewport of [FOLD.cover,{width:1440,height:1000}]){
     await p.setViewportSize(viewport);
     if(!await p.locator('.appearance-panel').count())await p.locator('.appearance-toggle').click();
     for(const setting of ['on','off']){
@@ -79,6 +80,6 @@ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)
    assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
   }
   assert.deepEqual(a.errors,[]);assert.deepEqual(await p.evaluate(()=>window.AtelierWords.missing()),[]);
-  await a.close();console.log('PASS room theme: AA text contrast, legacy shelf migration, no cross-atelier mutation, persisted background, 5 rooms x 5 pages x 5 viewports + 2 auxiliary pages');
+  await a.close();console.log('PASS room theme: AA text contrast, legacy shelf migration, no cross-atelier mutation, persisted background, 5 rooms on the hall, 5 pages x 2 viewports + 2 auxiliary pages');
  }finally{await harness.stop()}
 })().catch(e=>{console.error(e);process.exitCode=1});

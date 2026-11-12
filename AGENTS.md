@@ -142,15 +142,15 @@ ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-screen.cjs      # �
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-recent-screen.cjs # 서가 최근 추가·새 표·새 그림만 · 다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/similar-screen.cjs  # 서가 닮은 그림 줄 — 열 때 받기·그림 따라 바뀜·누르면 그 책 그 그림·자료 없음이면 숨김 · 다섯 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/prompt-screen.cjs   # 생성기
-ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/header-layout.cjs   # 머리 자리(화면 넷 · 크기 다섯)
-ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # 테마 여덟 · 대비
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/header-layout.cjs   # 머리 자리(화면 다섯 · 크기 셋 — 덮개 · PC · 낮은 가로)
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/theme-screen.cjs    # 테마 다섯 · 대비 · 배경(화면 다섯 × 덮개 · PC)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/patch-screen.cjs    # 서재의 패치 기록
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/bookshelf-screen.cjs # 책장 — 진열·펼치기·개방·닫기·키보드·반응형
-ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지·오늘의 판(같은 씨앗)·오늘 기록 · 휴대폰 가로·세로·폴드·PC 넷에서 끝까지, 돌려도 그대로
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/duel-screen.cjs     # 결투 — 덱 고르기·한 판 끝까지·오늘의 판(같은 씨앗)·오늘 기록 · 휴대폰 가로(돌리면 세로)·PC 에서 크게 보기 · 돌려도 그대로, 가로는 끝까지
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/run-screen.cjs      # 서고 탐험 — 고르기·지도·1층 끝까지·계단·새로고침·나오기·끝(오늘 기록·전적)·오늘의 서고·네 크기
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/mosaic-screen.cjs   # 모자이크 — ?file= 로 거칠게 그리기·받기·조각 누르기·겹치기 · 세로·가로·PC · wasm 없음
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/landscape-screen.cjs # 휴대폰 가로 — 서재·서가·프롬프트 첫 화면(lib/landscape.css)
-ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/scene-motion.cjs     # 움직임 — 입자·켄 번스·열리기·넘기기·스위치·동작 줄이기 · 서재 감상·서가 상세·결투 절정 · 다섯 크기
+ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/scene-motion.cjs     # 움직임 — 입자·켄 번스·열리기·넘기기·스위치·동작 줄이기 · 서재 감상·서가 상세·결투 절정 · 두 크기(덮개 · PC)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/reading-journey-screen.cjs # 감상 흐름 — 세 장·명장면·책갈피·이어보기·완료·책등 포커스
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/sprite-screen.cjs   # 도트 진열실 — 무대(대기 차례·걷기·고르기·멈춤·숨은 탭·움직임 끔·동작 줄이기·그림 없음·화소비 넷·다섯 크기)·인물 목록(칸 띠 원래 크기·서가·기록·?who=)
 ESM_DIR=<node_modules> CHROMIUM_PATH=<chrome> node tests/dex-dot-screen.cjs  # 서가 도트 — 목록 「도트」 표·상세 도트 줄(대기·걷기·반응·진열실 길)·움직임 끔·그림 없음·자료 틀림·다섯 크기

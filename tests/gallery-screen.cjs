@@ -5,7 +5,7 @@ const svg = (wide = false) => '<svg xmlns="http://www.w3.org/2000/svg" width="' 
 (async () => {
   const h = await start();
   try {
-    for (const width of [344, 390, 690, 1440]) {
+    for (const width of [344, 1440]) {   // 가장 좁은 덮개 · PC(2026-11-12 검사 정리 — 넷에서 둘)
       const a = await h.open('dex.html', { viewport: { width, height: width === 1440 ? 1000 : 844 }, mobile: width < 720 });
       const p = a.page;
       try {

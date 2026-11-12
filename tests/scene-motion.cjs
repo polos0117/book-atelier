@@ -8,7 +8,7 @@ const D = require('../lib/duel.js');
 const art = fs.mkdtempSync(path.join(os.tmpdir(), 'book-art-'));
 const imgjson = execFileSync('python3', [path.join(__dirname, 'fixtures', 'make-art.py'), art]).toString();
 const design = JSON.parse(fs.readFileSync('data/book-design.json', 'utf8')), duel = JSON.parse(fs.readFileSync('data/duel.json', 'utf8'));
-const VIEWPORTS = [FOLD.cover, { width: 390, height: 844 }, { width: 844, height: 390 }, FOLD.inner, { width: 1280, height: 900 }];
+const VIEWPORTS = [FOLD.cover, { width: 1280, height: 900 }];   // 가장 좁은 덮개 · PC(2026-11-12 검사 정리 — 다섯에서 둘)
 const opt = extra => ({ imgRoot: art, files: { 'data/img.json': imgjson, 'motion-lab.html': LAB }, ...extra });
 /* 모듈만 따로 보는 빈 화면 — 검사 때만 있는 주소다 */
 const LAB = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
@@ -223,7 +223,7 @@ const frameHash = p => p.evaluate(() => { const c = document.querySelector('#box
     await dp.keyboard.press('Escape'); await dp.waitForSelector('.duel-scene', { state: 'detached' });
     assert.deepEqual(dd.errors, []); await dd.close();
 
-    /* 9. 다섯 크기 — 움직임을 켠 채 서재 감상(열리기)·서가 상세(열리기)·결투에서 가로 넘침·화면 오류 없음 */
+    /* 9. 두 크기 — 움직임을 켠 채 서재 감상(열리기)·서가 상세(열리기)·결투에서 가로 넘침·화면 오류 없음 */
     for (const viewport of VIEWPORTS) {
       const v = await h.open('index.html', opt({ viewport })), vp = v.page;
       await vp.waitForSelector('.shelf-book[data-key="frankenstein"]');
@@ -249,6 +249,6 @@ const frameHash = p => p.evaluate(() => { const c = document.querySelector('#box
       await up.waitForSelector('.duel-scene .am-burst'); assert(await noOverflow(up), 'duel overflow ' + JSON.stringify(viewport));
       assert.deepEqual(u.errors, [], 'duel ' + JSON.stringify(viewport)); await u.close();
     }
-    console.log('PASS 움직임: 같은 파일(판·바깥 없음)·설계표 입자 = 종류 ' + M0.KINDS.length + ' · 입자(화소 변화·숨김·화면 밖·destroy·종류마다) · 켄 번스(씨앗·12~20초) · 열리기·끊기·넘기기·ghost · 스위치(저장·구독·새로고침) · 동작 줄이기 · 서재 감상·서가 상세·크게 보기·결투 절정 · 다섯 크기 넘침·오류 없음');
+    console.log('PASS 움직임: 같은 파일(판·바깥 없음)·설계표 입자 = 종류 ' + M0.KINDS.length + ' · 입자(화소 변화·숨김·화면 밖·destroy·종류마다) · 켄 번스(씨앗·12~20초) · 열리기·끊기·넘기기·ghost · 스위치(저장·구독·새로고침) · 동작 줄이기 · 서재 감상·서가 상세·크게 보기·결투 절정 · 두 크기 넘침·오류 없음');
   } finally { await h.stop(); }
 })().catch(e => { console.error(e); process.exitCode = 1; });

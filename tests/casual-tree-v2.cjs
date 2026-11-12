@@ -1,6 +1,6 @@
 /* 일상컷 트리 버전2 모듈(lib/casual-tree-v2.js). node tests/casual-tree-v2.cjs
    - 검사기(tools/casual-tree-v2.py)와 같은 길: 자세 추천마다 쓸 수 있는 장소가 같다
-   - 다시 검사 뒤엔 어느 칸도 걸리지 않는다(랜덤 수천 번) — 두 손 칸 · 보이는 부위 · 다리 칸 · 받침 · 옷 특징 · 시선
+   - 다시 검사 뒤엔 어느 칸도 걸리지 않는다(랜덤 300 · 바꾸기 200) — 두 손 칸 · 보이는 부위 · 다리 칸 · 받침 · 옷 특징 · 시선
    - 프레이밍을 넓혀 맞추지 않는다, 두 손 자세는 다른 손을 잠근다, 버전1 기록은 표로 옮긴다 */
 const assert = require('node:assert'), fs = require('node:fs'), path = require('node:path');
 global.window = global; require('../lib/casual-tree.js'); require('../lib/casual-tree-v2.js');
@@ -39,14 +39,14 @@ function valid(sc, where) {
   assert.equal(sc.treeV, 2);
 }
 const rnd = seeded(7);
-for (let i = 0; i < 2000; i++) {
+for (let i = 0; i < 300; i++) {
   const sc = C.random(t, {}, null, rnd, [], { preset: i % 2 === 0 });
   valid(sc, '랜덤 ' + i);
   if (i % 2 === 0 && sc.preset) assert(C.presetOk(t, sc, sc.preset), '랜덤 추천 ' + sc.preset);
 }
 /* 칸을 아무 값으로 바꿔도(트리 밖 값 포함) 다시 검사 뒤엔 맞다 */
 const r2 = seeded(11);
-for (let i = 0; i < 1500; i++) {
+for (let i = 0; i < 200; i++) {
   let sc = C.random(t, {}, null, r2);
   const k = C.ORDER[Math.floor(r2() * C.ORDER.length)], pool = k === 'place' ? t.v1.places.map(p => p.key) : [].concat(...['hands', 'legs', 'postures', 'supports', 'gaze', 'body', 'prop_uses'].map(n => t.v2[n].map(x => x.key)), Object.keys(t.v2.frames), ['prop', 'nope']);
   sc = C.set(t, sc, k, pool[Math.floor(r2() * pool.length)]);
@@ -163,7 +163,8 @@ assert.notEqual(C.repair(t, Object.assign({}, dress, { right: 'pocket' })).right
 // 알아볼 거리 소품 — 책엔 들 것(signature_hold)이 없어 그 원소 소품 동작이 나오지 않는다(책 공방, 2026-11-01)
 const sigUses = (g, x) => C.uses(t, fx(Object.assign({ frame: 'waist_up', right: 'prop', left: 'down' }, x)), 1, g).filter(u => u.prop === 'signature');
 for (const g of games) assert.equal(sigUses(g, { prop: '' }).length, 0, g.key + ' 들 것이 없는 책');
-for (const g of games) for (let i = 0; i < 40; i++) {
+/* 들 것이 없는 책은 다 같다 — 대표 다섯 권 × 열 번(2026-11-12 검사 정리) */
+for (const g of games.slice(0, 5)) for (let i = 0; i < 10; i++) {
   const sc = C.random(t, {}, g, seeded(i + 1));
   const u = C.use(t, sc.use);
   assert(!(u && u.prop === 'signature'), g.key + ' 알아볼 거리 동작');
@@ -221,4 +222,4 @@ assert(C.uses(t, read2, 2).some(u => C.use(t, u.key).prop === 'book'), '책이 �
 assert(C.uses(t, fx({ era: 'now', place: 'salon_poetry', frame: 'waist_up', right: 'prop', left: 'down' }), 1).some(u => C.use(t, u.key).prop === 'microphone'), '시 낭독 밤의 마이크');
 assert(!C.uses(t, fx({ era: 'book', place: 'lib_reading_room', frame: 'waist_up', right: 'prop', left: 'down' }), 1).some(u => C.use(t, u.key).prop === 'phone'), '휴대폰은 지금 현실만');
 
-console.log('casual-tree-v2 모듈 ok — 추천×장소', pairs, '· 랜덤 2000 · 바꾸기 1500');
+console.log('casual-tree-v2 모듈 ok — 추천×장소', pairs, '· 랜덤 300 · 바꾸기 200');

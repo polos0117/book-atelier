@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f8f4ea">
 <title>책의 공방</title>
+<style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style><script>addEventListener('pageswap', e => { const t = e.viewTransition; if (t) { t.skipTransition(); t.ready.catch(() => {}); } }); addEventListener('pagereveal', e => { const t = e.viewTransition; if (t) t.ready.catch(() => {}); });</script>   <!-- 공방 지도(polos0117.github.io)의 문에서 넘어올 때 페이드로 들어온다(2026-11-12 — 그쪽 README 「방에 들어가는 연출」). 여기서 나갈 때는 전환을 걸지 않아 공방 안에서 쪽을 옮길 때는 전과 같다. 모르는 브라우저는 그냥 넘어온다 -->
 <!--
   도트 진열실 — 도트 인물 모두(data/sprites.json). 위는 고른 인물(?who=) 한 명을 작은 공간에서 움직여 보는 무대, 아래는 인물마다
   정지 도트·동작 시트의 칸 띠(원래 크기)·서가와 만든 기록으로 가는 길. 움직이는 것은 lib/sprite-actor.js(docs/ATELIER_PIXEL_ART_PLAN.md).

@@ -163,6 +163,12 @@ body {color:var(--text);font-size:15px}
 .zoom-layer .zoom-nav button {pointer-events:auto;opacity:.85}
 .zoom-layer .zoom-nav button:disabled {opacity:.2}
 body.zoomed {overflow:hidden}
+/* 크게 보기 하트(2026-11-12) — 담기면 금빛(틀 단추와 같은 빛). 알림은 위 띠 바로 밑 — 아래·옆의 넘기기 단추와 안 겹친다. 좁은 화면은 쪽 수 줄에(원본 크기 앞) */
+.zoom-layer .zoom-fav span {font-size:15px;line-height:1;margin-right:5px}
+.zoom-layer .zoom-bar .zoom-fav[aria-pressed="true"] {border-color:#d8bb87;color:#e8cc9b}
+.zoom-layer .zoom-note {position:relative;z-index:2;height:0}
+.zoom-layer .zoom-note .fav-toast {position:absolute;top:10px;bottom:auto}
+@media(max-width:599px){.zoom-layer .zoom-bar .zoom-fav {order:3}}
 /* 책의 글 — 제목과 값을 두 칸으로 */
 .facts {display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 12px;
   margin:0;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:10px}
@@ -546,14 +552,12 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
     MOTION.reveal(MOTION.ghost(img, IMG.imgURL(prev.file), { fit: 'contain' }), img, { kind, removeFrom: true, key: 'dex-big', seed: now.file });
   }, [card.key, shown && shown.file]);
   useEffect(() => () => MOTION && MOTION.cancel('dex-big'), []);
-  /* 즐겨찾기 — 큰 그림에 떠 있는 바로 그 그림(폼·개방·연출·일상·특별). link 에 ?book=&pic= 를 적어 공방 모음에서 누르면 이 그림으로 다시 연다 */
+  /* 즐겨찾기 — 큰 그림에 떠 있는 바로 그 그림(폼·개방·연출·일상·특별). 칸은 favEntry(크게 보기와 같이 쓴다) */
   const favs = useFavorites(), [favMsg, sayFav] = useNote();
   const faved = !!shown && favs.some(x => x.a === 'book' && x.file === shown.file);
   const toggleFav = () => {
     if (!FAV || !shown) return;
-    const q = new URLSearchParams(); q.set('book', card.key); q.set('pic', shown.file);
-    const on = FAV.toggle({ a: 'book', key: card.key, file: shown.file, title: card.name, sub: shotLabel(shown, defs),
-      thumb: IMG.thumbURL(shown.file), full: IMG.imgURL(shown.file), link: new URL('dex.html', location.href).pathname + '?' + q.toString() });
+    const on = FAV.toggle(favEntry(card, shown, defs));
     sayFav(W(on ? 'dex.fav.added' : faved ? 'dex.fav.removed' : 'dex.fav.blocked'));
   };
 
@@ -741,10 +745,16 @@ function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose, framed
      홈 화면 앱(허브 범위 /)에서는 같은 앱 창에 그림만 떠서 돌아올 길이 없었다(2026-10-20). 넘기면 다시 화면에 맞춘다 */
   const [actual, setActual] = useState(false);
   useEffect(() => setActual(false), [shot && shot.file]);
+  /* 즐겨찾기(2026-11-12 사용자 「크게보기에도 즐겨찾기 추가 다 해야돼」) — 지금 넘겨 보고 있는 그림 한 장. 상세와 같은 칸(favEntry), 같은 목록을 듣는다 */
+  const favs = useFavorites(), [favMsg, sayFav] = useNote();
+  const faved = favs.some(x => x.a === 'book' && x.file === shot.file);
+  const toggleFav = () => { if (!FAV) return; const on = FAV.toggle(favEntry(card, shot, defs)); sayFav(W(on ? 'dex.fav.added' : faved ? 'dex.fav.removed' : 'dex.fav.blocked')); };
   return html`<div ref=${layer} class="zoom-layer" role="dialog" aria-modal="true" aria-label=${W('dex.zoom')}>
     <div class="zoom-bar"><b>${card.name} · ${shotLabel(shot, defs)}</b><span aria-live="polite">${at + 1} / ${shots.length}</span>
+      <button type="button" class="zoom-fav" id="zoom-fav" aria-pressed=${faved} disabled=${!FAV} title=${W('dex.fav.note')} onClick=${toggleFav}><span aria-hidden="true">${faved ? '♥' : '♡'}</span>${W('dex.fav')}</button>
       <button type="button" class="zoom-open" aria-pressed=${actual} onClick=${() => setActual(v => !v)}>${W(actual ? 'dex.zoom.fit' : 'dex.zoom.original')}</button>
       <button type="button" class="zoom-close" onClick=${onClose} aria-label=${W('dex.zoom.close')}>✕</button></div>
+    <div class="zoom-note"><div class="fav-toast" role="status" aria-live="polite">${favMsg}</div></div>
     <div class=${'zoom-body' + (actual ? ' actual' : '')} ...${actual ? {} : swipe} onClick=${e => { if (!actual && e.target === e.currentTarget) onClose(); }}>
       ${actual ? html`<${Pic} full file=${shot.file} alt=${card.name + ' · ' + shotLabel(shot, defs)} />`
         : html`<${Frame} book=${card} on=${framed}><${Pic} full file=${shot.file} alt=${card.name + ' · ' + shotLabel(shot, defs)} onClick=${onClose} /></${Frame}>`}
@@ -759,6 +769,12 @@ function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose, framed
   </div>`;
 }
 
+/* 즐겨찾기 한 칸 — 상세와 크게 보기가 같이 쓴다. link 에 ?book=&pic= 를 적어 공방 모음에서 누르면 이 그림으로 다시 연다 */
+function favEntry(card, shot, defs) {
+  const q = new URLSearchParams(); q.set('book', card.key); q.set('pic', shot.file);
+  return { a: 'book', key: card.key, file: shot.file, title: card.name, sub: shotLabel(shot, defs),
+    thumb: IMG.thumbURL(shot.file), full: IMG.imgURL(shot.file), link: new URL('dex.html', location.href).pathname + '?' + q.toString() };
+}
 function shotLabel(shot, defs) {
   const form = shot.form ? formName(defs, shot.form) : '';
   const cut = W('dex.cut.' + shot.cut);

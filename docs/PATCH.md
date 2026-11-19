@@ -8,6 +8,11 @@
 이 안내글은 첫 `##` 앞이라 읽히지 않는다. `node tests/patch.cjs` 가 모양을 본다.
 
 
+## 2026-11-20 · claude · 자세별 구도 제한 풀기 — 엎드리기 추천 · 카메라 높이 · 가슴 위 뒤 3/4
+- 사용자 「엎드린 자세는 위에서 찍은거 밖에 안나오는거 같던데」 → 「구도제한 다 풀어주고, 다른 공방도 같이 적용해줘」. 엎드리기 추천이 「전신 · 정면」 하나라 세로 화면에서 늘 위에서 찍혔다.  
+  data/casual-tree-v2.json — 엎드리기 추천 더함: lie_front_face(바닥 높이 · 가슴 위 · 얼굴 정면) · lie_front_side(바닥 높이 · 환경 컷 · 옆모습) · lie_front_top(바로 위에서). 카메라 floor(바닥 높이)는 서기 · 걷기도 받고(서면 올려다본다) 누운 자세 말을 더했다, top(바로 위에서)은 앉기 · 무릎 꿇기도 받는다 — 이 공방엔 floor · top 이 없어 새로 넣었다. 쪼그려 앉기는 가슴 위 컷도.  
+  data/casual-tree.json — frame_rules.chest_up 의 no_orients 에서 뒤 3/4(rear_3q · three_quarter_back)을 뺐다(어깨 너머로 돌아보는 가슴 위 컷). 등 돌림 · 뒤 · 걸어가는 뒷모습은 그대로 막는다. tests/casual-tree.cjs 단언을 새 규칙으로.
+
 ## 2026-11-13 · claude · core v6 · 체형 두 열쇠(슬림 근육형 · 아담한 풍만형)
 - lib/prompt-spec.js VOCAB_EN.body · data/book-design.json vocab.body — lean_toned · petite_voluptuous(삼국지에서 만든 글, core v6). 사용자 「공통으로 다 넣어주면 돼」 — 책 설계표 체형은 그대로(새 캐릭터부터). 체형을 자동으로 고르는 도구는 없다(book-design.py 는 검사만)
 - lib/prompt-spec.js — core:v6 블록 · prompt.html ?v= 올림

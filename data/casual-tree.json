@@ -2134,8 +2134,6 @@
    "no_orients": [
     "back",
     "back_to_camera",
-    "rear_3q",
-    "three_quarter_back",
     "walking_away"
    ]
   },

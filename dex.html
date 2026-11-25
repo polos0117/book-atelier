@@ -209,7 +209,7 @@ body.zoomed {overflow:hidden}
 <script src="lib/sprite-actor.js?v=9"></script>
 <link rel="stylesheet" href="lib/sprite-actor.css?v=4">
 <!-- 즐겨찾기 — lib/favorites.js(공방 넷과 공방 모음이 글자 하나 다르지 않게 나눠 쓴다) -->
-<script src="lib/favorites.js?v=1"></script>
+<script src="lib/favorites.js?v=2"></script>
 <link rel="stylesheet" href="lib/gallery.css?v=6">
 <link rel="stylesheet" href="lib/landscape.css?v=4">
 <link rel="stylesheet" href="lib/room.css?v=5">
@@ -558,7 +558,7 @@ function Detail({ card, entry, defs, styleName, selection, nav, onGo, onClose, f
   const toggleFav = () => {
     if (!FAV || !shown) return;
     const on = FAV.toggle(favEntry(card, shown, defs));
-    sayFav(W(on ? 'dex.fav.added' : faved ? 'dex.fav.removed' : 'dex.fav.blocked'));
+    sayFav((on ? W('dex.fav.added') : faved ? W('dex.fav.removed') : FAV.message() || W('dex.fav.blocked')));
   };
 
   const head = html`
@@ -748,7 +748,7 @@ function Zoom({ card, defs, shots, at, canPrev, canNext, onMove, onClose, framed
   /* 즐겨찾기(2026-11-12 사용자 「크게보기에도 즐겨찾기 추가 다 해야돼」) — 지금 넘겨 보고 있는 그림 한 장. 상세와 같은 칸(favEntry), 같은 목록을 듣는다 */
   const favs = useFavorites(), [favMsg, sayFav] = useNote();
   const faved = favs.some(x => x.a === 'book' && x.file === shot.file);
-  const toggleFav = () => { if (!FAV) return; const on = FAV.toggle(favEntry(card, shot, defs)); sayFav(W(on ? 'dex.fav.added' : faved ? 'dex.fav.removed' : 'dex.fav.blocked')); };
+  const toggleFav = () => { if (!FAV) return; const on = FAV.toggle(favEntry(card, shot, defs)); sayFav((on ? W('dex.fav.added') : faved ? W('dex.fav.removed') : FAV.message() || W('dex.fav.blocked'))); };
   return html`<div ref=${layer} class="zoom-layer" role="dialog" aria-modal="true" aria-label=${W('dex.zoom')}>
     <div class="zoom-bar"><b>${card.name} · ${shotLabel(shot, defs)}</b><span aria-live="polite">${at + 1} / ${shots.length}</span>
       <button type="button" class="zoom-fav" id="zoom-fav" aria-pressed=${faved} disabled=${!FAV} title=${W('dex.fav.note')} onClick=${toggleFav}><span aria-hidden="true">${faved ? '♥' : '♡'}</span>${W('dex.fav')}</button>

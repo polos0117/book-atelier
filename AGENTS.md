@@ -32,7 +32,7 @@
 | 도트 진열실 | `sprite.html` · `lib/sprite-actor.js`·`.css` · `data/sprites.json` | 도트 인물 모두 — 위는 고른 인물(`?who=`)의 무대(대기·걷기·고르기 반응·멈춤·1/2/3배·움직임 끔), 아래는 인물마다 정지 도트·동작 시트 칸 띠(원래 크기)·서가와 만든 기록 길. 시트는 그림 저장소 `sprites/`, 기록은 `records/sprites/`. 머리 항해에는 없다 — 서가 상세의 도트 줄·서재 바닥 밑 「도트 진열실」 에서 들어온다 |
 | 탐험 | `run.html` · `lib/run.js` · `data/run.json` · `rust/shelf-gen` → `lib/shelf-gen.wasm`(싣개 `lib/shelf-gen.js`) · `lib/duel-ui.js`·`lib/duel.css`(결투와 같이 쓰는 판 조각) | 서고 탐험 — 로그라이크(docs/RUN_DESIGN.md). 씨앗 하나로 아홉 층 평면도(Rust → wasm), 깊이가 곧 장(1~3층 발단·4~6 전개·7~9 결말), 방마다 싸움(결투 엔진 한 장, 보스만 세 장)·독서대·장면·쉼, 덱 셋→여섯, 등불 셋 꺼지면 처음부터. 지도 위 복도에 덱의 도트 인물(길동무)이 서고, 방을 고르면 상태는 바로 적고 0.7초 제자리 걸음 뒤 그 방(보여주기만 — 누르면 바로, 움직임 끔·휴대폰 가로·새로고침이면 바로). 지도 규칙은 생성기에만, 걷는 규칙은 엔진에만, 수치는 자료에만 |
 
-서가 상세의 하트(즐겨찾기)는 `lib/favorites.js` — 공방 모음(polos0117.github.io)의 `favorites.js` 를 글자 하나 다르지 않게 복사한 공용 모듈이다(열쇠 `atelier_favorites_v1`, 약속은 그쪽 README 「즐겨찾기」절). 여기서 따로 고치지 않는다 — 고치면 다섯 저장소를 같이, `tests/dex-favorites.cjs` 가 원본과 견준다.
+서가 상세의 하트(즐겨찾기)는 `lib/favorites.js` — 공방 모음(polos0117.github.io)의 `favorites.js` 를 글자 하나 다르지 않게 복사한 공용 모듈이다(열쇠 `atelier_favorites_v1`, 약속은 그쪽 README 「즐겨찾기」절). 2026-11-25부터 원본은 style-atelier `shared/lib/favorites.js` — `node shared/sync.cjs` 가 덮으니 여기서 고치지 않는다. 3000칸까지, 가득 차면 오래된 것을 빼지 않고 담기를 거절한다(하트 알림은 `FAV.message() || 막힘 말`). 여기서 따로 고치지 않는다 — 고치면 다섯 저장소를 같이, `tests/dex-favorites.cjs` 가 원본과 견준다.
 
 도트 인물의 재생기 `lib/sprite-actor.js`·`lib/sprite-actor.css` 는 공방 모음의 `sprite-actor.js`·`.css` 를 글자 하나 다르지 않게 복사한 공용 모듈이다(판 v1, 약속은 그쪽 README 「도트 재생기」절). 여기서 따로 고치지 않는다 — 고치면 원본과 다섯 저장소를 같이, `node tests/sprite-actor-copy.cjs` 가 원본과 견준다. 새 인물의 도트는 공방 모음의 도트 공방(`dot.html` — 지시문·정리기, 정리 셈은 여기 `tools/sprite-*.py` 와 화소 하나 다르지 않다)에서 만든다.
 

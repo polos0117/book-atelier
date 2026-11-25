@@ -56,7 +56,7 @@
 
 일상컷은 트리로 고른다 — 시대 → 장소 → 하는 일 → 의상 → 구도(2026-10-29, game-atelier 에서 옮김, `data/casual-tree.json` · `lib/casual-tree.js`, IMAGE_RULES 2절).
 예전 갈래·예시는 추천 조합과 변환표로 옮겼다. 표를 고치면 `python3 tools/casual-tree.py check`·`audit` 를 돌린다.
-`lib/casual-tree.js` 는 game-atelier 의 같은 파일과 글자 하나 다르지 않게 둔다(고치려면 game 쪽을 고치고 복사한다). 책마다 다른 것은 트리 표에만.
+`lib/casual-tree.js` 는 style-atelier `shared/` 에서만 고치고 `node shared/sync.cjs` 로 옮긴다 — 여기서 고친 것은 덮인다(2026-11-25). `lib/casual-tree-v2.js` 는 game 과 같은 옛 사본(shared 판과 갈라져 아직 sync 밖). 책마다 다른 것은 트리 표에만.
 일상컷 묶음은 `node tools/casual-plan.cjs <책>` 으로 짜고, 올리기 전에 `node tools/casual-plan.cjs <책> --check <기록 폴더>` 로 묶음 규칙을 본다.
 
 ### 3. 저작권 (비상업)
